@@ -48,18 +48,21 @@ Example:
     >>> phi_MF = result['phi_MF']  # Moving to fixed transform
 """
 
+import logging
+
 import itk
 import numpy as np
 import pyvista as pv
 from itk import TubeTK as ttk
 
 from physiomotion4d.contour_tools import ContourTools
+from physiomotion4d.physiomotion4d_base import PhysioMotion4DBase
 from physiomotion4d.register_images_ants import RegisterImagesANTs
 from physiomotion4d.register_images_icon import RegisterImagesICON
 from physiomotion4d.transform_tools import TransformTools
 
 
-class RegisterModelToModelMasks:
+class RegisterModelToModelMasks(PhysioMotion4DBase):
     """Register anatomical models using mask-based deformable registration.
 
     This class provides mask-based alignment of 3D surface meshes with support for
@@ -123,6 +126,7 @@ class RegisterModelToModelMasks:
         fixed_mesh: pv.PolyData,
         reference_image: itk.Image,
         roi_dilation_mm: float = 10,
+        log_level: int | str = logging.INFO,
     ):
         """Initialize mask-based model registration.
 
@@ -133,11 +137,14 @@ class RegisterModelToModelMasks:
                 for mask generation. Typically the patient CT/MRI image.
             roi_dilation_mm: Dilation amount in millimeters for ROI mask generation.
                 Default: 20mm
+            log_level: Logging level (default: logging.INFO)
 
         Note:
             The moving_mesh and fixed_mesh are typically extracted from VTU models
             using mesh.extract_surface() before passing to this class.
         """
+        super().__init__(class_name=self.__class__.__name__, log_level=log_level)
+
         self.moving_mesh = moving_mesh
         self.fixed_mesh = fixed_mesh
         self.reference_image = reference_image
@@ -148,8 +155,8 @@ class RegisterModelToModelMasks:
         self.contour_tools = ContourTools()
 
         # Registration instances
-        self.registrar_ants = RegisterImagesANTs()
-        self.registrar_icon = RegisterImagesICON()
+        self.registrar_ants = RegisterImagesANTs(log_level=log_level)
+        self.registrar_icon = RegisterImagesICON(log_level=log_level)
         self.registrar_icon.set_modality('ct')
         self.registrar_icon.set_multi_modality(True)  # For mask-based registration
 
@@ -175,7 +182,7 @@ class RegisterModelToModelMasks:
 
         Uses self.reference_image for coordinate frame (origin, spacing, direction).
         """
-        print("Generating binary masks from meshes...")
+        self.log_info("Generating binary masks from meshes...")
 
         # Create fixed mask
         self.fixed_mask_image = (
@@ -188,7 +195,7 @@ class RegisterModelToModelMasks:
         )
 
         # Create fixed ROI mask with dilation
-        print(f"  Dilating fixed mask by {self.roi_dilation_mm}mm for ROI...")
+        self.log_info("Dilating fixed mask by %.1fmm for ROI...", self.roi_dilation_mm)
         mask = self.contour_tools.create_mask_from_mesh(
             self.fixed_mesh, self.reference_image
         )
@@ -210,7 +217,7 @@ class RegisterModelToModelMasks:
         )
 
         # Create moving ROI mask with dilation
-        print(f"  Dilating moving mask by {self.roi_dilation_mm}mm for ROI...")
+        self.log_info("Dilating moving mask by %.1fmm for ROI...", self.roi_dilation_mm)
         mask = self.contour_tools.create_mask_from_mesh(
             self.moving_mesh, self.reference_image
         )
@@ -218,7 +225,7 @@ class RegisterModelToModelMasks:
         imMath.Dilate(dilation_voxels, 1, 0)
         self.moving_mask_roi_image = imMath.GetOutputUChar()
 
-        print("  Mask generation complete.")
+        self.log_info("Mask generation complete")
 
     def register(
         self,
@@ -274,7 +281,7 @@ class RegisterModelToModelMasks:
                 f"Invalid mode '{mode}'. Must be 'rigid', 'affine', or 'deformable'."
             )
 
-        print(f"Performing {mode.upper()} mask-based registration...")
+        self.log_section("%s Mask-based Registration", mode.upper())
 
         # Step 1: Generate masks from meshes
         self._create_masks_from_meshes()
@@ -287,7 +294,7 @@ class RegisterModelToModelMasks:
         else:  # deformable
             transform_type = "SyN"  # Includes rigid + affine + deformable stages
 
-        print(f"  Performing ANTs {mode} registration (type: {transform_type})...")
+        self.log_info("Performing ANTs %s registration (type: %s)...", mode, transform_type)
 
         self.registrar_ants.set_fixed_image(self.fixed_mask_image)
         self.registrar_ants.set_fixed_image_mask(self.fixed_mask_roi_image)
@@ -305,9 +312,7 @@ class RegisterModelToModelMasks:
 
         # Step 4: Optional ICON refinement
         if use_icon:
-            print(
-                f"  Performing ICON refinement registration ({icon_iterations} iterations)..."
-            )
+            self.log_info("Performing ICON refinement registration (%d iterations)...", icon_iterations)
 
             # Transform masks with ANTs result for ICON input
             moving_mask_ants_transformed = self.transform_tools.transform_image(
@@ -343,14 +348,14 @@ class RegisterModelToModelMasks:
             self.phi_FM = composed_phi_FM
 
         # Apply final transform to moving mesh
-        print("  Transforming moving mesh...")
+        self.log_info("Transforming moving mesh...")
         self.registered_mesh = self.transform_tools.transform_pvcontour(
             self.moving_mesh,
             self.phi_MF,
             with_deformation_magnitude=True,
         )
 
-        print(f"  {mode.upper()} mask-based registration complete!")
+        self.log_info("%s mask-based registration complete!", mode.upper())
 
         # Return results as dictionary
         return {

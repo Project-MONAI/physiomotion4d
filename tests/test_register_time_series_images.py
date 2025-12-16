@@ -24,7 +24,12 @@ class TestRegisterTimeSeriesImages:
         registrar = RegisterTimeSeriesImages(registration_method='ants')
         assert registrar is not None, "Registrar not initialized"
         assert registrar.registration_method == 'ants', "Method not set correctly"
-        assert registrar.registrar is not None, "Internal registrar not created"
+        assert (
+            registrar.registrar_ants is not None
+        ), "Internal ANTs registrar not created"
+        assert (
+            registrar.registrar_icon is not None
+        ), "Internal ICON registrar not created"
 
         print("\n✓ Time series registrar initialized with ANTs")
 
@@ -33,7 +38,12 @@ class TestRegisterTimeSeriesImages:
         registrar = RegisterTimeSeriesImages(registration_method='icon')
         assert registrar is not None, "Registrar not initialized"
         assert registrar.registration_method == 'icon', "Method not set correctly"
-        assert registrar.registrar is not None, "Internal registrar not created"
+        assert (
+            registrar.registrar_ants is not None
+        ), "Internal ANTs registrar not created"
+        assert (
+            registrar.registrar_icon is not None
+        ), "Internal ICON registrar not created"
 
         print("\n✓ Time series registrar initialized with ICON")
 
@@ -49,9 +59,6 @@ class TestRegisterTimeSeriesImages:
         registrar = RegisterTimeSeriesImages(registration_method='ants')
         registrar.set_modality('ct')
         assert registrar.modality == 'ct', "Modality not set correctly"
-        assert (
-            registrar.registrar.modality == 'ct'
-        ), "Modality not passed to internal registrar"
 
         print("\n✓ Modality setting works correctly")
 
@@ -62,9 +69,6 @@ class TestRegisterTimeSeriesImages:
 
         registrar.set_fixed_image(fixed_image)
         assert registrar.fixed_image is not None, "Fixed image not set"
-        assert (
-            registrar.registrar.fixed_image is not None
-        ), "Fixed image not passed through"
 
         print("\n✓ Fixed image set successfully")
         print(f"  Image size: {itk.size(registrar.fixed_image)}")
@@ -103,7 +107,7 @@ class TestRegisterTimeSeriesImages:
         result = registrar.register_time_series(
             moving_images=moving_images,
             starting_index=0,
-            register_start_to_reference=True,
+            register_start_to_fixed_image=True,
             portion_of_prior_transform_to_init_next_transform=0.0,
         )
 
@@ -123,7 +127,9 @@ class TestRegisterTimeSeriesImages:
         assert len(losses) == len(moving_images), "losses length mismatch"
 
         # Verify all transforms are valid
-        for i, (phi_MF, phi_FM) in enumerate(zip(phi_MF_list, phi_FM_list)):
+        for i, (phi_MF, phi_FM) in enumerate(
+            zip(phi_MF_list, phi_FM_list, strict=False)
+        ):
             assert phi_MF is not None, f"phi_MF[{i}] is None"
             assert phi_FM is not None, f"phi_FM[{i}] is None"
 
@@ -150,7 +156,7 @@ class TestRegisterTimeSeriesImages:
 
         print("\nRegistering time series (with prior)...")
         print(f"  Number of moving images: {len(moving_images)}")
-        print(f"  Using prior transform weight: 0.5")
+        print("  Using prior transform weight: 0.5")
 
         registrar = RegisterTimeSeriesImages(registration_method='ants')
         registrar.set_modality('ct')
@@ -160,7 +166,7 @@ class TestRegisterTimeSeriesImages:
         result = registrar.register_time_series(
             moving_images=moving_images,
             starting_index=1,  # Start from middle
-            register_start_to_reference=True,
+            register_start_to_fixed_image=True,
             portion_of_prior_transform_to_init_next_transform=0.5,
         )
 
@@ -189,7 +195,7 @@ class TestRegisterTimeSeriesImages:
         result = registrar.register_time_series(
             moving_images=moving_images,
             starting_index=0,
-            register_start_to_reference=False,  # Use identity
+            register_start_to_fixed_image=False,  # Use identity
             portion_of_prior_transform_to_init_next_transform=0.0,
         )
 
@@ -218,7 +224,7 @@ class TestRegisterTimeSeriesImages:
             result = registrar.register_time_series(
                 moving_images=moving_images,
                 starting_index=starting_index,
-                register_start_to_reference=True,
+                register_start_to_fixed_image=True,
                 portion_of_prior_transform_to_init_next_transform=0.0,
             )
 
@@ -302,7 +308,7 @@ class TestRegisterTimeSeriesImages:
         result = registrar.register_time_series(
             moving_images=moving_images,
             starting_index=0,
-            register_start_to_reference=True,
+            register_start_to_fixed_image=True,
             portion_of_prior_transform_to_init_next_transform=0.0,
         )
 
@@ -342,7 +348,7 @@ class TestRegisterTimeSeriesImages:
         result = registrar.register_time_series(
             moving_images=moving_images,
             starting_index=0,
-            register_start_to_reference=True,
+            register_start_to_fixed_image=True,
             portion_of_prior_transform_to_init_next_transform=0.0,
         )
 
@@ -354,8 +360,6 @@ class TestRegisterTimeSeriesImages:
 
     def test_register_time_series_with_mask(self, test_images, test_directories):
         """Test time series registration with fixed image mask."""
-        output_dir = test_directories["output"]
-
         fixed_image = test_images[0]
         moving_images = test_images[1:3]
 
@@ -389,7 +393,7 @@ class TestRegisterTimeSeriesImages:
         result = registrar.register_time_series(
             moving_images=moving_images,
             starting_index=0,
-            register_start_to_reference=True,
+            register_start_to_fixed_image=True,
             portion_of_prior_transform_to_init_next_transform=0.0,
         )
 
@@ -404,7 +408,7 @@ class TestRegisterTimeSeriesImages:
 
         print("\nTesting bidirectional registration...")
         print(f"  Total images: {len(moving_images)}")
-        print(f"  Starting from middle (index 2)")
+        print("  Starting from middle (index 2)")
 
         registrar = RegisterTimeSeriesImages(registration_method='ants')
         registrar.set_modality('ct')
@@ -414,7 +418,7 @@ class TestRegisterTimeSeriesImages:
         result = registrar.register_time_series(
             moving_images=moving_images,
             starting_index=2,  # Middle image
-            register_start_to_reference=True,
+            register_start_to_fixed_image=True,
             portion_of_prior_transform_to_init_next_transform=0.0,
         )
 

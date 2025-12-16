@@ -247,12 +247,74 @@ class TestTransformTools:
         print(f"  Field size: {itk.size(deformation_field)}")
         print(f"  Field shape: {field_arr.shape}")
 
-        # Save deformation field
-        itk.imwrite(
+        # Save deformation field using imwriteVD3 (for double precision vector images)
+        transform_tools.imwriteVD3(
             deformation_field,
             str(tfm_output_dir / "deformation_field.mha"),
             compression=True,
         )
+
+    def test_imwrite_imread_vd3(
+        self, transform_tools, ants_registration_results, test_images, test_directories
+    ):
+        """Test reading and writing double precision vector images."""
+        output_dir = test_directories["output"]
+        tfm_output_dir = output_dir / "transform_tools"
+        tfm_output_dir.mkdir(exist_ok=True)
+
+        fixed_image = test_images[0]
+        phi_MF = ants_registration_results["phi_MF"]
+
+        print("\nTesting imwriteVD3 and imreadVD3...")
+
+        # Generate a deformation field
+        deformation_field = transform_tools.convert_transform_to_displacement_field(
+            phi_MF, fixed_image
+        )
+
+        # Verify it's double precision vector image
+        field_type = str(type(deformation_field))
+        print(f"  Original field type: {field_type}")
+        assert "VectorD" in field_type or "Vector[D" in field_type, \
+            "Expected double precision vector image"
+
+        # Get original data for comparison
+        original_arr = itk.array_from_image(deformation_field)
+
+        # Write using imwriteVD3
+        output_path = str(tfm_output_dir / "test_vector_field_vd3.mha")
+        transform_tools.imwriteVD3(deformation_field, output_path, compression=True)
+
+        print(f"  Wrote to: {output_path}")
+
+        # Read back using imreadVD3
+        field_read = transform_tools.imreadVD3(output_path)
+
+        # Verify read field
+        assert field_read is not None, "Read field is None"
+        assert itk.size(field_read) == itk.size(deformation_field), "Size mismatch"
+
+        # Verify it's double precision
+        read_type = str(type(field_read))
+        print(f"  Read field type: {read_type}")
+        assert "VectorD" in read_type or "Vector[D" in read_type, \
+            "Expected double precision vector image after reading"
+
+        # Compare data
+        read_arr = itk.array_from_image(field_read)
+        assert read_arr.shape == original_arr.shape, "Array shape mismatch"
+
+        # Check numerical accuracy (should be very close, small float precision loss)
+        max_diff = np.max(np.abs(read_arr - original_arr))
+        mean_diff = np.mean(np.abs(read_arr - original_arr))
+
+        print(f"✓ Vector field I/O test complete")
+        print(f"  Max difference: {max_diff:.6e}")
+        print(f"  Mean difference: {mean_diff:.6e}")
+
+        # Differences should be very small (float precision conversion)
+        assert max_diff < 1e-5, f"Max difference too large: {max_diff}"
+        assert mean_diff < 1e-6, f"Mean difference too large: {mean_diff}"
 
     def test_convert_vtk_matrix_to_itk_transform(self, transform_tools):
         """Test converting VTK matrix to ITK transform."""

@@ -1,5 +1,6 @@
 """Abstract base class for converting 4D VTK data to animated USD meshes."""
 
+import logging
 import os
 from abc import ABC, abstractmethod
 
@@ -8,6 +9,8 @@ import numpy as np
 import pyvista as pv
 import vtk
 from pxr import Gf, Sdf, Usd, UsdGeom
+
+from physiomotion4d.physiomotion4d_base import PhysioMotion4DBase
 
 # VTK Cell Type Constants
 VTK_TRIANGLE = 5
@@ -18,7 +21,7 @@ VTK_WEDGE = 13
 VTK_PYRAMID = 14
 
 
-class ConvertVTK4DToUSDBase(ABC):
+class ConvertVTK4DToUSDBase(PhysioMotion4DBase, ABC):
     """
     Abstract base class for VTK to USD conversion.
 
@@ -27,7 +30,7 @@ class ConvertVTK4DToUSDBase(ABC):
     mesh-specific processing and USD creation methods.
     """
 
-    def __init__(self, data_basename, input_polydata, mask_ids=None, convert_to_surface=False):
+    def __init__(self, data_basename, input_polydata, mask_ids=None, convert_to_surface=False, log_level: int | str = logging.INFO):
         """
         Initialize VTK to USD converter.
 
@@ -41,7 +44,10 @@ class ConvertVTK4DToUSDBase(ABC):
             convert_to_surface (bool): If True, convert UnstructuredGrid meshes to surface
                                       PolyData before processing. Only applicable for PolyMesh
                                       converter. Default: False
+            log_level: Logging level (default: logging.INFO)
         """
+        super().__init__(class_name=self.__class__.__name__, log_level=log_level)
+
         self.data_basename = data_basename
         self.input_polydata = input_polydata
         self.mask_ids = mask_ids
@@ -299,7 +305,7 @@ class ConvertVTK4DToUSDBase(ABC):
                 color_values.append(scalar_value)
             return np.array(color_values)
         else:
-            print(f"Warning: Array '{self.color_by_array}' not found in point data")
+            self.log_warning("Array '%s' not found in point data", self.color_by_array)
             return None
 
     def _check_topology_changes(self, mesh_time_data):
@@ -360,9 +366,9 @@ class ConvertVTK4DToUSDBase(ABC):
             topology_changes[label] = has_change
 
             if has_change:
-                print(
-                    f"Detected topology changes for label '{label}' - "
-                    f"will use time-varying mesh approach"
+                self.log_info(
+                    "Detected topology changes for label '%s' - will use time-varying mesh approach",
+                    label
                 )
 
         return topology_changes
@@ -497,7 +503,7 @@ class ConvertVTK4DToUSDBase(ABC):
         UsdGeom.Xform.Define(self.stage, root_path)
 
         basename = os.path.basename(output_usd_file).split(".")[0]
-        print(f"Converting {basename}")
+        self.log_info("Converting %s", basename)
         root_path = f"{root_path}/Transform_{basename}"
         UsdGeom.Xform.Define(self.stage, root_path)
 
@@ -506,12 +512,14 @@ class ConvertVTK4DToUSDBase(ABC):
 
         # Collect the label data from each time point
         polydata_time_data = {}
-        for fnum in range(len(self.input_polydata)):
+        num_timepoints = len(self.input_polydata)
+        for fnum in range(num_timepoints):
             polydata_time_data[fnum] = self._process_mesh_data(self.input_polydata[fnum])
-            print("Processed time point", fnum)
+            if fnum % 10 == 0 or fnum == num_timepoints - 1:
+                self.log_progress(fnum + 1, num_timepoints, prefix="Processing time points")
 
         # Check for topology changes across time steps
-        print("\nChecking for topology changes...")
+        self.log_info("Checking for topology changes...")
         topology_changes = self._check_topology_changes(polydata_time_data)
 
         # Assign a unique color to each label
@@ -525,11 +533,12 @@ class ConvertVTK4DToUSDBase(ABC):
         first_data = polydata_time_data[0]
 
         # Create a mesh prim for each label group
+        num_labels = len(first_data.items())
         for idx, (label, data) in enumerate(first_data.items()):
-            print(f"Processing {label} {idx}")
+            self.log_info("Processing %s (%d/%d)", label, idx + 1, num_labels)
             # Create a transform for each mesh
             transform_path = f"{root_path}/Transform_{label}"
-            print(f"Transform path: {transform_path}")
+            self.log_debug("Transform path: %s", transform_path)
             UsdGeom.Xform.Define(self.stage, transform_path)
 
             # Determine if topology changes for this label

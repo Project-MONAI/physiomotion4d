@@ -1,14 +1,17 @@
 """Unified facade for VTK to USD conversion supporting both PolyData and UnstructuredGrid."""
 
+import logging
+
 import pyvista as pv
 import vtk
 from pxr import Usd
 
 from .convert_vtk_4d_to_usd_polymesh import ConvertVTK4DToUSDPolyMesh
 from .convert_vtk_4d_to_usd_tetmesh import ConvertVTK4DToUSDTetMesh
+from .physiomotion4d_base import PhysioMotion4DBase
 
 
-class ConvertVTK4DToUSD:
+class ConvertVTK4DToUSD(PhysioMotion4DBase):
     """
     Unified converter supporting both PolyData and UnstructuredGrid.
 
@@ -54,7 +57,7 @@ class ConvertVTK4DToUSD:
         >>> stage = converter.convert("output.usd")
     """
 
-    def __init__(self, data_basename, input_polydata, mask_ids=None):
+    def __init__(self, data_basename, input_polydata, mask_ids=None, log_level: int | str = logging.INFO):
         """
         Initialize converter and store parameters for later routing.
 
@@ -66,7 +69,10 @@ class ConvertVTK4DToUSD:
             mask_ids (dict or None): Optional mapping of label IDs to label names for
                                      organizing meshes by anatomical regions.
                                      Default: None
+            log_level: Logging level (default: logging.INFO)
         """
+        super().__init__(class_name=self.__class__.__name__, log_level=log_level)
+
         self.data_basename = data_basename
         self.input_polydata = input_polydata
         self.mask_ids = mask_ids
@@ -166,9 +172,9 @@ class ConvertVTK4DToUSD:
 
         # Case 1: Only PolyData (or surface-converted UGrid)
         if has_polydata and not has_ugrid:
-            print("Routing to PolyMesh converter (surface meshes)")
+            self.log_info("Routing to PolyMesh converter (surface meshes)")
             converter = ConvertVTK4DToUSDPolyMesh(
-                self.data_basename, self.input_polydata, self.mask_ids
+                self.data_basename, self.input_polydata, self.mask_ids, log_level=self.log_level
             )
             converter.set_colormap(
                 self.color_by_array, self.colormap, self.intensity_range
@@ -177,9 +183,9 @@ class ConvertVTK4DToUSD:
 
         # Case 2: Only UnstructuredGrid (tetmesh)
         elif has_ugrid and not has_polydata:
-            print("Routing to TetMesh converter (volumetric meshes)")
+            self.log_info("Routing to TetMesh converter (volumetric meshes)")
             converter = ConvertVTK4DToUSDTetMesh(
-                self.data_basename, self.input_polydata, self.mask_ids
+                self.data_basename, self.input_polydata, self.mask_ids, log_level=self.log_level
             )
             converter.set_colormap(
                 self.color_by_array, self.colormap, self.intensity_range

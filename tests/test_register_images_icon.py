@@ -30,8 +30,8 @@ class TestRegisterImagesICON:
             registrar_icon, 'fixed_image_mask'
         ), "Missing fixed_image_mask attribute"
         assert hasattr(
-            registrar_icon, 'num_iterations'
-        ), "Missing num_iterations attribute"
+            registrar_icon, 'number_of_iterations'
+        ), "Missing number_of_iterations attribute"
         assert hasattr(registrar_icon, 'net'), "Missing net attribute (ICON network)"
 
         print("\nICON registrar initialized successfully")
@@ -50,10 +50,12 @@ class TestRegisterImagesICON:
     def test_set_number_of_iterations(self, registrar_icon):
         """Test setting number of iterations."""
         registrar_icon.set_number_of_iterations(10)
-        assert registrar_icon.num_iterations == 10, "Number of iterations not set"
+        assert registrar_icon.number_of_iterations == 10, "Number of iterations not set"
 
         registrar_icon.set_number_of_iterations(5)
-        assert registrar_icon.num_iterations == 5, "Number of iterations update failed"
+        assert (
+            registrar_icon.number_of_iterations == 5
+        ), "Number of iterations update failed"
 
         print("\nNumber of iterations setting works correctly")
 
@@ -363,7 +365,6 @@ class TestRegisterImagesICON:
 
         result = registrar_icon.register(
             moving_image=moving_image,
-            initial_phi_FM=initial_tfm_FM,
             initial_phi_MF=initial_tfm_MF,
         )
 

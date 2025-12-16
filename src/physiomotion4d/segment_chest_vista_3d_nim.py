@@ -9,6 +9,7 @@
 
 import argparse
 import io
+import logging
 import os
 import tempfile
 import zipfile
@@ -26,9 +27,13 @@ class SegmentChestVista3DNIM(SegmentChestVista3D):
     segmentation method using VISTA3D.
     """
 
-    def __init__(self):
-        """Initialize the vista3d class."""
-        super().__init__()
+    def __init__(self, log_level: int | str = logging.INFO):
+        """Initialize the vista3d class.
+
+        Args:
+            log_level: Logging level (default: logging.INFO)
+        """
+        super().__init__(log_level=log_level)
 
         self.invoke_url = "http://localhost:8000/v1/vista3d/inference"
         self.wsl_docker_tmp_file = (
@@ -66,7 +71,7 @@ class SegmentChestVista3DNIM(SegmentChestVista3D):
             z.extractall(temp_dir)
             file_list = os.listdir(temp_dir)
             for filename in file_list:
-                print(filename)
+                self.log_debug("Found file: %s", filename)
                 filepath = os.path.join(temp_dir, filename)
                 if os.path.isfile(filepath) and filename.endswith(".nii.gz"):
                     # SUCCESS: Return the results

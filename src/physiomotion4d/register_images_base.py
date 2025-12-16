@@ -15,14 +15,17 @@ Concrete implementations should inherit from RegisterImagesBase and implement
 the register() method with their specific algorithm (e.g., Icon, ANTs, etc.).
 """
 
+import logging
+
 import itk
 import numpy as np
 from itk import TubeTK as ttk
 
+from physiomotion4d.physiomotion4d_base import PhysioMotion4DBase
 from physiomotion4d.transform_tools import TransformTools
 
 
-class RegisterImagesBase:
+class RegisterImagesBase(PhysioMotion4DBase):
     """Base class for deformable image registration algorithms.
 
     This class provides a common interface and shared functionality for
@@ -64,13 +67,18 @@ class RegisterImagesBase:
         >>> phi_MF = result["phi_MF"]
     """
 
-    def __init__(self):
+    def __init__(self, log_level: int | str = logging.INFO):
         """Initialize the base image registration class.
 
         Sets up the common registration parameters with default values. Algorithm-specific
         components (like neural networks or optimization objects) should be initialized
         in the concrete implementation to avoid unnecessary resource allocation.
+
+        Args:
+            log_level: Logging level (default: logging.INFO)
         """
+        super().__init__(class_name=self.__class__.__name__, log_level=log_level)
+
         self.net = None
 
         self.modality = 'ct'

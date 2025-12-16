@@ -91,15 +91,15 @@ class ConvertVTK4DToUSDPolyMesh(ConvertVTK4DToUSDBase):
             has_topology_change: Whether topology varies over time
         """
         if has_topology_change:
-            print(
-                f"Creating time-varying UsdGeomMesh for label: {label} "
-                f"(topology changes detected)"
+            self.log_info(
+                "Creating time-varying UsdGeomMesh for label: %s (topology changes detected)",
+                label
             )
             self._create_usd_polymesh_varying(
                 transform_path, label, mesh_time_data, label_colors
             )
         else:
-            print(f"Creating UsdGeomMesh for label: {label}")
+            self.log_info("Creating UsdGeomMesh for label: %s", label)
             self._create_usd_polymesh(
                 transform_path, label, mesh_time_data, label_colors
             )
@@ -351,8 +351,10 @@ class ConvertVTK4DToUSDPolyMesh(ConvertVTK4DToUSDBase):
             global_vmin = float('inf')
             global_vmax = float('-inf')
 
+        num_times = len(self.times)
         for time_idx, time_code in enumerate(self.times):
-            print(f"Processing time sample: {time_code} for label: {label}")
+            if time_idx % 10 == 0 or time_idx == num_times - 1:
+                self.log_progress(time_idx + 1, num_times, prefix=f"Processing time samples for {label}")
             time_data = mesh_time_data[time_idx][label]
 
             # Compute per-vertex normals for this timestep (REQUIRED for IndeX renderer)
@@ -471,8 +473,10 @@ class ConvertVTK4DToUSDPolyMesh(ConvertVTK4DToUSDBase):
         UsdGeom.Xform.Define(self.stage, parent_path)
 
         # Create separate mesh for each time step
+        num_times = len(self.times)
         for time_idx, time_code in enumerate(self.times):
-            print(f"Creating UsdGeomMesh for label: {label} at time: {time_code}")
+            if time_idx % 10 == 0 or time_idx == num_times - 1:
+                self.log_progress(time_idx + 1, num_times, prefix=f"Creating meshes for {label}")
             # Skip if label doesn't exist at this timestep
             if label not in mesh_time_data[time_idx]:
                 continue

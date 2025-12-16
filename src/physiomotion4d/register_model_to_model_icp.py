@@ -35,15 +35,18 @@ Example:
     >>> phi_MF = result['phi_MF']  # Moving to fixed transform
 """
 
+import logging
+
 import itk
 import numpy as np
 import pyvista as pv
 import vtk
 
+from physiomotion4d.physiomotion4d_base import PhysioMotion4DBase
 from physiomotion4d.transform_tools import TransformTools
 
 
-class RegisterModelToModelICP:
+class RegisterModelToModelICP(PhysioMotion4DBase):
     """Register anatomical models using Iterative Closest Point (ICP) algorithm.
 
     This class provides ICP-based alignment of 3D surface meshes with support for
@@ -88,17 +91,21 @@ class RegisterModelToModelICP:
         self,
         moving_mesh: pv.PolyData,
         fixed_mesh: pv.PolyData,
+        log_level: int | str = logging.INFO,
     ):
         """Initialize ICP-based model registration.
 
         Args:
             moving_mesh: PyVista surface mesh to be aligned to fixed mesh
             fixed_mesh: PyVista target surface mesh
+            log_level: Logging level (default: logging.INFO)
 
         Note:
             The moving_mesh is typically extracted from a VTU model using
             mesh.extract_surface() before passing to this class.
         """
+        super().__init__(class_name=self.__class__.__name__, log_level=log_level)
+
         self.moving_mesh = moving_mesh
         self.fixed_mesh = fixed_mesh
 
@@ -147,19 +154,17 @@ class RegisterModelToModelICP:
         if mode not in ['rigid', 'affine']:
             raise ValueError(f"Invalid mode '{mode}'. Must be 'rigid' or 'affine'.")
 
-        print(
-            f"Performing {mode.upper()} ICP alignment of moving mesh to fixed mesh..."
-        )
+        self.log_section("%s ICP Alignment", mode.upper())
 
         # Step 1: Centroid alignment (common to both modes)
         self.registered_mesh = self.moving_mesh.copy(deep=True)
 
         moving_centroid = np.array(self.registered_mesh.center)
-        print(f"  Moving mesh centroid: {moving_centroid}")
+        self.log_debug("Moving mesh centroid: %s", moving_centroid)
         fixed_centroid = np.array(self.fixed_mesh.center)
-        print(f"  Fixed mesh centroid: {fixed_centroid}")
+        self.log_debug("Fixed mesh centroid: %s", fixed_centroid)
         translation = fixed_centroid - moving_centroid
-        print(f"  Step 1: Translating by {translation} to align centroids...")
+        self.log_info("Step 1: Translating by %s to align centroids...", translation)
 
         # Create ITK affine transform with translation
         phi_ICP = itk.AffineTransform[itk.D, 3].New()
@@ -173,10 +178,10 @@ class RegisterModelToModelICP:
             with_deformation_magnitude=False,
         )
 
-        print(f"  Center after Step 1: {self.registered_mesh.center}")
+        self.log_debug("Center after Step 1: %s", self.registered_mesh.center)
 
         # Step 2: Rigid ICP (common to both modes)
-        print(f"  Step 2: Performing rigid ICP (max iterations: {max_iterations})...")
+        self.log_info("Step 2: Performing rigid ICP (max iterations: %d)...", max_iterations)
         icp_rigid = vtk.vtkIterativeClosestPointTransform()
         icp_rigid.SetSource(self.registered_mesh)
         icp_rigid.SetTarget(self.fixed_mesh)
@@ -197,13 +202,11 @@ class RegisterModelToModelICP:
             with_deformation_magnitude=False,
         )
 
-        print(f"  Center after Step 2: {self.registered_mesh.center}")
+        self.log_debug("Center after Step 2: %s", self.registered_mesh.center)
 
         # Step 3: Affine ICP (only if affine mode)
         if mode == 'affine':
-            print(
-                f"  Step 3: Performing affine ICP (max iterations: {max_iterations})..."
-            )
+            self.log_info("Step 3: Performing affine ICP (max iterations: %d)...", max_iterations)
             icp_affine = vtk.vtkIterativeClosestPointTransform()
             icp_affine.SetSource(self.registered_mesh)
             icp_affine.SetTarget(self.fixed_mesh)
@@ -224,13 +227,13 @@ class RegisterModelToModelICP:
                 with_deformation_magnitude=False,
             )
 
-            print(f"  Center after Step 3: {self.registered_mesh.center}")
+            self.log_debug("Center after Step 3: %s", self.registered_mesh.center)
 
         # Compute inverse transform
         self.phi_MF = phi_ICP.GetInverseTransform()
         self.phi_FM = phi_ICP
 
-        print(f"  {mode.upper()} ICP registration complete!")
+        self.log_info("%s ICP registration complete!", mode.upper())
 
         # Return results as dictionary
         return {

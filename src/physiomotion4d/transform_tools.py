@@ -11,6 +11,8 @@ analysis, particularly in the context of 4D cardiac imaging where transforms
 are used to track anatomical motion over time.
 """
 
+import logging
+
 import itk
 import numpy as np
 import pyvista as pv
@@ -18,9 +20,10 @@ import SimpleITK as sitk
 from pxr import Gf, Usd, UsdGeom
 
 from .image_tools import ImageTools
+from .physiomotion4d_base import PhysioMotion4DBase
 
 
-class TransformTools:
+class TransformTools(PhysioMotion4DBase):
     """
     Utilities for transforming and manipulating ITK transforms.
 
@@ -53,13 +56,71 @@ class TransformTools:
         >>> field = transform_tools.generate_field(transform, reference_image)
     """
 
-    def __init__(self):
+    def __init__(self, log_level: int | str = logging.INFO):
         """Initialize the TransformTools class.
 
-        No parameters are required for initialization as all methods
-        operate on provided transforms and images.
+        Args:
+            log_level: Logging level (default: logging.INFO)
         """
-        pass
+        super().__init__(class_name=self.__class__.__name__, log_level=log_level)
+
+    def imreadVD3(self, filename: str) -> itk.Image:
+        """Read an ITK vector image with double precision vectors.
+
+        ITK's imread is not wrapped for itk.Image[itk.Vector[itk.D,3],3],
+        so this method reads as itk.Image[itk.Vector[itk.F,3],3] and converts
+        to double precision.
+
+        Args:
+            filename (str): Path to the image file to read
+
+        Returns:
+            itk.Image[itk.Vector[itk.D,3],3]: Vector image with double precision
+
+        Example:
+            >>> transform_tools = TransformTools()
+            >>> displacement_field = transform_tools.imreadVD3("deformation.mha")
+        """
+        # Read as float precision vector image
+        image_float = itk.imread(filename, itk.Image[itk.Vector[itk.F, 3], 3])
+
+        # Convert to double precision
+        caster = itk.CastImageFilter[
+            itk.Image[itk.Vector[itk.F, 3], 3],
+            itk.Image[itk.Vector[itk.D, 3], 3]
+        ].New()
+        caster.SetInput(image_float)
+        caster.Update()
+
+        return caster.GetOutput()
+
+    def imwriteVD3(self, image: itk.Image, filename: str, compression: bool = True):
+        """Write an ITK vector image with double precision vectors.
+
+        ITK's imwrite is not wrapped for itk.Image[itk.Vector[itk.D,3],3],
+        so this method converts to itk.Image[itk.Vector[itk.F,3],3] and writes.
+
+        Args:
+            image (itk.Image[itk.Vector[itk.D,3],3]): Vector image to write
+            filename (str): Path to the output file
+            compression (bool): Whether to use compression (default: True)
+
+        Example:
+            >>> transform_tools = TransformTools()
+            >>> transform_tools.imwriteVD3(displacement_field, "deformation.mha")
+        """
+        # Convert to float precision for writing
+        caster = itk.CastImageFilter[
+            itk.Image[itk.Vector[itk.D, 3], 3],
+            itk.Image[itk.Vector[itk.F, 3], 3]
+        ].New()
+        caster.SetInput(image)
+        caster.Update()
+
+        image_float = caster.GetOutput()
+
+        # Write the float image
+        itk.imwrite(image_float, filename, compression=compression)
 
     def combine_displacement_field_transforms(
         self,
@@ -865,10 +926,10 @@ class TransformTools:
 
         # Save the stage
         stage.Save()
-        print(f"Created USD visualization: {output_filename}")
-        print(f"  Type: {visualization_type}")
-        print(f"  Points: {np.prod(subsampled_size)}")
-        print(f"  Subsample factor: {subsample_factor}")
+        self.log_info("Created USD visualization: %s", output_filename)
+        self.log_info("  Type: %s", visualization_type)
+        self.log_info("  Points: %d", np.prod(subsampled_size))
+        self.log_info("  Subsample factor: %d", subsample_factor)
 
         return output_filename
 
@@ -921,7 +982,7 @@ class TransformTools:
                     )
                     arrow_count += 1
 
-        print(f"  Created {arrow_count} arrows")
+        self.log_info("  Created %d arrows", arrow_count)
 
     def _create_arrow_prim(
         self, stage, prim_path, position, displacement, magnitude, arrow_scale
@@ -1050,7 +1111,7 @@ class TransformTools:
                         self._create_curve_prim(stage, curve_path, streamline_points)
                         flowline_count += 1
 
-        print(f"  Created {flowline_count} flowlines")
+        self.log_info("  Created %d flowlines", flowline_count)
 
     def _trace_streamline(
         self,

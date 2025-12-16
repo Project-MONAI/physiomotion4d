@@ -5,12 +5,16 @@ This module provides utilities for converting between different medical image fo
 and performing image processing operations.
 """
 
+import logging
+
 import itk
 import numpy as np
 import SimpleITK as sitk
 
+from physiomotion4d.physiomotion4d_base import PhysioMotion4DBase
 
-class ImageTools:
+
+class ImageTools(PhysioMotion4DBase):
     """
     Utilities for medical image format conversions and processing.
 
@@ -26,9 +30,13 @@ class ImageTools:
         >>> itk_image_back = tools.convert_sitk_image_to_itk(sitk_image)
     """
 
-    def __init__(self):
-        """Initialize ImageTools."""
-        pass
+    def __init__(self, log_level: int | str = logging.INFO):
+        """Initialize ImageTools.
+
+        Args:
+            log_level: Logging level (default: logging.INFO)
+        """
+        super().__init__(class_name=self.__class__.__name__, log_level=log_level)
 
     def convert_itk_image_to_sitk(self, itk_image: itk.Image) -> sitk.Image:
         """
@@ -78,8 +86,8 @@ class ImageTools:
 
         # Set metadata
         # Convert origin and spacing to tuples (reverse order for SimpleITK: x, y, z)
-        sitk_image.SetOrigin(tuple(reversed(origin)))
-        sitk_image.SetSpacing(tuple(reversed(spacing)))
+        sitk_image.SetOrigin(tuple(origin))
+        sitk_image.SetSpacing(tuple(spacing))
 
         # Direction matrix needs to be flattened and reversed appropriately
         # ITK and SimpleITK use the same direction convention, but we need to handle

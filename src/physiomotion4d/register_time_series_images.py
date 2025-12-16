@@ -9,6 +9,8 @@ The class is particularly useful for 4D medical imaging applications such as car
 CT where sequential frames need to be registered to a common frame.
 """
 
+import logging
+
 import itk
 
 from physiomotion4d.register_images_ants import RegisterImagesANTs
@@ -64,22 +66,23 @@ class RegisterTimeSeriesImages(RegisterImagesBase):
         >>> losses = result["losses"]
     """
 
-    def __init__(self, registration_method='ants'):
+    def __init__(self, registration_method='ants', log_level: int | str = logging.INFO):
         """Initialize the time series image registration class.
 
         Args:
             registration_method (str): Registration method to use.
                 Options: 'ants' or 'icon'. Default: 'ants'
+            log_level: Logging level (default: logging.INFO)
 
         Raises:
             ValueError: If registration_method is not 'ants' or 'icon'
         """
-        super().__init__()
+        super().__init__(log_level=log_level)
 
         self.registration_method = registration_method.lower()
 
-        self.registrar_ants = RegisterImagesANTs()
-        self.registrar_icon = RegisterImagesICON()
+        self.registrar_ants = RegisterImagesANTs(log_level=log_level)
+        self.registrar_icon = RegisterImagesICON(log_level=log_level)
         if self.registration_method == 'ants':
             self.number_of_iterations = [40, 20, 10]
         elif self.registration_method == 'icon':

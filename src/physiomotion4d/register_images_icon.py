@@ -10,6 +10,7 @@ deformable registration with mass preservation constraints.
 """
 
 import argparse
+import logging
 
 import icon_registration as icon
 import icon_registration.itk_wrapper
@@ -57,14 +58,17 @@ class RegisterImagesICON(RegisterImagesBase):
         >>> phi_FM = result["phi_FM"]
     """
 
-    def __init__(self):
+    def __init__(self, log_level: int | str = logging.INFO):
         """Initialize the ICON image registration class.
 
         Calls the parent RegisterImagesBase constructor to set up common parameters.
         The ICON deep learning network is initialized lazily on first use to avoid
         unnecessary GPU memory allocation.
+
+        Args:
+            log_level: Logging level (default: logging.INFO)
         """
-        super().__init__()
+        super().__init__(log_level=log_level)
 
         self.net = None
         self.use_multi_modality = False

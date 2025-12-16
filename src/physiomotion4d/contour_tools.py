@@ -2,21 +2,29 @@
 Tools for creating and manipulating contours.
 """
 
+import logging
+
 import itk
 import numpy as np
 import pyvista as pv
 import trimesh
 
+from physiomotion4d.physiomotion4d_base import PhysioMotion4DBase
 from physiomotion4d.transform_tools import TransformTools
 
 
-class ContourTools:
+class ContourTools(PhysioMotion4DBase):
     """
     Tools for creating and manipulating contours.
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, log_level: int | str = logging.INFO):
+        """Initialize ContourTools.
+
+        Args:
+            log_level: Logging level (default: logging.INFO)
+        """
+        super().__init__(class_name=self.__class__.__name__, log_level=log_level)
 
     def extract_contours(
         self,
@@ -87,7 +95,7 @@ class ContourTools:
         pv.PolyData
             Merged mesh
         """
-        print("Merging meshes...")
+        self.log_info("Merging meshes...")
         if hasattr(meshes[0], 'n_faces_strict'):
             meshes = [
                 trimesh.Trimesh(
@@ -224,7 +232,7 @@ class ContourTools:
         edge_mask_image = edge_filter.GetOutput()
 
         # Compute signed distance map (positive inside, negative outside)
-        print("  Computing signed distance map...")
+        self.log_info("Computing signed distance map...")
         distance_filter = itk.SignedMaurerDistanceMapImageFilter.New(
             Input=edge_mask_image
         )

@@ -263,21 +263,17 @@ class TestRegisterImagesANTs:
         moving_image = test_images[1]
 
         # Create initial translation transform
-        initial_tfm_FM = itk.TranslationTransform[itk.D, 3].New()
-        initial_tfm_FM.SetOffset([5.0, 5.0, 5.0])
-
         initial_tfm_MF = itk.TranslationTransform[itk.D, 3].New()
         initial_tfm_MF.SetOffset([-5.0, -5.0, -5.0])
 
         print("\nRegistering with initial transform...")
-        print("  Initial offset: [5.0, 5.0, 5.0]")
+        print("  Initial offset: [-5.0, -5.0, -5.0]")
 
         registrar_ants.set_modality('ct')
         registrar_ants.set_fixed_image(fixed_image)
 
         result = registrar_ants.register(
             moving_image=moving_image,
-            initial_phi_FM=initial_tfm_FM,
             initial_phi_MF=initial_tfm_MF,
         )
 
@@ -519,27 +515,36 @@ class TestRegisterImagesANTs:
         print(f"  Original center: {[center[i] for i in range(3)]}")
         print(f"  Original translation: {[translation[i] for i in range(3)]}")
 
-        # Convert ITK -> ANTs
-        ants_tfm = registrar_ants.itk_transform_to_ants_transform(
-            affine_tfm, reference_image
-        )
-        assert ants_tfm is not None, "ANTs transform is None"
-        print(f"  ANTs transform type: {ants_tfm.transform_type}")
-
-        # Convert back ANTs -> ITK via displacement field
-        # (ANTs stores as displacement field, so we convert back through that)
-
+        # Convert ITK -> ANTs file
         with tempfile.TemporaryDirectory() as tmpdir:
-            # Save ANTs transform to file
             temp_tfm_file = os.path.join(tmpdir, "temp_transform.mat")
-            ants.write_transform(ants_tfm, temp_tfm_file)
-
-            # Read back as displacement field
-            recovered_tfm = (
-                registrar_ants._antsfile_to_itk_displacement_field_transform(
-                    temp_tfm_file, reference_image
-                )
+            transform_files = registrar_ants.itk_transform_to_antsfile(
+                affine_tfm, reference_image, temp_tfm_file
             )
+            assert len(transform_files) == 1, "Should return one transform file"
+            # Note: The returned filename may have extension added/modified
+            assert os.path.exists(
+                transform_files[0]
+            ), f"Transform file not found: {transform_files[0]}"
+            print(f"  ANTs transform written to: {transform_files[0]}")
+
+            # Read the transform to verify (use the actual written file)
+            ants_tfm = ants.read_transform(transform_files[0])
+            print(f"  ANTs transform type: {ants_tfm.transform_type}")
+
+            # Convert back ANTs -> ITK
+            # Affine transforms are stored as affine in ANTs, so read back as affine
+            if ants_tfm.transform_type == "AffineTransform":
+                recovered_tfm = registrar_ants._antsfile_to_itk_affine_transform(
+                    transform_files[0]
+                )
+            else:
+                # For displacement field transforms
+                recovered_tfm = (
+                    registrar_ants._antsfile_to_itk_displacement_field_transform(
+                        transform_files[0], reference_image
+                    )
+                )
 
         assert recovered_tfm is not None, "Recovered transform is None"
         print(f"  Recovered transform type: {type(recovered_tfm).__name__}")
@@ -587,18 +592,25 @@ class TestRegisterImagesANTs:
 
         print("\nTesting displacement field transform conversion cycle...")
 
-        # Create a simple displacement field
-        VectorImageType = itk.Image[itk.Vector[itk.F, 3], 3]
-        disp_field = VectorImageType.New()
-        disp_field.CopyInformation(reference_image)
-        disp_field.SetRegions(reference_image.GetLargestPossibleRegion())
-        disp_field.Allocate()
+        # Create a simple displacement field with double precision
+        # Use ImageTools to create the correct type
+        from physiomotion4d.image_tools import ImageTools
 
-        # Fill with a simple displacement pattern
-        disp_array = itk.array_from_image(disp_field)
-        # Create a smooth displacement field (small random displacements)
-        for i in range(3):
-            disp_array[..., i] = np.random.randn(*disp_array.shape[:-1]) * 0.5
+        image_tools = ImageTools()
+
+        # Create displacement array (small random displacements)
+        ref_size = itk.size(reference_image)
+        disp_array = (
+            np.random.randn(
+                int(ref_size[2]), int(ref_size[1]), int(ref_size[0]), 3
+            ).astype(np.float64)
+            * 0.5
+        )
+
+        # Convert to ITK image with correct vector type
+        disp_field = image_tools.convert_array_to_image_of_vectors(
+            disp_array, itk.D, reference_image
+        )
 
         # Create displacement field transform
         disp_tfm = itk.DisplacementFieldTransform[itk.D, 3].New()
@@ -609,22 +621,24 @@ class TestRegisterImagesANTs:
             f"  Max displacement magnitude: {np.max(np.linalg.norm(disp_array, axis=-1)):.3f}"
         )
 
-        # Convert ITK -> ANTs
-        ants_tfm = registrar_ants.itk_transform_to_ants_transform(
-            disp_tfm, reference_image
-        )
-        assert ants_tfm is not None, "ANTs transform is None"
-        print("  ANTs transform created successfully")
-
-        # Convert back ANTs -> ITK
-
+        # Convert ITK -> ANTs file
         with tempfile.TemporaryDirectory() as tmpdir:
             temp_tfm_file = os.path.join(tmpdir, "temp_disp_transform.mat")
-            ants.write_transform(ants_tfm, temp_tfm_file)
+            transform_files = registrar_ants.itk_transform_to_antsfile(
+                disp_tfm, reference_image, temp_tfm_file
+            )
+            assert len(transform_files) == 1, "Should return one transform file"
+            # Note: The returned filename may have extension added/modified
+            assert os.path.exists(
+                transform_files[0]
+            ), f"Transform file not found: {transform_files[0]}"
+            print(f"  ANTs transform written successfully to: {transform_files[0]}")
+
+            # Convert back ANTs -> ITK
 
             recovered_tfm = (
                 registrar_ants._antsfile_to_itk_displacement_field_transform(
-                    temp_tfm_file, reference_image
+                    transform_files[0], reference_image
                 )
             )
 
@@ -689,11 +703,18 @@ class TestRegisterImagesANTs:
             f"  Composite transform with {composite_tfm.GetNumberOfTransforms()} transforms"
         )
 
-        # Convert to ANTs
-        ants_tfm = registrar_ants.itk_transform_to_ants_transform(
-            composite_tfm, reference_image
-        )
-        assert ants_tfm is not None, "ANTs transform is None"
+        # Convert to ANTs file
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_tfm_file = os.path.join(tmpdir, "temp_composite_transform.mat")
+            transform_files = registrar_ants.itk_transform_to_antsfile(
+                composite_tfm, reference_image, temp_tfm_file
+            )
+            assert len(transform_files) == 1, "Should return one transform file"
+            # Note: The returned filename may have extension added/modified
+            assert os.path.exists(
+                transform_files[0]
+            ), f"Transform file not found: {transform_files[0]}"
+            print(f"  ANTs transform written to: {transform_files[0]}")
 
         # Test on sample points
         test_points = [
