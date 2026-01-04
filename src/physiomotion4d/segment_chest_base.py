@@ -147,7 +147,7 @@ class SegmentChestBase(PhysioMotion4DBase):
         # Check the input image
         assert len(input_image.GetSpacing()) == 3, "The input image must be 3D"
 
-        resale_image = False
+        rescale_image = False
         results_image = None
         if self.target_spacing > 0.0:
             if (
@@ -155,14 +155,14 @@ class SegmentChestBase(PhysioMotion4DBase):
                 or input_image.GetSpacing()[1] != self.target_spacing
                 or input_image.GetSpacing()[2] != self.target_spacing
             ):
-                resale_image = True
+                rescale_image = True
             else:
                 isotropy = (
                     (input_image.GetSpacing()[1] / input_image.GetSpacing()[0])
                     + (input_image.GetSpacing()[2] / input_image.GetSpacing()[0])
                 ) / 2
                 if isotropy < 0.9 or isotropy > 1.1:
-                    resale_image = True
+                    rescale_image = True
                     self.target_spacing = (
                         input_image.GetSpacing()[0]
                         + input_image.GetSpacing()[1]
@@ -171,7 +171,7 @@ class SegmentChestBase(PhysioMotion4DBase):
                     self.log_info(
                         "Resampling to %.3f isotropic spacing", self.target_spacing
                     )
-        if resale_image:
+        if rescale_image:
             self.log_warning("The input image should have isotropic spacing")
             self.log_info("Input image has spacing: %s", str(input_image.GetSpacing()))
             self.log_info("Resampling to isotropic: %.3f", self.target_spacing)

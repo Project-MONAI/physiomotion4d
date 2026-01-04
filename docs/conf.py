@@ -55,7 +55,7 @@ html_static_path = ['_static']
 
 html_theme_options = {
     'logo_only': False,
-    'display_version': True,
+    # 'display_version': True,  # Deprecated in sphinx_rtd_theme >= 1.0
     'prev_next_buttons_location': 'bottom',
     'style_external_links': False,
     'vcs_pageview_mode': '',

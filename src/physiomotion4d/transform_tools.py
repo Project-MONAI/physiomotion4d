@@ -64,64 +64,6 @@ class TransformTools(PhysioMotion4DBase):
         """
         super().__init__(class_name=self.__class__.__name__, log_level=log_level)
 
-    def imreadVD3(self, filename: str) -> itk.Image:
-        """Read an ITK vector image with double precision vectors.
-
-        ITK's imread is not wrapped for itk.Image[itk.Vector[itk.D,3],3],
-        so this method reads as itk.Image[itk.Vector[itk.F,3],3] and converts
-        to double precision.
-
-        Args:
-            filename (str): Path to the image file to read
-
-        Returns:
-            itk.Image[itk.Vector[itk.D,3],3]: Vector image with double precision
-
-        Example:
-            >>> transform_tools = TransformTools()
-            >>> displacement_field = transform_tools.imreadVD3("deformation.mha")
-        """
-        # Read as float precision vector image
-        image_float = itk.imread(filename, itk.Image[itk.Vector[itk.F, 3], 3])
-
-        # Convert to double precision
-        caster = itk.CastImageFilter[
-            itk.Image[itk.Vector[itk.F, 3], 3],
-            itk.Image[itk.Vector[itk.D, 3], 3]
-        ].New()
-        caster.SetInput(image_float)
-        caster.Update()
-
-        return caster.GetOutput()
-
-    def imwriteVD3(self, image: itk.Image, filename: str, compression: bool = True):
-        """Write an ITK vector image with double precision vectors.
-
-        ITK's imwrite is not wrapped for itk.Image[itk.Vector[itk.D,3],3],
-        so this method converts to itk.Image[itk.Vector[itk.F,3],3] and writes.
-
-        Args:
-            image (itk.Image[itk.Vector[itk.D,3],3]): Vector image to write
-            filename (str): Path to the output file
-            compression (bool): Whether to use compression (default: True)
-
-        Example:
-            >>> transform_tools = TransformTools()
-            >>> transform_tools.imwriteVD3(displacement_field, "deformation.mha")
-        """
-        # Convert to float precision for writing
-        caster = itk.CastImageFilter[
-            itk.Image[itk.Vector[itk.D, 3], 3],
-            itk.Image[itk.Vector[itk.F, 3], 3]
-        ].New()
-        caster.SetInput(image)
-        caster.Update()
-
-        image_float = caster.GetOutput()
-
-        # Write the float image
-        itk.imwrite(image_float, filename, compression=compression)
-
     def combine_displacement_field_transforms(
         self,
         tfm1: itk.Transform,
@@ -1198,5 +1140,4 @@ class TransformTools(PhysioMotion4DBase):
         # Set color (cyan for flowlines)
         curve.GetDisplayColorAttr().Set([Gf.Vec3f(0.0, 1.0, 1.0)])
 
-        return curve
         return curve

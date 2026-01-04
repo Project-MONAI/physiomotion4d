@@ -35,7 +35,7 @@ class TestRegisterImagesICON:
         assert hasattr(registrar_icon, 'net'), "Missing net attribute (ICON network)"
 
         print("\nICON registrar initialized successfully")
-        print(f"  Default iterations: {registrar_icon.num_iterations}")
+        print(f"  Default iterations: {registrar_icon.number_of_iterations}")
 
     def test_set_modality(self, registrar_icon):
         """Test setting imaging modality."""
@@ -117,26 +117,30 @@ class TestRegisterImagesICON:
 
         # Verify result is a dictionary
         assert isinstance(result, dict), "Result should be a dictionary"
-        assert "phi_FM" in result, "Missing phi_FM in result"
-        assert "phi_MF" in result, "Missing phi_MF in result"
+        assert "inverse_transform" in result, "Missing inverse_transform in result"
+        assert "forward_transform" in result, "Missing forward_transform in result"
 
-        phi_FM = result["phi_FM"]
-        phi_MF = result["phi_MF"]
+        inverse_transform = result["inverse_transform"]
+        forward_transform = result["forward_transform"]
 
         # Verify transforms are valid
-        assert phi_FM is not None, "phi_FM is None"
-        assert phi_MF is not None, "phi_MF is None"
+        assert inverse_transform is not None, "inverse_transform is None"
+        assert forward_transform is not None, "forward_transform is None"
 
         print(f"ICON registration complete without mask")
-        print(f"  phi_FM type: {type(phi_FM).__name__}")
-        print(f"  phi_MF type: {type(phi_MF).__name__}")
+        print(f"  inverse_transform type: {type(inverse_transform).__name__}")
+        print(f"  forward_transform type: {type(forward_transform).__name__}")
 
         # Save transforms
         itk.transformwrite(
-            [phi_FM], str(reg_output_dir / "icon_phi_FM_no_mask.hdf"), compression=True
+            [inverse_transform],
+            str(reg_output_dir / "icon_inverse_transform_no_mask.hdf"),
+            compression=True,
         )
         itk.transformwrite(
-            [phi_MF], str(reg_output_dir / "icon_phi_MF_no_mask.hdf"), compression=True
+            [forward_transform],
+            str(reg_output_dir / "icon_forward_transform_no_mask.hdf"),
+            compression=True,
         )
         print(f"  Saved transforms to: {reg_output_dir}")
 
@@ -201,31 +205,31 @@ class TestRegisterImagesICON:
 
         # Register
         result = registrar_icon.register(
-            moving_image=moving_image, moving_image_mask=moving_mask
+            moving_image=moving_image, moving_mask=moving_mask
         )
 
         # Verify result
         assert isinstance(result, dict), "Result should be a dictionary"
-        assert "phi_FM" in result, "Missing phi_FM in result"
-        assert "phi_MF" in result, "Missing phi_MF in result"
+        assert "inverse_transform" in result, "Missing inverse_transform in result"
+        assert "forward_transform" in result, "Missing forward_transform in result"
 
-        phi_FM = result["phi_FM"]
-        phi_MF = result["phi_MF"]
+        inverse_transform = result["inverse_transform"]
+        forward_transform = result["forward_transform"]
 
-        assert phi_FM is not None, "phi_FM is None"
-        assert phi_MF is not None, "phi_MF is None"
+        assert inverse_transform is not None, "inverse_transform is None"
+        assert forward_transform is not None, "forward_transform is None"
 
         print(f"ICON registration complete with masks")
 
         # Save transforms
         itk.transformwrite(
-            [phi_FM],
-            str(reg_output_dir / "icon_phi_FM_with_mask.hdf"),
+            [inverse_transform],
+            str(reg_output_dir / "icon_inverse_transform_with_mask.hdf"),
             compression=True,
         )
         itk.transformwrite(
-            [phi_MF],
-            str(reg_output_dir / "icon_phi_MF_with_mask.hdf"),
+            [forward_transform],
+            str(reg_output_dir / "icon_forward_transform_with_mask.hdf"),
             compression=True,
         )
 
@@ -244,14 +248,14 @@ class TestRegisterImagesICON:
         registrar_icon.set_number_of_iterations(2)
         result = registrar_icon.register(moving_image=moving_image)
 
-        phi_MF = result["phi_MF"]
+        forward_transform = result["forward_transform"]
 
         print("\nApplying ICON transform to moving image...")
 
         # Apply transform
         transform_tools = TransformTools()
         registered_image = transform_tools.transform_image(
-            moving_image, phi_MF, fixed_image, interpolation_method="linear"
+            moving_image, forward_transform, fixed_image, interpolation_method="linear"
         )
 
         # Verify registered image
@@ -290,8 +294,8 @@ class TestRegisterImagesICON:
         registrar_icon.set_number_of_iterations(2)
         result = registrar_icon.register(moving_image=moving_image)
 
-        phi_FM = result["phi_FM"]
-        phi_MF = result["phi_MF"]
+        inverse_transform = result["inverse_transform"]
+        forward_transform = result["forward_transform"]
 
         # Test point transformation
         test_point = itk.Point[itk.D, 3]()
@@ -300,8 +304,8 @@ class TestRegisterImagesICON:
         test_point[2] = float(itk.size(fixed_image)[2] / 2)
 
         # Forward then backward
-        transformed_point = phi_MF.TransformPoint(test_point)
-        back_transformed_point = phi_FM.TransformPoint(transformed_point)
+        transformed_point = forward_transform.TransformPoint(test_point)
+        back_transformed_point = inverse_transform.TransformPoint(transformed_point)
 
         # Calculate error
         error = np.sqrt(
@@ -350,11 +354,11 @@ class TestRegisterImagesICON:
         moving_image = test_images[1]
 
         # Create initial translation transform
-        initial_tfm_FM = itk.TranslationTransform[itk.D, 3].New()
-        initial_tfm_FM.SetOffset([5.0, 5.0, 5.0])
+        initial_tfm_inverse = itk.TranslationTransform[itk.D, 3].New()
+        initial_tfm_inverse.SetOffset([5.0, 5.0, 5.0])
 
-        initial_tfm_MF = itk.TranslationTransform[itk.D, 3].New()
-        initial_tfm_MF.SetOffset([-5.0, -5.0, -5.0])
+        initial_tfm_forward = itk.TranslationTransform[itk.D, 3].New()
+        initial_tfm_forward.SetOffset([-5.0, -5.0, -5.0])
 
         print("\nRegistering with initial transform...")
         print(f"  Initial offset: [5.0, 5.0, 5.0]")
@@ -365,12 +369,12 @@ class TestRegisterImagesICON:
 
         result = registrar_icon.register(
             moving_image=moving_image,
-            initial_phi_MF=initial_tfm_MF,
+            initial_forward_transform=initial_tfm_forward,
         )
 
         assert isinstance(result, dict), "Result should be a dictionary"
-        assert result["phi_FM"] is not None, "phi_FM is None"
-        assert result["phi_MF"] is not None, "phi_MF is None"
+        assert result["inverse_transform"] is not None, "inverse_transform is None"
+        assert result["forward_transform"] is not None, "forward_transform is None"
 
         print(f"Registration with initial transform complete")
 
@@ -384,34 +388,34 @@ class TestRegisterImagesICON:
         registrar_icon.set_number_of_iterations(2)
         result = registrar_icon.register(moving_image=moving_image)
 
-        phi_FM = result["phi_FM"]
-        phi_MF = result["phi_MF"]
+        inverse_transform = result["inverse_transform"]
+        forward_transform = result["forward_transform"]
 
         print("\nVerifying ICON transform types...")
 
         # ICON returns transforms (either DisplacementFieldTransform or CompositeTransform wrapping it)
         # The important thing is that they are valid ITK transforms
-        assert phi_FM is not None, "phi_FM is None"
-        assert phi_MF is not None, "phi_MF is None"
+        assert inverse_transform is not None, "inverse_transform is None"
+        assert forward_transform is not None, "forward_transform is None"
 
         # Check if it's either a DisplacementFieldTransform or CompositeTransform
-        valid_fm = isinstance(
-            phi_FM, (itk.DisplacementFieldTransform, itk.CompositeTransform)
+        valid_inverse = isinstance(
+            inverse_transform, (itk.DisplacementFieldTransform, itk.CompositeTransform)
         )
-        valid_mf = isinstance(
-            phi_MF, (itk.DisplacementFieldTransform, itk.CompositeTransform)
+        valid_forward = isinstance(
+            forward_transform, (itk.DisplacementFieldTransform, itk.CompositeTransform)
         )
 
         assert (
-            valid_fm
-        ), f"phi_FM should be DisplacementFieldTransform or CompositeTransform, got {type(phi_FM)}"
+            valid_inverse
+        ), f"inverse_transform should be DisplacementFieldTransform or CompositeTransform, got {type(inverse_transform)}"
         assert (
-            valid_mf
-        ), f"phi_MF should be DisplacementFieldTransform or CompositeTransform, got {type(phi_MF)}"
+            valid_forward
+        ), f"forward_transform should be DisplacementFieldTransform or CompositeTransform, got {type(forward_transform)}"
 
         print(f"Transform types verified")
-        print(f"  phi_FM: {type(phi_FM).__name__}")
-        print(f"  phi_MF: {type(phi_MF).__name__}")
+        print(f"  inverse_transform: {type(inverse_transform).__name__}")
+        print(f"  forward_transform: {type(forward_transform).__name__}")
 
     def test_different_iteration_counts(self, registrar_icon, test_images):
         """Test ICON with different iteration counts."""
@@ -433,8 +437,8 @@ class TestRegisterImagesICON:
             results.append(result)
 
             assert isinstance(result, dict), "Result should be a dictionary"
-            assert "phi_FM" in result, "Missing phi_FM"
-            assert "phi_MF" in result, "Missing phi_MF"
+            assert "inverse_transform" in result, "Missing inverse_transform"
+            assert "forward_transform" in result, "Missing forward_transform"
 
         print(f"Tested {len(iteration_counts)} different iteration counts")
 

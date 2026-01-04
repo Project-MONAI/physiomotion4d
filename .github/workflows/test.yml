@@ -42,11 +42,11 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y \
-          libgl1-mesa-glx \
-          libxrender1 \
-          libgomp1 \
+          libgl1 \
           libglib2.0-0 \
+          libgomp1 \
           libsm6 \
+          libxrender1 \
           libxext6 \
           libxrandr2 \
           libxi6
@@ -209,11 +209,11 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y \
-          libgl1-mesa-glx \
-          libxrender1 \
-          libgomp1 \
+          libgl1 \
           libglib2.0-0 \
+          libgomp1 \
           libsm6 \
+          libxrender1 \
           libxext6 \
           libxrandr2 \
           libxi6

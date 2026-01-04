@@ -75,26 +75,30 @@ class TestRegisterImagesANTs:
 
         # Verify result is a dictionary
         assert isinstance(result, dict), "Result should be a dictionary"
-        assert "phi_FM" in result, "Missing phi_FM in result"
-        assert "phi_MF" in result, "Missing phi_MF in result"
+        assert "inverse_transform" in result, "Missing inverse_transform in result"
+        assert "forward_transform" in result, "Missing forward_transform in result"
 
-        phi_FM = result["phi_FM"]
-        phi_MF = result["phi_MF"]
+        inverse_transform = result["inverse_transform"]
+        forward_transform = result["forward_transform"]
 
         # Verify transforms are valid
-        assert phi_FM is not None, "phi_FM is None"
-        assert phi_MF is not None, "phi_MF is None"
+        assert inverse_transform is not None, "inverse_transform is None"
+        assert forward_transform is not None, "forward_transform is None"
 
         print("✓ Registration complete without mask")
-        print(f"  phi_FM type: {type(phi_FM).__name__}")
-        print(f"  phi_MF type: {type(phi_MF).__name__}")
+        print(f"  inverse_transform type: {type(inverse_transform).__name__}")
+        print(f"  forward_transform type: {type(forward_transform).__name__}")
 
         # Save transforms
         itk.transformwrite(
-            [phi_FM], str(reg_output_dir / "ants_phi_FM_no_mask.hdf"), compression=True
+            [inverse_transform],
+            str(reg_output_dir / "ants_inverse_transform_no_mask.hdf"),
+            compression=True,
         )
         itk.transformwrite(
-            [phi_MF], str(reg_output_dir / "ants_phi_MF_no_mask.hdf"), compression=True
+            [forward_transform],
+            str(reg_output_dir / "ants_forward_transform_no_mask.hdf"),
+            compression=True,
         )
         print(f"  Saved transforms to: {reg_output_dir}")
 
@@ -158,31 +162,31 @@ class TestRegisterImagesANTs:
 
         # Register
         result = registrar_ants.register(
-            moving_image=moving_image, moving_image_mask=moving_mask
+            moving_image=moving_image, moving_mask=moving_mask
         )
 
         # Verify result
         assert isinstance(result, dict), "Result should be a dictionary"
-        assert "phi_FM" in result, "Missing phi_FM in result"
-        assert "phi_MF" in result, "Missing phi_MF in result"
+        assert "inverse_transform" in result, "Missing inverse_transform in result"
+        assert "forward_transform" in result, "Missing forward_transform in result"
 
-        phi_FM = result["phi_FM"]
-        phi_MF = result["phi_MF"]
+        inverse_transform = result["inverse_transform"]
+        forward_transform = result["forward_transform"]
 
-        assert phi_FM is not None, "phi_FM is None"
-        assert phi_MF is not None, "phi_MF is None"
+        assert inverse_transform is not None, "inverse_transform is None"
+        assert forward_transform is not None, "forward_transform is None"
 
         print("✓ Registration complete with masks")
 
         # Save transforms
         itk.transformwrite(
-            [phi_FM],
-            str(reg_output_dir / "ants_phi_FM_with_mask.hdf"),
+            [inverse_transform],
+            str(reg_output_dir / "ants_inverse_transform_with_mask.hdf"),
             compression=True,
         )
         itk.transformwrite(
-            [phi_MF],
-            str(reg_output_dir / "ants_phi_MF_with_mask.hdf"),
+            [forward_transform],
+            str(reg_output_dir / "ants_forward_transform_with_mask.hdf"),
             compression=True,
         )
 
@@ -200,14 +204,14 @@ class TestRegisterImagesANTs:
         registrar_ants.set_fixed_image(fixed_image)
         result = registrar_ants.register(moving_image=moving_image)
 
-        phi_MF = result["phi_MF"]
+        forward_transform = result["forward_transform"]
 
         print("\nApplying transform to moving image...")
 
         # Apply transform
         transform_tools = TransformTools()
         registered_image = transform_tools.transform_image(
-            moving_image, phi_MF, fixed_image, interpolation_method="linear"
+            moving_image, forward_transform, fixed_image, interpolation_method="linear"
         )
 
         # Verify registered image
@@ -263,8 +267,8 @@ class TestRegisterImagesANTs:
         moving_image = test_images[1]
 
         # Create initial translation transform
-        initial_tfm_MF = itk.TranslationTransform[itk.D, 3].New()
-        initial_tfm_MF.SetOffset([-5.0, -5.0, -5.0])
+        initial_tfm_forward = itk.TranslationTransform[itk.D, 3].New()
+        initial_tfm_forward.SetOffset([-5.0, -5.0, -5.0])
 
         print("\nRegistering with initial transform...")
         print("  Initial offset: [-5.0, -5.0, -5.0]")
@@ -274,12 +278,12 @@ class TestRegisterImagesANTs:
 
         result = registrar_ants.register(
             moving_image=moving_image,
-            initial_phi_MF=initial_tfm_MF,
+            initial_forward_transform=initial_tfm_forward,
         )
 
         assert isinstance(result, dict), "Result should be a dictionary"
-        assert result["phi_FM"] is not None, "phi_FM is None"
-        assert result["phi_MF"] is not None, "phi_MF is None"
+        assert result["inverse_transform"] is not None, "inverse_transform is None"
+        assert result["forward_transform"] is not None, "forward_transform is None"
 
         print("✓ Registration with initial transform complete")
 
@@ -300,8 +304,12 @@ class TestRegisterImagesANTs:
             results.append(result)
 
             assert isinstance(result, dict), f"Result {i+1} should be a dictionary"
-            assert "phi_FM" in result, f"Missing phi_FM in result {i+1}"
-            assert "phi_MF" in result, f"Missing phi_MF in result {i+1}"
+            assert (
+                "inverse_transform" in result
+            ), f"Missing inverse_transform in result {i+1}"
+            assert (
+                "forward_transform" in result
+            ), f"Missing forward_transform in result {i+1}"
 
         print(f"✓ Multiple registrations complete: {len(results)} runs")
 
@@ -314,22 +322,22 @@ class TestRegisterImagesANTs:
         registrar_ants.set_fixed_image(fixed_image)
         result = registrar_ants.register(moving_image=moving_image)
 
-        phi_FM = result["phi_FM"]
-        phi_MF = result["phi_MF"]
+        inverse_transform = result["inverse_transform"]
+        forward_transform = result["forward_transform"]
 
         print("\nVerifying transform types...")
 
         # Check that transforms are CompositeTransform (ANTs returns composite)
         assert isinstance(
-            phi_FM, itk.CompositeTransform
-        ), f"phi_FM should be CompositeTransform, got {type(phi_FM)}"
+            inverse_transform, itk.CompositeTransform
+        ), f"inverse_transform should be CompositeTransform, got {type(inverse_transform)}"
         assert isinstance(
-            phi_MF, itk.CompositeTransform
-        ), f"phi_MF should be CompositeTransform, got {type(phi_MF)}"
+            forward_transform, itk.CompositeTransform
+        ), f"forward_transform should be CompositeTransform, got {type(forward_transform)}"
 
         print("✓ Transform types verified")
-        print(f"  phi_FM: {type(phi_FM).__name__}")
-        print(f"  phi_MF: {type(phi_MF).__name__}")
+        print(f"  inverse_transform: {type(inverse_transform).__name__}")
+        print(f"  forward_transform: {type(forward_transform).__name__}")
 
     def test_image_conversion_cycle_scalar(self, registrar_ants, test_images):
         """Test round-trip conversion: ITK image -> ANTs -> ITK for scalar images."""

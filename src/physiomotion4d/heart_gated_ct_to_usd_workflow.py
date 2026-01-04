@@ -244,22 +244,22 @@ class HeartGatedCTToUSDWorkflow(PhysioMotion4DBase):
             # Register without mask first
             self.registrar.set_fixed_image_mask(None)
             result_all = self.registrar.register(moving_image)
-            phi_FM_all = result_all["phi_FM"]
-            phi_MF_all = result_all["phi_MF"]
+            inverse_transform_all = result_all["inverse_transform"]
+            forward_transform_all = result_all["forward_transform"]
             itk.transformwrite(
-                phi_FM_all,
+                inverse_transform_all,
                 os.path.join(self.output_directory, f"slice_{i:03d}_all_AB.hdf"),
                 compression=True,
             )
             itk.transformwrite(
-                phi_MF_all,
+                forward_transform_all,
                 os.path.join(self.output_directory, f"slice_{i:03d}_all_BA.hdf"),
                 compression=True,
             )
 
             # Estimate the moving dynamic mask by the inverse transform of the fixed dynamic mask
             moving_dynamic_mask = TransformTools().transform_image(
-                fixed_dynamic_mask, phi_FM_all, moving_image, "nearest"
+                fixed_dynamic_mask, inverse_transform_all, moving_image, "nearest"
             )
             itk.imwrite(
                 moving_dynamic_mask,
@@ -268,12 +268,12 @@ class HeartGatedCTToUSDWorkflow(PhysioMotion4DBase):
             )
             self.registrar.set_fixed_image_mask(fixed_dynamic_mask)
             result_dynamic = self.registrar.register(moving_image, moving_dynamic_mask)
-            phi_FM_dynamic = result_dynamic["phi_FM"]
-            phi_MF_dynamic = result_dynamic["phi_MF"]
+            inverse_transform_dynamic = result_dynamic["inverse_transform"]
+            forward_transform_dynamic = result_dynamic["forward_transform"]
 
             # Estimate the moving static mask by the inverse transform of the fixed static mask
             moving_static_mask = TransformTools().transform_image(
-                fixed_static_mask, phi_FM_all, moving_image, "nearest"
+                fixed_static_mask, inverse_transform_all, moving_image, "nearest"
             )
             itk.imwrite(
                 moving_static_mask,
@@ -282,32 +282,32 @@ class HeartGatedCTToUSDWorkflow(PhysioMotion4DBase):
             )
             self.registrar.set_fixed_image_mask(fixed_static_mask)
             result_static = self.registrar.register(moving_image, moving_static_mask)
-            phi_FM_static = result_static["phi_FM"]
-            phi_MF_static = result_static["phi_MF"]
+            inverse_transform_static = result_static["inverse_transform"]
+            forward_transform_static = result_static["forward_transform"]
 
             # Store transforms
             transforms = {
-                'dynamic': {'phi_FM': phi_FM_dynamic, 'phi_MF': phi_MF_dynamic},
-                'static': {'phi_FM': phi_FM_static, 'phi_MF': phi_MF_static},
-                'all': {'phi_FM': phi_FM_all, 'phi_MF': phi_MF_all},
+                'dynamic': {'inverse_transform': inverse_transform_dynamic, 'forward_transform': forward_transform_dynamic},
+                'static': {'inverse_transform': inverse_transform_static, 'forward_transform': forward_transform_static},
+                'all': {'inverse_transform': inverse_transform_all, 'forward_transform': forward_transform_all},
             }
             itk.transformwrite(
-                phi_FM_dynamic,
+                inverse_transform_dynamic,
                 os.path.join(self.output_directory, f"slice_{i:03d}_dynamic_AB.hdf"),
                 compression=True,
             )
             itk.transformwrite(
-                phi_MF_dynamic,
+                forward_transform_dynamic,
                 os.path.join(self.output_directory, f"slice_{i:03d}_dynamic_BA.hdf"),
                 compression=True,
             )
             itk.transformwrite(
-                phi_FM_static,
+                inverse_transform_static,
                 os.path.join(self.output_directory, f"slice_{i:03d}_static_AB.hdf"),
                 compression=True,
             )
             itk.transformwrite(
-                phi_MF_static,
+                forward_transform_static,
                 os.path.join(self.output_directory, f"slice_{i:03d}_static_BA.hdf"),
                 compression=True,
             )
@@ -378,13 +378,13 @@ class HeartGatedCTToUSDWorkflow(PhysioMotion4DBase):
 
             frame_contours = {}
             for anatomy_type in ['all', 'dynamic', 'static']:
-                # Get the inverse transform for this anatomy type and frame
-                phi_MF = self._time_series_transforms[i][anatomy_type]['phi_MF']
+                # Get the forward transform for this anatomy type and frame
+                forward_transform = self._time_series_transforms[i][anatomy_type]['forward_transform']
 
                 # Transform the reference contours
                 transformed_contours = self.contour_tools.transform_contours(
                     self._reference_contours[anatomy_type],
-                    phi_MF,
+                    forward_transform,
                     with_deformation_magnitude=False,
                 )
 

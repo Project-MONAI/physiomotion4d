@@ -38,6 +38,60 @@ class ImageTools(PhysioMotion4DBase):
         """
         super().__init__(class_name=self.__class__.__name__, log_level=log_level)
 
+    def imreadVD3(self, filename: str) -> itk.Image:
+        """Read an ITK vector image with double precision vectors.
+
+        ITK's imread is not wrapped for itk.Image[itk.Vector[itk.D,3],3],
+        so this method reads as itk.Image[itk.Vector[itk.F,3],3] and converts
+        to double precision.
+
+        Args:
+            filename (str): Path to the image file to read
+
+        Returns:
+            itk.Image[itk.Vector[itk.D,3],3]: Vector image with double precision
+
+        Example:
+            >>> displacement_field = ImageTools().imreadVD3("deformation.mha")
+        """
+        # Read as float precision vector image
+        image_float = itk.imread(filename, itk.Image[itk.Vector[itk.F, 3], 3])
+
+        # Convert to double precision
+        caster = itk.CastImageFilter[
+            itk.Image[itk.Vector[itk.F, 3], 3], itk.Image[itk.Vector[itk.D, 3], 3]
+        ].New()
+        caster.SetInput(image_float)
+        caster.Update()
+
+        return caster.GetOutput()
+
+    def imwriteVD3(self, image: itk.Image, filename: str, compression: bool = True):
+        """Write an ITK vector image with double precision vectors.
+
+        ITK's imwrite is not wrapped for itk.Image[itk.Vector[itk.D,3],3],
+        so this method converts to itk.Image[itk.Vector[itk.F,3],3] and writes.
+
+        Args:
+            image (itk.Image[itk.Vector[itk.D,3],3]): Vector image to write
+            filename (str): Path to the output file
+            compression (bool): Whether to use compression (default: True)
+
+        Example:
+            >>> ImageTools().imwriteVD3(displacement_field, "deformation.mha")
+        """
+        # Convert to float precision for writing
+        caster = itk.CastImageFilter[
+            itk.Image[itk.Vector[itk.D, 3], 3], itk.Image[itk.Vector[itk.F, 3], 3]
+        ].New()
+        caster.SetInput(image)
+        caster.Update()
+
+        image_float = caster.GetOutput()
+
+        # Write the float image
+        itk.imwrite(image_float, filename, compression=compression)
+
     def convert_itk_image_to_sitk(self, itk_image: itk.Image) -> sitk.Image:
         """
         Convert an ITK image to a SimpleITK image.
@@ -169,7 +223,10 @@ class ImageTools(PhysioMotion4DBase):
         return itk_image
 
     def convert_array_to_image_of_vectors(
-        self, arr_data: np.array, ptype: itk.D, reference_image: itk.Image
+        self,
+        arr_data: np.array,
+        reference_image: itk.Image,
+        ptype=itk.D,
     ) -> itk.Image:
         """
         Convert a numpy array to an ITK image of vector type.

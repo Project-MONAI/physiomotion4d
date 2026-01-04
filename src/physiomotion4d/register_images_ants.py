@@ -61,7 +61,7 @@ class RegisterImagesANTs(RegisterImagesBase):
         >>> registrar.set_modality('ct')
         >>> registrar.set_fixed_image(reference_image)
         >>> result = registrar.register(moving_image)
-        >>> phi_FM = result["phi_FM"]
+        >>> inverse_transform = result["inverse_transform"]
     """
 
     def __init__(self, log_level: int | str = logging.INFO):
@@ -76,6 +76,19 @@ class RegisterImagesANTs(RegisterImagesBase):
         super().__init__(log_level=log_level)
 
         self.number_of_iterations = [40, 20, 10]
+        self.transform_type = "Deformable"
+
+    def set_transform_type(self, transform_type):
+        """Set the type of transform to use for registration.
+
+        Args:
+            transform_type (str): Type of transform to use for registration.
+                Options: 'Deformable', 'Affine', 'Rigid'
+        """
+        self.transform_type = transform_type
+        if transform_type not in ['Deformable', 'Affine', 'Rigid']:
+            self.log_error("Invalid transform type: %s", transform_type)
+            raise ValueError(f"Invalid transform type: {transform_type}")
 
     def _ants_to_itk_image(self, ants_image):
         """Convert ANTs image back to ITK format.
@@ -261,7 +274,7 @@ class RegisterImagesANTs(RegisterImagesBase):
 
         disp_array = itk.array_from_image(disp_field_itk_raw)
         disp_field_itk = image_tools.convert_array_to_image_of_vectors(
-            disp_array, itk.D, ref_image
+            disp_array, ref_image, itk.D
         )
 
         # Create displacement field transform
@@ -464,10 +477,9 @@ class RegisterImagesANTs(RegisterImagesBase):
     def registration_method(
         self,
         moving_image,
-        moving_image_mask=None,
+        moving_mask=None,
         moving_image_pre=None,
-        images_are_labelmaps=False,
-        initial_phi_MF=None,
+        initial_forward_transform=None,
     ):
         """Register moving image to fixed image using ANTs registration algorithm.
 
@@ -476,17 +488,12 @@ class RegisterImagesANTs(RegisterImagesBase):
         fixed image using ANTs SyN or other specified algorithms.
 
         Args:
-            moving_image (itk.image): The 3D image to be registered/aligned. When
-                images_are_labelmaps=True, this should be a label image for label-based
-                registration
-            moving_image_mask (itk.image, optional): Binary mask defining the
+            moving_image (itk.image): The 3D image to be registered/aligned.
+            moving_mask (itk.image, optional): Binary mask defining the
                 region of interest in the moving image
             moving_image_pre (ants.core.ANTsImage, optional): Pre-processed moving image
                 in ANTs format. If None, preprocessing is performed automatically
-            images_are_labelmaps (bool, optional): If True, use label-based registration
-                instead of intensity-based registration. In this mode, fixed_image and
-                moving_image are treated as label images
-            initial_phi_MF (itk.Transform, optional): Initial transform from moving
+            initial_forward_transform (itk.Transform, optional): Initial transform from moving
                 to fixed space. Can be any ITK transform type (Affine, Rigid,
                 DisplacementField, Composite, etc.). Will be converted to ANTs
                 format automatically. The returned transforms will include this
@@ -494,8 +501,8 @@ class RegisterImagesANTs(RegisterImagesBase):
 
         Returns:
             dict: Dictionary containing:
-                - "phi_FM": Forward transformation (fixed to moving)
-                - "phi_MF": Backward transformation (moving to fixed)
+                - "forward_transform": Transformation from moving to fixed
+                - "inverse_transform": Transformation from fixed to moving
                 - "loss": Loss value from the registration
 
         Note:
@@ -506,7 +513,7 @@ class RegisterImagesANTs(RegisterImagesBase):
             IMPORTANT: ANTs registration does NOT include the initial_transform
             in its output fwdtransforms/invtransforms. This method automatically
             composes the initial transform with the registration result, so the
-            returned phi_MF and phi_FM include both the initial alignment and
+            returned transforms include both the initial alignment and
             the registration refinement.
 
         Implementation details:
@@ -519,19 +526,19 @@ class RegisterImagesANTs(RegisterImagesBase):
         Example:
             >>> # Basic registration
             >>> result = registrar.register(moving_image)
-            >>> phi_FM = result["phi_FM"]
-            >>> phi_MF = result["phi_MF"]
+            >>> inverse_transform = result["inverse_transform"]
+            >>> forward_transform = result["forward_transform"]
             >>>
             >>> # Masked registration for cardiac structures
-            >>> registrar.set_fixed_image_mask(heart_mask_fixed)
+            >>> registrar.set_fixed_mask(heart_mask_fixed)
             >>> result = registrar.register(
-            ...     moving_image, moving_image_mask=heart_mask_moving
+            ...     moving_image, moving_mask=heart_mask_moving
             ... )
             >>>
             >>> # Registration with initial transform
             >>> initial_tfm = itk.AffineTransform[itk.D, 3].New()
             >>> result = registrar.register(
-            ...     moving_image, initial_phi_MF=initial_tfm
+            ...     moving_image, initial_forward_transform=initial_tfm
             ... )
         """
         if moving_image is not None:
@@ -545,62 +552,65 @@ class RegisterImagesANTs(RegisterImagesBase):
                     self.moving_image, self.modality
                 )
 
-        if moving_image_mask is not None:
-            self.moving_image_mask = moving_image_mask
+        if moving_mask is not None:
+            self.moving_mask = moving_mask
 
         if self.fixed_image_pre is None:
             self.fixed_image_pre = self.preprocess(self.fixed_image, self.modality)
 
         # Convert initial ITK transform to ANTs format if provided
         initial_transform = "identity"
-        if initial_phi_MF is not None:
+        if initial_forward_transform is not None:
             self.log_info("Converting initial ITK transform to ANTs format...")
             initial_transform = self.itk_transform_to_antsfile(
-                itk_tfm=initial_phi_MF,
+                itk_tfm=initial_forward_transform,
                 reference_image=self.fixed_image,
                 output_filename="initial_transform_temp.mat",
             )
             self.log_info("Initial transform converted successfully")
 
-        if images_are_labelmaps:
-            registration_result = ants.label_image_registration(
-                fixed_label_images=self._itk_to_ants_image(self.fixed_image),
-                moving_label_images=self._itk_to_ants_image(self.moving_image),
+        transform_type = None
+        if self.transform_type == "Deformable":
+            transform_type = "antsRegistrationSyNQuick[so]"
+        elif self.transform_type == "Affine":
+            transform_type = "antsRegistrationAffineQuick[so]"
+        elif self.transform_type == "Rigid":
+            transform_type = "antsRegistrationRigidQuick[so]"
+        else:
+            self.log_error("Invalid transform type: %s", self.transform_type)
+            raise ValueError(f"Invalid transform type: {self.transform_type}")
+
+        if self.fixed_mask is not None and self.moving_mask is not None:
+            registration_result = ants.registration(
+                fixed=self._itk_to_ants_image(self.fixed_image_pre),
+                mask=self._itk_to_ants_image(self.fixed_mask),
+                moving=self._itk_to_ants_image(self.moving_image_pre),
+                moving_mask=self._itk_to_ants_image(self.moving_mask),
                 initial_transform=[initial_transform],
+                type_of_transform=transform_type,
+                use_histogram_matching=False,
+                mask_all_stages=True,
                 verbose=True,
+                reg_iterations=self.number_of_iterations,
             )
         else:
-            if self.fixed_image_mask is not None and self.moving_image_mask is not None:
-                registration_result = ants.registration(
-                    fixed=self._itk_to_ants_image(self.fixed_image_pre),
-                    mask=self._itk_to_ants_image(self.fixed_image_mask),
-                    moving=self._itk_to_ants_image(self.moving_image_pre),
-                    moving_mask=self._itk_to_ants_image(self.moving_image_mask),
-                    initial_transform=[initial_transform],
-                    type_of_transform="antsRegistrationSyNQuick[so]",
-                    use_histogram_matching=False,
-                    mask_all_stages=True,
-                    verbose=True,
-                    reg_iterations=self.number_of_iterations,
-                )
-            else:
-                registration_result = ants.registration(
-                    fixed=self._itk_to_ants_image(self.fixed_image_pre),
-                    moving=self._itk_to_ants_image(self.moving_image_pre),
-                    initial_transform=[initial_transform],
-                    type_of_transform="antsRegistrationSyNQuick[so]",
-                    use_histogram_matching=False,
-                    verbose=True,
-                    reg_iterations=self.number_of_iterations,
-                )
+            registration_result = ants.registration(
+                fixed=self._itk_to_ants_image(self.fixed_image_pre),
+                moving=self._itk_to_ants_image(self.moving_image_pre),
+                initial_transform=[initial_transform],
+                type_of_transform=transform_type,
+                use_histogram_matching=False,
+                verbose=True,
+                reg_iterations=self.number_of_iterations,
+            )
 
         # Convert ANTs transforms to ITK
-        phi_MF_reg = self._antsfiles_to_itk_transforms(
+        forward_reg = self._antsfiles_to_itk_transforms(
             registration_result['fwdtransforms'],
             inverse=False,
             reference_image=self.fixed_image,
         )
-        phi_FM_reg = self._antsfiles_to_itk_transforms(
+        inverse_reg = self._antsfiles_to_itk_transforms(
             registration_result['invtransforms'],
             inverse=True,
             reference_image=self.moving_image,
@@ -608,51 +618,55 @@ class RegisterImagesANTs(RegisterImagesBase):
 
         # Important: ANTs does NOT include the initial_transform in the output transforms
         # We need to manually compose them
-        if initial_phi_MF is not None:
+        if initial_forward_transform is not None:
             self.log_info("Composing initial transform with registration result...")
 
-            # For phi_MF (Moving -> Fixed): Apply initial_phi_MF first, then registration
-            # Transform order: point -> initial_phi_MF -> phi_MF_reg
-            phi_MF = itk.CompositeTransform[itk.D, 3].New()
-            phi_MF.AddTransform(initial_phi_MF)
+            # For forward_transform (Moving -> Fixed): Apply initial_forward_transform first, then registration
+            # Transform order: point -> initial_forward_transform -> forward_reg
+            forward_transform = itk.CompositeTransform[itk.D, 3].New()
+            forward_transform.AddTransform(initial_forward_transform)
             # Add transforms from registration result (may be composite)
-            if isinstance(phi_MF_reg, itk.CompositeTransform[itk.D, 3]):
-                for i in range(phi_MF_reg.GetNumberOfTransforms()):
-                    phi_MF.AddTransform(phi_MF_reg.GetNthTransform(i))
+            if isinstance(forward_reg, itk.CompositeTransform[itk.D, 3]):
+                for i in range(forward_reg.GetNumberOfTransforms()):
+                    forward_transform.AddTransform(forward_reg.GetNthTransform(i))
             else:
-                phi_MF.AddTransform(phi_MF_reg)
+                forward_transform.AddTransform(forward_reg)
 
-            # For phi_FM (Fixed -> Moving): Apply registration inverse first, then initial inverse
-            # Transform order: point -> phi_FM_reg -> initial_phi_MF^(-1)
-            phi_FM = itk.CompositeTransform[itk.D, 3].New()
+            # For inverse_transform (Fixed -> Moving): Apply registration inverse first, then initial inverse
+            # Transform order: point -> inverse_reg -> initial_forward_transform^(-1)
+            inverse_transform = itk.CompositeTransform[itk.D, 3].New()
             # Add registration inverse transforms
-            if isinstance(phi_FM_reg, itk.CompositeTransform[itk.D, 3]):
-                for i in range(phi_FM_reg.GetNumberOfTransforms()):
-                    phi_FM.AddTransform(phi_FM_reg.GetNthTransform(i))
+            if isinstance(inverse_reg, itk.CompositeTransform[itk.D, 3]):
+                for i in range(inverse_reg.GetNumberOfTransforms()):
+                    inverse_transform.AddTransform(inverse_reg.GetNthTransform(i))
             else:
-                phi_FM.AddTransform(phi_FM_reg)
+                inverse_transform.AddTransform(inverse_reg)
             # Invert and add initial transform
             # For displacement field transforms, we need to invert properly
             transform_tools = TransformTools()
-            initial_phi_FM = transform_tools.invert_displacement_field_transform(
+            initial_inverse = transform_tools.invert_displacement_field_transform(
                 transform_tools.convert_transform_to_displacement_field_transform(
-                    initial_phi_MF, self.moving_image
+                    initial_forward_transform, self.moving_image
                 )
             )
-            phi_FM.AddTransform(initial_phi_FM)
+            inverse_transform.AddTransform(initial_inverse)
 
             self.log_info("Transforms composed successfully")
         else:
             # No initial transform, use registration results directly
-            phi_MF = phi_MF_reg
-            phi_FM = phi_FM_reg
+            forward_transform = forward_reg
+            inverse_transform = inverse_reg
         moving_image_reg = registration_result['warpedmovout']
         loss = ants.image_similarity(
             self._itk_to_ants_image(self.fixed_image),
             moving_image_reg,
         )
 
-        return {"phi_FM": phi_FM, "phi_MF": phi_MF, "loss": loss}
+        return {
+            "forward_transform": forward_transform,
+            "inverse_transform": inverse_transform,
+            "loss": loss,
+        }
 
 
 def parse_args():
@@ -693,16 +707,16 @@ if __name__ == "__main__":
     registrar.set_fixed_image(itk.imread(args.fixed_image))
     moving_image = itk.imread(args.moving_image)
     result = registrar.register(moving_image=moving_image)
-    res_phi_FM = result["phi_FM"]
-    res_phi_MF = result["phi_MF"]
+    inverse_transform = result["inverse_transform"]
+    forward_transform = result["forward_transform"]
 
     # Apply transform using ANTs
     moving_image_ants = registrar.preprocess(moving_image, args.modality)
-    # res_phi_MF contains the forward transform files (moving to fixed)
+    # forward_transform contains the forward transform (moving to fixed)
     moving_image_reg_ants = ants.apply_transforms(
         fixed=registrar.fixed_image_pre,
         moving=moving_image_ants,
-        transformlist=res_phi_MF,
+        transformlist=forward_transform,
     )
 
     # Convert back to ITK and save

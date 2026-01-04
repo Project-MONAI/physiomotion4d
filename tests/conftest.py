@@ -247,21 +247,24 @@ def ants_registration_results(registrar_ants, test_images, test_directories):
     reg_output_dir = output_dir / "registration_ants"
     reg_output_dir.mkdir(exist_ok=True)
 
-    phi_FM_path = reg_output_dir / "ants_phi_FM_no_mask.hdf"
-    phi_MF_path = reg_output_dir / "ants_phi_MF_no_mask.hdf"
+    inverse_transform_path = reg_output_dir / "ants_inverse_transform_no_mask.hdf"
+    forward_transform_path = reg_output_dir / "ants_forward_transform_no_mask.hdf"
 
-    if phi_FM_path.exists() and phi_MF_path.exists():
+    if inverse_transform_path.exists() and forward_transform_path.exists():
         print("\nLoading existing ANTs registration results...")
         try:
-            phi_FM = itk.transformread(str(phi_FM_path))
-            phi_MF = itk.transformread(str(phi_MF_path))
-            return {"phi_FM": phi_FM, "phi_MF": phi_MF}
+            inverse_transform = itk.transformread(str(inverse_transform_path))
+            forward_transform = itk.transformread(str(forward_transform_path))
+            return {
+                "inverse_transform": inverse_transform,
+                "forward_transform": forward_transform,
+            }
         except (RuntimeError, Exception) as e:
             print(f"Error loading transforms: {e}")
             print("Regenerating registration results...")
             # Delete corrupt files
-            phi_FM_path.unlink(missing_ok=True)
-            phi_MF_path.unlink(missing_ok=True)
+            inverse_transform_path.unlink(missing_ok=True)
+            forward_transform_path.unlink(missing_ok=True)
 
     # Perform registration if files don't exist or loading failed
     print("\nPerforming ANTs registration...")
@@ -271,12 +274,15 @@ def ants_registration_results(registrar_ants, test_images, test_directories):
     registrar_ants.set_fixed_image(fixed_image)
     result = registrar_ants.register(moving_image=moving_image)
 
-    phi_FM = result["phi_FM"]
-    phi_MF = result["phi_MF"]
+    inverse_transform = result["inverse_transform"]
+    forward_transform = result["forward_transform"]
 
-    itk.transformwrite(phi_FM, str(phi_FM_path), compression=True)
-    itk.transformwrite(phi_MF, str(phi_MF_path), compression=True)
-    return {"phi_FM": phi_FM, "phi_MF": phi_MF}
+    itk.transformwrite(inverse_transform, str(inverse_transform_path), compression=True)
+    itk.transformwrite(forward_transform, str(forward_transform_path), compression=True)
+    return {
+        "inverse_transform": inverse_transform,
+        "forward_transform": forward_transform,
+    }
 
 
 # ============================================================================
