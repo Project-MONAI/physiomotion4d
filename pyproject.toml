@@ -286,8 +286,7 @@ addopts = [
     "--cov=physiomotion4d",
     "--cov-report=term-missing",
     "--cov-report=html",
-    "--cov-report=xml",
-    "--timeout=900"
+    "--cov-report=xml"
 ]
 testpaths = ["tests"]
 markers = [

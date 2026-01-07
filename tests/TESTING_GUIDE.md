@@ -176,7 +176,7 @@ tests/
 **Solutions**:
 - Ensure GPU is available (much faster than CPU)
 - Run slow tests individually: `pytest tests/test_register_images_ants.py -v`
-- Override timeout: `pytest tests/test_name.py --timeout=1800`
+- Override timeout: Use `@pytest.mark.timeout(1800)` decorator in test or `-o timeout=1800` on command line
 
 ### ITK Size Indexing Errors
 

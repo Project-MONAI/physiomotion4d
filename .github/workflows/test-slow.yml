@@ -54,8 +54,7 @@ jobs:
           -m "slow" \
           --cov=physiomotion4d \
           --cov-report=xml \
-          --cov-report=term \
-          --timeout=3600
+          --cov-report=term
       env:
         CUDA_VISIBLE_DEVICES: 0
 

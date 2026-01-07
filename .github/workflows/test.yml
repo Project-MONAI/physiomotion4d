@@ -92,8 +92,7 @@ jobs:
           --cov=physiomotion4d \
           --cov-report=xml \
           --cov-report=term \
-          --cov-report=html \
-          --timeout=900
+          --cov-report=html
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
@@ -176,8 +175,7 @@ jobs:
           --cov=physiomotion4d \
           --cov-report=xml \
           --cov-report=term \
-          --cov-report=html \
-          --timeout=900
+          --cov-report=html
       env:
         CUDA_VISIBLE_DEVICES: 0
 
@@ -269,8 +267,7 @@ jobs:
     - name: Run integration tests
       run: |
         pytest tests/ -v \
-          -m "integration and not requires_gpu" \
-          --timeout=1800
+          -m "integration and not requires_gpu"
       continue-on-error: true
 
   code-quality:
