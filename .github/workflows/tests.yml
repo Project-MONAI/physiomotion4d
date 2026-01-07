@@ -27,6 +27,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Free up disk space on Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        echo "Disk space before cleanup:"
+        df -h
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /usr/local/lib/android
+        sudo rm -rf /opt/ghc
+        sudo rm -rf /opt/hostedtoolcache/CodeQL
+        sudo docker image prune --all --force
+        echo "Disk space after cleanup:"
+        df -h
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
@@ -37,6 +50,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e .
         pip install pytest pytest-cov
+
+    - name: Clear pip cache
+      run: |
+        pip cache purge || true
 
     - name: Run unit tests (no data required)
       run: |
@@ -58,6 +75,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Free up disk space
+      run: |
+        echo "Disk space before cleanup:"
+        df -h
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /usr/local/lib/android
+        sudo rm -rf /opt/ghc
+        sudo rm -rf /opt/hostedtoolcache/CodeQL
+        sudo docker image prune --all --force
+        echo "Disk space after cleanup:"
+        df -h
+
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
@@ -68,6 +97,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e .
         pip install pytest pytest-cov
+
+    - name: Clear pip cache
+      run: |
+        pip cache purge || true
 
     - name: Cache test data
       uses: actions/cache@v4
