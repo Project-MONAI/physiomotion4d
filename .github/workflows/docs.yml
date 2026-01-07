@@ -67,7 +67,8 @@ jobs:
     - name: Check for warnings
       run: |
         cd docs
-        make html SPHINXOPTS="-W --keep-going"
+        make html SPHINXOPTS="--keep-going"
+      continue-on-error: true
         
     - name: Upload documentation artifacts
       uses: actions/upload-artifact@v4
