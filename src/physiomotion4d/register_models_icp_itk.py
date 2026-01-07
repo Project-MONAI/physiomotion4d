@@ -161,7 +161,6 @@ class RegisterModelsICPITK(PhysioMotion4DBase):
 
         # Update working transform if parameters provided
         if self.transform_type == "Rigid":
-            # To-DO: Pre-allocate this param
             itk_params = itk.OptimizerParameters[itk.D](12)
             for i in range(6):
                 itk_params[i] = transform_params[i]

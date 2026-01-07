@@ -615,7 +615,7 @@ class TestRegisterImagesANTs:
 
         # Convert to ITK image with correct vector type
         disp_field = image_tools.convert_array_to_image_of_vectors(
-            disp_array, itk.D, reference_image
+            disp_array, reference_image, itk.D
         )
 
         # Create displacement field transform

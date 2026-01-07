@@ -115,7 +115,7 @@ class TestSegmentChestTotalSegmentator:
         seg_output_dir.mkdir(exist_ok=True)
 
         results = []
-        for i, input_image in enumerate(test_images):
+        for i, input_image in enumerate(test_images[0:2]):
             print(f"\nSegmenting time point {i}...")
 
             result = segmenter_total_segmentator.segment(

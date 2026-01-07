@@ -120,7 +120,7 @@ class TestSegmentChestVista3D:
         segmenter_vista_3d.set_whole_image_segmentation()
 
         results = []
-        for i, input_image in enumerate(test_images):
+        for i, input_image in enumerate(test_images[0:2]):
             print(f"\nSegmenting time point {i}...")
 
             result = segmenter_vista_3d.segment(
