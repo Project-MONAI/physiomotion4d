@@ -428,9 +428,6 @@ class RegisterModelsPCA(PhysioMotion4DBase):
                 point = self.post_pca_transform.TransformPoint(point)
 
             # Check if point is inside image bounds
-            center[0] += point[0]
-            center[1] += point[1]
-            center[2] += point[2]
 
             coord_index = (
                 self.fixed_distance_map.TransformPhysicalPointToContinuousIndex(point)
@@ -440,6 +437,9 @@ class RegisterModelsPCA(PhysioMotion4DBase):
                 and 0 <= coord_index[1] < image_size[1]
                 and 0 <= coord_index[2] < image_size[2]
             ):
+                center[0] += point[0]
+                center[1] += point[1]
+                center[2] += point[2]
                 distance = self._interpolator.EvaluateAtContinuousIndex(coord_index)
                 total_distance += distance
                 n_valid_points += 1
