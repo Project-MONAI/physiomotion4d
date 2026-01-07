@@ -13,14 +13,15 @@ are used to track anatomical motion over time.
 
 import logging
 
+import cupy as cp
 import itk
 import numpy as np
 import pyvista as pv
 import SimpleITK as sitk
 from pxr import Gf, Usd, UsdGeom
 
-from .image_tools import ImageTools
-from .physiomotion4d_base import PhysioMotion4DBase
+from physiomotion4d.image_tools import ImageTools
+from physiomotion4d.physiomotion4d_base import PhysioMotion4DBase
 
 
 class TransformTools(PhysioMotion4DBase):
@@ -312,13 +313,18 @@ class TransformTools(PhysioMotion4DBase):
                     f"Expected single transform or list with one transform, got list with {len(tfm)} transforms"
                 )
 
-        new_pnts = [tfm.TransformPoint(p) for p in pnts]
+        pnts = np.array(pnts)
+        new_pnts = [
+            tfm.TransformPoint((float(p[0]), float(p[1]), float(p[2]))) for p in pnts
+        ]
         new_contour.points = new_pnts
 
+        new_pnts = cp.array(new_pnts)
+        pnts = cp.array(pnts)
         if with_deformation_magnitude:
-            new_contour.point_data["DeformationMagnitude"] = np.linalg.norm(
+            new_contour.point_data["DeformationMagnitude"] = cp.linalg.norm(
                 new_pnts - pnts, axis=1
-            )
+            ).get()
 
         return new_contour
 
@@ -560,15 +566,10 @@ class TransformTools(PhysioMotion4DBase):
 
         combined_field_arr = sum_fields_arr / denom
 
-        # Create displacement field by duplicating and updating
-        # This preserves the exact image type
-        duplicator = itk.ImageDuplicator.New(field1)
-        duplicator.Update()
-        combined_field = duplicator.GetOutput()
-
         # Copy array data to ITK image
-        combined_field_view = itk.array_view_from_image(combined_field)
-        combined_field_view[:] = combined_field_arr
+        combined_field = ImageTools().convert_array_to_image_of_vectors(
+            combined_field_arr, field1, itk.F
+        )
 
         # Correct spatial folding iteratively
         for _ in range(max_iter):
@@ -605,6 +606,11 @@ class TransformTools(PhysioMotion4DBase):
             ...     deformation_field
             ... )
         """
+        if "VF" not in str(type(field)):
+            field_arr = itk.array_from_image(field)
+            field = ImageTools().convert_array_to_image_of_vectors(
+                field_arr, field, itk.F
+            )
         jac_filter = itk.DisplacementFieldJacobianDeterminantFilter.New(field)
         jac_filter.SetUseImageSpacing(True)
         jac_filter.Update()

@@ -112,18 +112,29 @@ def converted_3d_images(download_truncal_valve_data, test_directories):
 
 @pytest.fixture(scope="session")
 def test_images(converted_3d_images):
-    """Load two time points from the converted 3D data for testing."""
+    """Load time points from the converted 3D data for testing."""
     data_dir = converted_3d_images
 
-    # Load two time points (slice_000 and slice_001)
+    # Load time points
     slice_000 = data_dir / "slice_000.mha"
     slice_001 = data_dir / "slice_001.mha"
+    slice_002 = data_dir / "slice_002.mha"
+    slice_003 = data_dir / "slice_003.mha"
+    slice_004 = data_dir / "slice_004.mha"
+    slice_005 = data_dir / "slice_005.mha"
 
     # Ensure the files exist
-    if not slice_000.exists() or not slice_001.exists():
+    if not slice_000.exists() or not slice_001.exists() or not slice_002.exists():
         pytest.skip("Converted 3D slice files not found. Run conversion test first.")
 
-    images = [itk.imread(str(slice_000)), itk.imread(str(slice_001))]
+    images = [
+        itk.imread(str(slice_000)),
+        itk.imread(str(slice_001)),
+        itk.imread(str(slice_002)),
+        itk.imread(str(slice_003)),
+        itk.imread(str(slice_004)),
+        itk.imread(str(slice_005)),
+    ]
 
     for i, img in enumerate(images):
         resampler = ttk.ResampleImage.New(Input=img)
@@ -131,7 +142,7 @@ def test_images(converted_3d_images):
         resampler.Update()
         images[i] = resampler.GetOutput()
 
-    print(f"\nLoaded 2 time points for testing")
+    print(f"\nLoaded {len(images)} time points for testing")
     return images
 
 

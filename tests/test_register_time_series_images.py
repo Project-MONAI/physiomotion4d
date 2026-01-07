@@ -257,13 +257,13 @@ class TestRegisterTimeSeriesImages:
         moving_images = test_images[1:4]
 
         # Test negative index
-        with pytest.raises(ValueError, match="starting_index.*out of range"):
+        with pytest.raises(ValueError, match="reference_frame.*out of range"):
             registrar.register_time_series(
                 moving_images=moving_images, reference_frame=-1
             )
 
         # Test index too large
-        with pytest.raises(ValueError, match="starting_index.*out of range"):
+        with pytest.raises(ValueError, match="reference_frame.*out of range"):
             registrar.register_time_series(
                 moving_images=moving_images, reference_frame=10
             )
@@ -394,7 +394,7 @@ class TestRegisterTimeSeriesImages:
         registrar = RegisterTimeSeriesImages(registration_method='ants')
         registrar.set_modality('ct')
         registrar.set_fixed_image(fixed_image)
-        registrar.set_fixed_image_mask(fixed_mask)
+        registrar.set_fixed_mask(fixed_mask)
         registrar.set_number_of_iterations([20, 10, 2])
 
         result = registrar.register_time_series(

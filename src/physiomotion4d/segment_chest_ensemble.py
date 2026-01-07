@@ -343,7 +343,9 @@ class SegmentChestEnsemble(SegmentChestBase):
         for idx in np.ndindex(labelmap_vista_arr.shape):
             if idx[0] != lastidx0:
                 if idx[0] % 10 == 0 or idx[0] == total_slices - 1:
-                    self.log_progress(idx[0] + 1, total_slices, prefix="Processing slices")
+                    self.log_progress(
+                        idx[0] + 1, total_slices, prefix="Processing slices"
+                    )
                 lastidx0 = idx[0]
             # Skip if both are zero
             vista_label = labelmap_vista_arr[idx]

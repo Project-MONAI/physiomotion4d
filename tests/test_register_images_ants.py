@@ -26,9 +26,7 @@ class TestRegisterImagesANTs:
         """Test that RegisterImagesANTs initializes correctly."""
         assert registrar_ants is not None, "Registrar not initialized"
         assert hasattr(registrar_ants, 'fixed_image'), "Missing fixed_image attribute"
-        assert hasattr(
-            registrar_ants, 'fixed_image_mask'
-        ), "Missing fixed_image_mask attribute"
+        assert hasattr(registrar_ants, 'fixed_mask'), "Missing fixed_mask attribute"
 
         print("\n✓ ANTs registrar initialized successfully")
 
@@ -158,7 +156,7 @@ class TestRegisterImagesANTs:
         # Set up registration with masks
         registrar_ants.set_modality('ct')
         registrar_ants.set_fixed_image(fixed_image)
-        registrar_ants.set_fixed_image_mask(fixed_mask)
+        registrar_ants.set_fixed_mask(fixed_mask)
 
         # Register
         result = registrar_ants.register(

@@ -15,7 +15,6 @@ import tempfile
 import zipfile
 
 import itk
-import numpy as np
 import requests
 
 from physiomotion4d.segment_chest_vista_3d import SegmentChestVista3D

@@ -55,16 +55,14 @@ class ImageTools(PhysioMotion4DBase):
             >>> displacement_field = ImageTools().imreadVD3("deformation.mha")
         """
         # Read as float precision vector image
-        image_float = itk.imread(filename, itk.Image[itk.Vector[itk.F, 3], 3])
+        image = itk.imread(filename)
+        if "VD" in str(type(image)):
+            return image
 
-        # Convert to double precision
-        caster = itk.CastImageFilter[
-            itk.Image[itk.Vector[itk.F, 3], 3], itk.Image[itk.Vector[itk.D, 3], 3]
-        ].New()
-        caster.SetInput(image_float)
-        caster.Update()
+        image_arr = itk.array_from_image(image)
+        image_double = self.convert_array_to_image_of_vectors(image_arr, image, itk.D)
 
-        return caster.GetOutput()
+        return image_double
 
     def imwriteVD3(self, image: itk.Image, filename: str, compression: bool = True):
         """Write an ITK vector image with double precision vectors.
@@ -81,13 +79,11 @@ class ImageTools(PhysioMotion4DBase):
             >>> ImageTools().imwriteVD3(displacement_field, "deformation.mha")
         """
         # Convert to float precision for writing
-        caster = itk.CastImageFilter[
-            itk.Image[itk.Vector[itk.D, 3], 3], itk.Image[itk.Vector[itk.F, 3], 3]
-        ].New()
-        caster.SetInput(image)
-        caster.Update()
+        if "VD" not in str(type(image)):
+            raise ValueError("Image must be a vector image with double precision")
 
-        image_float = caster.GetOutput()
+        image_arr = itk.array_from_image(image)
+        image_float = self.convert_array_to_image_of_vectors(image_arr, image, itk.F)
 
         # Write the float image
         itk.imwrite(image_float, filename, compression=compression)

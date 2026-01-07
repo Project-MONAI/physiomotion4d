@@ -23,7 +23,6 @@ import shutil
 import tempfile
 
 import itk
-import numpy as np
 import torch
 from huggingface_hub import snapshot_download
 

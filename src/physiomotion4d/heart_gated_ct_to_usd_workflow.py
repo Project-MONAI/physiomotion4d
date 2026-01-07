@@ -7,7 +7,7 @@ as demonstrated in the Heart-GatedCT experiment notebooks.
 
 import logging
 import os
-from typing import List, Optional
+from typing import Optional
 
 import itk
 import numpy as np
@@ -35,7 +35,7 @@ class HeartGatedCTToUSDWorkflow(PhysioMotion4DBase):
 
     def __init__(
         self,
-        input_filenames: List[str],
+        input_filenames: list,
         contrast_enhanced: bool,
         output_directory: str,
         project_name: str,
@@ -48,7 +48,7 @@ class HeartGatedCTToUSDWorkflow(PhysioMotion4DBase):
         Initialize the Heart-gated CT to USD workflow.
 
         Args:
-            input_filenames (List[str]): List of paths to the 3D NRRD files containing cardiac CT data.
+            input_filenames (List): List of paths to the 3D NRRD files containing cardiac CT data.
                 If there is only one file, it will be used as the 4D NRRD file.
             contrast_enhanced (bool): Whether the study uses contrast enhancement
             output_directory (str): Directory path where output files will be stored
@@ -287,9 +287,18 @@ class HeartGatedCTToUSDWorkflow(PhysioMotion4DBase):
 
             # Store transforms
             transforms = {
-                'dynamic': {'inverse_transform': inverse_transform_dynamic, 'forward_transform': forward_transform_dynamic},
-                'static': {'inverse_transform': inverse_transform_static, 'forward_transform': forward_transform_static},
-                'all': {'inverse_transform': inverse_transform_all, 'forward_transform': forward_transform_all},
+                'dynamic': {
+                    'inverse_transform': inverse_transform_dynamic,
+                    'forward_transform': forward_transform_dynamic,
+                },
+                'static': {
+                    'inverse_transform': inverse_transform_static,
+                    'forward_transform': forward_transform_static,
+                },
+                'all': {
+                    'inverse_transform': inverse_transform_all,
+                    'forward_transform': forward_transform_all,
+                },
             }
             itk.transformwrite(
                 inverse_transform_dynamic,
@@ -374,12 +383,16 @@ class HeartGatedCTToUSDWorkflow(PhysioMotion4DBase):
         self._transformed_contours = {'all': [], 'dynamic': [], 'static': []}
 
         for i in range(self._num_time_points):
-            self.log_progress(i + 1, self._num_time_points, prefix="Transforming contours")
+            self.log_progress(
+                i + 1, self._num_time_points, prefix="Transforming contours"
+            )
 
             frame_contours = {}
             for anatomy_type in ['all', 'dynamic', 'static']:
                 # Get the forward transform for this anatomy type and frame
-                forward_transform = self._time_series_transforms[i][anatomy_type]['forward_transform']
+                forward_transform = self._time_series_transforms[i][anatomy_type][
+                    'forward_transform'
+                ]
 
                 # Transform the reference contours
                 transformed_contours = self.contour_tools.transform_contours(
@@ -404,7 +417,7 @@ class HeartGatedCTToUSDWorkflow(PhysioMotion4DBase):
                 self.project_name,
                 self._transformed_contours[anatomy_type],
                 self.segmenter.all_mask_ids,
-                log_level=self.log_level
+                log_level=self.log_level,
             )
             usd_file = os.path.join(
                 self.output_directory, f"{self.project_name}.{anatomy_type}.usd"

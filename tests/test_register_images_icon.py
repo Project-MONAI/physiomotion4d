@@ -26,9 +26,7 @@ class TestRegisterImagesICON:
         """Test that RegisterImagesICON initializes correctly."""
         assert registrar_icon is not None, "Registrar not initialized"
         assert hasattr(registrar_icon, 'fixed_image'), "Missing fixed_image attribute"
-        assert hasattr(
-            registrar_icon, 'fixed_image_mask'
-        ), "Missing fixed_image_mask attribute"
+        assert hasattr(registrar_icon, 'fixed_mask'), "Missing fixed_mask attribute"
         assert hasattr(
             registrar_icon, 'number_of_iterations'
         ), "Missing number_of_iterations attribute"
@@ -200,7 +198,7 @@ class TestRegisterImagesICON:
         # Set up registration with masks
         registrar_icon.set_modality('ct')
         registrar_icon.set_fixed_image(fixed_image)
-        registrar_icon.set_fixed_image_mask(fixed_mask)
+        registrar_icon.set_fixed_mask(fixed_mask)
         registrar_icon.set_number_of_iterations(2)
 
         # Register

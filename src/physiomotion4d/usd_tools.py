@@ -11,10 +11,9 @@ anatomical structures need to be organized and visualized together.
 """
 
 import logging
-import os
 
 import numpy as np
-from pxr import Gf, Sdf, Usd, UsdGeom, UsdShade, UsdUtils
+from pxr import Gf, Usd, UsdGeom, UsdShade
 
 from physiomotion4d.physiomotion4d_base import PhysioMotion4DBase
 
@@ -195,7 +194,9 @@ class USDTools(PhysioMotion4DBase):
                         grid_y - bbox_center[1],
                         -bbox_center[2],
                     )
-                    self.log_debug("   Translating %s to %s", grandchild.GetPrimPath(), translate)
+                    self.log_debug(
+                        "   Translating %s to %s", grandchild.GetPrimPath(), translate
+                    )
                     xform_op.Set(translate, Usd.TimeCode.Default())
 
             for prim in source_stage.Traverse():
@@ -210,7 +211,9 @@ class USDTools(PhysioMotion4DBase):
                             else str(mesh_material.GetPath())
                         )
                         self.log_debug(
-                            "   Mesh %s has material %s", prim.GetPrimPath(), material_path
+                            "   Mesh %s has material %s",
+                            prim.GetPrimPath(),
+                            material_path,
                         )
                         new_prim = new_stage.GetPrimAtPath(prim.GetPrimPath())
                         material = UsdShade.Material.Get(new_stage, material_path)
@@ -219,7 +222,8 @@ class USDTools(PhysioMotion4DBase):
                             binding_api.Bind(material)
                         else:
                             self.log_warning(
-                                "      Cannot bind. No new prim found for %s", prim.GetPrimPath()
+                                "      Cannot bind. No new prim found for %s",
+                                prim.GetPrimPath(),
                             )
 
         self.log_info("Exporting stage...")
@@ -360,22 +364,28 @@ class USDTools(PhysioMotion4DBase):
                             else str(mesh_material.GetPath())
                         )
                         self.log_debug(
-                            "   Binding material %s to %s", material_path, prim.GetPrimPath()
+                            "   Binding material %s to %s",
+                            material_path,
+                            prim.GetPrimPath(),
                         )
                         # Get corresponding mesh prim and material in target stage
                         new_prim = stage.GetPrimAtPath(prim.GetPrimPath())
                         material = UsdShade.Material.Get(stage, material_path)
                         if new_prim is not None and new_prim.IsValid():
                             if material and material.GetPrim().IsValid():
-                                binding_api = UsdShade.MaterialBindingAPI.Apply(new_prim)
+                                binding_api = UsdShade.MaterialBindingAPI.Apply(
+                                    new_prim
+                                )
                                 binding_api.Bind(material)
                             else:
                                 self.log_warning(
-                                    "      Material not found at %s in target stage", material_path
+                                    "      Material not found at %s in target stage",
+                                    material_path,
                                 )
                         else:
                             self.log_warning(
-                                "      Cannot bind material. No mesh prim found at %s", prim.GetPrimPath()
+                                "      Cannot bind material. No mesh prim found at %s",
+                                prim.GetPrimPath(),
                             )
 
         # Set stage time range metadata for animation playback
@@ -386,8 +396,14 @@ class USDTools(PhysioMotion4DBase):
                 stage.SetTimeCodesPerSecond(time_codes_per_second)
             if frames_per_second is not None:
                 stage.SetFramesPerSecond(frames_per_second)
-            self.log_info("Set stage time range: %.1f to %.1f", global_start_time, global_end_time)
-            self.log_info("Time codes per second: %s, Frames per second: %s", time_codes_per_second, frames_per_second)
+            self.log_info(
+                "Set stage time range: %.1f to %.1f", global_start_time, global_end_time
+            )
+            self.log_info(
+                "Time codes per second: %s, Frames per second: %s",
+                time_codes_per_second,
+                frames_per_second,
+            )
 
         # Save with USDA format
         # stage.GetRootLayer().Export(output_path, args=['--usdFormat', 'usda'])
@@ -467,12 +483,13 @@ class USDTools(PhysioMotion4DBase):
             # Reference each top-level prim from the input file
             for prim in input_stage.GetPseudoRoot().GetAllChildren():
                 new_path = "/" + prim.GetName()
-                self.log_debug("  Adding reference: %s -> %s", prim.GetPrimPath(), new_path)
+                self.log_debug(
+                    "  Adding reference: %s -> %s", prim.GetPrimPath(), new_path
+                )
 
                 # Create prim and add reference to source file
                 temp_stage.DefinePrim(new_path).GetReferences().AddReference(
-                    assetPath=input_path,
-                    primPath=prim.GetPrimPath()
+                    assetPath=input_path, primPath=prim.GetPrimPath()
                 )
 
         # Set time range metadata on temporary stage before flattening
@@ -483,8 +500,14 @@ class USDTools(PhysioMotion4DBase):
                 temp_stage.SetTimeCodesPerSecond(time_codes_per_second)
             if frames_per_second is not None:
                 temp_stage.SetFramesPerSecond(frames_per_second)
-            self.log_info("Time range: %.1f to %.1f", global_start_time, global_end_time)
-            self.log_info("Time codes per second: %s, Frames per second: %s", time_codes_per_second, frames_per_second)
+            self.log_info(
+                "Time range: %.1f to %.1f", global_start_time, global_end_time
+            )
+            self.log_info(
+                "Time codes per second: %s, Frames per second: %s",
+                time_codes_per_second,
+                frames_per_second,
+            )
 
         # Flatten the composed stage into a single layer
         # This resolves all references and bakes everything into one file
@@ -501,7 +524,9 @@ class USDTools(PhysioMotion4DBase):
             output_stage.SetEndTimeCode(global_end_time)
             if time_codes_per_second is not None:
                 output_stage.SetTimeCodesPerSecond(time_codes_per_second)
-                self.log_info("Set output TimeCodesPerSecond: %s", time_codes_per_second)
+                self.log_info(
+                    "Set output TimeCodesPerSecond: %s", time_codes_per_second
+                )
             if frames_per_second is not None:
                 output_stage.SetFramesPerSecond(frames_per_second)
                 self.log_info("Set output FramesPerSecond: %s", frames_per_second)
