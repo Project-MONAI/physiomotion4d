@@ -10,6 +10,7 @@ jobs:
   test-slow-gpu:
     name: Slow Tests on GPU
     runs-on: [self-hosted, linux, gpu]
+    timeout-minutes: 15
     continue-on-error: true
 
     steps:
