@@ -1,0 +1,1785 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>physiomotion4d.register_images_ants &mdash; PhysioMotion4D 2025.05.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=556198f2" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=c436cb72"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PhysioMotion4D
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#software-dependencies">Software Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installation-methods">Installation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#method-1-install-from-pypi-recommended">Method 1: Install from PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#method-2-install-from-source">Method 2: Install from Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#optional-dependencies">Optional Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#development-tools">Development Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#documentation-tools">Documentation Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#testing-dependencies">Testing Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#verify-installation">Verify Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#command-line-tools">Command-Line Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#gpu-setup">GPU Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#cuda-installation">CUDA Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#pytorch-with-cuda">PyTorch with CUDA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#basic-workflow">Basic Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#command-line-interface">Command-Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#step-by-step-workflow">Step-by-Step Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#working-with-individual-components">Working with Individual Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#segmentation-only">Segmentation Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#image-registration-only">Image Registration Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#vtk-to-usd-conversion">VTK to USD Conversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#sample-data">Sample Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#download-sample-cardiac-ct-data">Download Sample Cardiac CT Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#visualizing-results">Visualizing Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#in-nvidia-omniverse">In NVIDIA Omniverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#using-usd-viewer">Using USD Viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#in-pyvista">In PyVista</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#complete-workflow-examples">Complete Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#heart-gated-ct-processing">Heart-Gated CT Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#lung-4d-ct-processing">Lung 4D-CT Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#segmentation-examples">Segmentation Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#totalsegmentator">TotalSegmentator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#vista-3d-with-point-prompts">VISTA-3D with Point Prompts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#ensemble-segmentation">Ensemble Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#registration-examples">Registration Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#icon-deep-learning-registration">ICON Deep Learning Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#multi-phase-cardiac-registration">Multi-Phase Cardiac Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#ants-multi-stage-registration">ANTs Multi-Stage Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#usd-conversion-examples">USD Conversion Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#vtk-time-series-to-usd">VTK Time Series to USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#merge-multiple-usd-files">Merge Multiple USD Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#apply-materials-to-usd">Apply Materials to USD</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#transform-and-contour-examples">Transform and Contour Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#apply-transform-to-images">Apply Transform to Images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#transform-contours-meshes">Transform Contours/Meshes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#extract-surface-from-segmentation">Extract Surface from Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#visualization-examples">Visualization Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#quick-preview-in-pyvista">Quick Preview in PyVista</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#animated-mesh-sequence">Animated Mesh Sequence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#batch-processing-examples">Batch Processing Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#process-multiple-patients">Process Multiple Patients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#parallel-segmentation">Parallel Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#data-download-examples">Data Download Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#download-dirlab-dataset">Download DirLab Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#custom-workflow-examples">Custom Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#step-by-step-processing">Step-by-Step Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#custom-pipeline-with-specific-methods">Custom Pipeline with Specific Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/heart_gated_ct.html">Heart-Gated CT Processing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/heart_gated_ct.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/heart_gated_ct.html#workflow-steps">Workflow Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/heart_gated_ct.html#quick-start">Quick Start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/heart_gated_ct.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/heart_gated_ct.html#command-line-interface">Command-Line Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/heart_gated_ct.html#input-data-requirements">Input Data Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/heart_gated_ct.html#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/lung_4dct.html">Lung 4D-CT Processing Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/lung_4dct.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/lung_4dct.html#sample-data-dirlab-4d-ct">Sample Data: DirLab 4D-CT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/segmentation.html">Segmentation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/segmentation.html#available-methods">Available Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/registration.html">Registration Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/registration.html#available-registration-methods">Available Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/registration.html#image-to-image-registration">Image-to-Image Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/registration.html#model-to-image-model-registration">Model-to-Image/Model Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/registration.html#complete-workflows">Complete Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/registration.html#quick-start-examples">Quick Start Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/registration.html#image-registration-with-icon">Image Registration with ICON</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/registration.html#time-series-registration">Time Series Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/registration.html#model-to-patient-registration">Model to Patient Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/registration.html#choosing-the-right-method">Choosing the Right Method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/registration.html#for-4d-cardiac-lung-ct">For 4D Cardiac/Lung CT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/registration.html#for-model-to-patient-fitting">For Model-to-Patient Fitting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/registration.html#for-validation-studies">For Validation Studies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/registration.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/registration.html#advanced-topics">Advanced Topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/registration.html#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/usd_conversion.html">USD Conversion Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/usd_conversion.html#usd-format">USD Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/usd_conversion.html#conversion-tools">Conversion Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/visualization.html">Visualization Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/visualization.html#nvidia-omniverse">NVIDIA Omniverse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/visualization.html#other-tools">Other Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide/logging.html">Logging Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/logging.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/logging.html#quick-start">Quick Start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#basic-usage">Basic Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/logging.html#key-features">Key Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#shared-logger-with-class-identification">Shared Logger with Class Identification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#multiple-log-levels">Multiple Log Levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#flexible-log-level-control">Flexible Log Level Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#class-filtering">Class Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#professional-formatting">Professional Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#convenience-methods">Convenience Methods</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/logging.html#section-headers">Section Headers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/logging.html#progress-tracking">Progress Tracking</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/logging.html#usage-patterns">Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#creating-a-new-class">Creating a New Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#converting-existing-classes">Converting Existing Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#dynamic-log-level-control">Dynamic Log Level Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#class-filtering-for-selective-debugging">Class Filtering for Selective Debugging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#file-logging">File Logging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/logging.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#choose-appropriate-log-levels">Choose Appropriate Log Levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#use-section-headers-for-major-steps">Use Section Headers for Major Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#add-debug-information-generously">Add Debug Information Generously</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#use-hierarchical-indentation">Use Hierarchical Indentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/logging.html#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#example-1-basic-registration-class">Example 1: Basic Registration Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#example-2-with-progress-tracking">Example 2: With Progress Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/logging.html#example-3-error-handling">Example 3: Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/logging.html#benefits">Benefits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user_guide/logging.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/basic_workflow.html">Basic Workflow Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#tutorial-dataset">Tutorial Dataset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../tutorials/basic_workflow.html#download-sample-data">Download Sample Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#step-1-setup-and-initialization">Step 1: Setup and Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#step-2-convert-4d-to-3d-frames">Step 2: Convert 4D to 3D Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#step-3-register-cardiac-phases">Step 3: Register Cardiac Phases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#step-4-generate-segmentation">Step 4: Generate Segmentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#step-5-transform-contours">Step 5: Transform Contours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#step-6-create-usd-models">Step 6: Create USD Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#step-7-complete-workflow-all-steps">Step 7: Complete Workflow (All Steps)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#step-8-visualize-results">Step 8: Visualize Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../tutorials/basic_workflow.html#in-nvidia-omniverse">In NVIDIA Omniverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../tutorials/basic_workflow.html#using-usdview">Using usdview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../tutorials/basic_workflow.html#quick-preview-with-pyvista">Quick Preview with PyVista</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#intermediate-files">Intermediate Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../tutorials/basic_workflow.html#adjust-quality-settings">Adjust Quality Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../tutorials/basic_workflow.html#adjust-performance-settings">Adjust Performance Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../tutorials/basic_workflow.html#process-specific-structures-only">Process Specific Structures Only</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../tutorials/basic_workflow.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/basic_workflow.html#additional-resources">Additional Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/custom_segmentation.html">Custom Segmentation Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/custom_segmentation.html#totalsegmentator">TotalSegmentator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/custom_segmentation.html#vista-3d-with-point-prompts">VISTA-3D with Point Prompts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/custom_segmentation.html#ensemble-segmentation">Ensemble Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/image_registration.html">Image Registration Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/image_registration.html#icon-deep-learning-registration">ICON Deep Learning Registration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/image_registration.html#multi-phase-cardiac-registration">Multi-Phase Cardiac Registration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/image_registration.html#ants-multi-stage-registration">ANTs Multi-Stage Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/vtk_to_usd.html">VTK to USD Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/vtk_to_usd.html#vtk-time-series-to-usd">VTK Time Series to USD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/vtk_to_usd.html#merge-multiple-usd-files">Merge Multiple USD Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/vtk_to_usd.html#apply-materials-to-usd">Apply Materials to USD</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/colormap_rendering.html">Colormap Rendering Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/model_to_image_registration.html">Model-to-Image Registration Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ants_initial_transform_guide.html">Using ITK Transforms as Initial Transforms in ANTs Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../ants_initial_transform_guide.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ants_initial_transform_guide.html#implementation">Implementation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#new-method-itk-transform-to-ants-transform">New Method: <code class="docutils literal notranslate"><span class="pre">itk_transform_to_ants_transform()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#updated-method-register">Updated Method: <code class="docutils literal notranslate"><span class="pre">register()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../ants_initial_transform_guide.html#usage-examples">Usage Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#using-previous-registration-results">Using Previous Registration Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#using-displacement-field-from-file">Using Displacement Field from File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#using-with-label-based-registration">Using with Label-Based Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#composing-multiple-transforms">Composing Multiple Transforms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../ants_initial_transform_guide.html#technical-details">Technical Details</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#transform-composition-important">Transform Composition (IMPORTANT!)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#coordinate-systems">Coordinate Systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#performance-considerations">Performance Considerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#transform-direction">Transform Direction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#interpolation">Interpolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../ants_initial_transform_guide.html#integration-with-antspy">Integration with ANTsPy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ants_initial_transform_guide.html#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ants_initial_transform_guide.html#transform-composition-example">Transform Composition Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#without-automatic-composition-raw-antspy">Without Automatic Composition (Raw ANTsPy)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#with-registerimagesants-automatic-composition">With RegisterImagesANTs (Automatic Composition)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../ants_initial_transform_guide.html#comparison-with-file-based-approach">Comparison with File-Based Approach</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#old-approach-file-based-manual-composition">Old Approach (File-Based + Manual Composition)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../ants_initial_transform_guide.html#new-approach-in-memory-automatic-composition">New Approach (In-Memory + Automatic Composition)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../ants_initial_transform_guide.html#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ants_initial_transform_guide.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/core.html">Core API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/core.html#workflow-classes">Workflow Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/core.html#heart-gated-ct-to-usd-workflow">Heart Gated CT to USD Workflow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/core.html#physiomotion4d.HeartGatedCTToUSDWorkflow"><code class="docutils literal notranslate"><span class="pre">HeartGatedCTToUSDWorkflow</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/core.html#heart-model-to-patient-workflow">Heart Model to Patient Workflow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/core.html#physiomotion4d.HeartModelToPatientWorkflow"><code class="docutils literal notranslate"><span class="pre">HeartModelToPatientWorkflow</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/core.html#data-conversion">Data Conversion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/core.html#nrrd-4d-to-3d-converter">NRRD 4D to 3D Converter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/core.html#physiomotion4d.ConvertNRRD4DTo3D"><code class="docutils literal notranslate"><span class="pre">ConvertNRRD4DTo3D</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/core.html#vtk-to-usd-converters">VTK to USD Converters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/core.html#physiomotion4d.ConvertVTK4DToUSDBase"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDBase</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/core.html#physiomotion4d.ConvertVTK4DToUSDPolyMesh"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDPolyMesh</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/core.html#physiomotion4d.ConvertVTK4DToUSDTetMesh"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDTetMesh</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/core.html#physiomotion4d.ConvertVTK4DToUSD"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSD</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/core.html#utility-classes">Utility Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/core.html#image-tools">Image Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/core.html#physiomotion4d.ImageTools"><code class="docutils literal notranslate"><span class="pre">ImageTools</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/core.html#transform-tools">Transform Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/core.html#physiomotion4d.TransformTools"><code class="docutils literal notranslate"><span class="pre">TransformTools</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/core.html#usd-tools">USD Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/core.html#physiomotion4d.USDTools"><code class="docutils literal notranslate"><span class="pre">USDTools</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/core.html#contour-tools">Contour Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/core.html#physiomotion4d.ContourTools"><code class="docutils literal notranslate"><span class="pre">ContourTools</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/core.html#anatomy-painting">Anatomy Painting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/core.html#physiomotion4d.USDAnatomyTools"><code class="docutils literal notranslate"><span class="pre">USDAnatomyTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/segmentation.html">Segmentation API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/segmentation.html#base-segmentation-class">Base Segmentation Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.target_spacing"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.target_spacing</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.rescale_intensity_range"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.rescale_intensity_range</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.contrast_threshold"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.contrast_threshold</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.all_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.all_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.heart_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.heart_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.lung_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.lung_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.bone_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.bone_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.major_vessels_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.major_vessels_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.contrast_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.contrast_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.soft_tissue_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.soft_tissue_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.other_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.other_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.__init__"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.set_other_and_all_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.set_other_and_all_mask_ids()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.set_target_spacing"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.set_target_spacing()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.preprocess_input"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.preprocess_input()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.postprocess_labelmap"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.postprocess_labelmap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.segment_connected_component"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.segment_connected_component()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.segment_contrast_agent"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.segment_contrast_agent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.create_anatomy_group_masks"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.create_anatomy_group_masks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.segmentation_method"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.segmentation_method()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.dilate_mask"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.dilate_mask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestBase.segment"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase.segment()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/segmentation.html#totalsegmentator">TotalSegmentator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestTotalSegmentator"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestTotalSegmentator.target_spacing"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator.target_spacing</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestTotalSegmentator.heart_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator.heart_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestTotalSegmentator.major_vessels_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator.major_vessels_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestTotalSegmentator.lung_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator.lung_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestTotalSegmentator.bone_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator.bone_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestTotalSegmentator.soft_tissue_mask_ids"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator.soft_tissue_mask_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestTotalSegmentator.__init__"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestTotalSegmentator.segmentation_method"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator.segmentation_method()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/segmentation.html#vista-3d">VISTA-3D</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3D"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3D</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3D.target_spacing"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3D.target_spacing</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3D.device"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3D.device</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3D.bundle_path"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3D.bundle_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3D.hf_pipeline"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3D.hf_pipeline</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3D.label_prompt"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3D.label_prompt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3D.__init__"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3D.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3D.set_label_prompt"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3D.set_label_prompt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3D.set_whole_image_segmentation"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3D.set_whole_image_segmentation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3D.segment_soft_tissue"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3D.segment_soft_tissue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3D.preprocess_input"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3D.preprocess_input()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3D.segmentation_method"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3D.segmentation_method()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/segmentation.html#vista-3d-with-nvidia-nim">VISTA-3D with NVIDIA NIM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3DNIM"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3DNIM</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3DNIM.__init__"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3DNIM.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestVista3DNIM.segmentation_method"><code class="docutils literal notranslate"><span class="pre">SegmentChestVista3DNIM.segmentation_method()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/segmentation.html#ensemble-segmentation">Ensemble Segmentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestEnsemble"><code class="docutils literal notranslate"><span class="pre">SegmentChestEnsemble</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestEnsemble.__init__"><code class="docutils literal notranslate"><span class="pre">SegmentChestEnsemble.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestEnsemble.ensemble_segmentation"><code class="docutils literal notranslate"><span class="pre">SegmentChestEnsemble.ensemble_segmentation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/segmentation.html#physiomotion4d.SegmentChestEnsemble.segmentation_method"><code class="docutils literal notranslate"><span class="pre">SegmentChestEnsemble.segmentation_method()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/segmentation.html#segmentation-comparison">Segmentation Comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/segmentation.html#custom-segmentation">Custom Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/registration.html">Registration API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registration.html#base-registration-class">Base Registration Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.net"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.net</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.modality"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.modality</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.fixed_image"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.fixed_image</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.fixed_image_pre"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.fixed_image_pre</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.fixed_mask"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.fixed_mask</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.mask_dilation_mm"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.mask_dilation_mm</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.__init__"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.set_number_of_iterations"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.set_number_of_iterations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.set_modality"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.set_modality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.set_fixed_image"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.set_fixed_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.set_mask_dilation"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.set_mask_dilation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.set_fixed_mask"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.set_fixed_mask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.preprocess"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.preprocess()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.registration_method"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.registration_method()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesBase.register"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase.register()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registration.html#deep-learning-registration">Deep Learning Registration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/registration.html#icon-inverse-consistent-optimization-network">ICON (Inverse Consistent Optimization Network)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesICON"><code class="docutils literal notranslate"><span class="pre">RegisterImagesICON</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registration.html#classical-registration-methods">Classical Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/registration.html#ants-registration">ANTs Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterImagesANTs"><code class="docutils literal notranslate"><span class="pre">RegisterImagesANTs</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registration.html#time-series-registration">Time Series Registration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterTimeSeriesImages"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterTimeSeriesImages.registration_method"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages.registration_method</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterTimeSeriesImages.registrar"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages.registrar</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterTimeSeriesImages.transform_tools"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages.transform_tools</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterTimeSeriesImages.__init__"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterTimeSeriesImages.set_number_of_iterations"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages.set_number_of_iterations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterTimeSeriesImages.set_smooth_prior_transform_sigma"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages.set_smooth_prior_transform_sigma()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterTimeSeriesImages.set_mask_dilation"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages.set_mask_dilation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterTimeSeriesImages.set_modality"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages.set_modality()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterTimeSeriesImages.set_fixed_image"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages.set_fixed_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterTimeSeriesImages.set_fixed_mask"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages.set_fixed_mask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterTimeSeriesImages.register_time_series"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages.register_time_series()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#id0"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages.registration_method()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registration.html#model-to-image-registration">Model-to-Image Registration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/registration.html#pca-based-registration">PCA-based Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterModelsPCA"><code class="docutils literal notranslate"><span class="pre">RegisterModelsPCA</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/registration.html#combined-model-patient-workflow">Combined Model-Patient Workflow</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.HeartModelToPatientWorkflow"><code class="docutils literal notranslate"><span class="pre">HeartModelToPatientWorkflow</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registration.html#model-to-model-registration">Model-to-Model Registration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/registration.html#icp-registration">ICP Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterModelsICP"><code class="docutils literal notranslate"><span class="pre">RegisterModelsICP</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/registration.html#mask-based-registration">Mask-based Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/registration.html#physiomotion4d.RegisterModelsDistanceMaps"><code class="docutils literal notranslate"><span class="pre">RegisterModelsDistanceMaps</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registration.html#registration-comparison">Registration Comparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registration.html#evaluation-metrics">Evaluation Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registration.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/registration.html#choosing-a-registration-method">Choosing a Registration Method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/registration.html#parameter-selection">Parameter Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/registration.html#troubleshooting-registration">Troubleshooting Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/registration.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/utilities.html">Utilities API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilities.html#module-physiomotion4d.transform_tools">Transform Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools"><code class="docutils literal notranslate"><span class="pre">TransformTools</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.__init__"><code class="docutils literal notranslate"><span class="pre">TransformTools.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.combine_displacement_field_transforms"><code class="docutils literal notranslate"><span class="pre">TransformTools.combine_displacement_field_transforms()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.convert_transform_to_displacement_field"><code class="docutils literal notranslate"><span class="pre">TransformTools.convert_transform_to_displacement_field()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.convert_transform_to_displacement_field_transform"><code class="docutils literal notranslate"><span class="pre">TransformTools.convert_transform_to_displacement_field_transform()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.invert_displacement_field_transform"><code class="docutils literal notranslate"><span class="pre">TransformTools.invert_displacement_field_transform()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.transform_pvcontour"><code class="docutils literal notranslate"><span class="pre">TransformTools.transform_pvcontour()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.transform_image"><code class="docutils literal notranslate"><span class="pre">TransformTools.transform_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.convert_vtk_matrix_to_itk_transform"><code class="docutils literal notranslate"><span class="pre">TransformTools.convert_vtk_matrix_to_itk_transform()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.smooth_transform"><code class="docutils literal notranslate"><span class="pre">TransformTools.smooth_transform()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.combine_transforms_with_masks"><code class="docutils literal notranslate"><span class="pre">TransformTools.combine_transforms_with_masks()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.compute_jacobian_determinant_from_field"><code class="docutils literal notranslate"><span class="pre">TransformTools.compute_jacobian_determinant_from_field()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.detect_folding_in_field"><code class="docutils literal notranslate"><span class="pre">TransformTools.detect_folding_in_field()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.reduce_folding_in_field"><code class="docutils literal notranslate"><span class="pre">TransformTools.reduce_folding_in_field()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.generate_grid_image"><code class="docutils literal notranslate"><span class="pre">TransformTools.generate_grid_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.convert_field_to_grid_visualization"><code class="docutils literal notranslate"><span class="pre">TransformTools.convert_field_to_grid_visualization()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.transform_tools.TransformTools.convert_itk_transform_to_usd_visualization"><code class="docutils literal notranslate"><span class="pre">TransformTools.convert_itk_transform_to_usd_visualization()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#applying-transforms">Applying Transforms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#transform-composition">Transform Composition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#transform-inversion">Transform Inversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilities.html#module-physiomotion4d.usd_tools">USD Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.usd_tools.USDTools"><code class="docutils literal notranslate"><span class="pre">USDTools</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.usd_tools.USDTools.__init__"><code class="docutils literal notranslate"><span class="pre">USDTools.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.usd_tools.USDTools.get_subtree_bounding_box"><code class="docutils literal notranslate"><span class="pre">USDTools.get_subtree_bounding_box()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.usd_tools.USDTools.save_usd_file_arrangement"><code class="docutils literal notranslate"><span class="pre">USDTools.save_usd_file_arrangement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.usd_tools.USDTools.merge_usd_files"><code class="docutils literal notranslate"><span class="pre">USDTools.merge_usd_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.usd_tools.USDTools.merge_usd_files_flattened"><code class="docutils literal notranslate"><span class="pre">USDTools.merge_usd_files_flattened()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#merging-usd-files">Merging USD Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#time-sample-management">Time Sample Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#usd-validation">USD Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilities.html#module-physiomotion4d.contour_tools">Contour Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.contour_tools.ContourTools"><code class="docutils literal notranslate"><span class="pre">ContourTools</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.contour_tools.ContourTools.__init__"><code class="docutils literal notranslate"><span class="pre">ContourTools.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.contour_tools.ContourTools.extract_contours"><code class="docutils literal notranslate"><span class="pre">ContourTools.extract_contours()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.contour_tools.ContourTools.transform_contours"><code class="docutils literal notranslate"><span class="pre">ContourTools.transform_contours()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.contour_tools.ContourTools.merge_meshes"><code class="docutils literal notranslate"><span class="pre">ContourTools.merge_meshes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.contour_tools.ContourTools.create_reference_image"><code class="docutils literal notranslate"><span class="pre">ContourTools.create_reference_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.contour_tools.ContourTools.create_mask_from_mesh"><code class="docutils literal notranslate"><span class="pre">ContourTools.create_mask_from_mesh()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.contour_tools.ContourTools.create_distance_map"><code class="docutils literal notranslate"><span class="pre">ContourTools.create_distance_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.contour_tools.ContourTools.create_deformation_field"><code class="docutils literal notranslate"><span class="pre">ContourTools.create_deformation_field()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#surface-extraction">Surface Extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#mesh-processing">Mesh Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#multi-label-surface-extraction">Multi-label Surface Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilities.html#module-physiomotion4d.usd_anatomy_tools">Anatomy Painting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.usd_anatomy_tools.USDAnatomyTools"><code class="docutils literal notranslate"><span class="pre">USDAnatomyTools</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.usd_anatomy_tools.USDAnatomyTools.__init__"><code class="docutils literal notranslate"><span class="pre">USDAnatomyTools.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.usd_anatomy_tools.USDAnatomyTools.enhance_meshes"><code class="docutils literal notranslate"><span class="pre">USDAnatomyTools.enhance_meshes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.usd_anatomy_tools.parse_args"><code class="docutils literal notranslate"><span class="pre">parse_args()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#basic-material-application">Basic Material Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#available-anatomy-materials">Available Anatomy Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#custom-materials">Custom Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#procedural-textures">Procedural Textures</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilities.html#data-management-utilities">Data Management Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#dirlab-4d-ct-dataset">DirLab 4D-CT Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilities.html#file-i-o-utilities">File I/O Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#medical-image-i-o">Medical Image I/O</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#mesh-i-o">Mesh I/O</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilities.html#visualization-utilities">Visualization Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#quick-plotting">Quick Plotting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#animation-creation">Animation Creation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilities.html#base-classes">Base Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/utilities.html#physiomotion4d-base-class">PhysioMotion4D Base Class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#physiomotion4d.PhysioMotion4DBase"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#basic-usage">Basic Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#global-logging-control">Global Logging Control</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#class-based-filtering">Class-Based Filtering</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/utilities.html#creating-custom-classes">Creating Custom Classes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilities.html#logging-and-progress">Logging and Progress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilities.html#configuration-management">Configuration Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/utilities.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#ways-to-contribute">Ways to Contribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#formatting">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#linting">Linting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#pre-commit-hooks">Pre-commit Hooks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#testing">Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#write-tests">Write Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#run-tests">Run Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#documentation">Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#build-docs-locally">Build Docs Locally</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#documentation-style">Documentation Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#docstring-format">Docstring Format</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#code-review-process">Code Review Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#review-criteria">Review Criteria</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#reporting-issues">Reporting Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#bug-reports">Bug Reports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#feature-requests">Feature Requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#release-process">Release Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#versioning">Versioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#making-a-release">Making a Release</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#community-guidelines">Community Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../architecture.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../architecture.html#system-overview">System Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../architecture.html#core-components">Core Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../architecture.html#design-principles">Design Principles</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing.html">Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../testing.html#running-tests">Running Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../testing.html#basic-test-execution">Basic Test Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../testing.html#test-categories">Test Categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../testing.html#specific-test-modules">Specific Test Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../testing.html#coverage-reports">Coverage Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../testing.html#test-structure">Test Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../testing.html#writing-tests">Writing Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../testing.html#continuous-integration">Continuous Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../changelog.html#version-2025-05-0">Version 2025.05.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#features">Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">PhysioMotion4D Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../README.html#building-documentation-locally">Building Documentation Locally</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../README.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../README.html#build-html-documentation">Build HTML Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../README.html#view-documentation">View Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../README.html#documentation-structure">Documentation Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../README.html#building-other-formats">Building Other Formats</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../README.html#pdf">PDF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../README.html#epub">ePub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../README.html#check-for-errors">Check for Errors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../README.html#readthedocs">ReadTheDocs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../README.html#contributing-to-documentation">Contributing to Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../README.html#documentation-style">Documentation Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../README.html#adding-new-pages">Adding New Pages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../README.html#cleaning-build-files">Cleaning Build Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../README.html#help">Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html">PhysioMotion4D Documentation Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#configuration-files">Configuration Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#documentation-structure">Documentation Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#key-features">Key Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#api-documentation">API Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#tutorials">Tutorials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#user-guides">User Guides</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#developer-documentation">Developer Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#setup-for-github-readthedocs">Setup for GitHub/ReadTheDocs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#github-repository-setup">1. GitHub Repository Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#readthedocs-setup">2. ReadTheDocs Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#github-actions">3. GitHub Actions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#building-locally">Building Locally</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#install-dependencies">Install Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#build-documentation">Build Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#view-documentation">View Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#updating-documentation">Updating Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#adding-new-pages">Adding New Pages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#updating-api-documentation">Updating API Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#updating-pyproject-toml">Updating pyproject.toml</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#documentation-urls">Documentation URLs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#features">Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#automatic-updates">Automatic Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#quality-assurance">Quality Assurance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#seo-and-discoverability">SEO and Discoverability</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#maintenance">Maintenance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#regular-updates">Regular Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#version-management">Version Management</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#support">Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#files-modified">Files Modified</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#updated-files">Updated Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#new-files">New Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../DOCUMENTATION_SETUP.html#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html">PhysioMotion4D Logging API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#quick-reference">Quick Reference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#class-methods-global-control">Class Methods (Global Control)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#instance-methods-per-object-logging">Instance Methods (Per-Object Logging)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#complete-api">Complete API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#physiomotion4dbase-class-methods">PhysioMotion4DBase Class Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#instance-methods">Instance Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#usage-patterns">Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#pattern-1-basic-class-with-logging">Pattern 1: Basic Class with Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#pattern-2-using-section-headers">Pattern 2: Using Section Headers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#pattern-3-progress-reporting">Pattern 3: Progress Reporting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#pattern-4-global-log-control">Pattern 4: Global Log Control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#pattern-5-selective-class-filtering">Pattern 5: Selective Class Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#pattern-6-debugging-specific-components">Pattern 6: Debugging Specific Components</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#log-levels">Log Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#output-format">Output Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#available-classes">Available Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#common-use-cases">Common Use Cases</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#use-case-1-normal-operation">Use Case 1: Normal Operation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#use-case-2-quiet-mode-minimal-output">Use Case 2: Quiet Mode (Minimal Output)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#use-case-3-debug-specific-component">Use Case 3: Debug Specific Component</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#use-case-4-production-logging-to-file">Use Case 4: Production Logging to File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#use-case-5-progressive-debugging">Use Case 5: Progressive Debugging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#tips-and-best-practices">Tips and Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#thread-safety">Thread Safety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../LOGGING_API_REFERENCE.html#performance-considerations">Performance Considerations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html">PyPI Release Guide for PhysioMotion4D</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#install-build-tools">1. Install Build Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#pypi-account-setup">2. PyPI Account Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#configure-api-tokens">3. Configure API Tokens</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#pre-release-checklist">Pre-Release Checklist</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#update-version-number">1. Update Version Number</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#update-changelog-md">2. Update CHANGELOG.md</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#run-code-quality-checks">3. Run Code Quality Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#test-installation-locally">4. Test Installation Locally</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#building-the-package">Building the Package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#clean-previous-builds">1. Clean Previous Builds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#build-distribution-files">2. Build Distribution Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#verify-build-contents">3. Verify Build Contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#testing-on-testpypi-recommended">Testing on TestPyPI (Recommended)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#upload-to-testpypi">1. Upload to TestPyPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#install-from-testpypi">2. Install from TestPyPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#test-the-installation">3. Test the Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#publishing-to-pypi">Publishing to PyPI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#final-checks">1. Final Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#upload-to-pypi">2. Upload to PyPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#verify-upload">3. Verify Upload</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#test-installation-from-pypi">4. Test Installation from PyPI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#post-release-steps">Post-Release Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#tag-the-release-in-git">1. Tag the Release in Git</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#create-github-gitlab-release">2. Create GitHub/GitLab Release</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#update-documentation">3. Update Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#build-errors">Build Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#upload-errors">Upload Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#installation-issues">Installation Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#useful-commands-reference">Useful Commands Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../PYPI_RELEASE_GUIDE.html#additional-resources">Additional Resources</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#general-questions">General Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#what-is-physiomotion4d">What is PhysioMotion4D?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#what-data-formats-are-supported">What data formats are supported?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#do-i-need-nvidia-omniverse">Do I need NVIDIA Omniverse?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#installation-questions">Installation Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#do-i-need-a-gpu">Do I need a GPU?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#what-python-version-is-required">What Python version is required?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#usage-questions">Usage Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#how-long-does-processing-take">How long does processing take?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#which-segmentation-method-should-i-use">Which segmentation method should I use?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#which-registration-method-should-i-use">Which registration method should I use?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#more-questions">More Questions?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../troubleshooting.html#installation-issues">Installation Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#cuda-out-of-memory">CUDA Out of Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#import-errors">Import Errors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../troubleshooting.html#processing-issues">Processing Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#poor-segmentation-quality">Poor Segmentation Quality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#registration-not-converging">Registration Not Converging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../troubleshooting.html#usd-issues">USD Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#usd-not-animating">USD Not Animating</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#usd-file-too-large">USD File Too Large</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../troubleshooting.html#performance-issues">Performance Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#slow-processing">Slow Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../troubleshooting.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../references.html#software-citations">Software Citations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../references.html#related-publications">Related Publications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#registration-methods">Registration Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#segmentation-methods">Segmentation Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../references.html#datasets">Datasets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#dirlab-4d-ct">DirLab 4D-CT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#slicer-heart-ct">Slicer-Heart-CT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../references.html#technologies">Technologies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#nvidia-omniverse">NVIDIA Omniverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#monai">MONAI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#itk">ITK</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../references.html#external-links">External Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../references.html#contributing">Contributing</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PhysioMotion4D</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">physiomotion4d.register_images_ants</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for physiomotion4d.register_images_ants</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;ANTs-based image registration implementation.</span>
+
+<span class="sd">This module provides the RegisterImagesANTs class, a concrete implementation of</span>
+<span class="sd">RegisterImagesBase that uses the Advanced Normalization Tools (ANTs) algorithm</span>
+<span class="sd">for image registration. It supports both affine and deformable (SyN) registration</span>
+<span class="sd">for aligning medical images, particularly useful for 4D cardiac CT registration.</span>
+
+<span class="sd">The module uses the antspyx package which provides Python bindings to the ANTs</span>
+<span class="sd">C++ library, offering robust and well-established registration algorithms.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">ants</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itk</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d.register_images_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegisterImagesBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d.transform_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransformTools</span>
+
+
+<div class="viewcode-block" id="RegisterImagesANTs">
+<a class="viewcode-back" href="../../api/registration.html#physiomotion4d.RegisterImagesANTs">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RegisterImagesANTs</span><span class="p">(</span><span class="n">RegisterImagesBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ANTs-based deformable image registration implementation.</span>
+
+<span class="sd">    This class extends RegisterImagesBase to provide deformable image registration</span>
+<span class="sd">    using the Advanced Normalization Tools (ANTs) algorithm. It supports various</span>
+<span class="sd">    registration types including affine, deformable (SyN), and elastic registration</span>
+<span class="sd">    for aligning medical images.</span>
+
+<span class="sd">    ANTs is a well-established image registration framework with proven accuracy</span>
+<span class="sd">    and robustness for medical imaging applications. The SyN (Symmetric</span>
+<span class="sd">    Normalization) algorithm provides diffeomorphic registration with inverse</span>
+<span class="sd">    consistency.</span>
+
+<span class="sd">    ANTs-specific features:</span>
+<span class="sd">    - Multiple transform types: Rigid, Affine, SyN, ElasticSyN</span>
+<span class="sd">    - Robust optimization algorithms</span>
+<span class="sd">    - Support for multi-resolution registration</span>
+<span class="sd">    - Symmetric normalization for inverse consistency</span>
+<span class="sd">    - Comprehensive metric options (MI, CC, Mattes)</span>
+
+<span class="sd">    Inherits from RegisterImagesBase:</span>
+<span class="sd">    - Fixed and moving image management</span>
+<span class="sd">    - Binary mask processing with optional dilation</span>
+<span class="sd">    - Modality-specific parameter configuration</span>
+<span class="sd">    - Standardized registration interface</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        type_of_transform (str): The registration transform type (default: &#39;SyN&#39;)</span>
+<span class="sd">        grad_step (float): Gradient step size for SyN (default: 0.2)</span>
+<span class="sd">        flow_sigma (float): Smoothing parameter for regularization (default: 3.0)</span>
+<span class="sd">        total_sigma (float): Total field smoothing (default: 0.0)</span>
+<span class="sd">        syn_metric (str): Similarity metric for SyN (default: &#39;CC&#39;)</span>
+<span class="sd">        syn_sampling (int): Sampling strategy (default: 2)</span>
+<span class="sd">        reg_iterations (tuple): Iterations per resolution level (default: (40, 20, 0))</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; registrar = RegisterImagesANTs()</span>
+<span class="sd">        &gt;&gt;&gt; registrar.set_modality(&#39;ct&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; registrar.set_fixed_image(reference_image)</span>
+<span class="sd">        &gt;&gt;&gt; result = registrar.register(moving_image)</span>
+<span class="sd">        &gt;&gt;&gt; inverse_transform = result[&quot;inverse_transform&quot;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RegisterImagesANTs.__init__">
+<a class="viewcode-back" href="../../api/registration.html#physiomotion4d.RegisterImagesANTs.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">log_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the ANTs image registration class.</span>
+
+<span class="sd">        Calls the parent RegisterImagesBase constructor to set up common parameters.</span>
+<span class="sd">        Default ANTs registration parameters are set to work well for medical images.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            log_level: Logging level (default: logging.INFO)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">log_level</span><span class="o">=</span><span class="n">log_level</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_iterations</span> <span class="o">=</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform_type</span> <span class="o">=</span> <span class="s2">&quot;Deformable&quot;</span></div>
+
+
+<div class="viewcode-block" id="RegisterImagesANTs.set_transform_type">
+<a class="viewcode-back" href="../../api/registration.html#physiomotion4d.RegisterImagesANTs.set_transform_type">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_transform_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transform_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the type of transform to use for registration.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            transform_type (str): Type of transform to use for registration.</span>
+<span class="sd">                Options: &#39;Deformable&#39;, &#39;Affine&#39;, &#39;Rigid&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform_type</span> <span class="o">=</span> <span class="n">transform_type</span>
+        <span class="k">if</span> <span class="n">transform_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Deformable&#39;</span><span class="p">,</span> <span class="s1">&#39;Affine&#39;</span><span class="p">,</span> <span class="s1">&#39;Rigid&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;Invalid transform type: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">transform_type</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid transform type: </span><span class="si">{</span><span class="n">transform_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ants_to_itk_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ants_image</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert ANTs image back to ITK format.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ants_image (ants.core.ANTsImage): ANTs image to convert</span>
+<span class="sd">            reference_itk_image (itk.image): Reference ITK image for metadata</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            itk.image: Converted ITK image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">ants_image</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+        <span class="n">image_dimension</span> <span class="o">=</span> <span class="n">ants_image</span><span class="o">.</span><span class="n">dimension</span>
+        <span class="k">if</span> <span class="n">image_dimension</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported ANTs image dimension: </span><span class="si">{</span><span class="n">image_dimension</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">is_vector</span> <span class="o">=</span> <span class="n">ants_image</span><span class="o">.</span><span class="n">components</span> <span class="o">&gt;</span> <span class="mi">1</span>
+
+        <span class="n">data_reshaped</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">is_vector</span><span class="p">:</span>
+            <span class="c1"># Vector images: ANTs gives (components, z, y, x) or (components, y, x)</span>
+            <span class="n">data_reshaped</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
+                <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">image_dimension</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="p">[</span><span class="n">image_dimension</span><span class="p">]</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data_reshaped</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">image_dimension</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+
+        <span class="n">img_itk</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">is_vector</span><span class="p">:</span>
+            <span class="n">img_itk</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span><span class="n">data_reshaped</span><span class="p">,</span> <span class="n">is_vector</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">img_itk</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span><span class="n">data_reshaped</span><span class="p">)</span>
+
+        <span class="n">spacing</span> <span class="o">=</span> <span class="n">ants_image</span><span class="o">.</span><span class="n">spacing</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="n">ants_image</span><span class="o">.</span><span class="n">origin</span>
+        <span class="n">direction_reshaped</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ants_image</span><span class="o">.</span><span class="n">direction</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">image_dimension</span><span class="p">,</span> <span class="n">image_dimension</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">img_itk</span><span class="o">.</span><span class="n">SetSpacing</span><span class="p">(</span><span class="n">spacing</span><span class="p">)</span>
+        <span class="n">img_itk</span><span class="o">.</span><span class="n">SetOrigin</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
+        <span class="n">img_itk</span><span class="o">.</span><span class="n">SetDirection</span><span class="p">(</span><span class="n">direction_reshaped</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">img_itk</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_itk_to_ants_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">itk_image</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert ITK image to ANTs format.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            itk_image (itk.image): ITK image to convert</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ants.core.ANTsImage: Converted ANTs image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ndim</span> <span class="o">=</span> <span class="n">itk_image</span><span class="o">.</span><span class="n">GetImageDimension</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported ITK image dimension: </span><span class="si">{</span><span class="n">ndim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">is_vector</span> <span class="o">=</span> <span class="n">itk_image</span><span class="o">.</span><span class="n">GetNumberOfComponentsPerPixel</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;float&#39;</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">itk_image</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;double&#39;</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">itk_image</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">itk_image</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;uint&#39;</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">itk_image</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;uchar&#39;</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">itk_image</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported dtype: </span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">is_vector</span><span class="p">:</span>
+            <span class="c1"># Vector images: ITK gives (z,y,x,components) or (y,x,components)</span>
+            <span class="n">spatial_shape</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># drop components</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">spatial_shape</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="n">image_dimension</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spatial_shape</span><span class="p">)</span>
+
+        <span class="n">direction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">itk_image</span><span class="o">.</span><span class="n">GetDirection</span><span class="p">())</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">image_dimension</span><span class="p">,</span> <span class="n">image_dimension</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">spacing</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itk_image</span><span class="o">.</span><span class="n">GetSpacing</span><span class="p">())</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itk_image</span><span class="o">.</span><span class="n">GetOrigin</span><span class="p">())</span>
+
+        <span class="c1"># Reshape the array properly for ANTsPy</span>
+        <span class="k">if</span> <span class="n">is_vector</span><span class="p">:</span>
+            <span class="n">data_reshaped</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
+                <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">image_dimension</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="p">[</span><span class="n">image_dimension</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data_reshaped</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">image_dimension</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+
+        <span class="n">ants_image</span><span class="p">:</span> <span class="n">ants</span><span class="o">.</span><span class="n">ANTsImage</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">data_reshaped</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span>
+            <span class="n">spacing</span><span class="o">=</span><span class="n">spacing</span><span class="p">,</span>
+            <span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">,</span>
+            <span class="n">has_components</span><span class="o">=</span><span class="n">is_vector</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ants_image</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_antsfile_to_itk_affine_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ants_transform_file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert ANTs affine transform to ITK affine transform.</span>
+
+<span class="sd">        ANTs affine transform has 12 parameters for 3D:</span>
+<span class="sd">        - parameters[0:9]: 3x3 transformation matrix in row-major order</span>
+<span class="sd">        - parameters[9:12]: translation vector</span>
+<span class="sd">        - fixed_parameters[0:3]: center of rotation</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ants_transform_file (str): Path to ANTs transform file</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            itk.AffineTransform: Converted ITK affine transform</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ants_tfm</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="n">read_transform</span><span class="p">(</span><span class="n">ants_transform_file</span><span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ants_tfm</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="n">fixed_params</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ants_tfm</span><span class="o">.</span><span class="n">fixed_parameters</span><span class="p">)</span>
+
+        <span class="c1"># Parameters structure for 3D affine:</span>
+        <span class="c1"># params[0:9] = 3x3 matrix in row-major order</span>
+        <span class="c1"># params[9:12] = translation vector</span>
+        <span class="c1"># fixed_params[0:3] = center of rotation</span>
+
+        <span class="c1"># Create ITK affine transform</span>
+        <span class="n">affine_tfm</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">AffineTransform</span><span class="p">[</span><span class="n">itk</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">New</span><span class="p">()</span>
+
+        <span class="c1"># Set the center of rotation (fixed parameters)</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">Point</span><span class="p">[</span><span class="n">itk</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="mi">3</span><span class="p">]()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">center</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fixed_params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">affine_tfm</span><span class="o">.</span><span class="n">SetCenter</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
+
+        <span class="c1"># Set the 3x3 transformation matrix (first 9 parameters in row-major order)</span>
+        <span class="n">mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">mat</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">row</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="n">col</span><span class="p">]</span>
+        <span class="n">mat_itk</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetMatrixFromArray</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+        <span class="n">affine_tfm</span><span class="o">.</span><span class="n">SetMatrix</span><span class="p">(</span><span class="n">mat_itk</span><span class="p">)</span>
+
+        <span class="c1"># Set the translation vector (last 3 parameters)</span>
+        <span class="n">translation</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">Vector</span><span class="p">[</span><span class="n">itk</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="mi">3</span><span class="p">]()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">translation</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="mi">9</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">affine_tfm</span><span class="o">.</span><span class="n">SetTranslation</span><span class="p">(</span><span class="n">translation</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">affine_tfm</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_antsfile_to_itk_displacement_field_transform</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">ants_transform_file</span><span class="p">,</span> <span class="n">ref_image</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create ITK displacement field from ANTs transform.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ants_transform_file (str): Path to ANTs transform file</span>
+<span class="sd">            reference_image (itk.image): Reference image for field generation</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            itk.DisplacementFieldTransform: ITK displacement field transform</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">disp_field_tfm_ants</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="n">read_transform</span><span class="p">(</span>
+            <span class="n">ants_transform_file</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="s1">&#39;double&#39;</span>
+        <span class="p">)</span>
+        <span class="n">disp_field_ants</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="n">transform_to_displacement_field</span><span class="p">(</span>
+            <span class="n">disp_field_tfm_ants</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_itk_to_ants_image</span><span class="p">(</span><span class="n">ref_image</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">disp_field_itk_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ants_to_itk_image</span><span class="p">(</span><span class="n">disp_field_ants</span><span class="p">)</span>
+
+        <span class="c1"># Convert to the correct Image[Vector[D, 3], 3] type for DisplacementFieldTransform</span>
+        <span class="c1"># Use ImageTools helper to convert array to vector image with correct type</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d.image_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageTools</span>
+
+        <span class="n">image_tools</span> <span class="o">=</span> <span class="n">ImageTools</span><span class="p">()</span>
+
+        <span class="n">disp_array</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">array_from_image</span><span class="p">(</span><span class="n">disp_field_itk_raw</span><span class="p">)</span>
+        <span class="n">disp_field_itk</span> <span class="o">=</span> <span class="n">image_tools</span><span class="o">.</span><span class="n">convert_array_to_image_of_vectors</span><span class="p">(</span>
+            <span class="n">disp_array</span><span class="p">,</span> <span class="n">ref_image</span><span class="p">,</span> <span class="n">itk</span><span class="o">.</span><span class="n">D</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Create displacement field transform</span>
+        <span class="n">disp_tfm</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">DisplacementFieldTransform</span><span class="p">[</span><span class="n">itk</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">New</span><span class="p">()</span>
+        <span class="n">disp_tfm</span><span class="o">.</span><span class="n">SetDisplacementField</span><span class="p">(</span><span class="n">disp_field_itk</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">disp_tfm</span>
+
+<div class="viewcode-block" id="RegisterImagesANTs.itk_affine_transform_to_ants_transform">
+<a class="viewcode-back" href="../../api/registration.html#physiomotion4d.RegisterImagesANTs.itk_affine_transform_to_ants_transform">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">itk_affine_transform_to_ants_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">itk_tfm</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert ITK affine/rigid transform to ANTs affine transform.</span>
+
+<span class="sd">        Converts an ITK MatrixOffsetTransformBase-derived transform (such as</span>
+<span class="sd">        AffineTransform or Rigid3DTransform) to an ANTs affine transform object.</span>
+
+<span class="sd">        The conversion extracts:</span>
+<span class="sd">        - 3x3 transformation matrix (converted to row-major order for ANTs)</span>
+<span class="sd">        - Translation vector</span>
+<span class="sd">        - Center of rotation (fixed parameters)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            itk_tfm (itk.Transform): ITK affine or rigid transform derived from</span>
+<span class="sd">                itkMatrixOffsetTransformBase (e.g., itk.AffineTransform[itk.D, 3],</span>
+<span class="sd">                itk.Rigid3DTransform, etc.)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ants.ANTsTransform: ANTs affine transform object</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If transform dimension is not 3D</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # Create ITK affine transform</span>
+<span class="sd">            &gt;&gt;&gt; affine_itk = itk.AffineTransform[itk.D, 3].New()</span>
+<span class="sd">            &gt;&gt;&gt; affine_itk.SetIdentity()</span>
+<span class="sd">            &gt;&gt;&gt; # Convert to ANTs</span>
+<span class="sd">            &gt;&gt;&gt; affine_ants = registrar.itk_affine_transform_to_ants_transform(affine_itk)</span>
+<span class="sd">            &gt;&gt;&gt; # Use in ANTs operations</span>
+<span class="sd">            &gt;&gt;&gt; result = ants.apply_ants_transform(affine_ants, moving_image)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get dimension of the transform</span>
+        <span class="n">dimension</span> <span class="o">=</span> <span class="n">itk_tfm</span><span class="o">.</span><span class="n">GetInputSpaceDimension</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">dimension</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Only 3D transforms are supported, got dimension: </span><span class="si">{</span><span class="n">dimension</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Check if transform has a matrix (Translation transforms don&#39;t)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">itk_tfm</span><span class="p">,</span> <span class="s1">&#39;GetMatrix&#39;</span><span class="p">):</span>
+            <span class="c1"># Extract matrix (ITK matrix is row-major)</span>
+            <span class="n">matrix_itk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">itk_tfm</span><span class="o">.</span><span class="n">GetMatrix</span><span class="p">())</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># For transforms without matrix (e.g., TranslationTransform), use identity matrix</span>
+            <span class="n">matrix_itk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="c1"># Extract translation and center based on transform type:</span>
+        <span class="c1"># - MatrixOffsetTransformBase (Affine, Rigid): use GetTranslation() WITH GetCenter()</span>
+        <span class="c1"># - TranslationTransform: use GetOffset() WITHOUT GetCenter()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">itk_tfm</span><span class="p">,</span> <span class="s1">&#39;GetTranslation&#39;</span><span class="p">):</span>
+            <span class="c1"># MatrixOffsetTransformBase-derived transforms</span>
+            <span class="n">translation_itk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">itk_tfm</span><span class="o">.</span><span class="n">GetTranslation</span><span class="p">())</span>
+            <span class="n">center_itk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">itk_tfm</span><span class="o">.</span><span class="n">GetCenter</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">itk_tfm</span><span class="p">,</span> <span class="s1">&#39;GetOffset&#39;</span><span class="p">):</span>
+            <span class="c1"># TranslationTransform - use GetOffset() WITHOUT GetCenter()</span>
+            <span class="n">translation_itk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">itk_tfm</span><span class="o">.</span><span class="n">GetOffset</span><span class="p">())</span>
+            <span class="n">center_itk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c1"># No center for translation</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Fallback for unknown transform types</span>
+            <span class="n">translation_itk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="n">center_itk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="c1"># ANTs affine transform parameters structure:</span>
+        <span class="c1"># For 3D: 12 parameters</span>
+        <span class="c1"># parameters[0:9]: 3x3 matrix in row-major order</span>
+        <span class="c1"># parameters[9:12]: translation vector</span>
+        <span class="c1"># fixed_parameters[0:3]: center of rotation</span>
+
+        <span class="c1"># Flatten matrix to row-major order for ANTs</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix_itk</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>  <span class="c1"># Already row-major</span>
+        <span class="n">params</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">12</span><span class="p">]</span> <span class="o">=</span> <span class="n">translation_itk</span>
+
+        <span class="c1"># Ensure fixed_params is also float64</span>
+        <span class="n">fixed_params</span> <span class="o">=</span> <span class="n">center_itk</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="c1"># Create ANTs affine transform</span>
+        <span class="c1"># Note: dimension must be integer 3, not float</span>
+        <span class="n">ants_tfm</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="n">new_ants_transform</span><span class="p">(</span>
+            <span class="n">precision</span><span class="o">=</span><span class="s1">&#39;double&#39;</span><span class="p">,</span>
+            <span class="n">transform_type</span><span class="o">=</span><span class="s1">&#39;AffineTransform&#39;</span><span class="p">,</span>
+            <span class="n">dimension</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+            <span class="n">parameters</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>  <span class="c1"># Convert to list to ensure proper type</span>
+            <span class="n">fixed_parameters</span><span class="o">=</span><span class="n">fixed_params</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ants_tfm</span></div>
+
+
+<div class="viewcode-block" id="RegisterImagesANTs.itk_transform_to_antsfile">
+<a class="viewcode-back" href="../../api/registration.html#physiomotion4d.RegisterImagesANTs.itk_transform_to_antsfile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">itk_transform_to_antsfile</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">itk_tfm</span><span class="p">:</span> <span class="n">itk</span><span class="o">.</span><span class="n">Transform</span><span class="p">,</span>
+        <span class="n">reference_image</span><span class="p">:</span> <span class="n">itk</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
+        <span class="n">output_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert ITK transform to ANTs transform file.</span>
+
+<span class="sd">        This method converts any ITK transform (Affine, Rigid, DisplacementField, etc.)</span>
+<span class="sd">        to an ANTs transform file that can be used as initial_transform in</span>
+<span class="sd">        ants.registration() or ants.label_image_registration().</span>
+
+<span class="sd">        The conversion process:</span>
+<span class="sd">        1. Uses TransformTools to convert the ITK transform to a displacement field</span>
+<span class="sd">        2. Converts the displacement field image from ITK to ANTs format</span>
+<span class="sd">        3. Creates an ANTsPy transform object from the displacement field</span>
+<span class="sd">        4. Writes the ANTs transform to a file</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            itk_tfm (itk.Transform): Input ITK transform to convert. Can be any</span>
+<span class="sd">                ITK transform type (AffineTransform, DisplacementFieldTransform,</span>
+<span class="sd">                CompositeTransform, etc.)</span>
+<span class="sd">            reference_image (itk.Image): Reference image that defines the spatial</span>
+<span class="sd">                domain for the displacement field (spacing, size, origin, direction)</span>
+<span class="sd">            output_filename (str): Path where the ANTs transform file will be written.</span>
+<span class="sd">                Typically should have .mat extension for ANTs transforms.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: List containing the path to the written ANTs transform file</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # Convert ITK affine transform to ANTs file</span>
+<span class="sd">            &gt;&gt;&gt; affine_itk = itk.AffineTransform[itk.D, 3].New()</span>
+<span class="sd">            &gt;&gt;&gt; affine_itk.SetIdentity()</span>
+<span class="sd">            &gt;&gt;&gt; transform_files = registrar.itk_transform_to_antsfile(</span>
+<span class="sd">            ...     affine_itk, reference_image, &quot;initial_transform.mat&quot;</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; # Use in registration</span>
+<span class="sd">            &gt;&gt;&gt; result = ants.registration(</span>
+<span class="sd">            ...     fixed=fixed_ants,</span>
+<span class="sd">            ...     moving=moving_ants,</span>
+<span class="sd">            ...     initial_transform=transform_files</span>
+<span class="sd">            ... )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">itk_tfm</span><span class="p">,</span> <span class="n">itk</span><span class="o">.</span><span class="n">DisplacementFieldTransform</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">itk_tfm</span><span class="p">,</span> <span class="n">itk</span><span class="o">.</span><span class="n">CompositeTransform</span>
+        <span class="p">):</span>
+            <span class="n">transform_tools</span> <span class="o">=</span> <span class="n">TransformTools</span><span class="p">()</span>
+            <span class="n">disp_field_itk</span> <span class="o">=</span> <span class="n">transform_tools</span><span class="o">.</span><span class="n">convert_transform_to_displacement_field</span><span class="p">(</span>
+                <span class="n">tfm</span><span class="o">=</span><span class="n">itk_tfm</span><span class="p">,</span>
+                <span class="n">reference_image</span><span class="o">=</span><span class="n">reference_image</span><span class="p">,</span>
+                <span class="n">np_component_type</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>  <span class="c1"># Use float32 for compatibility with ANTs</span>
+                <span class="n">use_reference_image_as_mask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="s2">&quot;nii.gz&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">output_filename</span><span class="p">:</span>
+                <span class="n">output_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.nii.gz&#39;</span>
+
+            <span class="c1"># Write displacement field directly as nifti (ANTs can read this)</span>
+            <span class="n">itk</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">disp_field_itk</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Wrote ANTs displacement field to: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="p">[</span><span class="n">output_filename</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ants_tfm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itk_affine_transform_to_ants_transform</span><span class="p">(</span><span class="n">itk_tfm</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;.mat&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">output_filename</span><span class="p">:</span>
+                <span class="n">output_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.mat&#39;</span>
+
+        <span class="c1"># Write transform to file</span>
+        <span class="n">ants</span><span class="o">.</span><span class="n">write_transform</span><span class="p">(</span><span class="n">ants_tfm</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Wrote ANTs transform to: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">output_filename</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_antsfiles_to_itk_transforms</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ants_transforms</span><span class="p">,</span>
+        <span class="n">reference_image</span><span class="p">,</span>
+        <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">CompositeTransform</span><span class="p">[</span><span class="n">itk</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">New</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">ants_tfm_filename</span> <span class="ow">in</span> <span class="n">ants_transforms</span><span class="p">:</span>
+            <span class="n">tfm</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="n">read_transform</span><span class="p">(</span><span class="n">ants_tfm_filename</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tfm</span><span class="o">.</span><span class="n">transform_type</span> <span class="o">==</span> <span class="s2">&quot;AffineTransform&quot;</span><span class="p">:</span>
+                <span class="n">affine_tfm_itk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antsfile_to_itk_affine_transform</span><span class="p">(</span>
+                    <span class="n">ants_tfm_filename</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">inverse</span><span class="p">:</span>
+                    <span class="n">affine_tfm_itk</span> <span class="o">=</span> <span class="n">affine_tfm_itk</span><span class="o">.</span><span class="n">GetInverseTransform</span><span class="p">()</span>
+                <span class="n">phi</span><span class="o">.</span><span class="n">AddTransform</span><span class="p">(</span><span class="n">affine_tfm_itk</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">tfm</span><span class="o">.</span><span class="n">transform_type</span> <span class="o">==</span> <span class="s2">&quot;DisplacementFieldTransform&quot;</span><span class="p">:</span>
+                <span class="n">disp_tfm_itk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antsfile_to_itk_displacement_field_transform</span><span class="p">(</span>
+                    <span class="n">ants_tfm_filename</span><span class="p">,</span> <span class="n">reference_image</span>
+                <span class="p">)</span>
+                <span class="n">phi</span><span class="o">.</span><span class="n">AddTransform</span><span class="p">(</span><span class="n">disp_tfm_itk</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Unsupported ANTs transform type: </span><span class="si">{</span><span class="n">tfm</span><span class="o">.</span><span class="n">transform_type</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">phi</span>
+
+<div class="viewcode-block" id="RegisterImagesANTs.registration_method">
+<a class="viewcode-back" href="../../api/registration.html#physiomotion4d.RegisterImagesANTs.registration_method">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">registration_method</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">moving_image</span><span class="p">,</span>
+        <span class="n">moving_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">moving_image_pre</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">initial_forward_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register moving image to fixed image using ANTs registration algorithm.</span>
+
+<span class="sd">        Implementation of the abstract register() method from RegisterImagesBase.</span>
+<span class="sd">        Performs deformable registration to align the moving image with the</span>
+<span class="sd">        fixed image using ANTs SyN or other specified algorithms.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            moving_image (itk.image): The 3D image to be registered/aligned.</span>
+<span class="sd">            moving_mask (itk.image, optional): Binary mask defining the</span>
+<span class="sd">                region of interest in the moving image</span>
+<span class="sd">            moving_image_pre (ants.core.ANTsImage, optional): Pre-processed moving image</span>
+<span class="sd">                in ANTs format. If None, preprocessing is performed automatically</span>
+<span class="sd">            initial_forward_transform (itk.Transform, optional): Initial transform from moving</span>
+<span class="sd">                to fixed space. Can be any ITK transform type (Affine, Rigid,</span>
+<span class="sd">                DisplacementField, Composite, etc.). Will be converted to ANTs</span>
+<span class="sd">                format automatically. The returned transforms will include this</span>
+<span class="sd">                initial transform composed with the registration result.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Dictionary containing:</span>
+<span class="sd">                - &quot;forward_transform&quot;: Transformation from moving to fixed</span>
+<span class="sd">                - &quot;inverse_transform&quot;: Transformation from fixed to moving</span>
+<span class="sd">                - &quot;loss&quot;: Loss value from the registration</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            For SyN registration, the transformations are approximately inverse</span>
+<span class="sd">            consistent. The forward and inverse transforms are stored separately</span>
+<span class="sd">            by ANTs.</span>
+
+<span class="sd">            IMPORTANT: ANTs registration does NOT include the initial_transform</span>
+<span class="sd">            in its output fwdtransforms/invtransforms. This method automatically</span>
+<span class="sd">            composes the initial transform with the registration result, so the</span>
+<span class="sd">            returned transforms include both the initial alignment and</span>
+<span class="sd">            the registration refinement.</span>
+
+<span class="sd">        Implementation details:</span>
+<span class="sd">            - Uses ANTs registration with configurable transform types</span>
+<span class="sd">            - Supports multi-resolution optimization</span>
+<span class="sd">            - Handles masked and unmasked registration</span>
+<span class="sd">            - Returns ITK-compatible displacement field transforms</span>
+<span class="sd">            - Initial transforms are converted from ITK to ANTs format automatically</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; # Basic registration</span>
+<span class="sd">            &gt;&gt;&gt; result = registrar.register(moving_image)</span>
+<span class="sd">            &gt;&gt;&gt; inverse_transform = result[&quot;inverse_transform&quot;]</span>
+<span class="sd">            &gt;&gt;&gt; forward_transform = result[&quot;forward_transform&quot;]</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; # Masked registration for cardiac structures</span>
+<span class="sd">            &gt;&gt;&gt; registrar.set_fixed_mask(heart_mask_fixed)</span>
+<span class="sd">            &gt;&gt;&gt; result = registrar.register(</span>
+<span class="sd">            ...     moving_image, moving_mask=heart_mask_moving</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; # Registration with initial transform</span>
+<span class="sd">            &gt;&gt;&gt; initial_tfm = itk.AffineTransform[itk.D, 3].New()</span>
+<span class="sd">            &gt;&gt;&gt; result = registrar.register(</span>
+<span class="sd">            ...     moving_image, initial_forward_transform=initial_tfm</span>
+<span class="sd">            ... )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">moving_image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moving_image</span> <span class="o">=</span> <span class="n">moving_image</span>
+
+        <span class="k">if</span> <span class="n">moving_image_pre</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moving_image_pre</span> <span class="o">=</span> <span class="n">moving_image_pre</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">moving_image</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">moving_image_pre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">moving_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modality</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">moving_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moving_mask</span> <span class="o">=</span> <span class="n">moving_mask</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_image_pre</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fixed_image_pre</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modality</span><span class="p">)</span>
+
+        <span class="c1"># Convert initial ITK transform to ANTs format if provided</span>
+        <span class="n">initial_transform</span> <span class="o">=</span> <span class="s2">&quot;identity&quot;</span>
+        <span class="k">if</span> <span class="n">initial_forward_transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Converting initial ITK transform to ANTs format...&quot;</span><span class="p">)</span>
+            <span class="n">initial_transform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itk_transform_to_antsfile</span><span class="p">(</span>
+                <span class="n">itk_tfm</span><span class="o">=</span><span class="n">initial_forward_transform</span><span class="p">,</span>
+                <span class="n">reference_image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_image</span><span class="p">,</span>
+                <span class="n">output_filename</span><span class="o">=</span><span class="s2">&quot;initial_transform_temp.mat&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Initial transform converted successfully&quot;</span><span class="p">)</span>
+
+        <span class="n">transform_type</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_type</span> <span class="o">==</span> <span class="s2">&quot;Deformable&quot;</span><span class="p">:</span>
+            <span class="n">transform_type</span> <span class="o">=</span> <span class="s2">&quot;antsRegistrationSyNQuick[so]&quot;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_type</span> <span class="o">==</span> <span class="s2">&quot;Affine&quot;</span><span class="p">:</span>
+            <span class="n">transform_type</span> <span class="o">=</span> <span class="s2">&quot;antsRegistrationAffineQuick[so]&quot;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_type</span> <span class="o">==</span> <span class="s2">&quot;Rigid&quot;</span><span class="p">:</span>
+            <span class="n">transform_type</span> <span class="o">=</span> <span class="s2">&quot;antsRegistrationRigidQuick[so]&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;Invalid transform type: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform_type</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid transform type: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">transform_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">moving_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">registration_result</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="n">registration</span><span class="p">(</span>
+                <span class="n">fixed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_itk_to_ants_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_image_pre</span><span class="p">),</span>
+                <span class="n">mask</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_itk_to_ants_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_mask</span><span class="p">),</span>
+                <span class="n">moving</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_itk_to_ants_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moving_image_pre</span><span class="p">),</span>
+                <span class="n">moving_mask</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_itk_to_ants_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moving_mask</span><span class="p">),</span>
+                <span class="n">initial_transform</span><span class="o">=</span><span class="p">[</span><span class="n">initial_transform</span><span class="p">],</span>
+                <span class="n">type_of_transform</span><span class="o">=</span><span class="n">transform_type</span><span class="p">,</span>
+                <span class="n">use_histogram_matching</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">mask_all_stages</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">reg_iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_iterations</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">registration_result</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="n">registration</span><span class="p">(</span>
+                <span class="n">fixed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_itk_to_ants_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_image_pre</span><span class="p">),</span>
+                <span class="n">moving</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_itk_to_ants_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moving_image_pre</span><span class="p">),</span>
+                <span class="n">initial_transform</span><span class="o">=</span><span class="p">[</span><span class="n">initial_transform</span><span class="p">],</span>
+                <span class="n">type_of_transform</span><span class="o">=</span><span class="n">transform_type</span><span class="p">,</span>
+                <span class="n">use_histogram_matching</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">reg_iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_iterations</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Convert ANTs transforms to ITK</span>
+        <span class="n">forward_reg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antsfiles_to_itk_transforms</span><span class="p">(</span>
+            <span class="n">registration_result</span><span class="p">[</span><span class="s1">&#39;fwdtransforms&#39;</span><span class="p">],</span>
+            <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">reference_image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_image</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">inverse_reg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antsfiles_to_itk_transforms</span><span class="p">(</span>
+            <span class="n">registration_result</span><span class="p">[</span><span class="s1">&#39;invtransforms&#39;</span><span class="p">],</span>
+            <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">reference_image</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">moving_image</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Important: ANTs does NOT include the initial_transform in the output transforms</span>
+        <span class="c1"># We need to manually compose them</span>
+        <span class="k">if</span> <span class="n">initial_forward_transform</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Composing initial transform with registration result...&quot;</span><span class="p">)</span>
+
+            <span class="c1"># For forward_transform (Moving -&gt; Fixed): Apply initial_forward_transform first, then registration</span>
+            <span class="c1"># Transform order: point -&gt; initial_forward_transform -&gt; forward_reg</span>
+            <span class="n">forward_transform</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">CompositeTransform</span><span class="p">[</span><span class="n">itk</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">New</span><span class="p">()</span>
+            <span class="n">forward_transform</span><span class="o">.</span><span class="n">AddTransform</span><span class="p">(</span><span class="n">initial_forward_transform</span><span class="p">)</span>
+            <span class="c1"># Add transforms from registration result (may be composite)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">forward_reg</span><span class="p">,</span> <span class="n">itk</span><span class="o">.</span><span class="n">CompositeTransform</span><span class="p">[</span><span class="n">itk</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="mi">3</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">forward_reg</span><span class="o">.</span><span class="n">GetNumberOfTransforms</span><span class="p">()):</span>
+                    <span class="n">forward_transform</span><span class="o">.</span><span class="n">AddTransform</span><span class="p">(</span><span class="n">forward_reg</span><span class="o">.</span><span class="n">GetNthTransform</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">forward_transform</span><span class="o">.</span><span class="n">AddTransform</span><span class="p">(</span><span class="n">forward_reg</span><span class="p">)</span>
+
+            <span class="c1"># For inverse_transform (Fixed -&gt; Moving): Apply registration inverse first, then initial inverse</span>
+            <span class="c1"># Transform order: point -&gt; inverse_reg -&gt; initial_forward_transform^(-1)</span>
+            <span class="n">inverse_transform</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">CompositeTransform</span><span class="p">[</span><span class="n">itk</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">New</span><span class="p">()</span>
+            <span class="c1"># Add registration inverse transforms</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inverse_reg</span><span class="p">,</span> <span class="n">itk</span><span class="o">.</span><span class="n">CompositeTransform</span><span class="p">[</span><span class="n">itk</span><span class="o">.</span><span class="n">D</span><span class="p">,</span> <span class="mi">3</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">inverse_reg</span><span class="o">.</span><span class="n">GetNumberOfTransforms</span><span class="p">()):</span>
+                    <span class="n">inverse_transform</span><span class="o">.</span><span class="n">AddTransform</span><span class="p">(</span><span class="n">inverse_reg</span><span class="o">.</span><span class="n">GetNthTransform</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">inverse_transform</span><span class="o">.</span><span class="n">AddTransform</span><span class="p">(</span><span class="n">inverse_reg</span><span class="p">)</span>
+            <span class="c1"># Invert and add initial transform</span>
+            <span class="c1"># For displacement field transforms, we need to invert properly</span>
+            <span class="n">transform_tools</span> <span class="o">=</span> <span class="n">TransformTools</span><span class="p">()</span>
+            <span class="n">initial_inverse</span> <span class="o">=</span> <span class="n">transform_tools</span><span class="o">.</span><span class="n">invert_displacement_field_transform</span><span class="p">(</span>
+                <span class="n">transform_tools</span><span class="o">.</span><span class="n">convert_transform_to_displacement_field_transform</span><span class="p">(</span>
+                    <span class="n">initial_forward_transform</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">moving_image</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">inverse_transform</span><span class="o">.</span><span class="n">AddTransform</span><span class="p">(</span><span class="n">initial_inverse</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Transforms composed successfully&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># No initial transform, use registration results directly</span>
+            <span class="n">forward_transform</span> <span class="o">=</span> <span class="n">forward_reg</span>
+            <span class="n">inverse_transform</span> <span class="o">=</span> <span class="n">inverse_reg</span>
+        <span class="n">moving_image_reg</span> <span class="o">=</span> <span class="n">registration_result</span><span class="p">[</span><span class="s1">&#39;warpedmovout&#39;</span><span class="p">]</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="n">image_similarity</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_itk_to_ants_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fixed_image</span><span class="p">),</span>
+            <span class="n">moving_image_reg</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;forward_transform&quot;</span><span class="p">:</span> <span class="n">forward_transform</span><span class="p">,</span>
+            <span class="s2">&quot;inverse_transform&quot;</span><span class="p">:</span> <span class="n">inverse_transform</span><span class="p">,</span>
+            <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_args</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse command line arguments for image registration.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        argparse.Namespace: Parsed arguments containing:</span>
+<span class="sd">            - fixed_image: Path to fixed/reference image</span>
+<span class="sd">            - moving_image: Path to moving image to register</span>
+<span class="sd">            - output_image: Path for registered output image</span>
+<span class="sd">            - modality: Image modality (e.g., &#39;ct&#39;, &#39;mri&#39;)</span>
+<span class="sd">            - transform_type: Type of transform (default: &#39;SyN&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--fixed_image&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--moving_image&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--output_image&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--modality&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--transform_type&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;SyN&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Command line interface for ANTs-based image registration.</span>
+
+<span class="sd">    Example usage:</span>
+<span class="sd">        python register_images_ants.py \</span>
+<span class="sd">            --fixed_image reference.mha \</span>
+<span class="sd">            --moving_image timepoint_05.mha \</span>
+<span class="sd">            --output_image registered.mha \</span>
+<span class="sd">            --modality ct \</span>
+<span class="sd">            --transform_type SyN</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">registrar</span> <span class="o">=</span> <span class="n">RegisterImagesANTs</span><span class="p">()</span>
+    <span class="n">registrar</span><span class="o">.</span><span class="n">set_modality</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">modality</span><span class="p">)</span>
+    <span class="n">registrar</span><span class="o">.</span><span class="n">set_transform_type</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">transform_type</span><span class="p">)</span>
+    <span class="n">registrar</span><span class="o">.</span><span class="n">set_fixed_image</span><span class="p">(</span><span class="n">itk</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">fixed_image</span><span class="p">))</span>
+    <span class="n">moving_image</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">moving_image</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">registrar</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">moving_image</span><span class="o">=</span><span class="n">moving_image</span><span class="p">)</span>
+    <span class="n">inverse_transform</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;inverse_transform&quot;</span><span class="p">]</span>
+    <span class="n">forward_transform</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;forward_transform&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Apply transform using ANTs</span>
+    <span class="n">moving_image_ants</span> <span class="o">=</span> <span class="n">registrar</span><span class="o">.</span><span class="n">preprocess</span><span class="p">(</span><span class="n">moving_image</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">modality</span><span class="p">)</span>
+    <span class="c1"># forward_transform contains the forward transform (moving to fixed)</span>
+    <span class="n">moving_image_reg_ants</span> <span class="o">=</span> <span class="n">ants</span><span class="o">.</span><span class="n">apply_transforms</span><span class="p">(</span>
+        <span class="n">fixed</span><span class="o">=</span><span class="n">registrar</span><span class="o">.</span><span class="n">fixed_image_pre</span><span class="p">,</span>
+        <span class="n">moving</span><span class="o">=</span><span class="n">moving_image_ants</span><span class="p">,</span>
+        <span class="n">transformlist</span><span class="o">=</span><span class="n">forward_transform</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Convert back to ITK and save</span>
+    <span class="n">moving_image_reg</span> <span class="o">=</span> <span class="n">registrar</span><span class="o">.</span><span class="n">_ants_to_itk_image</span><span class="p">(</span><span class="n">moving_image_reg_ants</span><span class="p">)</span>
+    <span class="n">itk</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">moving_image_reg</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">output_image</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">itk</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">moving_image_reg</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">output_image</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Stephen R. Aylward, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
