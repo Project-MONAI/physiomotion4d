@@ -42,14 +42,15 @@ Runs nightly at 2 AM UTC or on manual trigger. Includes:
   - Uses self-hosted GPU runners
   - Will wait indefinitely if no runner is available
 
-### `docs.yml` - Documentation Build
+### `docs.yml` - Documentation Build and Deploy
 
 Builds Sphinx documentation on push to main and pull requests:
 
 - Installs documentation dependencies
-- Builds HTML documentation
-- Deploys to GitHub Pages (main branch only)
-- Uploads documentation artifacts
+- Builds HTML documentation with Sphinx
+- Uploads documentation artifacts (retained for 7 days)
+- Deploys to GitHub Pages using GitHub's official deployment action (main branch only)
+- Uses modern Pages deployment workflow (no gh-pages branch needed)
 
 ## Caching Strategy
 
