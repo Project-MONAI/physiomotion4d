@@ -1,0 +1,1524 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>physiomotion4d.workflow_convert_heart_gated_ct_to_usd &mdash; PhysioMotion4D 2025.05.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=556198f2" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=c436cb72"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PhysioMotion4D
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#software-dependencies">Software Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installation-methods">Installation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#method-1-install-from-pypi-recommended">Method 1: Install from PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#method-2-install-from-source">Method 2: Install from Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#optional-dependencies">Optional Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#development-tools">Development Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#documentation-tools">Documentation Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#testing-dependencies">Testing Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#verify-installation">Verify Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#command-line-tools">Command-Line Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#gpu-setup">GPU Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#cuda-installation">CUDA Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#pytorch-with-cuda">PyTorch with CUDA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#basic-workflow">Basic Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#command-line-interface">Command-Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#step-by-step-workflow">Step-by-Step Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#working-with-individual-components">Working with Individual Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#segmentation-only">Segmentation Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#image-registration-only">Image Registration Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#vtk-to-usd-conversion">VTK to USD Conversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#sample-data">Sample Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#download-sample-cardiac-ct-data">Download Sample Cardiac CT Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#visualizing-results">Visualizing Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#in-nvidia-omniverse">In NVIDIA Omniverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#using-usd-viewer">Using USD Viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../quickstart.html#in-pyvista">In PyVista</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#complete-workflow-examples">Complete Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#heart-gated-ct-processing">Heart-Gated CT Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#lung-4d-ct-processing">Lung 4D-CT Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#segmentation-examples">Segmentation Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#totalsegmentator">TotalSegmentator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#vista-3d-with-point-prompts">VISTA-3D with Point Prompts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#ensemble-segmentation">Ensemble Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#registration-examples">Registration Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#icon-deep-learning-registration">ICON Deep Learning Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#multi-phase-cardiac-registration">Multi-Phase Cardiac Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#ants-multi-stage-registration">ANTs Multi-Stage Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#usd-conversion-examples">USD Conversion Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#vtk-time-series-to-usd">VTK Time Series to USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#merge-multiple-usd-files">Merge Multiple USD Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#apply-materials-to-usd">Apply Materials to USD</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#transform-and-contour-examples">Transform and Contour Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#apply-transform-to-images">Apply Transform to Images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#transform-contours-meshes">Transform Contours/Meshes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#extract-surface-from-segmentation">Extract Surface from Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#visualization-examples">Visualization Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#quick-preview-in-pyvista">Quick Preview in PyVista</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#animated-mesh-sequence">Animated Mesh Sequence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#batch-processing-examples">Batch Processing Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#process-multiple-patients">Process Multiple Patients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#parallel-segmentation">Parallel Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#data-download-examples">Data Download Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#download-dirlab-dataset">Download DirLab Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#custom-workflow-examples">Custom Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#step-by-step-processing">Step-by-Step Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../examples.html#custom-pipeline-with-specific-methods">Custom Pipeline with Specific Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../examples.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CLI &amp; Scripts Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_scripts/overview.html">CLI &amp; Scripts Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/overview.html#target-audience">Target Audience</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/overview.html#available-scripts">Available Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/overview.html#current-scripts">Current Scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/overview.html#upcoming-scripts">Upcoming Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/overview.html#general-workflow">General Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/overview.html#typical-command-structure">Typical Command Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/overview.html#output-organization">Output Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/overview.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/overview.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html">Heart Gated CT Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#input-requirements">Input Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#data-format">Data Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#image-quality-requirements">Image Quality Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#single-4d-file">Single 4D File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#multiple-3d-files">Multiple 3D Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#with-output-directory">With Output Directory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#command-line-options">Command-Line Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#required-arguments">Required Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#optional-arguments">Optional Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#processing-pipeline">Processing Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#output-files">Output Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#primary-outputs">Primary Outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#intermediate-files">Intermediate Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#contrast-enhanced-cardiac-cta">Contrast-Enhanced Cardiac CTA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#non-contrast-study-with-custom-reference">Non-Contrast Study with Custom Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#research-dataset-processing">Research Dataset Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#with-ants-registration">With ANTs Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#choosing-reference-image">Choosing Reference Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#performance-optimization">Performance Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#data-quality-tips">Data Quality Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#input-file-issues">Input File Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#segmentation-quality-issues">Segmentation Quality Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#registration-failures">Registration Failures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#memory-issues">Memory Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#expected-processing-time">Expected Processing Time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#viewing-results-in-omniverse">Viewing Results in Omniverse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_gated_ct.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_scripts/heart_model_to_patient.html">Heart Model to Patient Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_model_to_patient.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_model_to_patient.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_model_to_patient.html#input-data">Input Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_model_to_patient.html#processing-steps">Processing Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/heart_model_to_patient.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_model_to_patient.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_model_to_patient.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/heart_model_to_patient.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_scripts/lung_gated_ct.html">Lung Gated CT Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/lung_gated_ct.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/lung_gated_ct.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/lung_gated_ct.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/lung_gated_ct.html#processing-pipeline">Processing Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/lung_gated_ct.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/lung_gated_ct.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/lung_gated_ct.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/lung_gated_ct.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_scripts/4dct_reconstruction.html">4D-CT Reconstruction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/4dct_reconstruction.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/4dct_reconstruction.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/4dct_reconstruction.html#input-data">Input Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/4dct_reconstruction.html#reconstruction-methods">Reconstruction Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/4dct_reconstruction.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/4dct_reconstruction.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/4dct_reconstruction.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/4dct_reconstruction.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_scripts/vtk_to_usd.html">VTK to USD Conversion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/vtk_to_usd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/vtk_to_usd.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/vtk_to_usd.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/vtk_to_usd.html#material-painting">Material Painting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/vtk_to_usd.html#processing-options">Processing Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/vtk_to_usd.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/vtk_to_usd.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/vtk_to_usd.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/vtk_to_usd.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_scripts/brain_vessel_modeling.html">Brain Vessel Modeling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/brain_vessel_modeling.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/brain_vessel_modeling.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/brain_vessel_modeling.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/brain_vessel_modeling.html#processing-pipeline">Processing Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/brain_vessel_modeling.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/brain_vessel_modeling.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/brain_vessel_modeling.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/brain_vessel_modeling.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli_scripts/best_practices.html">Best Practices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/best_practices.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#image-quality-guidelines">Image Quality Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#file-organization">File Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/best_practices.html#processing-strategies">Processing Strategies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#computational-resources">Computational Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#workflow-optimization">Workflow Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/best_practices.html#quality-control">Quality Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#verification-checklist">Verification Checklist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#automated-quality-metrics">Automated Quality Metrics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/best_practices.html#common-issues-and-solutions">Common Issues and Solutions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#poor-segmentation">Poor Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#registration-failure">Registration Failure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#memory-errors">Memory Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#slow-processing">Slow Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/best_practices.html#performance-benchmarks">Performance Benchmarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/best_practices.html#reproducibility">Reproducibility</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#ensuring-reproducible-results">Ensuring Reproducible Results</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/best_practices.html#advanced-topics">Advanced Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#custom-reference-selection">Custom Reference Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#multi-phase-studies">Multi-Phase Studies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../cli_scripts/best_practices.html#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/best_practices.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cli_scripts/best_practices.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/architecture.html">Architecture Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/architecture.html#target-audience">Target Audience</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/architecture.html#design-philosophy">Design Philosophy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/architecture.html#package-organization">Package Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/architecture.html#class-hierarchy">Class Hierarchy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/architecture.html#base-class-pattern">Base Class Pattern</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/architecture.html#workflow-architecture">Workflow Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/architecture.html#data-flow">Data Flow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/architecture.html#file-formats">File Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/architecture.html#extension-points">Extension Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/architecture.html#relationship-to-cli-scripts">Relationship to CLI Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/architecture.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/architecture.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/architecture.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/architecture.html#performance-considerations">Performance Considerations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/architecture.html#gpu-acceleration">GPU Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/architecture.html#memory-management">Memory Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/architecture.html#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/architecture.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/core.html">Core Base Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/core.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/core.html#physiomotion4dbase-class">PhysioMotion4DBase Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase.__init__"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase.set_log_level"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.set_log_level()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase.set_log_classes"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.set_log_classes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase.set_log_all_classes"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.set_log_all_classes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase.get_log_classes"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.get_log_classes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_debug"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_debug()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_info"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_warning"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_warning()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_error"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_critical"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_critical()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_section"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_section()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_progress"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_progress()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/core.html#key-features">Key Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#logging-infrastructure">Logging Infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#parameter-management">Parameter Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#file-path-utilities">File Path Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/core.html#common-use-patterns">Common Use Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#creating-a-new-class">Creating a New Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#error-handling">Error Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#configuration-management">Configuration Management</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/core.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#progress-tracking">Progress Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#checkpoint-system">Checkpoint System</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/core.html#integration-examples">Integration Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#using-base-class-in-applications">Using Base Class in Applications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#custom-logging-handlers">Custom Logging Handlers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/core.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#inheritance-guidelines">Inheritance Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/core.html#parameter-validation">Parameter Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/core.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/workflows.html">Workflows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/workflows.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/workflows.html#workflow-to-script-mapping">Workflow to Script Mapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/workflows.html#available-workflows">Available Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#workflowconvertheartgatedcttousd">WorkflowConvertHeartGatedCTToUSD</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/workflows.html#physiomotion4d.WorkflowConvertHeartGatedCTToUSD"><code class="docutils literal notranslate"><span class="pre">WorkflowConvertHeartGatedCTToUSD</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#workflowregisterheartmodeltopatient">WorkflowRegisterHeartModelToPatient</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/workflows.html#common-workflow-patterns">Common Workflow Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#step-based-execution">Step-Based Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#custom-configuration">Custom Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/workflows.html#workflow-components">Workflow Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#internal-processing-steps">Internal Processing Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#component-selection">Component Selection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/workflows.html#extending-workflows">Extending Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#creating-custom-workflows">Creating Custom Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#modifying-existing-workflows">Modifying Existing Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#creating-cli-scripts-for-custom-workflows">Creating CLI Scripts for Custom Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/workflows.html#integration-patterns">Integration Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#batch-processing">Batch Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#pipeline-integration">Pipeline Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#parallel-execution">Parallel Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/workflows.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#workflow-design">Workflow Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#parameter-management">Parameter Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#performance">Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/workflows.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/workflows.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/workflows.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/segmentation.html">Segmentation Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/segmentation.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/segmentation.html#base-segmentation-class">Base Segmentation Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#segmentchestbase">SegmentChestBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/segmentation.html#physiomotion4d.SegmentChestBase"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/segmentation.html#segmentation-methods">Segmentation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#totalsegmentator">TotalSegmentator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/segmentation.html#physiomotion4d.SegmentChestTotalSegmentator"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#vista-3d">VISTA-3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#vista-3d-nim">VISTA-3D NIM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#ensemble-segmentation">Ensemble Segmentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/segmentation.html#physiomotion4d.SegmentChestEnsemble"><code class="docutils literal notranslate"><span class="pre">SegmentChestEnsemble</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/segmentation.html#common-usage-patterns">Common Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#basic-segmentation">Basic Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#contrast-enhanced-vs-non-contrast">Contrast-Enhanced vs Non-Contrast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#structure-extraction">Structure Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/segmentation.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#custom-post-processing">Custom Post-Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#custom-structure-selection">Custom Structure Selection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/segmentation.html#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#gpu-acceleration">GPU Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#batch-processing">Batch Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/segmentation.html#quality-control">Quality Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#validation-metrics">Validation Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#confidence-assessment">Confidence Assessment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/segmentation.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#method-selection">Method Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#parameter-tuning">Parameter Tuning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/segmentation.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/segmentation.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/registration_images.html">Image Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_images.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_images.html#base-registration-class">Base Registration Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#registerimagesbase">RegisterImagesBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/registration_images.html#physiomotion4d.RegisterImagesBase"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_images.html#registration-methods">Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#icon-registration">ICON Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#ants-registration">ANTs Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/registration_images.html#physiomotion4d.RegisterImagesANTs"><code class="docutils literal notranslate"><span class="pre">RegisterImagesANTs</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#time-series-registration">Time Series Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/registration_images.html#physiomotion4d.RegisterTimeSeriesImages"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_images.html#common-usage-patterns">Common Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#basic-registration">Basic Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#multi-modal-registration">Multi-Modal Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#masked-registration">Masked Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_images.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#registration-quality-assessment">Registration Quality Assessment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#iterative-refinement">Iterative Refinement</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_images.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#custom-loss-functions">Custom Loss Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#custom-transform-constraints">Custom Transform Constraints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_images.html#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#gpu-acceleration">GPU Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_images.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#method-selection">Method Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#parameter-tuning">Parameter Tuning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_images.html#quality-control">Quality Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_images.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/registration_models.html">Model Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_models.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_models.html#registration-methods">Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#icp-registration-vtk">ICP Registration (VTK)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/registration_models.html#physiomotion4d.RegisterModelsICP"><code class="docutils literal notranslate"><span class="pre">RegisterModelsICP</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#icp-registration-itk">ICP Registration (ITK)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/registration_models.html#physiomotion4d.RegisterModelsICPITK"><code class="docutils literal notranslate"><span class="pre">RegisterModelsICPITK</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#distance-map-registration">Distance Map Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/registration_models.html#physiomotion4d.RegisterModelsDistanceMaps"><code class="docutils literal notranslate"><span class="pre">RegisterModelsDistanceMaps</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#pca-based-registration">PCA-Based Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/registration_models.html#physiomotion4d.RegisterModelsPCA"><code class="docutils literal notranslate"><span class="pre">RegisterModelsPCA</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_models.html#common-usage-patterns">Common Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#initial-alignment">Initial Alignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#multi-stage-registration">Multi-Stage Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#model-to-image-registration">Model-to-Image Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_models.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#partial-shape-matching">Partial Shape Matching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#landmark-based-initialization">Landmark-Based Initialization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_models.html#quality-assessment">Quality Assessment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#registration-error-metrics">Registration Error Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#surface-distance-visualization">Surface Distance Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_models.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#custom-distance-metrics">Custom Distance Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#constrained-registration">Constrained Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_models.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#method-selection">Method Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#preprocessing">Preprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/registration_models.html#parameter-tuning">Parameter Tuning</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/registration_models.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/usd_generation.html">USD Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/usd_generation.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/usd_generation.html#base-converter-class">Base Converter Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#convertvtk4dtousdbase">ConvertVTK4DToUSDBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/usd_generation.html#physiomotion4d.ConvertVTK4DToUSDBase"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDBase</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/usd_generation.html#usd-converters">USD Converters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#polygon-mesh-converter">Polygon Mesh Converter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/usd_generation.html#physiomotion4d.ConvertVTK4DToUSDPolyMesh"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDPolyMesh</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#tetrahedral-mesh-converter">Tetrahedral Mesh Converter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/usd_generation.html#physiomotion4d.ConvertVTK4DToUSDTetMesh"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDTetMesh</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/usd_generation.html#anatomical-material-system">Anatomical Material System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#material-library">Material Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#custom-materials">Custom Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#material-properties">Material Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/usd_generation.html#time-varying-geometry">Time-Varying Geometry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#animation-creation">Animation Creation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#time-sampling">Time Sampling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/usd_generation.html#colormap-rendering">Colormap Rendering</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#scalar-data-visualization">Scalar Data Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#time-varying-colormaps">Time-Varying Colormaps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/usd_generation.html#usd-file-management">USD File Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#merging-usd-files">Merging USD Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#scene-organization">Scene Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/usd_generation.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#level-of-detail-lod">Level of Detail (LOD)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#instancing">Instancing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/usd_generation.html#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#mesh-simplification">Mesh Simplification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#batch-conversion">Batch Conversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/usd_generation.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#material-assignment">Material Assignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#animation">Animation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/usd_generation.html#file-organization">File Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/usd_generation.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/utilities.html">Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/utilities.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/utilities.html#image-tools">Image Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#module-physiomotion4d.image_tools">Medical Image I/O and Processing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/utilities.html#physiomotion4d.image_tools.ImageTools"><code class="docutils literal notranslate"><span class="pre">ImageTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/utilities.html#transform-tools">Transform Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#module-physiomotion4d.transform_tools">Spatial Transformation Utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/utilities.html#physiomotion4d.transform_tools.TransformTools"><code class="docutils literal notranslate"><span class="pre">TransformTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/utilities.html#contour-tools">Contour Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#module-physiomotion4d.contour_tools">Mesh Generation and Manipulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/utilities.html#physiomotion4d.contour_tools.ContourTools"><code class="docutils literal notranslate"><span class="pre">ContourTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/utilities.html#usd-tools">USD Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#module-physiomotion4d.usd_tools">USD File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/utilities.html#physiomotion4d.usd_tools.USDTools"><code class="docutils literal notranslate"><span class="pre">USDTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/utilities.html#usd-anatomy-tools">USD Anatomy Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#module-physiomotion4d.usd_anatomy_tools">Anatomical Material Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/utilities.html#physiomotion4d.usd_anatomy_tools.USDAnatomyTools"><code class="docutils literal notranslate"><span class="pre">USDAnatomyTools</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../developer/utilities.html#physiomotion4d.usd_anatomy_tools.parse_args"><code class="docutils literal notranslate"><span class="pre">parse_args()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/utilities.html#common-utility-patterns">Common Utility Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#pipeline-integration">Pipeline Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#batch-processing">Batch Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/utilities.html#custom-utility-functions">Custom Utility Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#extending-image-tools">Extending Image Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#custom-mesh-processing">Custom Mesh Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/utilities.html#performance-tips">Performance Tips</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#image-processing">Image Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#mesh-processing">Mesh Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/utilities.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#error-handling">Error Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#memory-management">Memory Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/utilities.html#file-i-o">File I/O</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/utilities.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/extending.html">Extending PhysioMotion4D</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/extending.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/extending.html#extension-patterns">Extension Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/extending.html#creating-custom-workflows">Creating Custom Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#basic-workflow-template">Basic Workflow Template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#example-brain-vessel-workflow">Example: Brain Vessel Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/extending.html#custom-segmentation-methods">Custom Segmentation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#adding-new-segmentation-algorithms">Adding New Segmentation Algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/extending.html#custom-registration-methods">Custom Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#implementing-new-registration-algorithms">Implementing New Registration Algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/extending.html#custom-usd-materials">Custom USD Materials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#adding-anatomical-materials">Adding Anatomical Materials</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/extending.html#integration-with-external-tools">Integration with External Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#connecting-to-external-libraries">Connecting to External Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/extending.html#creating-command-line-tools">Creating Command-Line Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#cli-wrapper-for-custom-workflow">CLI Wrapper for Custom Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#installation-as-package-entry-point">Installation as Package Entry Point</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/extending.html#testing-extensions">Testing Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#unit-tests-for-custom-code">Unit Tests for Custom Code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/extending.html#contributing-back">Contributing Back</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#sharing-your-extensions">Sharing Your Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#code-style-guidelines">Code Style Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#documentation-standards">Documentation Standards</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/extending.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#extension-design">Extension Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/extending.html#performance">Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../developer/extending.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#ways-to-contribute">Ways to Contribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#formatting">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#linting">Linting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#pre-commit-hooks">Pre-commit Hooks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#testing">Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#write-tests">Write Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#run-tests">Run Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#documentation">Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#build-docs-locally">Build Docs Locally</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#documentation-style">Documentation Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#docstring-format">Docstring Format</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#code-review-process">Code Review Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#review-criteria">Review Criteria</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#reporting-issues">Reporting Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#bug-reports">Bug Reports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#feature-requests">Feature Requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#release-process">Release Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#versioning">Versioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../contributing.html#making-a-release">Making a Release</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#community-guidelines">Community Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing.html">Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../testing.html#running-tests">Running Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../testing.html#basic-test-execution">Basic Test Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../testing.html#test-categories">Test Categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../testing.html#specific-test-modules">Specific Test Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../testing.html#coverage-reports">Coverage Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../testing.html#test-structure">Test Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../testing.html#writing-tests">Writing Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../testing.html#continuous-integration">Continuous Integration</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#general-questions">General Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#what-is-physiomotion4d">What is PhysioMotion4D?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#what-data-formats-are-supported">What data formats are supported?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#do-i-need-nvidia-omniverse">Do I need NVIDIA Omniverse?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#installation-questions">Installation Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#do-i-need-a-gpu">Do I need a GPU?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#what-python-version-is-required">What Python version is required?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#usage-questions">Usage Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#how-long-does-processing-take">How long does processing take?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#which-segmentation-method-should-i-use">Which segmentation method should I use?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../faq.html#which-registration-method-should-i-use">Which registration method should I use?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html#more-questions">More Questions?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../troubleshooting.html#installation-issues">Installation Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#cuda-out-of-memory">CUDA Out of Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#import-errors">Import Errors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../troubleshooting.html#processing-issues">Processing Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#poor-segmentation-quality">Poor Segmentation Quality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#registration-not-converging">Registration Not Converging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../troubleshooting.html#usd-issues">USD Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#usd-not-animating">USD Not Animating</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#usd-file-too-large">USD File Too Large</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../troubleshooting.html#performance-issues">Performance Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../troubleshooting.html#slow-processing">Slow Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../troubleshooting.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../references.html#software-citations">Software Citations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../references.html#related-publications">Related Publications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#registration-methods">Registration Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#segmentation-methods">Segmentation Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../references.html#datasets">Datasets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#dirlab-4d-ct">DirLab 4D-CT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#slicer-heart-ct">Slicer-Heart-CT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../references.html#technologies">Technologies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#nvidia-omniverse">NVIDIA Omniverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#monai">MONAI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../references.html#itk">ITK</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../references.html#external-links">External Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../references.html#contributing">Contributing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../changelog.html#version-2025-05-0">Version 2025.05.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../changelog.html#features">Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PhysioMotion4D</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">physiomotion4d.workflow_convert_heart_gated_ct_to_usd</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for physiomotion4d.workflow_convert_heart_gated_ct_to_usd</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Heart-gated CT processor implementing the complete 4D CT to USD workflow.</span>
+
+<span class="sd">This module implements the complete pipeline for processing 4D cardiac CT images</span>
+<span class="sd">as demonstrated in the Heart-GatedCT experiment notebooks.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">itk</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyvista</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pxr</span><span class="w"> </span><span class="kn">import</span> <span class="n">Usd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d.contour_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContourTools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d.convert_nrrd_4d_to_3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConvertNRRD4DTo3D</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d.convert_vtk_4d_to_usd</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConvertVTK4DToUSD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d.physiomotion4d_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhysioMotion4DBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d.register_images_ants</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegisterImagesANTs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d.register_images_icon</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegisterImagesICON</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d.segment_chest_total_segmentator</span><span class="w"> </span><span class="kn">import</span> <span class="n">SegmentChestTotalSegmentator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d.transform_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransformTools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d.usd_anatomy_tools</span><span class="w"> </span><span class="kn">import</span> <span class="n">USDAnatomyTools</span>
+
+
+<div class="viewcode-block" id="WorkflowConvertHeartGatedCTToUSD">
+<a class="viewcode-back" href="../../developer/workflows.html#physiomotion4d.WorkflowConvertHeartGatedCTToUSD">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">WorkflowConvertHeartGatedCTToUSD</span><span class="p">(</span><span class="n">PhysioMotion4DBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Complete workflow for Heart-gated CT images to dynamic USD models.</span>
+
+<span class="sd">    This class implements the full workflow from 4D CT images to painted USD files</span>
+<span class="sd">    suitable for visualization in NVIDIA Omniverse.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="WorkflowConvertHeartGatedCTToUSD.__init__">
+<a class="viewcode-back" href="../../developer/workflows.html#physiomotion4d.WorkflowConvertHeartGatedCTToUSD.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">input_filenames</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">contrast_enhanced</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">output_directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">project_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">reference_image_filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">number_of_registration_iterations</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">registration_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;icon&#39;</span><span class="p">,</span>
+        <span class="n">log_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the Heart-gated CT to USD workflow.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_filenames (List): List of paths to the 3D NRRD files containing cardiac CT data.</span>
+<span class="sd">                If there is only one file, it will be used as the 4D NRRD file.</span>
+<span class="sd">            contrast_enhanced (bool): Whether the study uses contrast enhancement</span>
+<span class="sd">            output_directory (str): Directory path where output files will be stored</span>
+<span class="sd">            project_name (str): Project name for USD file organization</span>
+<span class="sd">            reference_image_filename (Optional[str]): Path to reference image file</span>
+<span class="sd">            number_of_registration_iterations (Optional[int]): Number of registration iterations</span>
+<span class="sd">            registration_method (str): Registration method to use: &#39;ants&#39; or &#39;icon&#39; (default: &#39;icon&#39;)</span>
+<span class="sd">            log_level: Logging level (default: logging.INFO)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="n">log_level</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_filenames</span> <span class="o">=</span> <span class="n">input_filenames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contrast_enhanced</span> <span class="o">=</span> <span class="n">contrast_enhanced</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span> <span class="o">=</span> <span class="n">output_directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_name</span> <span class="o">=</span> <span class="n">project_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_image_filename</span> <span class="o">=</span> <span class="n">reference_image_filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_registration_iterations</span> <span class="o">=</span> <span class="n">number_of_registration_iterations</span>
+
+        <span class="c1"># Validate registration method</span>
+        <span class="k">if</span> <span class="n">registration_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ants&#39;</span><span class="p">,</span> <span class="s1">&#39;icon&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid registration_method &#39;</span><span class="si">{</span><span class="n">registration_method</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                <span class="s2">&quot;Must be &#39;ants&#39; or &#39;icon&#39;.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">registration_method</span> <span class="o">=</span> <span class="n">registration_method</span>
+
+        <span class="c1"># Create output directory if it doesn&#39;t exist</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_directory</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Initialize processing components</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converter</span> <span class="o">=</span> <span class="n">ConvertNRRD4DTo3D</span><span class="p">(</span><span class="n">log_level</span><span class="o">=</span><span class="n">log_level</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segmenter</span> <span class="o">=</span> <span class="n">SegmentChestTotalSegmentator</span><span class="p">(</span><span class="n">log_level</span><span class="o">=</span><span class="n">log_level</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segmenter</span><span class="o">.</span><span class="n">contrast_threshold</span> <span class="o">=</span> <span class="mi">500</span>
+
+        <span class="c1"># Initialize registration method</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">registration_method</span> <span class="o">==</span> <span class="s1">&#39;ants&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Initializing ANTs registration...&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span> <span class="o">=</span> <span class="n">RegisterImagesANTs</span><span class="p">(</span><span class="n">log_level</span><span class="o">=</span><span class="n">log_level</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">set_modality</span><span class="p">(</span><span class="s1">&#39;ct&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">set_transform_type</span><span class="p">(</span><span class="s1">&#39;SyN&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">number_of_registration_iterations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="n">number_of_registration_iterations</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">set_syn_parameters</span><span class="p">(</span>
+                    <span class="n">reg_iterations</span><span class="o">=</span><span class="p">(</span>
+                        <span class="n">number_of_registration_iterations</span><span class="p">,</span>
+                        <span class="n">number_of_registration_iterations</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span>
+                        <span class="mi">0</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># icon (default)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Initializing ICON registration...&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span> <span class="o">=</span> <span class="n">RegisterImagesICON</span><span class="p">(</span><span class="n">log_level</span><span class="o">=</span><span class="n">log_level</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">set_modality</span><span class="p">(</span><span class="s1">&#39;ct&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">number_of_registration_iterations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="n">number_of_registration_iterations</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">set_number_of_iterations</span><span class="p">(</span>
+                    <span class="n">number_of_registration_iterations</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">set_mask_dilation</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contour_tools</span> <span class="o">=</span> <span class="n">ContourTools</span><span class="p">()</span>
+
+        <span class="c1"># Data storage for processing pipeline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_time_points</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_series_images</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_image</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_segmentation</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_series_transforms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reference_contours</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+<div class="viewcode-block" id="WorkflowConvertHeartGatedCTToUSD.process">
+<a class="viewcode-back" href="../../developer/workflows.html#physiomotion4d.WorkflowConvertHeartGatedCTToUSD.process">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute the complete workflow from 4D CT to dynamic USD models.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Path to the final dynamic anatomy USD file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_section</span><span class="p">(</span><span class="s2">&quot;Heart-gated CT Processing Pipeline&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Load and convert data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_time_series</span><span class="p">()</span>
+
+        <span class="c1"># Segment and register all frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_segment_and_register_frames</span><span class="p">()</span>
+
+        <span class="c1"># Generate reference contours</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generate_reference_contours</span><span class="p">()</span>
+
+        <span class="c1"># Transform contours for each time point</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transform_all_contours</span><span class="p">()</span>
+
+        <span class="c1"># Create USD files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_usd_files</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Processing pipeline completed successfully&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">project_name</span><span class="si">}</span><span class="s2">.dynamic_anatomy_painted.usd&quot;</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_time_series</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load and convert 4D data to time series images.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Loading time series data...&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_filenames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">load_nrrd_4d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">save_3d_images</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Loading </span><span class="si">%d</span><span class="s2"> 3D NRRD files&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_filenames</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">load_nrrd_3d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_filenames</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_time_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">get_number_of_3d_images</span><span class="p">()</span>
+
+        <span class="c1"># Load all time series images into memory</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_time_points</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_time_series_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">converter</span><span class="o">.</span><span class="n">get_3d_image</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+        <span class="c1"># Load reference image</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_image_filename</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_image</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_image_filename</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use 70% frame as reference if none specified</span>
+            <span class="n">mid_frame</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_time_points</span> <span class="o">*</span> <span class="mf">0.7</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_series_images</span><span class="p">[</span><span class="n">mid_frame</span><span class="p">]</span>
+            <span class="n">itk</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_image</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="s2">&quot;fixed_image.mha&quot;</span><span class="p">),</span>
+                <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Loaded </span><span class="si">%d</span><span class="s2"> time points&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_time_points</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_segment_and_register_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Segment each frame and register to reference image.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Segmenting and registering frames...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Segment reference image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Segmenting reference image...&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_segmentation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segmenter</span><span class="o">.</span><span class="n">segment</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_image</span><span class="p">,</span> <span class="n">contrast_enhanced_study</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">contrast_enhanced</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Create combined masks for registration</span>
+        <span class="n">labelmap_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_segmentation</span><span class="p">[</span><span class="s2">&quot;labelmap&quot;</span><span class="p">]</span>
+        <span class="n">lung_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_segmentation</span><span class="p">[</span><span class="s2">&quot;lung&quot;</span><span class="p">]</span>
+        <span class="n">heart_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_segmentation</span><span class="p">[</span><span class="s2">&quot;heart&quot;</span><span class="p">]</span>
+        <span class="n">major_vessels_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_segmentation</span><span class="p">[</span><span class="s2">&quot;major_vessels&quot;</span><span class="p">]</span>
+        <span class="n">bone_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_segmentation</span><span class="p">[</span><span class="s2">&quot;bone&quot;</span><span class="p">]</span>
+        <span class="n">soft_tissue_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_segmentation</span><span class="p">[</span><span class="s2">&quot;soft_tissue&quot;</span><span class="p">]</span>
+        <span class="n">other_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_segmentation</span><span class="p">[</span><span class="s2">&quot;other&quot;</span><span class="p">]</span>
+        <span class="n">contrast_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_segmentation</span><span class="p">[</span><span class="s2">&quot;contrast&quot;</span><span class="p">]</span>
+        <span class="n">itk</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span>
+            <span class="n">labelmap_mask</span><span class="p">,</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="s2">&quot;fixed_image_mask.mha&quot;</span><span class="p">),</span>
+            <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Create masks for different anatomy types</span>
+        <span class="n">heart_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">heart_mask</span><span class="p">)</span>
+        <span class="n">contrast_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">contrast_mask</span><span class="p">)</span>
+        <span class="n">major_vessels_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">major_vessels_mask</span><span class="p">)</span>
+        <span class="n">fixed_dynamic_mask</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span>
+            <span class="n">heart_arr</span> <span class="o">+</span> <span class="n">contrast_arr</span> <span class="o">+</span> <span class="n">major_vessels_arr</span>
+        <span class="p">)</span>
+        <span class="n">fixed_dynamic_mask</span><span class="o">.</span><span class="n">CopyInformation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fixed_image</span><span class="p">)</span>
+
+        <span class="n">lung_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">lung_mask</span><span class="p">)</span>
+        <span class="n">bone_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">bone_mask</span><span class="p">)</span>
+        <span class="n">other_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetArrayFromImage</span><span class="p">(</span><span class="n">other_mask</span><span class="p">)</span>
+        <span class="n">fixed_static_mask</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">GetImageFromArray</span><span class="p">(</span><span class="n">lung_arr</span> <span class="o">+</span> <span class="n">bone_arr</span> <span class="o">+</span> <span class="n">other_arr</span><span class="p">)</span>
+        <span class="n">fixed_static_mask</span><span class="o">.</span><span class="n">CopyInformation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fixed_image</span><span class="p">)</span>
+
+        <span class="c1"># Set up registrar with fixed image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">set_fixed_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fixed_image</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">registration_method</span> <span class="o">==</span> <span class="s1">&#39;icon&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contrast_enhanced</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">set_mass_preservation</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">set_mass_preservation</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Process each time point</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_series_transforms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_time_points</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_progress</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_time_points</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;Processing frames&quot;</span><span class="p">)</span>
+
+            <span class="n">moving_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_series_images</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="c1"># Register without mask first</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">set_fixed_image_mask</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">result_all</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">moving_image</span><span class="p">)</span>
+            <span class="n">inverse_transform_all</span> <span class="o">=</span> <span class="n">result_all</span><span class="p">[</span><span class="s2">&quot;inverse_transform&quot;</span><span class="p">]</span>
+            <span class="n">forward_transform_all</span> <span class="o">=</span> <span class="n">result_all</span><span class="p">[</span><span class="s2">&quot;forward_transform&quot;</span><span class="p">]</span>
+            <span class="n">itk</span><span class="o">.</span><span class="n">transformwrite</span><span class="p">(</span>
+                <span class="n">inverse_transform_all</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;slice_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_all_AB.hdf&quot;</span><span class="p">),</span>
+                <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">itk</span><span class="o">.</span><span class="n">transformwrite</span><span class="p">(</span>
+                <span class="n">forward_transform_all</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;slice_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_all_BA.hdf&quot;</span><span class="p">),</span>
+                <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Estimate the moving dynamic mask by the inverse transform of the fixed dynamic mask</span>
+            <span class="n">moving_dynamic_mask</span> <span class="o">=</span> <span class="n">TransformTools</span><span class="p">()</span><span class="o">.</span><span class="n">transform_image</span><span class="p">(</span>
+                <span class="n">fixed_dynamic_mask</span><span class="p">,</span> <span class="n">inverse_transform_all</span><span class="p">,</span> <span class="n">moving_image</span><span class="p">,</span> <span class="s2">&quot;nearest&quot;</span>
+            <span class="p">)</span>
+            <span class="n">itk</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span>
+                <span class="n">moving_dynamic_mask</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;slice_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_dynamic_mask.mha&quot;</span><span class="p">),</span>
+                <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">set_fixed_image_mask</span><span class="p">(</span><span class="n">fixed_dynamic_mask</span><span class="p">)</span>
+            <span class="n">result_dynamic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">moving_image</span><span class="p">,</span> <span class="n">moving_dynamic_mask</span><span class="p">)</span>
+            <span class="n">inverse_transform_dynamic</span> <span class="o">=</span> <span class="n">result_dynamic</span><span class="p">[</span><span class="s2">&quot;inverse_transform&quot;</span><span class="p">]</span>
+            <span class="n">forward_transform_dynamic</span> <span class="o">=</span> <span class="n">result_dynamic</span><span class="p">[</span><span class="s2">&quot;forward_transform&quot;</span><span class="p">]</span>
+
+            <span class="c1"># Estimate the moving static mask by the inverse transform of the fixed static mask</span>
+            <span class="n">moving_static_mask</span> <span class="o">=</span> <span class="n">TransformTools</span><span class="p">()</span><span class="o">.</span><span class="n">transform_image</span><span class="p">(</span>
+                <span class="n">fixed_static_mask</span><span class="p">,</span> <span class="n">inverse_transform_all</span><span class="p">,</span> <span class="n">moving_image</span><span class="p">,</span> <span class="s2">&quot;nearest&quot;</span>
+            <span class="p">)</span>
+            <span class="n">itk</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span>
+                <span class="n">moving_static_mask</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;slice_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_static_mask.mha&quot;</span><span class="p">),</span>
+                <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">set_fixed_image_mask</span><span class="p">(</span><span class="n">fixed_static_mask</span><span class="p">)</span>
+            <span class="n">result_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">registrar</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">moving_image</span><span class="p">,</span> <span class="n">moving_static_mask</span><span class="p">)</span>
+            <span class="n">inverse_transform_static</span> <span class="o">=</span> <span class="n">result_static</span><span class="p">[</span><span class="s2">&quot;inverse_transform&quot;</span><span class="p">]</span>
+            <span class="n">forward_transform_static</span> <span class="o">=</span> <span class="n">result_static</span><span class="p">[</span><span class="s2">&quot;forward_transform&quot;</span><span class="p">]</span>
+
+            <span class="c1"># Store transforms</span>
+            <span class="n">transforms</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;dynamic&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;inverse_transform&#39;</span><span class="p">:</span> <span class="n">inverse_transform_dynamic</span><span class="p">,</span>
+                    <span class="s1">&#39;forward_transform&#39;</span><span class="p">:</span> <span class="n">forward_transform_dynamic</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="s1">&#39;static&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;inverse_transform&#39;</span><span class="p">:</span> <span class="n">inverse_transform_static</span><span class="p">,</span>
+                    <span class="s1">&#39;forward_transform&#39;</span><span class="p">:</span> <span class="n">forward_transform_static</span><span class="p">,</span>
+                <span class="p">},</span>
+                <span class="s1">&#39;all&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;inverse_transform&#39;</span><span class="p">:</span> <span class="n">inverse_transform_all</span><span class="p">,</span>
+                    <span class="s1">&#39;forward_transform&#39;</span><span class="p">:</span> <span class="n">forward_transform_all</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">}</span>
+            <span class="n">itk</span><span class="o">.</span><span class="n">transformwrite</span><span class="p">(</span>
+                <span class="n">inverse_transform_dynamic</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;slice_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_dynamic_AB.hdf&quot;</span><span class="p">),</span>
+                <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">itk</span><span class="o">.</span><span class="n">transformwrite</span><span class="p">(</span>
+                <span class="n">forward_transform_dynamic</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;slice_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_dynamic_BA.hdf&quot;</span><span class="p">),</span>
+                <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">itk</span><span class="o">.</span><span class="n">transformwrite</span><span class="p">(</span>
+                <span class="n">inverse_transform_static</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;slice_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_static_AB.hdf&quot;</span><span class="p">),</span>
+                <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">itk</span><span class="o">.</span><span class="n">transformwrite</span><span class="p">(</span>
+                <span class="n">forward_transform_static</span><span class="p">,</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;slice_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_static_BA.hdf&quot;</span><span class="p">),</span>
+                <span class="n">compression</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_time_series_transforms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transforms</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_reference_contours</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate contour meshes from reference segmentation.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Generating reference contours...&quot;</span><span class="p">)</span>
+
+        <span class="p">(</span>
+            <span class="n">labelmap_image</span><span class="p">,</span>
+            <span class="n">lung_mask</span><span class="p">,</span>
+            <span class="n">heart_mask</span><span class="p">,</span>
+            <span class="n">major_vessels_mask</span><span class="p">,</span>
+            <span class="n">bone_mask</span><span class="p">,</span>
+            <span class="n">soft_tissue_mask</span><span class="p">,</span>
+            <span class="n">other_mask</span><span class="p">,</span>
+            <span class="n">contrast_mask</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_segmentation</span>
+
+        <span class="c1"># Generate all anatomy contours</span>
+        <span class="n">all_contours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contour_tools</span><span class="o">.</span><span class="n">extract_contours</span><span class="p">(</span><span class="n">labelmap_image</span><span class="p">)</span>
+
+        <span class="c1"># Generate dynamic anatomy contours</span>
+        <span class="n">label_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">array_from_image</span><span class="p">(</span><span class="n">labelmap_image</span><span class="p">)</span>
+        <span class="n">heart_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">array_from_image</span><span class="p">(</span><span class="n">heart_mask</span><span class="p">)</span>
+        <span class="n">contrast_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">array_from_image</span><span class="p">(</span><span class="n">contrast_mask</span><span class="p">)</span>
+        <span class="n">major_vessels_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">array_from_image</span><span class="p">(</span><span class="n">major_vessels_mask</span><span class="p">)</span>
+
+        <span class="n">dynamic_anatomy_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">heart_arr</span><span class="p">,</span> <span class="n">contrast_arr</span><span class="p">)</span>
+        <span class="n">dynamic_anatomy_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">dynamic_anatomy_arr</span><span class="p">,</span> <span class="n">major_vessels_arr</span><span class="p">)</span>
+        <span class="n">dynamic_anatomy_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dynamic_anatomy_arr</span><span class="p">,</span> <span class="n">label_arr</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">dynamic_anatomy_image</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">image_from_array</span><span class="p">(</span>
+            <span class="n">dynamic_anatomy_arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">dynamic_anatomy_image</span><span class="o">.</span><span class="n">CopyInformation</span><span class="p">(</span><span class="n">labelmap_image</span><span class="p">)</span>
+
+        <span class="n">dynamic_contours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contour_tools</span><span class="o">.</span><span class="n">extract_contours</span><span class="p">(</span><span class="n">dynamic_anatomy_image</span><span class="p">)</span>
+
+        <span class="c1"># Generate static anatomy contours</span>
+        <span class="n">lung_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">array_from_image</span><span class="p">(</span><span class="n">lung_mask</span><span class="p">)</span>
+        <span class="n">bone_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">array_from_image</span><span class="p">(</span><span class="n">bone_mask</span><span class="p">)</span>
+        <span class="n">soft_tissue_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">array_from_image</span><span class="p">(</span><span class="n">soft_tissue_mask</span><span class="p">)</span>
+        <span class="n">other_arr</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">array_from_image</span><span class="p">(</span><span class="n">other_mask</span><span class="p">)</span>
+
+        <span class="n">static_anatomy_arr</span> <span class="o">=</span> <span class="n">lung_arr</span> <span class="o">+</span> <span class="n">bone_arr</span> <span class="o">+</span> <span class="n">soft_tissue_arr</span> <span class="o">+</span> <span class="n">other_arr</span>
+        <span class="n">static_anatomy_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">static_anatomy_arr</span><span class="p">,</span> <span class="n">label_arr</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">static_anatomy_image</span> <span class="o">=</span> <span class="n">itk</span><span class="o">.</span><span class="n">image_from_array</span><span class="p">(</span><span class="n">static_anatomy_arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">))</span>
+        <span class="n">static_anatomy_image</span><span class="o">.</span><span class="n">CopyInformation</span><span class="p">(</span><span class="n">labelmap_image</span><span class="p">)</span>
+
+        <span class="n">static_contours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contour_tools</span><span class="o">.</span><span class="n">extract_contours</span><span class="p">(</span><span class="n">static_anatomy_image</span><span class="p">)</span>
+
+        <span class="c1"># Store reference contours</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reference_contours</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;all&#39;</span><span class="p">:</span> <span class="n">all_contours</span><span class="p">,</span>
+            <span class="s1">&#39;dynamic&#39;</span><span class="p">:</span> <span class="n">dynamic_contours</span><span class="p">,</span>
+            <span class="s1">&#39;static&#39;</span><span class="p">:</span> <span class="n">static_contours</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_transform_all_contours</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Transform contours for all time points using registration transforms.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Transforming contours for all time points...&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transformed_contours</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;all&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;dynamic&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;static&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_time_points</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_progress</span><span class="p">(</span>
+                <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_time_points</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;Transforming contours&quot;</span>
+            <span class="p">)</span>
+
+            <span class="n">frame_contours</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">anatomy_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;dynamic&#39;</span><span class="p">,</span> <span class="s1">&#39;static&#39;</span><span class="p">]:</span>
+                <span class="c1"># Get the forward transform for this anatomy type and frame</span>
+                <span class="n">forward_transform</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_series_transforms</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">anatomy_type</span><span class="p">][</span>
+                    <span class="s1">&#39;forward_transform&#39;</span>
+                <span class="p">]</span>
+
+                <span class="c1"># Transform the reference contours</span>
+                <span class="n">transformed_contours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contour_tools</span><span class="o">.</span><span class="n">transform_contours</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_reference_contours</span><span class="p">[</span><span class="n">anatomy_type</span><span class="p">],</span>
+                    <span class="n">forward_transform</span><span class="p">,</span>
+                    <span class="n">with_deformation_magnitude</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="n">frame_contours</span><span class="p">[</span><span class="n">anatomy_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">transformed_contours</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_transformed_contours</span><span class="p">[</span><span class="n">anatomy_type</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">transformed_contours</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_usd_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create painted USD files for all anatomy types.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Creating USD files...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Create USD for each anatomy type</span>
+        <span class="k">for</span> <span class="n">anatomy_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;dynamic&#39;</span><span class="p">,</span> <span class="s1">&#39;static&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Creating </span><span class="si">%s</span><span class="s2"> anatomy USD...&quot;</span><span class="p">,</span> <span class="n">anatomy_type</span><span class="p">)</span>
+
+            <span class="c1"># Convert VTK contours to USD</span>
+            <span class="n">converter</span> <span class="o">=</span> <span class="n">ConvertVTK4DToUSD</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">project_name</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_transformed_contours</span><span class="p">[</span><span class="n">anatomy_type</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">segmenter</span><span class="o">.</span><span class="n">all_mask_ids</span><span class="p">,</span>
+                <span class="n">log_level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_level</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">usd_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">project_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">anatomy_type</span><span class="si">}</span><span class="s2">.usd&quot;</span>
+            <span class="p">)</span>
+            <span class="n">stage</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">usd_file</span><span class="p">)</span>
+
+            <span class="c1"># Paint the USD file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Painting </span><span class="si">%s</span><span class="s2"> anatomy USD...&quot;</span><span class="p">,</span> <span class="n">anatomy_type</span><span class="p">)</span>
+            <span class="n">output_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">project_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">anatomy_type</span><span class="si">}</span><span class="s2">_painted.usd&quot;</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_filename</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)</span>
+            <span class="n">painter</span> <span class="o">=</span> <span class="n">USDAnatomyTools</span><span class="p">(</span><span class="n">stage</span><span class="p">)</span>
+            <span class="n">painter</span><span class="o">.</span><span class="n">enhance_meshes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segmenter</span><span class="p">)</span>
+            <span class="n">stage</span><span class="o">.</span><span class="n">Export</span><span class="p">(</span><span class="n">output_filename</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Command-line interface for Heart-gated CT processing.&quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Process 4D cardiac CT images to dynamic USD models for Omniverse&quot;</span><span class="p">,</span>
+        <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">RawDescriptionHelpFormatter</span><span class="p">,</span>
+        <span class="n">epilog</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Examples:</span>
+<span class="s2">  # Process a single 4D NRRD file</span>
+<span class="s2">  physiomotion4d-heart-gated-ct input_4d.nrrd --contrast --output-dir ./results</span>
+
+<span class="s2">  # Process multiple 3D NRRD files as time series</span>
+<span class="s2">  physiomotion4d-heart-gated-ct frame_*.nrrd --output-dir ./results --project-name cardiac</span>
+
+<span class="s2">  # Specify reference image and registration iterations</span>
+<span class="s2">  physiomotion4d-heart-gated-ct input.nrrd --reference-image ref.mha --registration-iterations 50</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;input_files&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to 4D NRRD file or list of 3D NRRD files&quot;</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--output-dir&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;./results&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output directory for results (default: ./results)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--project-name&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;cardiac_model&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Project name for USD organization (default: cardiac_model)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--contrast&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Indicate if study is contrast enhanced&quot;</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--reference-image&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to reference image file (default: uses 70</span><span class="si">%%</span><span class="s2"> time point)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--registration-iterations&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of registration iterations (default: 1)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--registration-method&quot;</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ants&#39;</span><span class="p">,</span> <span class="s1">&#39;icon&#39;</span><span class="p">],</span>
+        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;icon&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Registration method to use: ants or icon (default: icon)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="c1"># Validate input files</span>
+    <span class="k">for</span> <span class="n">input_file</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">input_files</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: Input file not found: </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="c1"># Initialize processor</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initializing Heart-gated CT processor...&quot;</span><span class="p">)</span>
+    <span class="n">processor</span> <span class="o">=</span> <span class="n">WorkflowConvertHeartGatedCTToUSD</span><span class="p">(</span>
+        <span class="n">input_filenames</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">input_files</span><span class="p">,</span>
+        <span class="n">contrast_enhanced</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">contrast</span><span class="p">,</span>
+        <span class="n">output_directory</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+        <span class="n">project_name</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">project_name</span><span class="p">,</span>
+        <span class="n">reference_image_filename</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">reference_image</span><span class="p">,</span>
+        <span class="n">number_of_registration_iterations</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">registration_iterations</span><span class="p">,</span>
+        <span class="n">registration_method</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">registration_method</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Execute complete workflow</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Starting Heart-gated CT processing pipeline...&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="n">final_usd</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Processing completed successfully!&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Output files created in: </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">project_name</span><span class="si">}</span><span class="s2">.dynamic_anatomy_painted.usd&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">project_name</span><span class="si">}</span><span class="s2">.static_anatomy_painted.usd&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">project_name</span><span class="si">}</span><span class="s2">.all_anatomy_painted.usd&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">You can now open these files in NVIDIA Omniverse.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Error during processing: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+
+        <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Stephen R. Aylward, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

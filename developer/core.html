@@ -1,0 +1,1666 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Core Base Class &mdash; PhysioMotion4D 2025.05.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=556198f2" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=c436cb72"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Workflows" href="workflows.html" />
+    <link rel="prev" title="Architecture Overview" href="architecture.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PhysioMotion4D
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#software-dependencies">Software Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installation-methods">Installation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#method-1-install-from-pypi-recommended">Method 1: Install from PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#method-2-install-from-source">Method 2: Install from Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#optional-dependencies">Optional Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#development-tools">Development Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#documentation-tools">Documentation Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#testing-dependencies">Testing Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#verify-installation">Verify Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#command-line-tools">Command-Line Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#gpu-setup">GPU Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#cuda-installation">CUDA Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#pytorch-with-cuda">PyTorch with CUDA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-workflow">Basic Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#command-line-interface">Command-Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#step-by-step-workflow">Step-by-Step Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#working-with-individual-components">Working with Individual Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#segmentation-only">Segmentation Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#image-registration-only">Image Registration Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#vtk-to-usd-conversion">VTK to USD Conversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#sample-data">Sample Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#download-sample-cardiac-ct-data">Download Sample Cardiac CT Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#visualizing-results">Visualizing Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#in-nvidia-omniverse">In NVIDIA Omniverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#using-usd-viewer">Using USD Viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#in-pyvista">In PyVista</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#complete-workflow-examples">Complete Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#heart-gated-ct-processing">Heart-Gated CT Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#lung-4d-ct-processing">Lung 4D-CT Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#segmentation-examples">Segmentation Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#totalsegmentator">TotalSegmentator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#vista-3d-with-point-prompts">VISTA-3D with Point Prompts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#ensemble-segmentation">Ensemble Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#registration-examples">Registration Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#icon-deep-learning-registration">ICON Deep Learning Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#multi-phase-cardiac-registration">Multi-Phase Cardiac Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#ants-multi-stage-registration">ANTs Multi-Stage Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#usd-conversion-examples">USD Conversion Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#vtk-time-series-to-usd">VTK Time Series to USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#merge-multiple-usd-files">Merge Multiple USD Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#apply-materials-to-usd">Apply Materials to USD</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#transform-and-contour-examples">Transform and Contour Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#apply-transform-to-images">Apply Transform to Images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#transform-contours-meshes">Transform Contours/Meshes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#extract-surface-from-segmentation">Extract Surface from Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#visualization-examples">Visualization Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#quick-preview-in-pyvista">Quick Preview in PyVista</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#animated-mesh-sequence">Animated Mesh Sequence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#batch-processing-examples">Batch Processing Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#process-multiple-patients">Process Multiple Patients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#parallel-segmentation">Parallel Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#data-download-examples">Data Download Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#download-dirlab-dataset">Download DirLab Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#custom-workflow-examples">Custom Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#step-by-step-processing">Step-by-Step Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#custom-pipeline-with-specific-methods">Custom Pipeline with Specific Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CLI &amp; Scripts Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/overview.html">CLI &amp; Scripts Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/overview.html#target-audience">Target Audience</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/overview.html#available-scripts">Available Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/overview.html#current-scripts">Current Scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/overview.html#upcoming-scripts">Upcoming Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/overview.html#general-workflow">General Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/overview.html#typical-command-structure">Typical Command Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/overview.html#output-organization">Output Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/overview.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/overview.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html">Heart Gated CT Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#input-requirements">Input Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#data-format">Data Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#image-quality-requirements">Image Quality Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#single-4d-file">Single 4D File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#multiple-3d-files">Multiple 3D Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#with-output-directory">With Output Directory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#command-line-options">Command-Line Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#required-arguments">Required Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#optional-arguments">Optional Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#processing-pipeline">Processing Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#output-files">Output Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#primary-outputs">Primary Outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#intermediate-files">Intermediate Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#contrast-enhanced-cardiac-cta">Contrast-Enhanced Cardiac CTA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#non-contrast-study-with-custom-reference">Non-Contrast Study with Custom Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#research-dataset-processing">Research Dataset Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#with-ants-registration">With ANTs Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#choosing-reference-image">Choosing Reference Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#performance-optimization">Performance Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#data-quality-tips">Data Quality Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#input-file-issues">Input File Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#segmentation-quality-issues">Segmentation Quality Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#registration-failures">Registration Failures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#memory-issues">Memory Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#expected-processing-time">Expected Processing Time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#viewing-results-in-omniverse">Viewing Results in Omniverse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html">Heart Model to Patient Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#input-data">Input Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#processing-steps">Processing Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html">Lung Gated CT Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#processing-pipeline">Processing Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html">4D-CT Reconstruction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#input-data">Input Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#reconstruction-methods">Reconstruction Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html">VTK to USD Conversion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#material-painting">Material Painting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#processing-options">Processing Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html">Brain Vessel Modeling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#processing-pipeline">Processing Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/best_practices.html">Best Practices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#image-quality-guidelines">Image Quality Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#file-organization">File Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#processing-strategies">Processing Strategies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#computational-resources">Computational Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#workflow-optimization">Workflow Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#quality-control">Quality Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#verification-checklist">Verification Checklist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#automated-quality-metrics">Automated Quality Metrics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#common-issues-and-solutions">Common Issues and Solutions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#poor-segmentation">Poor Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#registration-failure">Registration Failure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#memory-errors">Memory Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#slow-processing">Slow Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#performance-benchmarks">Performance Benchmarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#reproducibility">Reproducibility</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#ensuring-reproducible-results">Ensuring Reproducible Results</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#advanced-topics">Advanced Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#custom-reference-selection">Custom Reference Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#multi-phase-studies">Multi-Phase Studies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#target-audience">Target Audience</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#design-philosophy">Design Philosophy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#package-organization">Package Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#class-hierarchy">Class Hierarchy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#base-class-pattern">Base Class Pattern</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#workflow-architecture">Workflow Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#data-flow">Data Flow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#file-formats">File Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#extension-points">Extension Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#relationship-to-cli-scripts">Relationship to CLI Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#performance-considerations">Performance Considerations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#gpu-acceleration">GPU Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#memory-management">Memory Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Core Base Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#physiomotion4dbase-class">PhysioMotion4DBase Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase.__init__"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase.set_log_level"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.set_log_level()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase.set_log_classes"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.set_log_classes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase.set_log_all_classes"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.set_log_all_classes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase.get_log_classes"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.get_log_classes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase.log_debug"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_debug()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase.log_info"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase.log_warning"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_warning()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase.log_error"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase.log_critical"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_critical()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase.log_section"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_section()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.PhysioMotion4DBase.log_progress"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_progress()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#key-features">Key Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#logging-infrastructure">Logging Infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameter-management">Parameter Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-path-utilities">File Path Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#common-use-patterns">Common Use Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-new-class">Creating a New Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#error-handling">Error Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-management">Configuration Management</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#progress-tracking">Progress Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#checkpoint-system">Checkpoint System</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#integration-examples">Integration Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-base-class-in-applications">Using Base Class in Applications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-logging-handlers">Custom Logging Handlers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#inheritance-guidelines">Inheritance Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameter-validation">Parameter Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Workflows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#workflow-to-script-mapping">Workflow to Script Mapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#available-workflows">Available Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#workflowconvertheartgatedcttousd">WorkflowConvertHeartGatedCTToUSD</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="workflows.html#physiomotion4d.WorkflowConvertHeartGatedCTToUSD"><code class="docutils literal notranslate"><span class="pre">WorkflowConvertHeartGatedCTToUSD</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#workflowregisterheartmodeltopatient">WorkflowRegisterHeartModelToPatient</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#common-workflow-patterns">Common Workflow Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#step-based-execution">Step-Based Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#custom-configuration">Custom Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#workflow-components">Workflow Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#internal-processing-steps">Internal Processing Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#component-selection">Component Selection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#extending-workflows">Extending Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#creating-custom-workflows">Creating Custom Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#modifying-existing-workflows">Modifying Existing Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#creating-cli-scripts-for-custom-workflows">Creating CLI Scripts for Custom Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#integration-patterns">Integration Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#batch-processing">Batch Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#pipeline-integration">Pipeline Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#parallel-execution">Parallel Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#workflow-design">Workflow Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#parameter-management">Parameter Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#performance">Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="segmentation.html">Segmentation Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#base-segmentation-class">Base Segmentation Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#segmentchestbase">SegmentChestBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="segmentation.html#physiomotion4d.SegmentChestBase"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#segmentation-methods">Segmentation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#totalsegmentator">TotalSegmentator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="segmentation.html#physiomotion4d.SegmentChestTotalSegmentator"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#vista-3d">VISTA-3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#vista-3d-nim">VISTA-3D NIM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#ensemble-segmentation">Ensemble Segmentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="segmentation.html#physiomotion4d.SegmentChestEnsemble"><code class="docutils literal notranslate"><span class="pre">SegmentChestEnsemble</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#common-usage-patterns">Common Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#basic-segmentation">Basic Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#contrast-enhanced-vs-non-contrast">Contrast-Enhanced vs Non-Contrast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#structure-extraction">Structure Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#custom-post-processing">Custom Post-Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#custom-structure-selection">Custom Structure Selection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#gpu-acceleration">GPU Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#batch-processing">Batch Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#quality-control">Quality Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#validation-metrics">Validation Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#confidence-assessment">Confidence Assessment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#method-selection">Method Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#parameter-tuning">Parameter Tuning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="registration_images.html">Image Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#base-registration-class">Base Registration Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#registerimagesbase">RegisterImagesBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_images.html#physiomotion4d.RegisterImagesBase"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#registration-methods">Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#icon-registration">ICON Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#ants-registration">ANTs Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_images.html#physiomotion4d.RegisterImagesANTs"><code class="docutils literal notranslate"><span class="pre">RegisterImagesANTs</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#time-series-registration">Time Series Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_images.html#physiomotion4d.RegisterTimeSeriesImages"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#common-usage-patterns">Common Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#basic-registration">Basic Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#multi-modal-registration">Multi-Modal Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#masked-registration">Masked Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#registration-quality-assessment">Registration Quality Assessment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#iterative-refinement">Iterative Refinement</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#custom-loss-functions">Custom Loss Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#custom-transform-constraints">Custom Transform Constraints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#gpu-acceleration">GPU Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#method-selection">Method Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#parameter-tuning">Parameter Tuning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#quality-control">Quality Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="registration_models.html">Model Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#registration-methods">Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#icp-registration-vtk">ICP Registration (VTK)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_models.html#physiomotion4d.RegisterModelsICP"><code class="docutils literal notranslate"><span class="pre">RegisterModelsICP</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#icp-registration-itk">ICP Registration (ITK)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_models.html#physiomotion4d.RegisterModelsICPITK"><code class="docutils literal notranslate"><span class="pre">RegisterModelsICPITK</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#distance-map-registration">Distance Map Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_models.html#physiomotion4d.RegisterModelsDistanceMaps"><code class="docutils literal notranslate"><span class="pre">RegisterModelsDistanceMaps</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#pca-based-registration">PCA-Based Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_models.html#physiomotion4d.RegisterModelsPCA"><code class="docutils literal notranslate"><span class="pre">RegisterModelsPCA</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#common-usage-patterns">Common Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#initial-alignment">Initial Alignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#multi-stage-registration">Multi-Stage Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#model-to-image-registration">Model-to-Image Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#partial-shape-matching">Partial Shape Matching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#landmark-based-initialization">Landmark-Based Initialization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#quality-assessment">Quality Assessment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#registration-error-metrics">Registration Error Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#surface-distance-visualization">Surface Distance Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#custom-distance-metrics">Custom Distance Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#constrained-registration">Constrained Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#method-selection">Method Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#preprocessing">Preprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#parameter-tuning">Parameter Tuning</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usd_generation.html">USD Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usd_generation.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usd_generation.html#base-converter-class">Base Converter Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#convertvtk4dtousdbase">ConvertVTK4DToUSDBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="usd_generation.html#physiomotion4d.ConvertVTK4DToUSDBase"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDBase</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="usd_generation.html#usd-converters">USD Converters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#polygon-mesh-converter">Polygon Mesh Converter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="usd_generation.html#physiomotion4d.ConvertVTK4DToUSDPolyMesh"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDPolyMesh</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#tetrahedral-mesh-converter">Tetrahedral Mesh Converter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="usd_generation.html#physiomotion4d.ConvertVTK4DToUSDTetMesh"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDTetMesh</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="usd_generation.html#anatomical-material-system">Anatomical Material System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#material-library">Material Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#custom-materials">Custom Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#material-properties">Material Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="usd_generation.html#time-varying-geometry">Time-Varying Geometry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#animation-creation">Animation Creation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#time-sampling">Time Sampling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="usd_generation.html#colormap-rendering">Colormap Rendering</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#scalar-data-visualization">Scalar Data Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#time-varying-colormaps">Time-Varying Colormaps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="usd_generation.html#usd-file-management">USD File Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#merging-usd-files">Merging USD Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#scene-organization">Scene Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="usd_generation.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#level-of-detail-lod">Level of Detail (LOD)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#instancing">Instancing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="usd_generation.html#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#mesh-simplification">Mesh Simplification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#batch-conversion">Batch Conversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="usd_generation.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#material-assignment">Material Assignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#animation">Animation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usd_generation.html#file-organization">File Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="usd_generation.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#image-tools">Image Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#module-physiomotion4d.image_tools">Medical Image I/O and Processing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utilities.html#physiomotion4d.image_tools.ImageTools"><code class="docutils literal notranslate"><span class="pre">ImageTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#transform-tools">Transform Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#module-physiomotion4d.transform_tools">Spatial Transformation Utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utilities.html#physiomotion4d.transform_tools.TransformTools"><code class="docutils literal notranslate"><span class="pre">TransformTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#contour-tools">Contour Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#module-physiomotion4d.contour_tools">Mesh Generation and Manipulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utilities.html#physiomotion4d.contour_tools.ContourTools"><code class="docutils literal notranslate"><span class="pre">ContourTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#usd-tools">USD Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#module-physiomotion4d.usd_tools">USD File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utilities.html#physiomotion4d.usd_tools.USDTools"><code class="docutils literal notranslate"><span class="pre">USDTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#usd-anatomy-tools">USD Anatomy Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#module-physiomotion4d.usd_anatomy_tools">Anatomical Material Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utilities.html#physiomotion4d.usd_anatomy_tools.USDAnatomyTools"><code class="docutils literal notranslate"><span class="pre">USDAnatomyTools</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="utilities.html#physiomotion4d.usd_anatomy_tools.parse_args"><code class="docutils literal notranslate"><span class="pre">parse_args()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#common-utility-patterns">Common Utility Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#pipeline-integration">Pipeline Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#batch-processing">Batch Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#custom-utility-functions">Custom Utility Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#extending-image-tools">Extending Image Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#custom-mesh-processing">Custom Mesh Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#performance-tips">Performance Tips</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#image-processing">Image Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#mesh-processing">Mesh Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#error-handling">Error Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#memory-management">Memory Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#file-i-o">File I/O</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending PhysioMotion4D</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#extension-patterns">Extension Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#creating-custom-workflows">Creating Custom Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#basic-workflow-template">Basic Workflow Template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#example-brain-vessel-workflow">Example: Brain Vessel Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#custom-segmentation-methods">Custom Segmentation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#adding-new-segmentation-algorithms">Adding New Segmentation Algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#custom-registration-methods">Custom Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#implementing-new-registration-algorithms">Implementing New Registration Algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#custom-usd-materials">Custom USD Materials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#adding-anatomical-materials">Adding Anatomical Materials</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#integration-with-external-tools">Integration with External Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#connecting-to-external-libraries">Connecting to External Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#creating-command-line-tools">Creating Command-Line Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#cli-wrapper-for-custom-workflow">CLI Wrapper for Custom Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#installation-as-package-entry-point">Installation as Package Entry Point</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#testing-extensions">Testing Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#unit-tests-for-custom-code">Unit Tests for Custom Code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#contributing-back">Contributing Back</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#sharing-your-extensions">Sharing Your Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#code-style-guidelines">Code Style Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#documentation-standards">Documentation Standards</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#extension-design">Extension Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#performance">Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#ways-to-contribute">Ways to Contribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#formatting">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#linting">Linting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#pre-commit-hooks">Pre-commit Hooks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#testing">Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#write-tests">Write Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#run-tests">Run Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#documentation">Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#build-docs-locally">Build Docs Locally</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#documentation-style">Documentation Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#docstring-format">Docstring Format</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-review-process">Code Review Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#review-criteria">Review Criteria</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#reporting-issues">Reporting Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#bug-reports">Bug Reports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#feature-requests">Feature Requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#release-process">Release Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#versioning">Versioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#making-a-release">Making a Release</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#community-guidelines">Community Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#running-tests">Running Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#basic-test-execution">Basic Test Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#test-categories">Test Categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#specific-test-modules">Specific Test Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#coverage-reports">Coverage Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#test-structure">Test Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#writing-tests">Writing Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#continuous-integration">Continuous Integration</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#general-questions">General Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#what-is-physiomotion4d">What is PhysioMotion4D?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#what-data-formats-are-supported">What data formats are supported?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#do-i-need-nvidia-omniverse">Do I need NVIDIA Omniverse?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#installation-questions">Installation Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#do-i-need-a-gpu">Do I need a GPU?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#what-python-version-is-required">What Python version is required?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#usage-questions">Usage Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#how-long-does-processing-take">How long does processing take?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#which-segmentation-method-should-i-use">Which segmentation method should I use?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#which-registration-method-should-i-use">Which registration method should I use?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#more-questions">More Questions?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#installation-issues">Installation Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#cuda-out-of-memory">CUDA Out of Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#import-errors">Import Errors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#processing-issues">Processing Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#poor-segmentation-quality">Poor Segmentation Quality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#registration-not-converging">Registration Not Converging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#usd-issues">USD Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#usd-not-animating">USD Not Animating</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#usd-file-too-large">USD File Too Large</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#performance-issues">Performance Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#slow-processing">Slow Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#software-citations">Software Citations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#related-publications">Related Publications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#registration-methods">Registration Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#segmentation-methods">Segmentation Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#datasets">Datasets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#dirlab-4d-ct">DirLab 4D-CT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#slicer-heart-ct">Slicer-Heart-CT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#technologies">Technologies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#nvidia-omniverse">NVIDIA Omniverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#monai">MONAI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#itk">ITK</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#external-links">External Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#contributing">Contributing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-2025-05-0">Version 2025.05.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#features">Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PhysioMotion4D</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Core Base Class</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/NVIDIA/PhysioMotion4D/blob/main/docs/developer/core.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="core-base-class">
+<h1>Core Base Class<a class="headerlink" href="#core-base-class" title="Link to this heading"></a></h1>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">PhysioMotion4DBase</span></code> class provides foundational functionality for all PhysioMotion4D components, including logging, parameter management, and common utilities.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>All major PhysioMotion4D classes inherit from <code class="xref py py-class docutils literal notranslate"><span class="pre">PhysioMotion4DBase</span></code>, which provides:</p>
+<ul class="simple">
+<li><p>Structured logging with configurable verbosity</p></li>
+<li><p>Parameter validation and management</p></li>
+<li><p>File path handling and organization</p></li>
+<li><p>Common image I/O operations</p></li>
+<li><p>Error handling patterns</p></li>
+</ul>
+<p>This inheritance ensures consistent behavior across the package.</p>
+</section>
+<section id="physiomotion4dbase-class">
+<h2>PhysioMotion4DBase Class<a class="headerlink" href="#physiomotion4dbase-class" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">physiomotion4d.</span></span><span class="sig-name descname"><span class="pre">PhysioMotion4DBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_to_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Base class providing standardized logging and debug settings.</p>
+<p>This class provides a consistent logging interface for all PhysioMotion4D
+classes. All classes share a common logger called “PhysioMotion4D” but include
+their class name in log messages for identification.</p>
+<dl class="simple">
+<dt>Class Attributes:</dt><dd><p>_shared_logger (logging.Logger): Shared logger for all PhysioMotion4D classes
+_class_filter (ClassNameFilter): Filter for controlling which classes show logs
+_logger_initialized (bool): Whether the shared logger has been set up</p>
+</dd>
+<dt>Instance Attributes:</dt><dd><p>class_name (str): Name of the class for log message prefixing
+log_level (int): Current logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">MyRegistration</span><span class="p">(</span><span class="n">PhysioMotion4DBase</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="s2">&quot;MyRegistration&quot;</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Starting registration...&quot;</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s2">&quot;Using parameters: ...&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Filter to show only specific classes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PhysioMotion4DBase</span><span class="o">.</span><span class="n">set_log_classes</span><span class="p">([</span><span class="s2">&quot;MyRegistration&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Show all classes again</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PhysioMotion4DBase</span><span class="o">.</span><span class="n">set_log_all_classes</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_to_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize the base class with logging configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class_name</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Name for the class (used in log messages). If None, uses
+the class name. Default: None</p></li>
+<li><p><strong>log_level</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Logging level. Can be an integer (logging.DEBUG, logging.INFO,
+logging.WARNING, logging.ERROR, logging.CRITICAL) or a string
+(‘DEBUG’, ‘INFO’, ‘WARNING’, ‘ERROR’, ‘CRITICAL’).
+Default: logging.INFO</p></li>
+<li><p><strong>log_to_file</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>) – Optional file path to write logs to in addition to
+console output. Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase.set_log_level">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_log_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_level</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase.set_log_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase.set_log_level" title="Link to this definition"></a></dt>
+<dd><p>Set the logging level for all PhysioMotion4D classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>log_level</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Logging level. Can be an integer (logging.DEBUG, logging.INFO,
+logging.WARNING, logging.ERROR, logging.CRITICAL) or a string
+(‘DEBUG’, ‘INFO’, ‘WARNING’, ‘ERROR’, ‘CRITICAL’).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PhysioMotion4DBase</span><span class="o">.</span><span class="n">set_log_level</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># or</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PhysioMotion4DBase</span><span class="o">.</span><span class="n">set_log_level</span><span class="p">(</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase.set_log_classes">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_log_classes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase.set_log_classes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase.set_log_classes" title="Link to this definition"></a></dt>
+<dd><p>Set which classes should show their logging output.</p>
+<p>Only log messages from the specified classes will be displayed.
+All other classes will have their logs hidden.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>class_names</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – List of class names to show logs from.
+Example: [“RegisterModelsPCA”, “WorkflowRegisterHeartModelToPatient”]</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PhysioMotion4DBase</span><span class="o">.</span><span class="n">set_log_classes</span><span class="p">([</span><span class="s2">&quot;RegisterModelsPCA&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Now only RegisterModelsPCA logs will be shown</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase.set_log_all_classes">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_log_all_classes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase.set_log_all_classes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase.set_log_all_classes" title="Link to this definition"></a></dt>
+<dd><p>Enable logging output from all PhysioMotion4D classes.</p>
+<p>Disables the class filter so all classes show their logs.</p>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PhysioMotion4DBase</span><span class="o">.</span><span class="n">set_log_all_classes</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Now all classes will show their logs</span>
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase.get_log_classes">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_log_classes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase.get_log_classes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase.get_log_classes" title="Link to this definition"></a></dt>
+<dd><p>Get the list of classes currently showing logs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of class names that are allowed to show logs.
+Empty list if filter is disabled (all classes shown).</p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">classes</span> <span class="o">=</span> <span class="n">PhysioMotion4DBase</span><span class="o">.</span><span class="n">get_log_classes</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+<span class="go">[&#39;RegisterModelsPCA&#39;, &#39;WorkflowRegisterHeartModelToPatient&#39;]</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase.log_debug">
+<span class="sig-name descname"><span class="pre">log_debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase.log_debug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase.log_debug" title="Link to this definition"></a></dt>
+<dd><p>Log a debug message with optional %-style formatting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The debug message to log (can contain %-style placeholders)</p></li>
+<li><p><strong>*args</strong> – Arguments for %-style string formatting</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s2">&quot;Processing </span><span class="si">%s</span><span class="s2"> with </span><span class="si">%d</span><span class="s2"> items&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s2">&quot;Value is </span><span class="si">%(value)d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mi">42</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase.log_info">
+<span class="sig-name descname"><span class="pre">log_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase.log_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase.log_info" title="Link to this definition"></a></dt>
+<dd><p>Log an info message with optional %-style formatting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The info message to log (can contain %-style placeholders)</p></li>
+<li><p><strong>*args</strong> – Arguments for %-style string formatting</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Loading file: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s2">&quot;Iteration </span><span class="si">%(iter)d</span><span class="s2"> of </span><span class="si">%(total)d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;iter&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase.log_warning">
+<span class="sig-name descname"><span class="pre">log_warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase.log_warning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase.log_warning" title="Link to this definition"></a></dt>
+<dd><p>Log a warning message with optional %-style formatting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The warning message to log (can contain %-style placeholders)</p></li>
+<li><p><strong>*args</strong> – Arguments for %-style string formatting</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_warning</span><span class="p">(</span><span class="s2">&quot;Memory usage at </span><span class="si">%d%%</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">usage_percent</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_warning</span><span class="p">(</span><span class="s2">&quot;Parameter </span><span class="si">%(name)s</span><span class="s2"> out of range&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;threshold&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase.log_error">
+<span class="sig-name descname"><span class="pre">log_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase.log_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase.log_error" title="Link to this definition"></a></dt>
+<dd><p>Log an error message with optional %-style formatting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The error message to log (can contain %-style placeholders)</p></li>
+<li><p><strong>*args</strong> – Arguments for %-style string formatting</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;Failed to load </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_error</span><span class="p">(</span><span class="s2">&quot;Error code: </span><span class="si">%(code)d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="mi">404</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase.log_critical">
+<span class="sig-name descname"><span class="pre">log_critical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase.log_critical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase.log_critical" title="Link to this definition"></a></dt>
+<dd><p>Log a critical message with optional %-style formatting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The critical message to log (can contain %-style placeholders)</p></li>
+<li><p><strong>*args</strong> – Arguments for %-style string formatting</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_critical</span><span class="p">(</span><span class="s2">&quot;System failure at </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_critical</span><span class="p">(</span><span class="s2">&quot;Critical error: </span><span class="si">%(msg)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;msg&quot;</span><span class="p">:</span> <span class="s2">&quot;Out of memory&quot;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase.log_section">
+<span class="sig-name descname"><span class="pre">log_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">70</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'='</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase.log_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase.log_section" title="Link to this definition"></a></dt>
+<dd><p>Log a formatted section header with optional %-style formatting.</p>
+<p>Useful for visually separating major sections of output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – The section title (can contain %-style placeholders)</p></li>
+<li><p><strong>*args</strong> – Arguments for %-style string formatting of title</p></li>
+<li><p><strong>width</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Total width of the header line. Default: 70</p></li>
+<li><p><strong>char</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Character to use for the header line. Default: ‘=’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_section</span><span class="p">(</span><span class="s2">&quot;Stage 1: Initialization&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_section</span><span class="p">(</span><span class="s2">&quot;Processing file: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_section</span><span class="p">(</span><span class="s2">&quot;Stage </span><span class="si">%(num)d</span><span class="s2">: </span><span class="si">%(name)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;num&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Analysis&quot;</span><span class="p">})</span>
+<span class="go"># Outputs:</span>
+<span class="go"># ======================================================================</span>
+<span class="go"># Stage 2: Analysis</span>
+<span class="go"># ======================================================================</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.PhysioMotion4DBase.log_progress">
+<span class="sig-name descname"><span class="pre">log_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Progress'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/physiomotion4d_base.html#PhysioMotion4DBase.log_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.PhysioMotion4DBase.log_progress" title="Link to this definition"></a></dt>
+<dd><p>Log progress information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>current</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Current step/iteration number</p></li>
+<li><p><strong>total</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Total number of steps/iterations</p></li>
+<li><p><strong>prefix</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Prefix text for the progress message. Default: ‘Progress’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+<div class="admonition-example admonition">
+<p class="admonition-title">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="bp">self</span><span class="o">.</span><span class="n">log_progress</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">log_progress</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;Processing&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For custom formatted progress messages, use log_info() directly:
+&gt;&gt;&gt; self.log_info(“Loading %s: %d/%d”, filename, current, total)</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<section id="logging-infrastructure">
+<h3>Logging Infrastructure<a class="headerlink" href="#logging-infrastructure" title="Link to this heading"></a></h3>
+<p>The base class provides sophisticated logging:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhysioMotion4DBase</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyProcessor</span><span class="p">(</span><span class="n">PhysioMotion4DBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Starting processing&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Detailed info&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Warning message&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Error occurred&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><strong>Log Levels</strong>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>: Detailed diagnostic information</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INFO</span></code>: General informational messages</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WARNING</span></code>: Warning messages for unusual situations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ERROR</span></code>: Error messages for failures</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CRITICAL</span></code>: Critical errors requiring immediate attention</p></li>
+</ul>
+</dd>
+<dt><strong>Output</strong>:</dt><dd><ul class="simple">
+<li><p>Console output (colored, formatted)</p></li>
+<li><p>Log file (<code class="docutils literal notranslate"><span class="pre">physiomotion4d.log</span></code>)</p></li>
+<li><p>Timestamps and context automatically included</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="parameter-management">
+<h3>Parameter Management<a class="headerlink" href="#parameter-management" title="Link to this heading"></a></h3>
+<p>Parameters are validated and stored systematically:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyWorkflow</span><span class="p">(</span><span class="n">PhysioMotion4DBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;./results&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Validate and store parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_file_exists</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ensure_directory</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><strong>Validation Methods</strong>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_file_exists(path)</span></code>: Check file exists</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_directory(path)</span></code>: Check directory exists</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ensure_directory(path)</span></code>: Create directory if needed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_parameter(value,</span> <span class="pre">allowed)</span></code>: Check parameter value</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="file-path-utilities">
+<h3>File Path Utilities<a class="headerlink" href="#file-path-utilities" title="Link to this heading"></a></h3>
+<p>Consistent file path handling:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyWorkflow</span><span class="p">(</span><span class="n">PhysioMotion4DBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="c1"># Generate output path</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_output_path</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;.mha&quot;</span><span class="p">)</span>
+        <span class="c1"># Save data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_image</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">output_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved to </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><strong>Path Methods</strong>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get_output_path(basename,</span> <span class="pre">ext)</span></code>: Generate output file path</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_temp_path()</span></code>: Get temporary file path</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">organize_outputs()</span></code>: Create output directory structure</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="common-use-patterns">
+<h2>Common Use Patterns<a class="headerlink" href="#common-use-patterns" title="Link to this heading"></a></h2>
+<section id="creating-a-new-class">
+<h3>Creating a New Class<a class="headerlink" href="#creating-a-new-class" title="Link to this heading"></a></h3>
+<p>Inherit from <code class="xref py py-class docutils literal notranslate"><span class="pre">PhysioMotion4DBase</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhysioMotion4DBase</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomProcessor</span><span class="p">(</span><span class="n">PhysioMotion4DBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;My custom processor.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize processor.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            param1: First parameter</span>
+<span class="sd">            param2: Second parameter</span>
+<span class="sd">            verbose: Enable verbose logging</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">param1</span> <span class="o">=</span> <span class="n">param1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param2</span> <span class="o">=</span> <span class="n">param2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;CustomProcessor initialized&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute processing.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Starting processing...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Processing steps here</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_internal_method</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Processing complete&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_internal_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal helper method.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Internal processing&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+        <span class="c1"># Implementation</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="error-handling">
+<h3>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h3>
+<p>Use base class error handling patterns:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process an image with error handling.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Validate input</span>
+        <span class="n">image_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_file_exists</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+
+        <span class="c1"># Load and process</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_processing</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+        <span class="k">raise</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+        <span class="k">raise</span>
+</pre></div>
+</div>
+</section>
+<section id="configuration-management">
+<h3>Configuration Management<a class="headerlink" href="#configuration-management" title="Link to this heading"></a></h3>
+<p>Store and access configuration:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ConfigurableWorkflow</span><span class="p">(</span><span class="n">PhysioMotion4DBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_dict</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Store configuration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config_dict</span>
+
+        <span class="c1"># Extract parameters with defaults</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="n">config_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;iterations&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span> <span class="o">=</span> <span class="n">config_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lr&#39;</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Configuration: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return current configuration.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;iterations&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">,</span>
+            <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span>
+        <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-features">
+<h2>Advanced Features<a class="headerlink" href="#advanced-features" title="Link to this heading"></a></h2>
+<section id="progress-tracking">
+<h3>Progress Tracking<a class="headerlink" href="#progress-tracking" title="Link to this heading"></a></h3>
+<p>Track progress through long operations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_time_series</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process multiple frames with progress tracking.&quot;&quot;&quot;</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing frame </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">total</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Process frame</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="c1"># Calculate progress</span>
+        <span class="n">progress</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">total</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Progress: </span><span class="si">{</span><span class="n">progress</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="checkpoint-system">
+<h3>Checkpoint System<a class="headerlink" href="#checkpoint-system" title="Link to this heading"></a></h3>
+<p>Save and resume from checkpoints:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">process_with_checkpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process with checkpoint support.&quot;&quot;&quot;</span>
+    <span class="n">checkpoint_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_output_path</span><span class="p">(</span><span class="s2">&quot;checkpoint&quot;</span><span class="p">,</span> <span class="s2">&quot;.pkl&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check for existing checkpoint</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">checkpoint_file</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Resuming from checkpoint&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_checkpoint</span><span class="p">(</span><span class="n">checkpoint_file</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+
+    <span class="c1"># Process from checkpoint</span>
+    <span class="k">if</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">state</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step1</span><span class="p">()</span>
+        <span class="n">state</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_checkpoint</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">checkpoint_file</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step2</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+        <span class="n">state</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_checkpoint</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">checkpoint_file</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="integration-examples">
+<h2>Integration Examples<a class="headerlink" href="#integration-examples" title="Link to this heading"></a></h2>
+<section id="using-base-class-in-applications">
+<h3>Using Base Class in Applications<a class="headerlink" href="#using-base-class-in-applications" title="Link to this heading"></a></h3>
+<p>Integrate PhysioMotion4D classes into your application:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d</span><span class="w"> </span><span class="kn">import</span> <span class="n">WorkflowConvertHeartGatedCTToUSD</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_application</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Application using PhysioMotion4D.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Create workflow instance</span>
+    <span class="n">workflow</span> <span class="o">=</span> <span class="n">WorkflowConvertHeartGatedCTToUSD</span><span class="p">(</span>
+        <span class="n">input_filenames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cardiac_4d.nrrd&quot;</span><span class="p">],</span>
+        <span class="n">contrast_enhanced</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">output_directory</span><span class="o">=</span><span class="s2">&quot;./results&quot;</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># Enable logging from base class</span>
+    <span class="p">)</span>
+
+    <span class="c1"># All logging comes through base class</span>
+    <span class="c1"># Access logs programmatically if needed</span>
+    <span class="n">log_file</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">get_log_file_path</span><span class="p">()</span>
+
+    <span class="c1"># Execute workflow</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
+</section>
+<section id="custom-logging-handlers">
+<h3>Custom Logging Handlers<a class="headerlink" href="#custom-logging-handlers" title="Link to this heading"></a></h3>
+<p>Add custom log handlers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhysioMotion4DBase</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomLogger</span><span class="p">(</span><span class="n">PhysioMotion4DBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Add custom handler (e.g., to database, cloud)</span>
+        <span class="n">custom_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+        <span class="n">custom_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">custom_handler</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="inheritance-guidelines">
+<h3>Inheritance Guidelines<a class="headerlink" href="#inheritance-guidelines" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Always call super().__init__()</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Use logging, not print statements</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Good</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Processing started&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+
+<span class="c1"># Avoid</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Processing started&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Validate inputs early</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_file_exists</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Document parameters clearly</strong></p>
+<p>Use docstrings with parameter descriptions</p>
+</li>
+</ol>
+</section>
+<section id="parameter-validation">
+<h3>Parameter Validation<a class="headerlink" href="#parameter-validation" title="Link to this heading"></a></h3>
+<p>Validate all user-provided parameters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">set_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set parameter with validation.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Parameter must be integer&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Parameter must be positive&quot;</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">parameter</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameter set to </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="workflows.html"><span class="doc">Workflows</span></a> - Workflow classes building on base class</p></li>
+<li><p><a class="reference internal" href="extending.html"><span class="doc">Extending PhysioMotion4D</span></a> - Creating new classes from base</p></li>
+<li><p><a class="reference internal" href="architecture.html"><span class="doc">Architecture Overview</span></a> - Overall system architecture</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="architecture.html" class="btn btn-neutral float-left" title="Architecture Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="workflows.html" class="btn btn-neutral float-right" title="Workflows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Stephen R. Aylward, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

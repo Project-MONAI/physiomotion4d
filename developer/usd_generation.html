@@ -1,0 +1,1709 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>USD Generation &mdash; PhysioMotion4D 2025.05.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=556198f2" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=c436cb72"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Utilities" href="utilities.html" />
+    <link rel="prev" title="Model Registration" href="registration_models.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PhysioMotion4D
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#software-dependencies">Software Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installation-methods">Installation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#method-1-install-from-pypi-recommended">Method 1: Install from PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#method-2-install-from-source">Method 2: Install from Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#optional-dependencies">Optional Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#development-tools">Development Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#documentation-tools">Documentation Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#testing-dependencies">Testing Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#verify-installation">Verify Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#command-line-tools">Command-Line Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#gpu-setup">GPU Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#cuda-installation">CUDA Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#pytorch-with-cuda">PyTorch with CUDA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-workflow">Basic Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#command-line-interface">Command-Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#step-by-step-workflow">Step-by-Step Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#working-with-individual-components">Working with Individual Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#segmentation-only">Segmentation Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#image-registration-only">Image Registration Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#vtk-to-usd-conversion">VTK to USD Conversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#sample-data">Sample Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#download-sample-cardiac-ct-data">Download Sample Cardiac CT Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#visualizing-results">Visualizing Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#in-nvidia-omniverse">In NVIDIA Omniverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#using-usd-viewer">Using USD Viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#in-pyvista">In PyVista</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#complete-workflow-examples">Complete Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#heart-gated-ct-processing">Heart-Gated CT Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#lung-4d-ct-processing">Lung 4D-CT Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#segmentation-examples">Segmentation Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#totalsegmentator">TotalSegmentator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#vista-3d-with-point-prompts">VISTA-3D with Point Prompts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#ensemble-segmentation">Ensemble Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#registration-examples">Registration Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#icon-deep-learning-registration">ICON Deep Learning Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#multi-phase-cardiac-registration">Multi-Phase Cardiac Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#ants-multi-stage-registration">ANTs Multi-Stage Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#usd-conversion-examples">USD Conversion Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#vtk-time-series-to-usd">VTK Time Series to USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#merge-multiple-usd-files">Merge Multiple USD Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#apply-materials-to-usd">Apply Materials to USD</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#transform-and-contour-examples">Transform and Contour Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#apply-transform-to-images">Apply Transform to Images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#transform-contours-meshes">Transform Contours/Meshes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#extract-surface-from-segmentation">Extract Surface from Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#visualization-examples">Visualization Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#quick-preview-in-pyvista">Quick Preview in PyVista</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#animated-mesh-sequence">Animated Mesh Sequence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#batch-processing-examples">Batch Processing Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#process-multiple-patients">Process Multiple Patients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#parallel-segmentation">Parallel Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#data-download-examples">Data Download Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#download-dirlab-dataset">Download DirLab Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#custom-workflow-examples">Custom Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#step-by-step-processing">Step-by-Step Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#custom-pipeline-with-specific-methods">Custom Pipeline with Specific Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CLI &amp; Scripts Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/overview.html">CLI &amp; Scripts Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/overview.html#target-audience">Target Audience</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/overview.html#available-scripts">Available Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/overview.html#current-scripts">Current Scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/overview.html#upcoming-scripts">Upcoming Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/overview.html#general-workflow">General Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/overview.html#typical-command-structure">Typical Command Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/overview.html#output-organization">Output Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/overview.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/overview.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html">Heart Gated CT Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#input-requirements">Input Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#data-format">Data Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#image-quality-requirements">Image Quality Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#single-4d-file">Single 4D File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#multiple-3d-files">Multiple 3D Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#with-output-directory">With Output Directory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#command-line-options">Command-Line Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#required-arguments">Required Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#optional-arguments">Optional Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#processing-pipeline">Processing Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#output-files">Output Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#primary-outputs">Primary Outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#intermediate-files">Intermediate Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#contrast-enhanced-cardiac-cta">Contrast-Enhanced Cardiac CTA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#non-contrast-study-with-custom-reference">Non-Contrast Study with Custom Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#research-dataset-processing">Research Dataset Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#with-ants-registration">With ANTs Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#choosing-reference-image">Choosing Reference Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#performance-optimization">Performance Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#data-quality-tips">Data Quality Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#input-file-issues">Input File Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#segmentation-quality-issues">Segmentation Quality Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#registration-failures">Registration Failures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#memory-issues">Memory Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#expected-processing-time">Expected Processing Time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#viewing-results-in-omniverse">Viewing Results in Omniverse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_gated_ct.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html">Heart Model to Patient Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#input-data">Input Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#processing-steps">Processing Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/heart_model_to_patient.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html">Lung Gated CT Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#processing-pipeline">Processing Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/lung_gated_ct.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html">4D-CT Reconstruction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#input-data">Input Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#reconstruction-methods">Reconstruction Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/4dct_reconstruction.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html">VTK to USD Conversion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#material-painting">Material Painting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#processing-options">Processing Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/vtk_to_usd.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html">Brain Vessel Modeling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#processing-pipeline">Processing Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/brain_vessel_modeling.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli_scripts/best_practices.html">Best Practices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#image-quality-guidelines">Image Quality Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#file-organization">File Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#processing-strategies">Processing Strategies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#computational-resources">Computational Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#workflow-optimization">Workflow Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#quality-control">Quality Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#verification-checklist">Verification Checklist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#automated-quality-metrics">Automated Quality Metrics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#common-issues-and-solutions">Common Issues and Solutions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#poor-segmentation">Poor Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#registration-failure">Registration Failure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#memory-errors">Memory Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#slow-processing">Slow Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#performance-benchmarks">Performance Benchmarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#reproducibility">Reproducibility</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#ensuring-reproducible-results">Ensuring Reproducible Results</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#advanced-topics">Advanced Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#custom-reference-selection">Custom Reference Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#multi-phase-studies">Multi-Phase Studies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cli_scripts/best_practices.html#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli_scripts/best_practices.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#target-audience">Target Audience</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#design-philosophy">Design Philosophy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#package-organization">Package Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#class-hierarchy">Class Hierarchy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#base-class-pattern">Base Class Pattern</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#workflow-architecture">Workflow Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#data-flow">Data Flow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#file-formats">File Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#extension-points">Extension Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#relationship-to-cli-scripts">Relationship to CLI Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#performance-considerations">Performance Considerations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#gpu-acceleration">GPU Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#memory-management">Memory Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core Base Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#physiomotion4dbase-class">PhysioMotion4DBase Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase.__init__"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase.set_log_level"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.set_log_level()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase.set_log_classes"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.set_log_classes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase.set_log_all_classes"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.set_log_all_classes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase.get_log_classes"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.get_log_classes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase.log_debug"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_debug()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase.log_info"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase.log_warning"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_warning()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase.log_error"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase.log_critical"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_critical()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase.log_section"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_section()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase.log_progress"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_progress()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#key-features">Key Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#logging-infrastructure">Logging Infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#parameter-management">Parameter Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#file-path-utilities">File Path Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#common-use-patterns">Common Use Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#creating-a-new-class">Creating a New Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#error-handling">Error Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#configuration-management">Configuration Management</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#progress-tracking">Progress Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#checkpoint-system">Checkpoint System</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#integration-examples">Integration Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#using-base-class-in-applications">Using Base Class in Applications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#custom-logging-handlers">Custom Logging Handlers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.html#inheritance-guidelines">Inheritance Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="core.html#parameter-validation">Parameter Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workflows.html">Workflows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#workflow-to-script-mapping">Workflow to Script Mapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#available-workflows">Available Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#workflowconvertheartgatedcttousd">WorkflowConvertHeartGatedCTToUSD</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="workflows.html#physiomotion4d.WorkflowConvertHeartGatedCTToUSD"><code class="docutils literal notranslate"><span class="pre">WorkflowConvertHeartGatedCTToUSD</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#workflowregisterheartmodeltopatient">WorkflowRegisterHeartModelToPatient</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#common-workflow-patterns">Common Workflow Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#step-based-execution">Step-Based Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#custom-configuration">Custom Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#workflow-components">Workflow Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#internal-processing-steps">Internal Processing Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#component-selection">Component Selection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#extending-workflows">Extending Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#creating-custom-workflows">Creating Custom Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#modifying-existing-workflows">Modifying Existing Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#creating-cli-scripts-for-custom-workflows">Creating CLI Scripts for Custom Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#integration-patterns">Integration Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#batch-processing">Batch Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#pipeline-integration">Pipeline Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#parallel-execution">Parallel Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#workflow-design">Workflow Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#parameter-management">Parameter Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#performance">Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="workflows.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="workflows.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="segmentation.html">Segmentation Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#base-segmentation-class">Base Segmentation Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#segmentchestbase">SegmentChestBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="segmentation.html#physiomotion4d.SegmentChestBase"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#segmentation-methods">Segmentation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#totalsegmentator">TotalSegmentator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="segmentation.html#physiomotion4d.SegmentChestTotalSegmentator"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#vista-3d">VISTA-3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#vista-3d-nim">VISTA-3D NIM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#ensemble-segmentation">Ensemble Segmentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="segmentation.html#physiomotion4d.SegmentChestEnsemble"><code class="docutils literal notranslate"><span class="pre">SegmentChestEnsemble</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#common-usage-patterns">Common Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#basic-segmentation">Basic Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#contrast-enhanced-vs-non-contrast">Contrast-Enhanced vs Non-Contrast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#structure-extraction">Structure Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#custom-post-processing">Custom Post-Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#custom-structure-selection">Custom Structure Selection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#gpu-acceleration">GPU Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#batch-processing">Batch Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#quality-control">Quality Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#validation-metrics">Validation Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#confidence-assessment">Confidence Assessment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#method-selection">Method Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#parameter-tuning">Parameter Tuning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segmentation.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="segmentation.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="registration_images.html">Image Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#base-registration-class">Base Registration Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#registerimagesbase">RegisterImagesBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_images.html#physiomotion4d.RegisterImagesBase"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#registration-methods">Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#icon-registration">ICON Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#ants-registration">ANTs Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_images.html#physiomotion4d.RegisterImagesANTs"><code class="docutils literal notranslate"><span class="pre">RegisterImagesANTs</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#time-series-registration">Time Series Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_images.html#physiomotion4d.RegisterTimeSeriesImages"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#common-usage-patterns">Common Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#basic-registration">Basic Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#multi-modal-registration">Multi-Modal Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#masked-registration">Masked Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#registration-quality-assessment">Registration Quality Assessment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#iterative-refinement">Iterative Refinement</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#custom-loss-functions">Custom Loss Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#custom-transform-constraints">Custom Transform Constraints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#gpu-acceleration">GPU Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#method-selection">Method Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#parameter-tuning">Parameter Tuning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_images.html#quality-control">Quality Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_images.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="registration_models.html">Model Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#registration-methods">Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#icp-registration-vtk">ICP Registration (VTK)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_models.html#physiomotion4d.RegisterModelsICP"><code class="docutils literal notranslate"><span class="pre">RegisterModelsICP</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#icp-registration-itk">ICP Registration (ITK)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_models.html#physiomotion4d.RegisterModelsICPITK"><code class="docutils literal notranslate"><span class="pre">RegisterModelsICPITK</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#distance-map-registration">Distance Map Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_models.html#physiomotion4d.RegisterModelsDistanceMaps"><code class="docutils literal notranslate"><span class="pre">RegisterModelsDistanceMaps</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#pca-based-registration">PCA-Based Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="registration_models.html#physiomotion4d.RegisterModelsPCA"><code class="docutils literal notranslate"><span class="pre">RegisterModelsPCA</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#common-usage-patterns">Common Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#initial-alignment">Initial Alignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#multi-stage-registration">Multi-Stage Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#model-to-image-registration">Model-to-Image Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#partial-shape-matching">Partial Shape Matching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#landmark-based-initialization">Landmark-Based Initialization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#quality-assessment">Quality Assessment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#registration-error-metrics">Registration Error Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#surface-distance-visualization">Surface Distance Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#custom-distance-metrics">Custom Distance Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#constrained-registration">Constrained Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#method-selection">Method Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#preprocessing">Preprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="registration_models.html#parameter-tuning">Parameter Tuning</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="registration_models.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">USD Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#base-converter-class">Base Converter Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#convertvtk4dtousdbase">ConvertVTK4DToUSDBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.ConvertVTK4DToUSDBase"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDBase</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#usd-converters">USD Converters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#polygon-mesh-converter">Polygon Mesh Converter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.ConvertVTK4DToUSDPolyMesh"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDPolyMesh</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tetrahedral-mesh-converter">Tetrahedral Mesh Converter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#physiomotion4d.ConvertVTK4DToUSDTetMesh"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDTetMesh</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#anatomical-material-system">Anatomical Material System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#material-library">Material Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-materials">Custom Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#material-properties">Material Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#time-varying-geometry">Time-Varying Geometry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#animation-creation">Animation Creation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#time-sampling">Time Sampling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#colormap-rendering">Colormap Rendering</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scalar-data-visualization">Scalar Data Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#time-varying-colormaps">Time-Varying Colormaps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#usd-file-management">USD File Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#merging-usd-files">Merging USD Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scene-organization">Scene Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#level-of-detail-lod">Level of Detail (LOD)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instancing">Instancing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mesh-simplification">Mesh Simplification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#batch-conversion">Batch Conversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#material-assignment">Material Assignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#animation">Animation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-organization">File Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#image-tools">Image Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#module-physiomotion4d.image_tools">Medical Image I/O and Processing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utilities.html#physiomotion4d.image_tools.ImageTools"><code class="docutils literal notranslate"><span class="pre">ImageTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#transform-tools">Transform Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#module-physiomotion4d.transform_tools">Spatial Transformation Utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utilities.html#physiomotion4d.transform_tools.TransformTools"><code class="docutils literal notranslate"><span class="pre">TransformTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#contour-tools">Contour Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#module-physiomotion4d.contour_tools">Mesh Generation and Manipulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utilities.html#physiomotion4d.contour_tools.ContourTools"><code class="docutils literal notranslate"><span class="pre">ContourTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#usd-tools">USD Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#module-physiomotion4d.usd_tools">USD File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utilities.html#physiomotion4d.usd_tools.USDTools"><code class="docutils literal notranslate"><span class="pre">USDTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#usd-anatomy-tools">USD Anatomy Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#module-physiomotion4d.usd_anatomy_tools">Anatomical Material Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="utilities.html#physiomotion4d.usd_anatomy_tools.USDAnatomyTools"><code class="docutils literal notranslate"><span class="pre">USDAnatomyTools</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="utilities.html#physiomotion4d.usd_anatomy_tools.parse_args"><code class="docutils literal notranslate"><span class="pre">parse_args()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#common-utility-patterns">Common Utility Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#pipeline-integration">Pipeline Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#batch-processing">Batch Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#custom-utility-functions">Custom Utility Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#extending-image-tools">Extending Image Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#custom-mesh-processing">Custom Mesh Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#performance-tips">Performance Tips</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#image-processing">Image Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#mesh-processing">Mesh Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#error-handling">Error Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#memory-management">Memory Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities.html#file-i-o">File I/O</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending PhysioMotion4D</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#extension-patterns">Extension Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#creating-custom-workflows">Creating Custom Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#basic-workflow-template">Basic Workflow Template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#example-brain-vessel-workflow">Example: Brain Vessel Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#custom-segmentation-methods">Custom Segmentation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#adding-new-segmentation-algorithms">Adding New Segmentation Algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#custom-registration-methods">Custom Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#implementing-new-registration-algorithms">Implementing New Registration Algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#custom-usd-materials">Custom USD Materials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#adding-anatomical-materials">Adding Anatomical Materials</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#integration-with-external-tools">Integration with External Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#connecting-to-external-libraries">Connecting to External Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#creating-command-line-tools">Creating Command-Line Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#cli-wrapper-for-custom-workflow">CLI Wrapper for Custom Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#installation-as-package-entry-point">Installation as Package Entry Point</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#testing-extensions">Testing Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#unit-tests-for-custom-code">Unit Tests for Custom Code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#contributing-back">Contributing Back</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#sharing-your-extensions">Sharing Your Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#code-style-guidelines">Code Style Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#documentation-standards">Documentation Standards</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#extension-design">Extension Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="extending.html#performance">Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extending.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#ways-to-contribute">Ways to Contribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#formatting">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#linting">Linting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#pre-commit-hooks">Pre-commit Hooks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#testing">Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#write-tests">Write Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#run-tests">Run Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#documentation">Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#build-docs-locally">Build Docs Locally</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#documentation-style">Documentation Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#docstring-format">Docstring Format</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-review-process">Code Review Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#review-criteria">Review Criteria</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#reporting-issues">Reporting Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#bug-reports">Bug Reports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#feature-requests">Feature Requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#release-process">Release Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#versioning">Versioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#making-a-release">Making a Release</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#community-guidelines">Community Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#running-tests">Running Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#basic-test-execution">Basic Test Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#test-categories">Test Categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#specific-test-modules">Specific Test Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#coverage-reports">Coverage Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#test-structure">Test Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#writing-tests">Writing Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#continuous-integration">Continuous Integration</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#general-questions">General Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#what-is-physiomotion4d">What is PhysioMotion4D?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#what-data-formats-are-supported">What data formats are supported?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#do-i-need-nvidia-omniverse">Do I need NVIDIA Omniverse?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#installation-questions">Installation Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#do-i-need-a-gpu">Do I need a GPU?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#what-python-version-is-required">What Python version is required?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#usage-questions">Usage Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#how-long-does-processing-take">How long does processing take?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#which-segmentation-method-should-i-use">Which segmentation method should I use?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#which-registration-method-should-i-use">Which registration method should I use?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#more-questions">More Questions?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#installation-issues">Installation Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#cuda-out-of-memory">CUDA Out of Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#import-errors">Import Errors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#processing-issues">Processing Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#poor-segmentation-quality">Poor Segmentation Quality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#registration-not-converging">Registration Not Converging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#usd-issues">USD Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#usd-not-animating">USD Not Animating</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#usd-file-too-large">USD File Too Large</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#performance-issues">Performance Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#slow-processing">Slow Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#software-citations">Software Citations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#related-publications">Related Publications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#registration-methods">Registration Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#segmentation-methods">Segmentation Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#datasets">Datasets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#dirlab-4d-ct">DirLab 4D-CT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#slicer-heart-ct">Slicer-Heart-CT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#technologies">Technologies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#nvidia-omniverse">NVIDIA Omniverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#monai">MONAI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#itk">ITK</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#external-links">External Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#contributing">Contributing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-2025-05-0">Version 2025.05.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#features">Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PhysioMotion4D</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">USD Generation</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/NVIDIA/PhysioMotion4D/blob/main/docs/developer/usd_generation.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="usd-generation">
+<h1>USD Generation<a class="headerlink" href="#usd-generation" title="Link to this heading"></a></h1>
+<p>The USD generation module converts VTK meshes into Universal Scene Description (USD) format for visualization in NVIDIA Omniverse with anatomically-realistic materials and time-varying geometry.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>PhysioMotion4D provides comprehensive USD conversion capabilities:</p>
+<ul class="simple">
+<li><p><strong>Base Converter</strong>: Core USD generation functionality</p></li>
+<li><p><strong>PolyMesh Converter</strong>: Surface mesh conversion</p></li>
+<li><p><strong>TetMesh Converter</strong>: Volumetric tetrahedral mesh conversion</p></li>
+<li><p><strong>Anatomical Materials</strong>: Organ-specific material painting</p></li>
+<li><p><strong>Time-Varying Geometry</strong>: 4D animation support</p></li>
+</ul>
+<p>All converters inherit from <code class="xref py py-class docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDBase</span></code>.</p>
+</section>
+<section id="base-converter-class">
+<h2>Base Converter Class<a class="headerlink" href="#base-converter-class" title="Link to this heading"></a></h2>
+<section id="convertvtk4dtousdbase">
+<h3>ConvertVTK4DToUSDBase<a class="headerlink" href="#convertvtk4dtousdbase" title="Link to this heading"></a></h3>
+<p>Abstract base class for USD conversion.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="physiomotion4d.ConvertVTK4DToUSDBase">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">physiomotion4d.</span></span><span class="sig-name descname"><span class="pre">ConvertVTK4DToUSDBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_basename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_polydata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to_surface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_normals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/convert_vtk_4d_to_usd_base.html#ConvertVTK4DToUSDBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.ConvertVTK4DToUSDBase" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#physiomotion4d.PhysioMotion4DBase" title="physiomotion4d.physiomotion4d_base.PhysioMotion4DBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhysioMotion4DBase</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Abstract base class for VTK to USD conversion.</p>
+<p>Provides shared utilities for coordinate conversion, colormap handling,
+topology change detection, and normal computation. Subclasses must implement
+mesh-specific processing and USD creation methods.</p>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.ConvertVTK4DToUSDBase.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_basename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_polydata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to_surface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_normals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/convert_vtk_4d_to_usd_base.html#ConvertVTK4DToUSDBase.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.ConvertVTK4DToUSDBase.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize VTK to USD converter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_basename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Base name for the USD data</p></li>
+<li><p><strong>input_polydata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – List of PyVista PolyData or UnstructuredGrid meshes,
+one per time step.</p></li>
+<li><p><strong>mask_ids</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em> or </em><em>None</em>) – Optional mapping of label IDs to label names for
+organizing meshes by anatomical regions.
+Default: None</p></li>
+<li><p><strong>convert_to_surface</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – If True, convert UnstructuredGrid meshes to surface
+PolyData before processing. Only applicable for PolyMesh
+converter. Default: False</p></li>
+<li><p><strong>log_level</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> | <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Logging level (default: logging.INFO)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.ConvertVTK4DToUSDBase.list_available_arrays">
+<span class="sig-name descname"><span class="pre">list_available_arrays</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/convert_vtk_4d_to_usd_base.html#ConvertVTK4DToUSDBase.list_available_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.ConvertVTK4DToUSDBase.list_available_arrays" title="Link to this definition"></a></dt>
+<dd><p>List all point data arrays available for coloring across all time steps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Dictionary with array names as keys and dict of metadata as values.</dt><dd><p>Metadata includes: ‘n_components’, ‘dtype’, ‘range’, ‘present_in_steps’</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.ConvertVTK4DToUSDBase.set_colormap">
+<span class="sig-name descname"><span class="pre">set_colormap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color_by_array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colormap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'plasma'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/convert_vtk_4d_to_usd_base.html#ConvertVTK4DToUSDBase.set_colormap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.ConvertVTK4DToUSDBase.set_colormap" title="Link to this definition"></a></dt>
+<dd><p>Configure colormap settings for vertex coloring.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>color_by_array</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>None</em>) – Name of point data array to use for
+vertex colors. If None, uses fixed label
+colors. Use list_available_arrays() to see
+available options.</p></li>
+<li><p><strong>colormap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Colormap to use for color_by_array visualization.
+Available options: ‘plasma’, ‘viridis’, ‘rainbow’, ‘heat’,
+‘coolwarm’, ‘grayscale’, ‘random’</p></li>
+<li><p><strong>intensity_range</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><em>tuple</em></a><em> or </em><em>None</em>) – Manual intensity range (vmin, vmax) for
+colormap. If None, uses automatic range
+from data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns self for method chaining</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>self</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.ConvertVTK4DToUSDBase.supports_mesh_type">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supports_mesh_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/convert_vtk_4d_to_usd_base.html#ConvertVTK4DToUSDBase.supports_mesh_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.ConvertVTK4DToUSDBase.supports_mesh_type" title="Link to this definition"></a></dt>
+<dd><p>Check if this converter supports the given mesh type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mesh</strong> – PyVista or VTK mesh object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if this converter can process the mesh</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.ConvertVTK4DToUSDBase.convert">
+<span class="sig-name descname"><span class="pre">convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_usd_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to_surface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_normals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/convert_vtk_4d_to_usd_base.html#ConvertVTK4DToUSDBase.convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.ConvertVTK4DToUSDBase.convert" title="Link to this definition"></a></dt>
+<dd><p>Convert VTK meshes to USD format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_usd_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Path to output USD file</p></li>
+<li><p><strong>convert_to_surface</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> or </em><em>None</em>) – If True, convert UnstructuredGrid to surface
+PolyData before processing. If None, uses the value
+set in __init__. Default: None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The created USD stage</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Usd.Stage</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="simple">
+<dt><strong>Key Methods</strong>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">convert(vtk_file,</span> <span class="pre">usd_file)</span></code>: Convert VTK to USD</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">add_material(mesh,</span> <span class="pre">material_name)</span></code>: Apply material</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">create_time_varying(vtk_files,</span> <span class="pre">usd_file)</span></code>: Create animated USD</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">merge_usd_files(usd_files,</span> <span class="pre">output)</span></code>: Combine USD files</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="usd-converters">
+<h2>USD Converters<a class="headerlink" href="#usd-converters" title="Link to this heading"></a></h2>
+<section id="polygon-mesh-converter">
+<h3>Polygon Mesh Converter<a class="headerlink" href="#polygon-mesh-converter" title="Link to this heading"></a></h3>
+<p>Convert surface meshes (VTK PolyData) to USD.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="physiomotion4d.ConvertVTK4DToUSDPolyMesh">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">physiomotion4d.</span></span><span class="sig-name descname"><span class="pre">ConvertVTK4DToUSDPolyMesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_basename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_polydata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to_surface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_normals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/convert_vtk_4d_to_usd_polymesh.html#ConvertVTK4DToUSDPolyMesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.ConvertVTK4DToUSDPolyMesh" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#physiomotion4d.ConvertVTK4DToUSDBase" title="physiomotion4d.convert_vtk_4d_to_usd_base.ConvertVTK4DToUSDBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDBase</span></code></a></p>
+<p>Converter for VTK PolyData to USD Mesh.</p>
+<p>Handles:
+- Surface meshes (PolyData)
+- UnstructuredGrid converted to surface
+- Time-varying topology via visibility control
+- Per-vertex colormap visualization</p>
+<dl>
+<dt>Example Usage:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">converter</span> <span class="o">=</span> <span class="n">ConvertVTK4DToUSDPolyMesh</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">data_basename</span><span class="o">=</span><span class="s2">&quot;SurfaceModel&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">input_polydata</span><span class="o">=</span><span class="n">meshes</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">mask_ids</span><span class="o">=</span><span class="kc">None</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">converter</span><span class="o">.</span><span class="n">set_colormap</span><span class="p">(</span><span class="n">color_by_array</span><span class="o">=</span><span class="s2">&quot;pressure&quot;</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="s2">&quot;rainbow&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stage</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;output.usd&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.ConvertVTK4DToUSDPolyMesh.supports_mesh_type">
+<span class="sig-name descname"><span class="pre">supports_mesh_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/convert_vtk_4d_to_usd_polymesh.html#ConvertVTK4DToUSDPolyMesh.supports_mesh_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.ConvertVTK4DToUSDPolyMesh.supports_mesh_type" title="Link to this definition"></a></dt>
+<dd><p>Check if this converter supports the given mesh type.</p>
+<p>Supports:
+- PolyData meshes
+- UnstructuredGrid when convert_to_surface=True</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mesh</strong> – PyVista or VTK mesh object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if mesh is PolyData or can be converted to surface</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="simple">
+<dt><strong>Features</strong>:</dt><dd><ul class="simple">
+<li><p>Surface mesh conversion</p></li>
+<li><p>Anatomical material painting</p></li>
+<li><p>Time-varying geometry</p></li>
+<li><p>Scalar data visualization with colormaps</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example Usage</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConvertVTK4DToUSDPolyMesh</span>
+
+<span class="c1"># Initialize converter</span>
+<span class="n">converter</span> <span class="o">=</span> <span class="n">ConvertVTK4DToUSDPolyMesh</span><span class="p">(</span>
+    <span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">end_time</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Convert single mesh</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span>
+    <span class="n">vtk_file</span><span class="o">=</span><span class="s2">&quot;heart_mesh.vtk&quot;</span><span class="p">,</span>
+    <span class="n">usd_file</span><span class="o">=</span><span class="s2">&quot;heart.usd&quot;</span><span class="p">,</span>
+    <span class="n">mesh_name</span><span class="o">=</span><span class="s2">&quot;heart_lv&quot;</span><span class="p">,</span>
+    <span class="n">apply_materials</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Convert 4D time series</span>
+<span class="n">vtk_files</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;heart_frame_00.vtk&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;heart_frame_01.vtk&quot;</span><span class="p">,</span>
+    <span class="c1"># ... more frames</span>
+<span class="p">]</span>
+
+<span class="n">converter</span><span class="o">.</span><span class="n">create_time_varying</span><span class="p">(</span>
+    <span class="n">vtk_files</span><span class="o">=</span><span class="n">vtk_files</span><span class="p">,</span>
+    <span class="n">usd_file</span><span class="o">=</span><span class="s2">&quot;heart_animated.usd&quot;</span><span class="p">,</span>
+    <span class="n">mesh_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;heart_lv&quot;</span><span class="p">,</span> <span class="s2">&quot;heart_rv&quot;</span><span class="p">,</span> <span class="s2">&quot;aorta&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Material Painting</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Automatic material from mesh name</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span>
+    <span class="n">vtk_file</span><span class="o">=</span><span class="s2">&quot;heart_lv.vtk&quot;</span><span class="p">,</span>
+    <span class="n">usd_file</span><span class="o">=</span><span class="s2">&quot;output.usd&quot;</span><span class="p">,</span>
+    <span class="n">mesh_name</span><span class="o">=</span><span class="s2">&quot;heart_lv&quot;</span><span class="p">,</span>  <span class="c1"># Auto-detected as heart</span>
+    <span class="n">apply_materials</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Custom material</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span>
+    <span class="n">vtk_file</span><span class="o">=</span><span class="s2">&quot;custom.vtk&quot;</span><span class="p">,</span>
+    <span class="n">usd_file</span><span class="o">=</span><span class="s2">&quot;output.usd&quot;</span><span class="p">,</span>
+    <span class="n">material_name</span><span class="o">=</span><span class="s2">&quot;cardiac_tissue&quot;</span><span class="p">,</span>
+    <span class="n">material_color</span><span class="o">=</span><span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+    <span class="n">material_opacity</span><span class="o">=</span><span class="mf">0.9</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Colormap Visualization</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Visualize scalar data with colormap</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">convert_with_colormap</span><span class="p">(</span>
+    <span class="n">vtk_file</span><span class="o">=</span><span class="s2">&quot;heart_strain.vtk&quot;</span><span class="p">,</span>
+    <span class="n">usd_file</span><span class="o">=</span><span class="s2">&quot;strain_viz.usd&quot;</span><span class="p">,</span>
+    <span class="n">scalar_array</span><span class="o">=</span><span class="s2">&quot;Strain&quot;</span><span class="p">,</span>
+    <span class="n">colormap</span><span class="o">=</span><span class="s2">&quot;plasma&quot;</span><span class="p">,</span>
+    <span class="n">value_range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+    <span class="n">show_colorbar</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="tetrahedral-mesh-converter">
+<h3>Tetrahedral Mesh Converter<a class="headerlink" href="#tetrahedral-mesh-converter" title="Link to this heading"></a></h3>
+<p>Convert volumetric meshes (VTK UnstructuredGrid) to USD.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="physiomotion4d.ConvertVTK4DToUSDTetMesh">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">physiomotion4d.</span></span><span class="sig-name descname"><span class="pre">ConvertVTK4DToUSDTetMesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_basename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_polydata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_to_surface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_normals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/convert_vtk_4d_to_usd_tetmesh.html#ConvertVTK4DToUSDTetMesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.ConvertVTK4DToUSDTetMesh" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#physiomotion4d.ConvertVTK4DToUSDBase" title="physiomotion4d.convert_vtk_4d_to_usd_base.ConvertVTK4DToUSDBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDBase</span></code></a></p>
+<p>Converter for VTK UnstructuredGrid to USD TetMesh.</p>
+<p>Handles:
+- Volumetric tetrahedral meshes
+- Surface cells (triangles/quads) from UnstructuredGrid
+- Time-varying topology via visibility control</p>
+<p>Requires OpenUSD v24.03+ for UsdGeomTetMesh support.</p>
+<dl>
+<dt>Example Usage:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">converter</span> <span class="o">=</span> <span class="n">ConvertVTK4DToUSDTetMesh</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">data_basename</span><span class="o">=</span><span class="s2">&quot;VolumetricModel&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">input_polydata</span><span class="o">=</span><span class="n">ugrid_meshes</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">mask_ids</span><span class="o">=</span><span class="kc">None</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">stage</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;output.usd&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="physiomotion4d.ConvertVTK4DToUSDTetMesh.supports_mesh_type">
+<span class="sig-name descname"><span class="pre">supports_mesh_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/physiomotion4d/convert_vtk_4d_to_usd_tetmesh.html#ConvertVTK4DToUSDTetMesh.supports_mesh_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#physiomotion4d.ConvertVTK4DToUSDTetMesh.supports_mesh_type" title="Link to this definition"></a></dt>
+<dd><p>Check if this converter supports the given mesh type.</p>
+<p>Supports UnstructuredGrid when NOT converting to surface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mesh</strong> – PyVista or VTK mesh object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if mesh is UnstructuredGrid and not surface mode</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="simple">
+<dt><strong>Features</strong>:</dt><dd><ul class="simple">
+<li><p>Volumetric mesh conversion</p></li>
+<li><p>Internal structure visualization</p></li>
+<li><p>Cut-plane rendering</p></li>
+<li><p>Volume data representation</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example Usage</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConvertVTK4DToUSDTetMesh</span>
+
+<span class="c1"># Initialize for tetrahedral meshes</span>
+<span class="n">converter</span> <span class="o">=</span> <span class="n">ConvertVTK4DToUSDTetMesh</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Convert volumetric mesh</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span>
+    <span class="n">vtk_file</span><span class="o">=</span><span class="s2">&quot;heart_volume.vtu&quot;</span><span class="p">,</span>
+    <span class="n">usd_file</span><span class="o">=</span><span class="s2">&quot;heart_volume.usd&quot;</span><span class="p">,</span>
+    <span class="n">extract_surface</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Also create surface</span>
+    <span class="n">internal_opacity</span><span class="o">=</span><span class="mf">0.1</span>   <span class="c1"># Make volume semi-transparent</span>
+<span class="p">)</span>
+
+<span class="c1"># Create cut-plane visualization</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">convert_with_cutplane</span><span class="p">(</span>
+    <span class="n">vtk_file</span><span class="o">=</span><span class="s2">&quot;heart_volume.vtu&quot;</span><span class="p">,</span>
+    <span class="n">usd_file</span><span class="o">=</span><span class="s2">&quot;heart_cutplane.usd&quot;</span><span class="p">,</span>
+    <span class="n">plane_normal</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">plane_position</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="anatomical-material-system">
+<h2>Anatomical Material System<a class="headerlink" href="#anatomical-material-system" title="Link to this heading"></a></h2>
+<section id="material-library">
+<h3>Material Library<a class="headerlink" href="#material-library" title="Link to this heading"></a></h3>
+<p>PhysioMotion4D includes a comprehensive anatomical material library:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d</span><span class="w"> </span><span class="kn">import</span> <span class="n">USDAnatomyTools</span>
+
+<span class="c1"># Access material library</span>
+<span class="n">anatomy_tools</span> <span class="o">=</span> <span class="n">USDAnatomyTools</span><span class="p">()</span>
+
+<span class="c1"># Get available materials</span>
+<span class="n">materials</span> <span class="o">=</span> <span class="n">anatomy_tools</span><span class="o">.</span><span class="n">get_available_materials</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available: </span><span class="si">{</span><span class="n">materials</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get material for structure</span>
+<span class="n">mat</span> <span class="o">=</span> <span class="n">anatomy_tools</span><span class="o">.</span><span class="n">get_material</span><span class="p">(</span><span class="s2">&quot;heart_lv&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Heart LV: </span><span class="si">{</span><span class="n">mat</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><strong>Material Categories</strong>:</dt><dd><ul class="simple">
+<li><p><strong>Cardiac</strong>: Heart chambers, myocardium, valves</p></li>
+<li><p><strong>Vascular</strong>: Arteries, veins, capillaries</p></li>
+<li><p><strong>Pulmonary</strong>: Lungs, airways, alveoli</p></li>
+<li><p><strong>Skeletal</strong>: Bones, cartilage</p></li>
+<li><p><strong>Soft Tissue</strong>: Muscles, fat, connective tissue</p></li>
+<li><p><strong>Neural</strong>: Brain, nerves</p></li>
+<li><p><strong>Visceral</strong>: Liver, kidneys, spleen, etc.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="custom-materials">
+<h3>Custom Materials<a class="headerlink" href="#custom-materials" title="Link to this heading"></a></h3>
+<p>Define custom anatomical materials:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d</span><span class="w"> </span><span class="kn">import</span> <span class="n">USDAnatomyTools</span>
+
+<span class="n">anatomy_tools</span> <span class="o">=</span> <span class="n">USDAnatomyTools</span><span class="p">()</span>
+
+<span class="c1"># Define custom material</span>
+<span class="n">anatomy_tools</span><span class="o">.</span><span class="n">add_custom_material</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;custom_cardiac_tissue&quot;</span><span class="p">,</span>
+    <span class="n">base_color</span><span class="o">=</span><span class="p">[</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+    <span class="n">metallic</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">roughness</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+    <span class="n">opacity</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+    <span class="n">emission_color</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+    <span class="n">emission_strength</span><span class="o">=</span><span class="mf">0.2</span>
+<span class="p">)</span>
+
+<span class="c1"># Use custom material</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">apply_material</span><span class="p">(</span>
+    <span class="n">usd_stage</span><span class="o">=</span><span class="n">stage</span><span class="p">,</span>
+    <span class="n">prim_path</span><span class="o">=</span><span class="s2">&quot;/heart_lv&quot;</span><span class="p">,</span>
+    <span class="n">material_name</span><span class="o">=</span><span class="s2">&quot;custom_cardiac_tissue&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="material-properties">
+<h3>Material Properties<a class="headerlink" href="#material-properties" title="Link to this heading"></a></h3>
+<p>Anatomical materials support physically-based rendering:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">material_properties</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;base_color&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>      <span class="c1"># RGB color</span>
+    <span class="s1">&#39;metallic&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>                     <span class="c1"># 0=non-metal, 1=metal</span>
+    <span class="s1">&#39;roughness&#39;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>                    <span class="c1"># 0=smooth, 1=rough</span>
+    <span class="s1">&#39;opacity&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span>                      <span class="c1"># 0=transparent, 1=opaque</span>
+    <span class="s1">&#39;ior&#39;</span><span class="p">:</span> <span class="mf">1.4</span><span class="p">,</span>                          <span class="c1"># Index of refraction</span>
+    <span class="s1">&#39;emission_color&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># Emissive color</span>
+    <span class="s1">&#39;emission_strength&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>            <span class="c1"># Emission intensity</span>
+    <span class="s1">&#39;normal_map&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>                  <span class="c1"># Normal map texture</span>
+    <span class="s1">&#39;displacement&#39;</span><span class="p">:</span> <span class="kc">None</span>                 <span class="c1"># Displacement map</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="time-varying-geometry">
+<h2>Time-Varying Geometry<a class="headerlink" href="#time-varying-geometry" title="Link to this heading"></a></h2>
+<section id="animation-creation">
+<h3>Animation Creation<a class="headerlink" href="#animation-creation" title="Link to this heading"></a></h3>
+<p>Create animated USD files from 4D VTK sequences:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConvertVTK4DToUSD</span>
+
+<span class="c1"># Initialize with timing</span>
+<span class="n">converter</span> <span class="o">=</span> <span class="n">ConvertVTK4DToUSD</span><span class="p">(</span>
+    <span class="n">start_time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">end_time</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>    <span class="c1"># 2 second animation</span>
+    <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>          <span class="c1"># 30 frames per second</span>
+    <span class="n">loop</span><span class="o">=</span><span class="kc">True</span>        <span class="c1"># Loop animation</span>
+<span class="p">)</span>
+
+<span class="c1"># Create 4D animation</span>
+<span class="n">vtk_4d_files</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;frame_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">.vtk&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">60</span><span class="p">)]</span>
+
+<span class="n">converter</span><span class="o">.</span><span class="n">create_animation</span><span class="p">(</span>
+    <span class="n">vtk_files</span><span class="o">=</span><span class="n">vtk_4d_files</span><span class="p">,</span>
+    <span class="n">usd_file</span><span class="o">=</span><span class="s2">&quot;animated_heart.usd&quot;</span><span class="p">,</span>
+    <span class="n">mesh_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;heart_lv&quot;</span><span class="p">,</span> <span class="s2">&quot;heart_rv&quot;</span><span class="p">,</span> <span class="s2">&quot;heart_myocardium&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="time-sampling">
+<h3>Time Sampling<a class="headerlink" href="#time-sampling" title="Link to this heading"></a></h3>
+<p>Control temporal resolution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># High temporal resolution</span>
+<span class="n">converter</span> <span class="o">=</span> <span class="n">ConvertVTK4DToUSD</span><span class="p">(</span>
+    <span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">end_time</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">fps</span><span class="o">=</span><span class="mi">60</span>  <span class="c1"># Smooth animation</span>
+<span class="p">)</span>
+
+<span class="c1"># Match source frame rate</span>
+<span class="n">num_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vtk_files</span><span class="p">)</span>
+<span class="n">cycle_duration</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># 1 second cardiac cycle</span>
+
+<span class="n">converter</span> <span class="o">=</span> <span class="n">ConvertVTK4DToUSD</span><span class="p">(</span>
+    <span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">end_time</span><span class="o">=</span><span class="n">cycle_duration</span><span class="p">,</span>
+    <span class="n">fps</span><span class="o">=</span><span class="n">num_frames</span> <span class="o">/</span> <span class="n">cycle_duration</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="colormap-rendering">
+<h2>Colormap Rendering<a class="headerlink" href="#colormap-rendering" title="Link to this heading"></a></h2>
+<section id="scalar-data-visualization">
+<h3>Scalar Data Visualization<a class="headerlink" href="#scalar-data-visualization" title="Link to this heading"></a></h3>
+<p>Visualize scalar data on meshes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConvertVTK4DToUSDPolyMesh</span>
+
+<span class="n">converter</span> <span class="o">=</span> <span class="n">ConvertVTK4DToUSDPolyMesh</span><span class="p">()</span>
+
+<span class="c1"># Available colormaps</span>
+<span class="n">colormaps</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;plasma&#39;</span><span class="p">,</span> <span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="s1">&#39;inferno&#39;</span><span class="p">,</span> <span class="s1">&#39;magma&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rainbow&#39;</span><span class="p">,</span> <span class="s1">&#39;jet&#39;</span><span class="p">,</span> <span class="s1">&#39;hot&#39;</span><span class="p">,</span> <span class="s1">&#39;cool&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="s1">&#39;bone&#39;</span><span class="p">,</span> <span class="s1">&#39;copper&#39;</span>
+<span class="p">]</span>
+
+<span class="c1"># Apply colormap to scalar data</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">convert_with_colormap</span><span class="p">(</span>
+    <span class="n">vtk_file</span><span class="o">=</span><span class="s2">&quot;heart_with_strain.vtk&quot;</span><span class="p">,</span>
+    <span class="n">usd_file</span><span class="o">=</span><span class="s2">&quot;strain_visualization.usd&quot;</span><span class="p">,</span>
+    <span class="n">scalar_array</span><span class="o">=</span><span class="s2">&quot;Strain&quot;</span><span class="p">,</span>           <span class="c1"># Array name in VTK</span>
+    <span class="n">colormap</span><span class="o">=</span><span class="s2">&quot;plasma&quot;</span><span class="p">,</span>
+    <span class="n">value_range</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">],</span>        <span class="c1"># Data range</span>
+    <span class="n">show_colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">colorbar_position</span><span class="o">=</span><span class="s2">&quot;right&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="time-varying-colormaps">
+<h3>Time-Varying Colormaps<a class="headerlink" href="#time-varying-colormaps" title="Link to this heading"></a></h3>
+<p>Animate colormaps over time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create time-varying colormap animation</span>
+<span class="n">vtk_files_with_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;heart_t0_strain.vtk&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;heart_t1_strain.vtk&quot;</span><span class="p">,</span>
+    <span class="c1"># ... more timesteps</span>
+<span class="p">]</span>
+
+<span class="n">converter</span><span class="o">.</span><span class="n">create_time_varying_colormap</span><span class="p">(</span>
+    <span class="n">vtk_files</span><span class="o">=</span><span class="n">vtk_files_with_data</span><span class="p">,</span>
+    <span class="n">usd_file</span><span class="o">=</span><span class="s2">&quot;strain_animation.usd&quot;</span><span class="p">,</span>
+    <span class="n">scalar_array</span><span class="o">=</span><span class="s2">&quot;Strain&quot;</span><span class="p">,</span>
+    <span class="n">colormap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">,</span>
+    <span class="n">global_range</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>  <span class="c1"># Fixed range across time</span>
+    <span class="n">fps</span><span class="o">=</span><span class="mi">30</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="usd-file-management">
+<h2>USD File Management<a class="headerlink" href="#usd-file-management" title="Link to this heading"></a></h2>
+<section id="merging-usd-files">
+<h3>Merging USD Files<a class="headerlink" href="#merging-usd-files" title="Link to this heading"></a></h3>
+<p>Combine multiple USD files:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d</span><span class="w"> </span><span class="kn">import</span> <span class="n">USDTools</span>
+
+<span class="n">usd_tools</span> <span class="o">=</span> <span class="n">USDTools</span><span class="p">()</span>
+
+<span class="c1"># Merge multiple anatomical structures</span>
+<span class="n">usd_tools</span><span class="o">.</span><span class="n">merge_usd_files</span><span class="p">(</span>
+    <span class="n">input_files</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;heart.usd&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lungs.usd&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vessels.usd&quot;</span>
+    <span class="p">],</span>
+    <span class="n">output_file</span><span class="o">=</span><span class="s2">&quot;complete_anatomy.usd&quot;</span><span class="p">,</span>
+    <span class="n">preserve_hierarchy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">resolve_conflicts</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="scene-organization">
+<h3>Scene Organization<a class="headerlink" href="#scene-organization" title="Link to this heading"></a></h3>
+<p>Organize USD scene hierarchy:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pxr</span><span class="w"> </span><span class="kn">import</span> <span class="n">Usd</span><span class="p">,</span> <span class="n">UsdGeom</span>
+
+<span class="c1"># Create organized scene</span>
+<span class="n">stage</span> <span class="o">=</span> <span class="n">Usd</span><span class="o">.</span><span class="n">Stage</span><span class="o">.</span><span class="n">CreateNew</span><span class="p">(</span><span class="s2">&quot;organized_scene.usd&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create hierarchy</span>
+<span class="n">anatomy_root</span> <span class="o">=</span> <span class="n">UsdGeom</span><span class="o">.</span><span class="n">Xform</span><span class="o">.</span><span class="n">Define</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="s2">&quot;/Anatomy&quot;</span><span class="p">)</span>
+<span class="n">cardiac</span> <span class="o">=</span> <span class="n">UsdGeom</span><span class="o">.</span><span class="n">Xform</span><span class="o">.</span><span class="n">Define</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="s2">&quot;/Anatomy/Cardiac&quot;</span><span class="p">)</span>
+<span class="n">vessels</span> <span class="o">=</span> <span class="n">UsdGeom</span><span class="o">.</span><span class="n">Xform</span><span class="o">.</span><span class="n">Define</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="s2">&quot;/Anatomy/Vessels&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add meshes to hierarchy</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">add_mesh_to_stage</span><span class="p">(</span>
+    <span class="n">stage</span><span class="o">=</span><span class="n">stage</span><span class="p">,</span>
+    <span class="n">vtk_file</span><span class="o">=</span><span class="s2">&quot;heart_lv.vtk&quot;</span><span class="p">,</span>
+    <span class="n">prim_path</span><span class="o">=</span><span class="s2">&quot;/Anatomy/Cardiac/LeftVentricle&quot;</span>
+<span class="p">)</span>
+
+<span class="n">stage</span><span class="o">.</span><span class="n">Save</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-features">
+<h2>Advanced Features<a class="headerlink" href="#advanced-features" title="Link to this heading"></a></h2>
+<section id="level-of-detail-lod">
+<h3>Level of Detail (LOD)<a class="headerlink" href="#level-of-detail-lod" title="Link to this heading"></a></h3>
+<p>Create multi-resolution meshes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LODConverter</span><span class="p">(</span><span class="n">ConvertVTK4DToUSDPolyMesh</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converter with LOD support.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_lod_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vtk_file</span><span class="p">,</span> <span class="n">usd_file</span><span class="p">,</span> <span class="n">lod_levels</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create mesh with multiple LODs.&quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pyvista</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pv</span>
+
+        <span class="c1"># Load high-res mesh</span>
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">pv</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">vtk_file</span><span class="p">)</span>
+
+        <span class="c1"># Create LOD variants</span>
+        <span class="k">for</span> <span class="n">lod</span><span class="p">,</span> <span class="n">reduction</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lod_levels</span><span class="p">):</span>
+            <span class="n">decimated</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">decimate</span><span class="p">(</span><span class="n">reduction</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span>
+                <span class="n">vtk_mesh</span><span class="o">=</span><span class="n">decimated</span><span class="p">,</span>
+                <span class="n">usd_file</span><span class="o">=</span><span class="n">usd_file</span><span class="p">,</span>
+                <span class="n">variant_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;LOD_</span><span class="si">{</span><span class="n">lod</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="instancing">
+<h3>Instancing<a class="headerlink" href="#instancing" title="Link to this heading"></a></h3>
+<p>Efficiently handle repeated structures:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">physiomotion4d</span><span class="w"> </span><span class="kn">import</span> <span class="n">USDTools</span>
+
+<span class="n">usd_tools</span> <span class="o">=</span> <span class="n">USDTools</span><span class="p">()</span>
+
+<span class="c1"># Create instances of the same mesh</span>
+<span class="n">usd_tools</span><span class="o">.</span><span class="n">create_instances</span><span class="p">(</span>
+    <span class="n">stage</span><span class="o">=</span><span class="n">stage</span><span class="p">,</span>
+    <span class="n">source_prim</span><span class="o">=</span><span class="s2">&quot;/Vessels/Artery&quot;</span><span class="p">,</span>
+    <span class="n">instance_paths</span><span class="o">=</span><span class="p">[</span>
+        <span class="s2">&quot;/Anatomy/Artery_1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;/Anatomy/Artery_2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;/Anatomy/Artery_3&quot;</span>
+    <span class="p">],</span>
+    <span class="n">transforms</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">transform_1</span><span class="p">,</span>
+        <span class="n">transform_2</span><span class="p">,</span>
+        <span class="n">transform_3</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-optimization">
+<h2>Performance Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading"></a></h2>
+<section id="mesh-simplification">
+<h3>Mesh Simplification<a class="headerlink" href="#mesh-simplification" title="Link to this heading"></a></h3>
+<p>Reduce polygon count for performance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyvista</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pv</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">optimize_mesh_for_usd</span><span class="p">(</span><span class="n">vtk_file</span><span class="p">,</span> <span class="n">target_reduction</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimize mesh for USD conversion.&quot;&quot;&quot;</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">pv</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">vtk_file</span><span class="p">)</span>
+
+    <span class="c1"># Decimate</span>
+    <span class="n">decimated</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">decimate</span><span class="p">(</span><span class="n">target_reduction</span><span class="p">)</span>
+
+    <span class="c1"># Clean</span>
+    <span class="n">cleaned</span> <span class="o">=</span> <span class="n">decimated</span><span class="o">.</span><span class="n">clean</span><span class="p">()</span>
+
+    <span class="c1"># Smooth</span>
+    <span class="n">smoothed</span> <span class="o">=</span> <span class="n">cleaned</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">n_iter</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">smoothed</span>
+</pre></div>
+</div>
+</section>
+<section id="batch-conversion">
+<h3>Batch Conversion<a class="headerlink" href="#batch-conversion" title="Link to this heading"></a></h3>
+<p>Convert multiple files efficiently:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">concurrent.futures</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThreadPoolExecutor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">batch_convert_to_usd</span><span class="p">(</span><span class="n">vtk_dir</span><span class="p">,</span> <span class="n">usd_dir</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert multiple VTK files to USD in parallel.&quot;&quot;&quot;</span>
+    <span class="n">converter</span> <span class="o">=</span> <span class="n">ConvertVTK4DToUSDPolyMesh</span><span class="p">()</span>
+
+    <span class="n">vtk_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">vtk_dir</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.vtk&quot;</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_single</span><span class="p">(</span><span class="n">vtk_file</span><span class="p">):</span>
+        <span class="n">usd_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">usd_dir</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">vtk_file</span><span class="o">.</span><span class="n">stem</span><span class="si">}</span><span class="s2">.usd&quot;</span>
+        <span class="n">converter</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">vtk_file</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">usd_file</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">usd_file</span>
+
+    <span class="k">with</span> <span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">executor</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">convert_single</span><span class="p">,</span> <span class="n">vtk_files</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">results</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="material-assignment">
+<h3>Material Assignment<a class="headerlink" href="#material-assignment" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use anatomically accurate colors and properties</p></li>
+<li><p>Maintain consistent naming conventions</p></li>
+<li><p>Apply appropriate transparency for visualization</p></li>
+<li><p>Use emission for highlighting structures</p></li>
+</ul>
+</section>
+<section id="animation">
+<h3>Animation<a class="headerlink" href="#animation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Match frame rate to source data</p></li>
+<li><p>Use smooth temporal interpolation</p></li>
+<li><p>Ensure consistent topology across frames</p></li>
+<li><p>Optimize polygon count for real-time playback</p></li>
+</ul>
+</section>
+<section id="file-organization">
+<h3>File Organization<a class="headerlink" href="#file-organization" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Recommended structure</span>
+<span class="n">output</span><span class="o">/</span>
+<span class="err">├──</span> <span class="n">meshes</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">frame_000</span><span class="o">.</span><span class="n">vtk</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">frame_001</span><span class="o">.</span><span class="n">vtk</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="o">...</span>
+<span class="err">├──</span> <span class="n">usd</span><span class="o">/</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">static_anatomy</span><span class="o">.</span><span class="n">usd</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">dynamic_anatomy</span><span class="o">.</span><span class="n">usd</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">complete_scene</span><span class="o">.</span><span class="n">usd</span>
+<span class="err">└──</span> <span class="n">textures</span><span class="o">/</span>
+    <span class="err">└──</span> <span class="n">colormaps</span><span class="o">/</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="utilities.html"><span class="doc">Utilities</span></a> - USD and mesh utilities</p></li>
+<li><p><a class="reference internal" href="workflows.html"><span class="doc">Workflows</span></a> - Using USD conversion in workflows</p></li>
+<li><p><a class="reference internal" href="../cli_scripts/vtk_to_usd.html"><span class="doc">VTK to USD Conversion</span></a> - CLI for USD conversion</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="registration_models.html" class="btn btn-neutral float-left" title="Model Registration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utilities.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Stephen R. Aylward, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1331 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Best Practices &mdash; PhysioMotion4D 2025.05.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=556198f2" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=c436cb72"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Architecture Overview" href="../developer/architecture.html" />
+    <link rel="prev" title="Brain Vessel Modeling" href="brain_vessel_modeling.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PhysioMotion4D
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#software-dependencies">Software Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installation-methods">Installation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#method-1-install-from-pypi-recommended">Method 1: Install from PyPI (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#method-2-install-from-source">Method 2: Install from Source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#optional-dependencies">Optional Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#development-tools">Development Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#documentation-tools">Documentation Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#testing-dependencies">Testing Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#verify-installation">Verify Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#command-line-tools">Command-Line Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#gpu-setup">GPU Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#cuda-installation">CUDA Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#pytorch-with-cuda">PyTorch with CUDA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#basic-workflow">Basic Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#command-line-interface">Command-Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#step-by-step-workflow">Step-by-Step Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#working-with-individual-components">Working with Individual Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#segmentation-only">Segmentation Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#image-registration-only">Image Registration Only</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#vtk-to-usd-conversion">VTK to USD Conversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#sample-data">Sample Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#download-sample-cardiac-ct-data">Download Sample Cardiac CT Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#visualizing-results">Visualizing Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#in-nvidia-omniverse">In NVIDIA Omniverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#using-usd-viewer">Using USD Viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../quickstart.html#in-pyvista">In PyVista</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#next-steps">Next Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#complete-workflow-examples">Complete Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#heart-gated-ct-processing">Heart-Gated CT Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#lung-4d-ct-processing">Lung 4D-CT Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#segmentation-examples">Segmentation Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#totalsegmentator">TotalSegmentator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#vista-3d-with-point-prompts">VISTA-3D with Point Prompts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#ensemble-segmentation">Ensemble Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#registration-examples">Registration Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#icon-deep-learning-registration">ICON Deep Learning Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#multi-phase-cardiac-registration">Multi-Phase Cardiac Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#ants-multi-stage-registration">ANTs Multi-Stage Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#usd-conversion-examples">USD Conversion Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#vtk-time-series-to-usd">VTK Time Series to USD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#merge-multiple-usd-files">Merge Multiple USD Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#apply-materials-to-usd">Apply Materials to USD</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#transform-and-contour-examples">Transform and Contour Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#apply-transform-to-images">Apply Transform to Images</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#transform-contours-meshes">Transform Contours/Meshes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#extract-surface-from-segmentation">Extract Surface from Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#visualization-examples">Visualization Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#quick-preview-in-pyvista">Quick Preview in PyVista</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#animated-mesh-sequence">Animated Mesh Sequence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#batch-processing-examples">Batch Processing Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#process-multiple-patients">Process Multiple Patients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#parallel-segmentation">Parallel Segmentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#data-download-examples">Data Download Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#download-dirlab-dataset">Download DirLab Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#custom-workflow-examples">Custom Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#step-by-step-processing">Step-by-Step Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples.html#custom-pipeline-with-specific-methods">Custom Pipeline with Specific Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CLI &amp; Scripts Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">CLI &amp; Scripts Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#target-audience">Target Audience</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#available-scripts">Available Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#current-scripts">Current Scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#upcoming-scripts">Upcoming Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#general-workflow">General Workflow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#typical-command-structure">Typical Command Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#output-organization">Output Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="heart_gated_ct.html">Heart Gated CT Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="heart_gated_ct.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heart_gated_ct.html#input-requirements">Input Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#data-format">Data Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#image-quality-requirements">Image Quality Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="heart_gated_ct.html#basic-usage">Basic Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#single-4d-file">Single 4D File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#multiple-3d-files">Multiple 3D Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#with-output-directory">With Output Directory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="heart_gated_ct.html#command-line-options">Command-Line Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#required-arguments">Required Arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#optional-arguments">Optional Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="heart_gated_ct.html#processing-pipeline">Processing Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heart_gated_ct.html#output-files">Output Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#primary-outputs">Primary Outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#intermediate-files">Intermediate Files</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="heart_gated_ct.html#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#contrast-enhanced-cardiac-cta">Contrast-Enhanced Cardiac CTA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#non-contrast-study-with-custom-reference">Non-Contrast Study with Custom Reference</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#research-dataset-processing">Research Dataset Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#with-ants-registration">With ANTs Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="heart_gated_ct.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#choosing-reference-image">Choosing Reference Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#performance-optimization">Performance Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#data-quality-tips">Data Quality Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="heart_gated_ct.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#input-file-issues">Input File Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#segmentation-quality-issues">Segmentation Quality Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#registration-failures">Registration Failures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_gated_ct.html#memory-issues">Memory Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="heart_gated_ct.html#expected-processing-time">Expected Processing Time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heart_gated_ct.html#viewing-results-in-omniverse">Viewing Results in Omniverse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heart_gated_ct.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="heart_model_to_patient.html">Heart Model to Patient Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="heart_model_to_patient.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heart_model_to_patient.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="heart_model_to_patient.html#input-data">Input Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_model_to_patient.html#processing-steps">Processing Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="heart_model_to_patient.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="heart_model_to_patient.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heart_model_to_patient.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heart_model_to_patient.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lung_gated_ct.html">Lung Gated CT Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lung_gated_ct.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lung_gated_ct.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lung_gated_ct.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lung_gated_ct.html#processing-pipeline">Processing Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lung_gated_ct.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lung_gated_ct.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lung_gated_ct.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lung_gated_ct.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4dct_reconstruction.html">4D-CT Reconstruction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="4dct_reconstruction.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4dct_reconstruction.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="4dct_reconstruction.html#input-data">Input Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4dct_reconstruction.html#reconstruction-methods">Reconstruction Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="4dct_reconstruction.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="4dct_reconstruction.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4dct_reconstruction.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4dct_reconstruction.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vtk_to_usd.html">VTK to USD Conversion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vtk_to_usd.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtk_to_usd.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="vtk_to_usd.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vtk_to_usd.html#material-painting">Material Painting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vtk_to_usd.html#processing-options">Processing Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vtk_to_usd.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vtk_to_usd.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtk_to_usd.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtk_to_usd.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="brain_vessel_modeling.html">Brain Vessel Modeling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="brain_vessel_modeling.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="brain_vessel_modeling.html#planned-features">Planned Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="brain_vessel_modeling.html#input-requirements">Input Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="brain_vessel_modeling.html#processing-pipeline">Processing Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="brain_vessel_modeling.html#expected-outputs">Expected Outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="brain_vessel_modeling.html#use-cases">Use Cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="brain_vessel_modeling.html#workflow-class">Workflow Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="brain_vessel_modeling.html#related-scripts">Related Scripts</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Best Practices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#data-preparation">Data Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#image-quality-guidelines">Image Quality Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-organization">File Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#processing-strategies">Processing Strategies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#computational-resources">Computational Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#workflow-optimization">Workflow Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#quality-control">Quality Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#verification-checklist">Verification Checklist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#automated-quality-metrics">Automated Quality Metrics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#common-issues-and-solutions">Common Issues and Solutions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#poor-segmentation">Poor Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#registration-failure">Registration Failure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memory-errors">Memory Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#slow-processing">Slow Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-benchmarks">Performance Benchmarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reproducibility">Reproducibility</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ensuring-reproducible-results">Ensuring Reproducible Results</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-topics">Advanced Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#custom-reference-selection">Custom Reference Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-phase-studies">Multi-Phase Studies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer &amp; API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer/architecture.html">Architecture Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html#target-audience">Target Audience</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html#design-philosophy">Design Philosophy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html#package-organization">Package Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html#class-hierarchy">Class Hierarchy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/architecture.html#base-class-pattern">Base Class Pattern</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html#workflow-architecture">Workflow Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html#data-flow">Data Flow</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/architecture.html#file-formats">File Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html#extension-points">Extension Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html#relationship-to-cli-scripts">Relationship to CLI Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html#dependencies">Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/architecture.html#core-dependencies">Core Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/architecture.html#optional-dependencies">Optional Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html#performance-considerations">Performance Considerations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/architecture.html#gpu-acceleration">GPU Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/architecture.html#memory-management">Memory Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/architecture.html#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/core.html">Core Base Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/core.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/core.html#physiomotion4dbase-class">PhysioMotion4DBase Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase.__init__"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase.set_log_level"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.set_log_level()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase.set_log_classes"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.set_log_classes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase.set_log_all_classes"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.set_log_all_classes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase.get_log_classes"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.get_log_classes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_debug"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_debug()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_info"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_warning"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_warning()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_error"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_critical"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_critical()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_section"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_section()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/core.html#physiomotion4d.PhysioMotion4DBase.log_progress"><code class="docutils literal notranslate"><span class="pre">PhysioMotion4DBase.log_progress()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/core.html#key-features">Key Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#logging-infrastructure">Logging Infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#parameter-management">Parameter Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#file-path-utilities">File Path Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/core.html#common-use-patterns">Common Use Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#creating-a-new-class">Creating a New Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#error-handling">Error Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#configuration-management">Configuration Management</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/core.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#progress-tracking">Progress Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#checkpoint-system">Checkpoint System</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/core.html#integration-examples">Integration Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#using-base-class-in-applications">Using Base Class in Applications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#custom-logging-handlers">Custom Logging Handlers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/core.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#inheritance-guidelines">Inheritance Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/core.html#parameter-validation">Parameter Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/core.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/workflows.html">Workflows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/workflows.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/workflows.html#workflow-to-script-mapping">Workflow to Script Mapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/workflows.html#available-workflows">Available Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#workflowconvertheartgatedcttousd">WorkflowConvertHeartGatedCTToUSD</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/workflows.html#physiomotion4d.WorkflowConvertHeartGatedCTToUSD"><code class="docutils literal notranslate"><span class="pre">WorkflowConvertHeartGatedCTToUSD</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#workflowregisterheartmodeltopatient">WorkflowRegisterHeartModelToPatient</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/workflows.html#common-workflow-patterns">Common Workflow Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#step-based-execution">Step-Based Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#custom-configuration">Custom Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/workflows.html#workflow-components">Workflow Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#internal-processing-steps">Internal Processing Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#component-selection">Component Selection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/workflows.html#extending-workflows">Extending Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#creating-custom-workflows">Creating Custom Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#modifying-existing-workflows">Modifying Existing Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#creating-cli-scripts-for-custom-workflows">Creating CLI Scripts for Custom Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/workflows.html#integration-patterns">Integration Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#batch-processing">Batch Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#pipeline-integration">Pipeline Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#parallel-execution">Parallel Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/workflows.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#workflow-design">Workflow Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#parameter-management">Parameter Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#performance">Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/workflows.html#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/workflows.html#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/workflows.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/segmentation.html">Segmentation Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/segmentation.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/segmentation.html#base-segmentation-class">Base Segmentation Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#segmentchestbase">SegmentChestBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/segmentation.html#physiomotion4d.SegmentChestBase"><code class="docutils literal notranslate"><span class="pre">SegmentChestBase</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/segmentation.html#segmentation-methods">Segmentation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#totalsegmentator">TotalSegmentator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/segmentation.html#physiomotion4d.SegmentChestTotalSegmentator"><code class="docutils literal notranslate"><span class="pre">SegmentChestTotalSegmentator</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#vista-3d">VISTA-3D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#vista-3d-nim">VISTA-3D NIM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#ensemble-segmentation">Ensemble Segmentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/segmentation.html#physiomotion4d.SegmentChestEnsemble"><code class="docutils literal notranslate"><span class="pre">SegmentChestEnsemble</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/segmentation.html#common-usage-patterns">Common Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#basic-segmentation">Basic Segmentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#contrast-enhanced-vs-non-contrast">Contrast-Enhanced vs Non-Contrast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#structure-extraction">Structure Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/segmentation.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#custom-post-processing">Custom Post-Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#custom-structure-selection">Custom Structure Selection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/segmentation.html#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#gpu-acceleration">GPU Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#batch-processing">Batch Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/segmentation.html#quality-control">Quality Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#validation-metrics">Validation Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#confidence-assessment">Confidence Assessment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/segmentation.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#method-selection">Method Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#parameter-tuning">Parameter Tuning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/segmentation.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/segmentation.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/registration_images.html">Image Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_images.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_images.html#base-registration-class">Base Registration Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#registerimagesbase">RegisterImagesBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/registration_images.html#physiomotion4d.RegisterImagesBase"><code class="docutils literal notranslate"><span class="pre">RegisterImagesBase</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_images.html#registration-methods">Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#icon-registration">ICON Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#ants-registration">ANTs Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/registration_images.html#physiomotion4d.RegisterImagesANTs"><code class="docutils literal notranslate"><span class="pre">RegisterImagesANTs</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#time-series-registration">Time Series Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/registration_images.html#physiomotion4d.RegisterTimeSeriesImages"><code class="docutils literal notranslate"><span class="pre">RegisterTimeSeriesImages</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_images.html#common-usage-patterns">Common Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#basic-registration">Basic Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#multi-modal-registration">Multi-Modal Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#masked-registration">Masked Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_images.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#registration-quality-assessment">Registration Quality Assessment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#iterative-refinement">Iterative Refinement</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_images.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#custom-loss-functions">Custom Loss Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#custom-transform-constraints">Custom Transform Constraints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_images.html#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#gpu-acceleration">GPU Acceleration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#parallel-processing">Parallel Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_images.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#method-selection">Method Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#parameter-tuning">Parameter Tuning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_images.html#quality-control">Quality Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_images.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/registration_models.html">Model Registration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_models.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_models.html#registration-methods">Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#icp-registration-vtk">ICP Registration (VTK)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/registration_models.html#physiomotion4d.RegisterModelsICP"><code class="docutils literal notranslate"><span class="pre">RegisterModelsICP</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#icp-registration-itk">ICP Registration (ITK)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/registration_models.html#physiomotion4d.RegisterModelsICPITK"><code class="docutils literal notranslate"><span class="pre">RegisterModelsICPITK</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#distance-map-registration">Distance Map Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/registration_models.html#physiomotion4d.RegisterModelsDistanceMaps"><code class="docutils literal notranslate"><span class="pre">RegisterModelsDistanceMaps</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#pca-based-registration">PCA-Based Registration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/registration_models.html#physiomotion4d.RegisterModelsPCA"><code class="docutils literal notranslate"><span class="pre">RegisterModelsPCA</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_models.html#common-usage-patterns">Common Usage Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#initial-alignment">Initial Alignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#multi-stage-registration">Multi-Stage Registration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#model-to-image-registration">Model-to-Image Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_models.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#partial-shape-matching">Partial Shape Matching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#landmark-based-initialization">Landmark-Based Initialization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_models.html#quality-assessment">Quality Assessment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#registration-error-metrics">Registration Error Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#surface-distance-visualization">Surface Distance Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_models.html#customization">Customization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#custom-distance-metrics">Custom Distance Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#constrained-registration">Constrained Registration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_models.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#method-selection">Method Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#preprocessing">Preprocessing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/registration_models.html#parameter-tuning">Parameter Tuning</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/registration_models.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/usd_generation.html">USD Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/usd_generation.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/usd_generation.html#base-converter-class">Base Converter Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#convertvtk4dtousdbase">ConvertVTK4DToUSDBase</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/usd_generation.html#physiomotion4d.ConvertVTK4DToUSDBase"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDBase</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/usd_generation.html#usd-converters">USD Converters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#polygon-mesh-converter">Polygon Mesh Converter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/usd_generation.html#physiomotion4d.ConvertVTK4DToUSDPolyMesh"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDPolyMesh</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#tetrahedral-mesh-converter">Tetrahedral Mesh Converter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/usd_generation.html#physiomotion4d.ConvertVTK4DToUSDTetMesh"><code class="docutils literal notranslate"><span class="pre">ConvertVTK4DToUSDTetMesh</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/usd_generation.html#anatomical-material-system">Anatomical Material System</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#material-library">Material Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#custom-materials">Custom Materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#material-properties">Material Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/usd_generation.html#time-varying-geometry">Time-Varying Geometry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#animation-creation">Animation Creation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#time-sampling">Time Sampling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/usd_generation.html#colormap-rendering">Colormap Rendering</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#scalar-data-visualization">Scalar Data Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#time-varying-colormaps">Time-Varying Colormaps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/usd_generation.html#usd-file-management">USD File Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#merging-usd-files">Merging USD Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#scene-organization">Scene Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/usd_generation.html#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#level-of-detail-lod">Level of Detail (LOD)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#instancing">Instancing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/usd_generation.html#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#mesh-simplification">Mesh Simplification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#batch-conversion">Batch Conversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/usd_generation.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#material-assignment">Material Assignment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#animation">Animation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/usd_generation.html#file-organization">File Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/usd_generation.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/utilities.html">Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/utilities.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/utilities.html#image-tools">Image Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#module-physiomotion4d.image_tools">Medical Image I/O and Processing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/utilities.html#physiomotion4d.image_tools.ImageTools"><code class="docutils literal notranslate"><span class="pre">ImageTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/utilities.html#transform-tools">Transform Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#module-physiomotion4d.transform_tools">Spatial Transformation Utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/utilities.html#physiomotion4d.transform_tools.TransformTools"><code class="docutils literal notranslate"><span class="pre">TransformTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/utilities.html#contour-tools">Contour Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#module-physiomotion4d.contour_tools">Mesh Generation and Manipulation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/utilities.html#physiomotion4d.contour_tools.ContourTools"><code class="docutils literal notranslate"><span class="pre">ContourTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/utilities.html#usd-tools">USD Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#module-physiomotion4d.usd_tools">USD File Operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/utilities.html#physiomotion4d.usd_tools.USDTools"><code class="docutils literal notranslate"><span class="pre">USDTools</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/utilities.html#usd-anatomy-tools">USD Anatomy Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#module-physiomotion4d.usd_anatomy_tools">Anatomical Material Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/utilities.html#physiomotion4d.usd_anatomy_tools.USDAnatomyTools"><code class="docutils literal notranslate"><span class="pre">USDAnatomyTools</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../developer/utilities.html#physiomotion4d.usd_anatomy_tools.parse_args"><code class="docutils literal notranslate"><span class="pre">parse_args()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/utilities.html#common-utility-patterns">Common Utility Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#pipeline-integration">Pipeline Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#batch-processing">Batch Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/utilities.html#custom-utility-functions">Custom Utility Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#extending-image-tools">Extending Image Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#custom-mesh-processing">Custom Mesh Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/utilities.html#performance-tips">Performance Tips</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#image-processing">Image Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#mesh-processing">Mesh Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/utilities.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#error-handling">Error Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#memory-management">Memory Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/utilities.html#file-i-o">File I/O</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/utilities.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/extending.html">Extending PhysioMotion4D</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../developer/extending.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/extending.html#extension-patterns">Extension Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/extending.html#creating-custom-workflows">Creating Custom Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#basic-workflow-template">Basic Workflow Template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#example-brain-vessel-workflow">Example: Brain Vessel Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/extending.html#custom-segmentation-methods">Custom Segmentation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#adding-new-segmentation-algorithms">Adding New Segmentation Algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/extending.html#custom-registration-methods">Custom Registration Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#implementing-new-registration-algorithms">Implementing New Registration Algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/extending.html#custom-usd-materials">Custom USD Materials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#adding-anatomical-materials">Adding Anatomical Materials</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/extending.html#integration-with-external-tools">Integration with External Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#connecting-to-external-libraries">Connecting to External Libraries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/extending.html#creating-command-line-tools">Creating Command-Line Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#cli-wrapper-for-custom-workflow">CLI Wrapper for Custom Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#installation-as-package-entry-point">Installation as Package Entry Point</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/extending.html#testing-extensions">Testing Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#unit-tests-for-custom-code">Unit Tests for Custom Code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/extending.html#contributing-back">Contributing Back</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#sharing-your-extensions">Sharing Your Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#code-style-guidelines">Code Style Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#documentation-standards">Documentation Standards</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/extending.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#extension-design">Extension Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/extending.html#performance">Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/extending.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#ways-to-contribute">Ways to Contribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-style">Code Style</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#formatting">Formatting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#linting">Linting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#pre-commit-hooks">Pre-commit Hooks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#pull-request-guidelines">Pull Request Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#testing">Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#write-tests">Write Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#run-tests">Run Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#documentation">Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#build-docs-locally">Build Docs Locally</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#documentation-style">Documentation Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#docstring-format">Docstring Format</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#code-review-process">Code Review Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#review-criteria">Review Criteria</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#reporting-issues">Reporting Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#bug-reports">Bug Reports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#feature-requests">Feature Requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#release-process">Release Process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#versioning">Versioning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contributing.html#making-a-release">Making a Release</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#community-guidelines">Community Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#acknowledgments">Acknowledgments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#running-tests">Running Tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#basic-test-execution">Basic Test Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#test-categories">Test Categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#specific-test-modules">Specific Test Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../testing.html#coverage-reports">Coverage Reports</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#test-structure">Test Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#writing-tests">Writing Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testing.html#continuous-integration">Continuous Integration</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#general-questions">General Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#what-is-physiomotion4d">What is PhysioMotion4D?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#what-data-formats-are-supported">What data formats are supported?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#do-i-need-nvidia-omniverse">Do I need NVIDIA Omniverse?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#installation-questions">Installation Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#do-i-need-a-gpu">Do I need a GPU?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#what-python-version-is-required">What Python version is required?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#usage-questions">Usage Questions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#how-long-does-processing-take">How long does processing take?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#which-segmentation-method-should-i-use">Which segmentation method should I use?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../faq.html#which-registration-method-should-i-use">Which registration method should I use?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html#more-questions">More Questions?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#installation-issues">Installation Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#cuda-out-of-memory">CUDA Out of Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#import-errors">Import Errors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#processing-issues">Processing Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#poor-segmentation-quality">Poor Segmentation Quality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#registration-not-converging">Registration Not Converging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#usd-issues">USD Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#usd-not-animating">USD Not Animating</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#usd-file-too-large">USD File Too Large</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#performance-issues">Performance Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../troubleshooting.html#slow-processing">Slow Processing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#software-citations">Software Citations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#related-publications">Related Publications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#registration-methods">Registration Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#segmentation-methods">Segmentation Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#datasets">Datasets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#dirlab-4d-ct">DirLab 4D-CT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#slicer-heart-ct">Slicer-Heart-CT</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#technologies">Technologies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#nvidia-omniverse">NVIDIA Omniverse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#monai">MONAI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../references.html#itk">ITK</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#external-links">External Links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../references.html#contributing">Contributing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../changelog.html#version-2025-05-0">Version 2025.05.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../changelog.html#features">Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PhysioMotion4D</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Best Practices</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/NVIDIA/PhysioMotion4D/blob/main/docs/cli_scripts/best_practices.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="best-practices">
+<h1>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h1>
+<p>This guide provides recommendations for optimal use of PhysioMotion4D CLI scripts, focusing on data preparation, processing strategies, and troubleshooting approaches.</p>
+<section id="data-preparation">
+<h2>Data Preparation<a class="headerlink" href="#data-preparation" title="Link to this heading"></a></h2>
+<section id="image-quality-guidelines">
+<h3>Image Quality Guidelines<a class="headerlink" href="#image-quality-guidelines" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>Spatial Resolution</strong></dt><dd><ul class="simple">
+<li><p>Cardiac CT: 0.5-1.0mm isotropic optimal</p></li>
+<li><p>Lung CT: 1.0-2.0mm acceptable</p></li>
+<li><p>Brain angiography: &lt;0.5mm for small vessels</p></li>
+</ul>
+</dd>
+<dt><strong>Temporal Sampling</strong></dt><dd><ul class="simple">
+<li><p>Cardiac: 10-20 phases per cycle minimum</p></li>
+<li><p>Respiratory: 8-10 phases typically sufficient</p></li>
+<li><p>More phases = smoother motion but longer processing</p></li>
+</ul>
+</dd>
+<dt><strong>Field of View</strong></dt><dd><ul class="simple">
+<li><p>Include entire organ of interest</p></li>
+<li><p>Include surrounding anatomy for context</p></li>
+<li><p>Avoid truncation artifacts</p></li>
+</ul>
+</dd>
+<dt><strong>Image Artifacts</strong></dt><dd><ul class="simple">
+<li><p>Minimize motion artifacts (ECG/respiratory gating)</p></li>
+<li><p>Ensure uniform contrast enhancement</p></li>
+<li><p>Avoid metal artifacts in region of interest</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="file-organization">
+<h3>File Organization<a class="headerlink" href="#file-organization" title="Link to this heading"></a></h3>
+<p>Recommended directory structure:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>project/
+├── raw_data/
+│   ├── patient_001/
+│   │   ├── phase_00.nrrd
+│   │   ├── phase_01.nrrd
+│   │   └── ...
+│   ├── patient_002/
+│   └── ...
+├── processing/
+│   ├── patient_001/
+│   └── ...
+└── results/
+    ├── patient_001/
+    └── ...
+</pre></div>
+</div>
+<dl class="simple">
+<dt><strong>Naming Conventions</strong></dt><dd><ul class="simple">
+<li><p>Use consistent, descriptive names</p></li>
+<li><p>Include patient ID and phase information</p></li>
+<li><p>Avoid spaces and special characters</p></li>
+<li><p>Use leading zeros for sorting (<code class="docutils literal notranslate"><span class="pre">phase_00</span></code>, not <code class="docutils literal notranslate"><span class="pre">phase_0</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="processing-strategies">
+<h2>Processing Strategies<a class="headerlink" href="#processing-strategies" title="Link to this heading"></a></h2>
+<section id="computational-resources">
+<h3>Computational Resources<a class="headerlink" href="#computational-resources" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>GPU Acceleration</strong></dt><dd><ul class="simple">
+<li><p>Enable CUDA for 5-10x speedup in registration</p></li>
+<li><p>Verify GPU availability: <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span></code></p></li>
+<li><p>Most benefit in registration steps</p></li>
+</ul>
+</dd>
+<dt><strong>Memory Management</strong></dt><dd><ul class="simple">
+<li><p>16GB RAM minimum for typical datasets</p></li>
+<li><p>32GB+ recommended for large volumes</p></li>
+<li><p>Monitor memory usage: <code class="docutils literal notranslate"><span class="pre">top</span></code> or Task Manager</p></li>
+<li><p>Consider downsampling for very large images</p></li>
+</ul>
+</dd>
+<dt><strong>Storage</strong></dt><dd><ul class="simple">
+<li><p>SSD strongly recommended for I/O performance</p></li>
+<li><p>Plan for 5-10x input data size for outputs</p></li>
+<li><p>Keep intermediate files until verification complete</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="workflow-optimization">
+<h3>Workflow Optimization<a class="headerlink" href="#workflow-optimization" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>Start Simple</strong></dt><dd><ol class="arabic simple">
+<li><p>Process single case with default parameters</p></li>
+<li><p>Verify output quality</p></li>
+<li><p>Adjust parameters if needed</p></li>
+<li><p>Apply to full dataset</p></li>
+</ol>
+</dd>
+<dt><strong>Parameter Selection</strong></dt><dd><ul class="simple">
+<li><p>Use defaults first (they work for most cases)</p></li>
+<li><p>Adjust only if quality issues observed</p></li>
+<li><p>Document parameter changes for reproducibility</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Batch Processing</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create processing script</span>
+<span class="k">for</span><span class="w"> </span>patient_dir<span class="w"> </span><span class="k">in</span><span class="w"> </span>raw_data/patient_*/<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nv">patient_id</span><span class="o">=</span><span class="k">$(</span>basename<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$patient_dir</span><span class="s2">&quot;</span><span class="k">)</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Processing </span><span class="nv">$patient_id</span><span class="s2">&quot;</span>
+
+<span class="w">    </span>physiomotion4d-heart-gated-ct<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="si">${</span><span class="nv">patient_dir</span><span class="si">}</span>/*.nrrd<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--contrast<span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--output-dir<span class="w"> </span>processing/<span class="si">${</span><span class="nv">patient_id</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>--project-name<span class="w"> </span><span class="si">${</span><span class="nv">patient_id</span><span class="si">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>processing/<span class="si">${</span><span class="nv">patient_id</span><span class="si">}</span>/log.txt
+<span class="k">done</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="quality-control">
+<h2>Quality Control<a class="headerlink" href="#quality-control" title="Link to this heading"></a></h2>
+<section id="verification-checklist">
+<h3>Verification Checklist<a class="headerlink" href="#verification-checklist" title="Link to this heading"></a></h3>
+<p>After processing, verify:</p>
+<dl class="simple">
+<dt><strong>Segmentation Quality</strong></dt><dd><p>□ All expected structures identified
+□ No major segmentation errors
+□ Boundaries are smooth and anatomically correct</p>
+</dd>
+<dt><strong>Registration Quality</strong></dt><dd><p>□ Good alignment across phases
+□ No excessive warping or distortions
+□ Smooth temporal transitions</p>
+</dd>
+<dt><strong>Mesh Quality</strong></dt><dd><p>□ Surfaces are smooth and closed
+□ No gaps or overlaps
+□ Appropriate level of detail</p>
+</dd>
+<dt><strong>USD Files</strong></dt><dd><p>□ Files open correctly in Omniverse
+□ Animation plays smoothly
+□ Materials are correctly applied
+□ Anatomical colors are appropriate</p>
+</dd>
+</dl>
+</section>
+<section id="automated-quality-metrics">
+<h3>Automated Quality Metrics<a class="headerlink" href="#automated-quality-metrics" title="Link to this heading"></a></h3>
+<p>PhysioMotion4D logs quality metrics during processing:</p>
+<ul class="simple">
+<li><p><strong>Segmentation confidence</strong>: Check for low-confidence regions</p></li>
+<li><p><strong>Registration error</strong>: Monitor convergence</p></li>
+<li><p><strong>Mesh statistics</strong>: Verify vertex/face counts are reasonable</p></li>
+</ul>
+</section>
+</section>
+<section id="common-issues-and-solutions">
+<h2>Common Issues and Solutions<a class="headerlink" href="#common-issues-and-solutions" title="Link to this heading"></a></h2>
+<section id="poor-segmentation">
+<h3>Poor Segmentation<a class="headerlink" href="#poor-segmentation" title="Link to this heading"></a></h3>
+<p><strong>Issue</strong>: Important structures missing or incorrectly segmented</p>
+<dl class="simple">
+<dt><strong>Solutions</strong>:</dt><dd><ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">--contrast</span></code> flag for contrast-enhanced studies</p></li>
+<li><p>Verify image quality and contrast are adequate</p></li>
+<li><p>Check that structures are in field of view</p></li>
+<li><p>Consider manual correction if needed</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="registration-failure">
+<h3>Registration Failure<a class="headerlink" href="#registration-failure" title="Link to this heading"></a></h3>
+<p><strong>Issue</strong>: Registration not converging or producing artifacts</p>
+<dl class="simple">
+<dt><strong>Solutions</strong>:</dt><dd><ul class="simple">
+<li><p>Select better reference image (less motion, better quality)</p></li>
+<li><p>Increase <code class="docutils literal notranslate"><span class="pre">--registration-iterations</span></code></p></li>
+<li><p>Try alternative registration method (<code class="docutils literal notranslate"><span class="pre">--registration-method</span> <span class="pre">ants</span></code>)</p></li>
+<li><p>Verify phases are temporally ordered correctly</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="memory-errors">
+<h3>Memory Errors<a class="headerlink" href="#memory-errors" title="Link to this heading"></a></h3>
+<p><strong>Issue</strong>: Out of memory during processing</p>
+<dl class="simple">
+<dt><strong>Solutions</strong>:</dt><dd><ul class="simple">
+<li><p>Close other applications</p></li>
+<li><p>Reduce image resolution (resample before processing)</p></li>
+<li><p>Process fewer phases simultaneously</p></li>
+<li><p>Use machine with more RAM</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="slow-processing">
+<h3>Slow Processing<a class="headerlink" href="#slow-processing" title="Link to this heading"></a></h3>
+<p><strong>Issue</strong>: Processing takes excessive time</p>
+<dl class="simple">
+<dt><strong>Solutions</strong>:</dt><dd><ul class="simple">
+<li><p>Enable GPU acceleration</p></li>
+<li><p>Use SSD for storage</p></li>
+<li><p>Reduce registration iterations if acceptable quality</p></li>
+<li><p>Consider cloud computing for large batches</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="performance-benchmarks">
+<h2>Performance Benchmarks<a class="headerlink" href="#performance-benchmarks" title="Link to this heading"></a></h2>
+<p>Typical processing times (NVIDIA RTX 3090, 32GB RAM):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Task</p></th>
+<th class="head"><p>Small Dataset</p></th>
+<th class="head"><p>Large Dataset</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Cardiac CT (10 phases)</p></td>
+<td><p>20-30 min</p></td>
+<td><p>45-60 min</p></td>
+</tr>
+<tr class="row-odd"><td><p>Lung CT (10 phases)</p></td>
+<td><p>25-40 min</p></td>
+<td><p>60-90 min</p></td>
+</tr>
+<tr class="row-even"><td><p>Model registration</p></td>
+<td><p>5-10 min</p></td>
+<td><p>15-25 min</p></td>
+</tr>
+</tbody>
+</table>
+<p><em>Small: 256³-384³ volumes; Large: 512³-768³ volumes</em></p>
+</section>
+<section id="reproducibility">
+<h2>Reproducibility<a class="headerlink" href="#reproducibility" title="Link to this heading"></a></h2>
+<section id="ensuring-reproducible-results">
+<h3>Ensuring Reproducible Results<a class="headerlink" href="#ensuring-reproducible-results" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>Version Control</strong></dt><dd><ul class="simple">
+<li><p>Record PhysioMotion4D version: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">show</span> <span class="pre">physiomotion4d</span></code></p></li>
+<li><p>Document dependency versions</p></li>
+<li><p>Use virtual environments</p></li>
+</ul>
+</dd>
+<dt><strong>Parameter Documentation</strong></dt><dd><ul class="simple">
+<li><p>Save command-line arguments used</p></li>
+<li><p>Record any manual interventions</p></li>
+<li><p>Note quality issues and solutions</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example Documentation</strong>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># processing_metadata.yaml</span>
+<span class="nt">patient_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">patient_001</span>
+<span class="nt">physiomotion4d_version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2025.05.0</span>
+<span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">heart-gated-ct</span>
+<span class="nt">date</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2026-01-08</span>
+
+<span class="nt">parameters</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">contrast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">registration_method</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">icon</span>
+<span class="w">  </span><span class="nt">registration_iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="nt">reference_image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">auto</span>
+
+<span class="nt">hardware</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">gpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NVIDIA RTX 3090</span>
+<span class="w">  </span><span class="nt">ram</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">32GB</span>
+
+<span class="nt">processing_time</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">28min</span>
+<span class="nt">quality_notes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Good segmentation, smooth registration</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-topics">
+<h2>Advanced Topics<a class="headerlink" href="#advanced-topics" title="Link to this heading"></a></h2>
+<section id="custom-reference-selection">
+<h3>Custom Reference Selection<a class="headerlink" href="#custom-reference-selection" title="Link to this heading"></a></h3>
+<p>Choose reference image based on:</p>
+<ul class="simple">
+<li><p><strong>Image quality</strong>: Sharpest, least artifact</p></li>
+<li><p><strong>Physiological phase</strong>: Representative motion state</p></li>
+<li><p><strong>Contrast timing</strong>: Peak enhancement (for CTA)</p></li>
+<li><p><strong>Clinical target</strong>: Phase of interest for application</p></li>
+</ul>
+</section>
+<section id="multi-phase-studies">
+<h3>Multi-Phase Studies<a class="headerlink" href="#multi-phase-studies" title="Link to this heading"></a></h3>
+<p>For non-gated multi-phase acquisitions (e.g., arterial/venous/delayed):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>physiomotion4d-heart-gated-ct<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>arterial.nrrd<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>venous.nrrd<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>delayed.nrrd<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--project-name<span class="w"> </span>multiphase_study
+</pre></div>
+</div>
+</section>
+<section id="parallel-processing">
+<h3>Parallel Processing<a class="headerlink" href="#parallel-processing" title="Link to this heading"></a></h3>
+<p>Process multiple patients in parallel:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using GNU parallel</span>
+parallel<span class="w"> </span>-j<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="s1">&#39;physiomotion4d-heart-gated-ct {}/*.nrrd \</span>
+<span class="s1">    --output-dir results/{/} \</span>
+<span class="s1">    --project-name {/}&#39;</span><span class="w"> </span>:::<span class="w"> </span>raw_data/patient_*
+
+<span class="c1"># Adjust -j to match CPU cores/GPU availability</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="getting-help">
+<h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h2>
+<p>If you encounter issues not covered here:</p>
+<ol class="arabic simple">
+<li><p>Check <a class="reference internal" href="../troubleshooting.html"><span class="doc">Troubleshooting</span></a> for detailed problem-solving</p></li>
+<li><p>Review script-specific documentation</p></li>
+<li><p>Consult <a class="reference internal" href="../faq.html"><span class="doc">FAQ</span></a> for common questions</p></li>
+<li><p>Check GitHub issues for similar problems</p></li>
+<li><p>Open new GitHub issue with:</p>
+<ul class="simple">
+<li><p>PhysioMotion4D version</p></li>
+<li><p>Complete command used</p></li>
+<li><p>Error messages</p></li>
+<li><p>System information</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Apply these practices to your specific use case</p></li>
+<li><p>See individual script pages for detailed usage</p></li>
+<li><p>Consult <a class="reference internal" href="../developer/extending.html"><span class="doc">Extending PhysioMotion4D</span></a> to customize workflows</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="brain_vessel_modeling.html" class="btn btn-neutral float-left" title="Brain Vessel Modeling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../developer/architecture.html" class="btn btn-neutral float-right" title="Architecture Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Stephen R. Aylward, NVIDIA Corporation.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
