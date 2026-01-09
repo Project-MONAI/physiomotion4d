@@ -10,6 +10,7 @@ and optional image-based refinement).
 import argparse
 import os
 import sys
+import traceback
 
 import itk
 import pyvista as pv
@@ -132,27 +133,17 @@ Examples:
 
     # Registration configuration
     parser.add_argument(
-        "--use-mask-to-mask",
-        action="store_true",
-        default=True,
-        help="Enable mask-to-mask deformable registration (default: enabled)",
-    )
-    parser.add_argument(
         "--no-mask-to-mask",
         dest="use_mask_to_mask",
         action="store_false",
-        help="Disable mask-to-mask deformable registration",
-    )
-    parser.add_argument(
-        "--use-mask-to-image",
-        action="store_true",
         default=True,
-        help="Enable mask-to-image refinement registration (default: enabled)",
+        help="Disable mask-to-mask deformable registration",
     )
     parser.add_argument(
         "--no-mask-to-image",
         dest="use_mask_to_image",
         action="store_false",
+        default=True,
         help="Disable mask-to-image refinement registration",
     )
     parser.add_argument(
@@ -217,8 +208,6 @@ Examples:
 
     except (FileNotFoundError, OSError, RuntimeError) as e:
         print(f"Error loading input data: {e}")
-        import traceback
-
         traceback.print_exc()
         return 1
 
@@ -239,8 +228,6 @@ Examples:
         )
     except (ValueError, RuntimeError, OSError) as e:
         print(f"Error initializing workflow: {e}")
-        import traceback
-
         traceback.print_exc()
         return 1
 
@@ -318,8 +305,6 @@ Examples:
 
     except (RuntimeError, ValueError, OSError) as e:
         print(f"\nError during registration: {e}")
-        import traceback
-
         traceback.print_exc()
         return 1
 
