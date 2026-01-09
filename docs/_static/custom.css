@@ -11,41 +11,41 @@
     --success-color: #10b981;
     --warning-color: #f59e0b;
     --danger-color: #ef4444;
-    
+
     /* Neutral Colors */
     --text-primary: #1f2937;
     --text-secondary: #6b7280;
     --text-muted: #9ca3af;
-    
+
     /* Background Colors */
     --bg-primary: #ffffff;
     --bg-secondary: #f9fafb;
     --bg-tertiary: #f3f4f6;
     --bg-code: #1e293b;
-    
+
     /* Border Colors */
     --border-light: #e5e7eb;
     --border-medium: #d1d5db;
-    
+
     /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    
+
     /* Spacing */
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
     --spacing-md: 1rem;
     --spacing-lg: 1.5rem;
     --spacing-xl: 2rem;
-    
+
     /* Border Radius */
     --radius-sm: 0.25rem;
     --radius-md: 0.5rem;
     --radius-lg: 0.75rem;
     --radius-xl: 1rem;
-    
+
     /* Typography */
     --font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-mono: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
@@ -70,7 +70,12 @@ html {
 
 /* ==================== HEADINGS ==================== */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-weight: 600;
     line-height: 1.3;
     margin-top: var(--spacing-xl);
@@ -101,7 +106,8 @@ h4 {
     font-size: 1.25rem;
 }
 
-h5, h6 {
+h5,
+h6 {
     font-size: 1.1rem;
 }
 
@@ -134,7 +140,8 @@ a.external::after {
 
 /* ==================== CODE BLOCKS ==================== */
 
-code, pre {
+code,
+pre {
     font-family: var(--font-mono);
     font-size: 0.9em;
 }
@@ -333,14 +340,14 @@ tbody tr:last-child td {
 }
 
 .wy-menu-vertical a {
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
     border-radius: var(--radius-sm);
     margin: 2px 0;
 }
 
 .wy-menu-vertical a:hover {
     background: rgba(255, 255, 255, 0.15);
-    padding-left: 2.5em;
+    transform: translateX(0.5em);
 }
 
 /* Breadcrumbs */
@@ -370,7 +377,9 @@ tbody tr:last-child td {
 
 /* ==================== BUTTONS ==================== */
 
-.btn, button, input[type="submit"] {
+.btn,
+button,
+input[type="submit"] {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
     color: white;
     border: none;
@@ -382,18 +391,23 @@ tbody tr:last-child td {
     box-shadow: var(--shadow-sm);
 }
 
-.btn:hover, button:hover, input[type="submit"]:hover {
+.btn:hover,
+button:hover,
+input[type="submit"]:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
 
-.btn:active, button:active, input[type="submit"]:active {
+.btn:active,
+button:active,
+input[type="submit"]:active {
     transform: translateY(0);
 }
 
 /* ==================== LISTS ==================== */
 
-ul, ol {
+ul,
+ol {
     margin: var(--spacing-md) 0;
     padding-left: var(--spacing-xl);
 }
@@ -522,19 +536,19 @@ footer {
     h1 {
         font-size: 2rem;
     }
-    
+
     h2 {
         font-size: 1.5rem;
     }
-    
+
     h3 {
         font-size: 1.25rem;
     }
-    
+
     body {
         font-size: 15px;
     }
-    
+
     .wy-nav-content {
         padding: var(--spacing-md);
     }
@@ -543,12 +557,13 @@ footer {
 /* ==================== PRINT STYLES ==================== */
 
 @media print {
+
     .wy-nav-side,
     .rst-versions,
     .wy-breadcrumbs li .wy-breadcrumbs-aside {
         display: none;
     }
-    
+
     .wy-nav-content {
         margin-left: 0;
     }
@@ -561,13 +576,14 @@ footer {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-.document > div {
+.document>div {
     animation: fadeIn 0.3s ease-out;
 }
 
@@ -608,6 +624,7 @@ dt {
 dd {
     margin-left: var(--spacing-xl);
     margin-bottom: var(--spacing-md);
+    margin-top: var(--spacing-sm);
 }
 
 /* Horizontal Rules */
@@ -636,7 +653,9 @@ hr {
 /* ==================== API DOCUMENTATION ==================== */
 
 /* Class and Function Signatures */
-dl.class, dl.function, dl.method {
+dl.class,
+dl.function,
+dl.method {
     margin: var(--spacing-lg) 0;
     padding: var(--spacing-lg);
     background: var(--bg-secondary);
@@ -652,10 +671,6 @@ dt.sig {
     font-size: 0.95em;
     color: var(--text-primary);
     margin-bottom: var(--spacing-sm);
-}
-
-dd {
-    margin-top: var(--spacing-sm);
 }
 
 /* Parameter Lists */
