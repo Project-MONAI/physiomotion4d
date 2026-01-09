@@ -44,13 +44,21 @@ Runs nightly at 2 AM UTC or on manual trigger. Includes:
 
 ### `docs.yml` - Documentation Build and Deploy
 
-Builds Sphinx documentation on push to main and pull requests:
+Two-job workflow for building and deploying Sphinx documentation:
 
+**Job 1: build-docs** (runs on all events - PRs and pushes)
 - Installs documentation dependencies
 - Builds HTML documentation with Sphinx
+- Checks for warnings
 - Uploads documentation artifacts (retained for 7 days)
-- Deploys to GitHub Pages using GitHub's official deployment action (main branch only)
-- Uses modern Pages deployment workflow (no gh-pages branch needed)
+
+**Job 2: deploy** (runs only on push to main)
+- Downloads built documentation
+- Deploys to GitHub Pages using GitHub's official deployment action
+- Uses `github-pages` environment with protection rules
+- No gh-pages branch needed (modern deployment workflow)
+
+This separation ensures PRs can build and validate docs without triggering environment protection rules.
 
 ## Caching Strategy
 
