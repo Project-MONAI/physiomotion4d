@@ -84,13 +84,6 @@ Required Arguments
 
 See :class:`physiomotion4d.WorkflowRegisterHeartModelToPatient` for API documentation.
 
-Related Scripts
----------------
-
-* :doc:`heart_gated_ct` - Process cardiac gated CT data
-* :doc:`vtk_to_usd` - Convert model meshes to USD format
-* :doc:`lung_gated_ct` - Process lung gated CT data
-
 Template Labelmap Configuration
 --------------------------------
 
@@ -118,11 +111,11 @@ PCA Registration Options
 Registration Configuration
 ---------------------------
 
-``--use-mask-to-mask`` / ``--no-mask-to-mask``
-   Enable/disable mask-to-mask deformable registration (default: enabled)
+``--no-mask-to-mask``
+   Disable mask-to-mask deformable registration (default: enabled)
 
-``--use-mask-to-image`` / ``--no-mask-to-image``
-   Enable/disable mask-to-image refinement registration (default: enabled)
+``--no-mask-to-image``
+   Disable mask-to-image refinement registration (default: enabled)
 
 ``--use-icon-refinement``
    Enable ICON deep learning registration refinement (default: disabled)
@@ -132,6 +125,13 @@ Output Options
 
 ``--output-prefix PREFIX``
    Prefix for output files (default: registered)
+
+Related Scripts
+===============
+
+* :doc:`heart_gated_ct` - Process cardiac gated CT data
+* :doc:`vtk_to_usd` - Convert model meshes to USD format
+* :doc:`lung_gated_ct` - Process lung gated CT data
 
 Examples
 ========

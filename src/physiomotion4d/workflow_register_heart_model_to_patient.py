@@ -750,6 +750,7 @@ def main():
     import argparse
     import os
     import sys
+    import traceback
 
     parser = argparse.ArgumentParser(
         description="Register generic heart model to patient-specific data",
@@ -846,27 +847,17 @@ Examples:
 
     # Registration configuration
     parser.add_argument(
-        "--use-mask-to-mask",
-        action="store_true",
-        default=True,
-        help="Enable mask-to-mask deformable registration (default: enabled)",
-    )
-    parser.add_argument(
         "--no-mask-to-mask",
         dest="use_mask_to_mask",
         action="store_false",
-        help="Disable mask-to-mask deformable registration",
-    )
-    parser.add_argument(
-        "--use-mask-to-image",
-        action="store_true",
         default=True,
-        help="Enable mask-to-image refinement registration (default: enabled)",
+        help="Disable mask-to-mask deformable registration",
     )
     parser.add_argument(
         "--no-mask-to-image",
         dest="use_mask_to_image",
         action="store_false",
+        default=True,
         help="Disable mask-to-image refinement registration",
     )
     parser.add_argument(
@@ -929,10 +920,8 @@ Examples:
         print(f"  Loading patient image: {args.patient_image}")
         patient_image = itk.imread(args.patient_image)
 
-    except Exception as e:
+    except (FileNotFoundError, OSError, RuntimeError) as e:
         print(f"Error loading input data: {e}")
-        import traceback
-
         traceback.print_exc()
         return 1
 
@@ -951,10 +940,8 @@ Examples:
             pca_group_key=args.pca_group_key,
             pca_number_of_modes=args.pca_number_of_modes,
         )
-    except Exception as e:
+    except (ValueError, RuntimeError, OSError) as e:
         print(f"Error initializing workflow: {e}")
-        import traceback
-
         traceback.print_exc()
         return 1
 
@@ -1030,15 +1017,11 @@ Examples:
 
         return 0
 
-    except Exception as e:
+    except (RuntimeError, ValueError, OSError) as e:
         print(f"\nError during registration: {e}")
-        import traceback
-
         traceback.print_exc()
         return 1
 
 
 if __name__ == "__main__":
-    import sys
-
     sys.exit(main())
