@@ -70,6 +70,7 @@ class ConvertVTKToUSD(PhysioMotion4DBase):
         mask_ids: Optional[dict[int, str]] = None,
         compute_normals: bool = False,
         convert_to_surface: bool = True,
+        times_per_second: float = 24.0,
         log_level: int | str = logging.INFO,
     ) -> None:
         """
@@ -82,6 +83,8 @@ class ConvertVTKToUSD(PhysioMotion4DBase):
                      If provided, meshes will be split by labeled regions.
             compute_normals: Whether to compute vertex normals
             convert_to_surface: If True, extract surface from volumetric meshes
+            times_per_second: Time codes per second (default 24.0).
+                            For medical imaging time series where each frame = 1 second, use 1.0.
             log_level: Logging level
         """
         super().__init__(class_name=self.__class__.__name__, log_level=log_level)
@@ -105,7 +108,7 @@ class ConvertVTKToUSD(PhysioMotion4DBase):
             preserve_cell_arrays=True,
             meters_per_unit=1.0,
             up_axis="Y",
-            times_per_second=24.0,
+            times_per_second=times_per_second,
         )
 
         self.logger.info(

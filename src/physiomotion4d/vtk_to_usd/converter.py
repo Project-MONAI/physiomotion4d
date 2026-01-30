@@ -77,8 +77,14 @@ class VTKToUSDConverter:
         self._create_stage(output_usd)
         stage = self.stage
         mesh_converter = self.mesh_converter
+        material_mgr = self.material_mgr
         assert stage is not None
         assert mesh_converter is not None
+        assert material_mgr is not None
+
+        # Create material if provided
+        if material is not None:
+            material_mgr.get_or_create_material(material)
 
         # Create mesh
         mesh_path = f"/World/Meshes/{mesh_name}"
@@ -140,8 +146,14 @@ class VTKToUSDConverter:
         self._create_stage(output_usd)
         stage = self.stage
         mesh_converter = self.mesh_converter
+        material_mgr = self.material_mgr
         assert stage is not None
         assert mesh_converter is not None
+        assert material_mgr is not None
+
+        # Create material if provided
+        if material is not None:
+            material_mgr.get_or_create_material(material)
 
         # Set time range
         stage.SetStartTimeCode(time_codes[0])
@@ -191,8 +203,14 @@ class VTKToUSDConverter:
         self._create_stage(output_usd)
         stage = self.stage
         mesh_converter = self.mesh_converter
+        material_mgr = self.material_mgr
         assert stage is not None
         assert mesh_converter is not None
+        assert material_mgr is not None
+
+        # Create material if provided
+        if material is not None:
+            material_mgr.get_or_create_material(material)
 
         # Create mesh
         mesh_path = f"/World/Meshes/{mesh_name}"
@@ -251,8 +269,14 @@ class VTKToUSDConverter:
         self._create_stage(output_usd)
         stage = self.stage
         mesh_converter = self.mesh_converter
+        material_mgr = self.material_mgr
         assert stage is not None
         assert mesh_converter is not None
+        assert material_mgr is not None
+
+        # Create material if provided
+        if material is not None:
+            material_mgr.get_or_create_material(material)
 
         # Set time range
         stage.SetStartTimeCode(time_codes[0])
