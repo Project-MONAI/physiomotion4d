@@ -7,7 +7,7 @@ This directory contains integration code for using Synopsys Simpleware Medical w
 The integration enables PhysioMotion4D to leverage Simpleware Medical's ASCardio module for automated cardiac segmentation. The implementation uses a two-component architecture:
 
 1. **segment_heart_simpleware.py** (in parent directory): A Python class that inherits from `SegmentChestBase` and manages the external Simpleware Medical process
-2. **physiomotion_heart_segmentation.py** (this directory): A Python script that runs within the Simpleware Medical environment and performs the actual segmentation using ASCardio
+2. **SimplewareScript_heart_segmentation.py** (this directory): A Python script that runs within the Simpleware Medical environment and performs the actual segmentation using ASCardio
 
 ## Requirements
 
@@ -18,36 +18,32 @@ The integration enables PhysioMotion4D to leverage Simpleware Medical's ASCardio
 
 ## Current Status
 
-**✅ FUNCTIONAL**: This integration is ready for testing!
-
-### Solution Implemented
-
-The integration uses a pre-created `blank.sip` file to establish an active document in console mode:
-
-1. **blank.sip** file is loaded at startup via `--input-file`
-2. This provides an active document context for the Python script
-3. Script can then import NIfTI images into the active document
-4. ASCardio segmentation can proceed normally
-5. Results are exported as NIfTI labelmaps
-
-This approach enables full console mode automation without requiring GUI interaction.
+**✅ FUNCTIONAL**: This integration works as expected.
 
 ### How It Works
 
+The integration passes the input CT image and output directory directly to Simpleware Medical:
+
+1. **Input**: The preprocessed NIfTI image is written to a temporary file; its path is passed via `--input-file` so Simpleware opens it as the active document.
+2. **Output directory**: The temporary output directory is passed via `--input-value`; the script reads it with `app.GetInputValue()`.
+3. The script runs ASCardio on the current document (the loaded NIfTI), then exports each mask as `mask_<name>.mhd` into that directory.
+4. `SegmentHeartSimpleware` reads the MHD mask files, assembles the labelmap, and returns the result.
+
 ```bash
 ConsoleSimplewareMedical.exe \
-    --input-file blank.sip \              # 🎯 Establishes active document
-    --run-script script.py \               # Runs segmentation script
-    --input-data params.txt \              # Passes parameters
-    --exit-after-script                    # Exits when done
+    --input-file input_image.nii.gz \      # Input CT (becomes active document)
+    --input-value <output_dir> \            # Where to write mask_*.mhd files
+    --run-script SimplewareScript_heart_segmentation.py \
+    --exit-after-script \
+    --no-progress
 ```
 
 The Python script then:
 ```python
-doc = sw.App.GetDocument()                 # ✅ Document is active
-doc.ImportBackgroundFromNifti(input_path)  # ✅ Can import data
-# ... perform ASCardio segmentation ...
-# ... export results ...
+output_dir = app.GetInputValue()            # Output directory from --input-value
+doc = sw.App.GetDocument()                  # Active document (loaded NIfTI)
+as_cardio = doc.GetAutoSegmenters().GetASCardio()
+# ... run ASCardio, then export each mask to mask_<name>.mhd in output_dir ...
 ```
 
 ## Installation
@@ -95,7 +91,7 @@ segmenter.set_simpleware_executable_path(
 
 ### Segmentation Output
 
-The ASCardio module segments the following cardiac structures:
+The ASCardio module segments the following cardiac structures (label IDs match `segment_heart_simpleware.py`):
 
 **Heart Structures (IDs 1-6):**
 - 1: Left Ventricle
@@ -103,48 +99,39 @@ The ASCardio module segments the following cardiac structures:
 - 3: Left Atrium
 - 4: Right Atrium
 - 5: Myocardium
-- 6: Left Atrial Appendage
+- 6: Heart (combined heart mask; derived from interior regions in postprocessing)
 
-**Major Vessels (IDs 10-14):**
-- 10: Aorta
-- 11: Pulmonary Artery
-- 12: Superior Vena Cava
-- 13: Inferior Vena Cava
-- 14: Pulmonary Vein
+**Major Vessels (IDs 7-10):**
+- 7: Aorta
+- 8: Pulmonary Artery
+- 9: Right Coronary Artery
+- 10: Left Coronary Artery
 
 ## Architecture
 
 ### Process Flow
 
-1. PhysioMotion4D preprocesses the CT image (resampling, intensity scaling)
-2. Preprocessed image is saved to a temporary NIfTI file
-3. ConsoleSimplewareMedical.exe is launched with the segmentation script:
-   ```bash
-   ConsoleSimplewareMedical.exe --run-script physiomotion_heart_segmentation.py \
-       --input-data params.txt \
-       --exit-after-script
-   ```
-   Where `params.txt` contains:
-   ```
-   input_file=input.nii.gz
-   output_file=output.nii.gz
-   ```
-4. Script runs within Simpleware environment:
-   - Loads the input image
-   - Initializes ASCardio module
-   - Runs automatic heart segmentation
-   - Exports labelmap to NIfTI
-5. PhysioMotion4D reads the output labelmap and returns results
+1. PhysioMotion4D preprocesses the CT image (resampling to 1 mm isotropic, intensity scaling).
+2. Preprocessed image is saved to a temporary NIfTI file (e.g. `input_image.nii.gz`) in a temporary directory.
+3. `ConsoleSimplewareMedical.exe` is launched with:
+   - `--input-file <path_to_input.nii.gz>` — the preprocessed CT (Simpleware opens it as the active document)
+   - `--input-value <tmp_dir>` — directory where the script will write mask files
+   - `--run-script SimplewareScript_heart_segmentation.py`
+   - `--exit-after-script` and `--no-progress`
+4. The script runs inside Simpleware:
+   - Gets the output directory from `app.GetInputValue()`
+   - Uses the current document (the loaded NIfTI) and ASCardio to segment heart and vessels
+   - Exports each mask as `mask_<name>.mhd` into the output directory
+5. PhysioMotion4D reads the `mask_*.mhd` files, builds the labelmap (including heart exterior from interior regions), and returns the result.
 
 ### Communication
 
 - **Executable**: `ConsoleSimplewareMedical.exe` (command-line version)
-- **Script invocation**: `--run-script <script_path>`
-- **Input parameters**: `--input-data <params_file>` (text file with key=value pairs)
-- **Input**: NIfTI compressed image (`input_image.nii.gz`)
-- **Output**: NIfTI compressed labelmap (`output_labelmap.nii.gz`)
+- **Script**: `--run-script SimplewareScript_heart_segmentation.py`
+- **Input**: NIfTI image path via `--input-file` (becomes the active document)
+- **Output**: Directory path via `--input-value`; script writes `mask_<name>.mhd` per structure
 - **Protocol**: File-based I/O via temporary directory
-- **Timeout**: 10 minutes (configurable in code)
+- **Timeout**: 10 minutes (configurable in `segment_heart_simpleware.py`)
 
 ## Troubleshooting
 
@@ -162,8 +149,8 @@ The ASCardio module segments the following cardiac structures:
 **Issue**: `ImportError: Failed to import Simpleware modules`
 - **Solution**: Ensure the script is being called with `--run-script` flag through `ConsoleSimplewareMedical.exe`
 
-**Issue**: `WARNING: No segmentation masks were created`
-- **Solution**: Check input image quality, contrast, and field of view. Ensure the heart is visible in the scan.
+**Issue**: `WARNING: No segmentation masks were created` or missing mask files
+- **Solution**: Check that the input NIfTI is passed via `--input-file` so the document is loaded. Ensure input image quality, contrast, and field of view; the heart should be clearly visible.
 
 **Issue**: Segmentation timeout after 600 seconds
 - **Solution**: Image may be too large or high resolution. Consider adjusting preprocessing parameters.
@@ -182,7 +169,7 @@ segmenter = SegmentHeartSimpleware(log_level=logging.DEBUG)
 
 ### Modifying ASCardio Parameters
 
-To customize ASCardio segmentation parameters, edit `physiomotion_heart_segmentation.py`:
+To customize ASCardio segmentation parameters, edit `SimplewareScript_heart_segmentation.py`:
 
 ```python
 cardio.auto_segment(
@@ -198,7 +185,7 @@ cardio.auto_segment(
 
 To segment additional structures:
 
-1. Update the `mask_id_mapping` dictionary in `physiomotion_heart_segmentation.py`
+1. Update the `mask_id_mapping` dictionary in `SimplewareScript_heart_segmentation.py`
 2. Update `heart_mask_ids` or `major_vessels_mask_ids` in `segment_heart_simpleware.py`
 
 ## Reference Documentation
@@ -217,40 +204,35 @@ Located in: `C:\Program Files\Synopsys\Simpleware Medical\X-2025.06\Documentatio
 # View all command-line options
 ConsoleSimplewareMedical.exe --help
 
-# Key options:
+# Key options used by this integration:
+--input-file <file>         # Open input (NIfTI image); becomes active document
+--input-value <value>       # Single string passed to script via app.GetInputValue() (e.g. output dir)
 --run-script <script>       # Execute a Python script
 --exit-after-script         # Close after script completes
---input-file <file>         # Open a Simpleware file
---input-data <file>         # Text file with data for script (key=value pairs)
---input-value <key=value>   # Single value for script (can only be used once)
 --no-progress               # Disable progress messages
 ```
 
-### Example Command
+### Example Command (as used by SegmentHeartSimpleware)
 
 ```bash
 ConsoleSimplewareMedical.exe \
-    --run-script physiomotion_heart_segmentation.py \
-    --input-data params.txt \
+    --input-file /tmp/.../input_image.nii.gz \
+    --input-value /tmp/.../output_dir \
+    --run-script SimplewareScript_heart_segmentation.py \
     --exit-after-script \
     --no-progress
 ```
 
 ### Simpleware Python API Usage
 
-Within the script, access command-line data using:
+Within the script, the output directory is passed via `--input-value` and read as:
 
 ```python
 import simpleware.scripting as sw
 
-# Get App instance
 app = sw.App.GetInstance()
-
-# Read data from --input-data file
-input_data_str = app.GetInput()
-
-# Or read single value from --input-value
-input_value_str = app.GetInputValue()
+output_dir = app.GetInputValue()   # Value from --input-value (output directory)
+doc = sw.App.GetDocument()         # Active document (NIfTI loaded via --input-file)
 ```
 
 ## License

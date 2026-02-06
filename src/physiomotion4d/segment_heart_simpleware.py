@@ -73,14 +73,15 @@ class SegmentHeartSimpleware(SegmentChestBase):
             3: "left_atrium",
             4: "right_atrium",
             5: "myocardium",
+            6: "heart",
         }
 
         # Major vessel IDs for Simpleware Medical ASCardio output
         self.major_vessels_mask_ids = {
-            6: "aorta",
-            7: "pulmonary_artery",
-            8: "right_coronary_artery",
-            9: "left_coronary_artery",
+            7: "aorta",
+            8: "pulmonary_artery",
+            9: "right_coronary_artery",
+            10: "left_coronary_artery",
         }
 
         # Lung structures are not segmented by ASCardio
@@ -99,7 +100,7 @@ class SegmentHeartSimpleware(SegmentChestBase):
         self.set_other_and_all_mask_ids()
 
         # Path to Simpleware Medical console executable
-        self.simpleware_exe_path = "C:/Program Files/Synopsys/Simpleware Medical/X-2025.06/SimplewareMedical.exe"
+        self.simpleware_exe_path = "C:/Program Files/Synopsys/Simpleware Medical/X-2025.06/ConsoleSimplewareMedical.exe"
 
         # Path to the Simpleware Python script for heart segmentation
         self.simpleware_script_path = os.path.join(
@@ -116,7 +117,7 @@ class SegmentHeartSimpleware(SegmentChestBase):
 
         Example:
             >>> segmenter.set_simpleware_executable_path(
-            ...     "C:/Program Files/Synopsys/Simpleware Medical/X-2025.06/SimplewareMedical.exe"
+            ...     "C:/Program Files/Synopsys/Simpleware Medical/X-2025.06/ConsoleSimplewareMedical.exe"
             ... )
         """
         self.simpleware_exe_path = path
@@ -127,10 +128,10 @@ class SegmentHeartSimpleware(SegmentChestBase):
 
         This implementation calls Simpleware Medical as an external process,
         passing the preprocessed image via a temporary file. The Simpleware
-        Python script (physiomotion_heart_segmentation.py) runs within the
+        Python script (SimplewareScript_heart_segmentation.py) runs within the
         Simpleware environment and uses the ASCardio module for heart
-        segmentation. The results are written to a temporary file and read
-        back as an ITK image.
+        segmentation. The results are written as per-structure MHD mask files and assembled
+        into a labelmap, then read back as an ITK image.
 
         Args:
             preprocessed_image (itk.image): The preprocessed CT image with
@@ -172,26 +173,24 @@ class SegmentHeartSimpleware(SegmentChestBase):
             self.log_info("Writing input image to: %s", tmp_input_image_file)
             itk.imwrite(preprocessed_image, tmp_input_image_file, compression=True)
 
-            params_file = os.path.join(tmp_dir, "params.txt")
-            with open(params_file, "w") as f:
-                f.write(f"input_image:{tmp_input_image_file}\n")
-                f.write(f"output_directory:{tmp_dir}\n")
-
-            # Build command line for Simpleware Medical Console
+            # Build command line for Simpleware Medical
             # Pass the input NIfTI file path directly as a command-line argument
             # The script will receive it via sys.argv and also output path
             # Use --run-script to execute the Python script
             # Use --exit-after-script to close after execution
             cmd = [
                 self.simpleware_exe_path,
+                "--input-file",  # Use only with ConsoleSimplewareMedical.exe
+                tmp_input_image_file,  # Input NIfTI file path as positional argument
                 "--input-value",
                 tmp_dir,
                 "--run-script",
                 self.simpleware_script_path,
                 "--exit-after-script",
-                "--no-splash",
-                tmp_input_image_file,  # Input NIfTI file path as positional argument
+                "--no-progress",  # Use only with ConsoleSimplewareMedical.exe
+                # "--no-splash",  # Use only with SimplewareMedical.exe
             ]
+            user_input = "y\n"
 
             self.log_info("Running Simpleware Medical ASCardio segmentation...")
             self.log_info("Command: %s", " ".join(cmd))
@@ -200,6 +199,7 @@ class SegmentHeartSimpleware(SegmentChestBase):
                 # Run Simpleware Medical as a subprocess
                 result = subprocess.run(
                     cmd,
+                    input=user_input,
                     capture_output=True,
                     text=True,
                     check=True,
@@ -227,35 +227,37 @@ class SegmentHeartSimpleware(SegmentChestBase):
             mask_ids_of_interior_regions = [2, 3, 4]
 
             # Check if output file was created
-            print(f"Class Output directory: {tmp_dir}")
             sz = [s for s in preprocessed_image.GetLargestPossibleRegion().GetSize()]
             sz = sz[::-1]
             labelmap_array = np.zeros(sz, dtype=np.uint8)
+            interior_array = np.zeros(sz, dtype=np.uint8)
             for mask_id, mask_name in self.all_mask_ids.items():
                 output_file = os.path.join(tmp_dir, f"mask_{mask_name}.mhd")
                 if os.path.exists(output_file):
                     mask_image = itk.imread(output_file)
                     mask_array = itk.GetArrayFromImage(mask_image).astype(np.uint8)
                     if mask_id in mask_ids_of_interior_regions:
-                        print(f"Class Mask ID: {mask_id}")
-                        interior_array = (mask_array > 128).astype(np.uint8)
-                        interior_image = itk.GetImageFromArray(interior_array)
-                        interior_image.CopyInformation(preprocessed_image)
-                        imMath = tube.ImageMath.New(interior_image)
-                        imMath.Dilate(7, 1, 0)
-                        imMath.Erode(4, 1, 0)
-                        exterior_image = imMath.GetOutput()
-                        exterior_array = itk.GetArrayFromImage(exterior_image)
-                        exterior_array = exterior_array - interior_array
-                        exterior_array = exterior_array * mask_id
-                        labelmap_array = np.where(
-                            labelmap_array == 0, exterior_array, labelmap_array
+                        tmp_array = (mask_array > 128).astype(np.uint8)
+                        interior_array = np.where(
+                            interior_array == 0, tmp_array, interior_array
                         )
-                    else:
-                        mask_array = (mask_array > 128) * mask_id
-                        labelmap_array = np.where(
-                            labelmap_array == 0, mask_array, labelmap_array
-                        )
+                    mask_array = (mask_array > 128) * mask_id
+                    labelmap_array = np.where(
+                        labelmap_array == 0, mask_array, labelmap_array
+                    )
+
+            interior_image = itk.GetImageFromArray(interior_array.astype(np.uint8))
+            interior_image.CopyInformation(preprocessed_image)
+            imMath = tube.ImageMath.New(interior_image)
+            imMath.Dilate(7, 1, 0)
+            imMath.Erode(4, 1, 0)
+            exterior_image = imMath.GetOutputUChar()
+            exterior_array = itk.GetArrayFromImage(exterior_image)
+            mask_id = 6  # Heart mask id
+            exterior_array = exterior_array * mask_id
+            labelmap_array = np.where(
+                labelmap_array == 0, exterior_array, labelmap_array
+            )
 
             labelmap_image = itk.GetImageFromArray(labelmap_array.astype(np.uint8))
             labelmap_image.CopyInformation(preprocessed_image)

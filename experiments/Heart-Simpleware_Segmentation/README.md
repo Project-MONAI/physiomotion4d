@@ -11,14 +11,6 @@ The `SegmentHeartSimpleware` class provides integration between PhysioMotion4D a
 3. Visualize and analyze the results
 4. Export data for further processing
 
-### ⚠️ Current Status: Prototype
-
-**This is currently a proof-of-concept implementation.**
-
-Due to Simpleware Console mode limitations (cannot programmatically create documents), the current version produces **placeholder output**. The code demonstrates the intended API workflow and integration pattern.
-
-See the Troubleshooting section below for details on this limitation and possible workarounds.
-
 ## Requirements
 
 ### Software Requirements
@@ -43,7 +35,7 @@ See the Troubleshooting section below for details on this limitation and possibl
 
 ## Files
 
-- **`simpleware_heart_segmentation_demo.ipynb`**: Main demonstration notebook
+- **`simpleware_heart_segmentation.ipynb`**: Main demonstration notebook
 - **`README.md`**: This file
 - **`results/`**: Output directory (created automatically)
 
@@ -51,7 +43,7 @@ See the Troubleshooting section below for details on this limitation and possibl
 
 ### Quick Start
 
-1. Open `simpleware_heart_segmentation_demo.ipynb` in Jupyter
+1. Open `simpleware_heart_segmentation.ipynb` in Jupyter
 2. Update the `input_image_path` in cell 3 to point to your cardiac CT image
 3. Run all cells sequentially
 
@@ -94,15 +86,14 @@ The notebook generates:
 - **3**: Left Atrium (LA)
 - **4**: Right Atrium (RA)
 - **5**: Myocardium
-- **6**: Left Atrial Appendage
+- **6**: Heart (combined heart mask)
 
-### Major Vessels (Label IDs 10-14)
+### Major Vessels (Label IDs 7-10)
 
-- **10**: Aorta
-- **11**: Pulmonary Artery
-- **12**: Superior Vena Cava (SVC)
-- **13**: Inferior Vena Cava (IVC)
-- **14**: Pulmonary Vein
+- **7**: Aorta
+- **8**: Pulmonary Artery
+- **9**: Right Coronary Artery
+- **10**: Left Coronary Artery
 
 ## Workflow Details
 
@@ -113,10 +104,10 @@ The notebook generates:
    - Intensity normalization if needed
 
 2. **Simpleware Integration**:
-   - Input image saved to temporary file
-   - Simpleware Medical launched with ASCardio script
-   - ASCardio performs automated segmentation
-   - Results exported as labelmap
+   - Input image saved to a temporary NIfTI file
+   - ConsoleSimplewareMedical.exe is launched with `--input-file` (NIfTI) and `--input-value` (output directory)
+   - The Simpleware script runs ASCardio on the loaded image and exports per-structure masks as MHD
+   - PhysioMotion4D assembles the labelmap from the mask files and returns results
 
 3. **Postprocessing** (automatic):
    - Labelmap resampled to original image space
@@ -147,7 +138,7 @@ Times depend on image size, system performance, and Simpleware configuration.
 - Verify Simpleware installation
 - Ensure you're using `ConsoleSimplewareMedical.exe` (not `SimplewareMedical.exe`)
 - Update `custom_simpleware_path` in the notebook
-- Check default path: `C:\Program Files\Synopsys\Simpleware Medical\X-2025.06\ConsoleSimplewareMedical.exe`
+- Check default path: `C:\Program Files\Synopsys\Simpleware Medical\X-2025.06\ConsoleSimplewareMedical.exe`; use `set_simpleware_executable_path()` if installed elsewhere
 
 ---
 
@@ -168,16 +159,12 @@ Times depend on image size, system performance, and Simpleware configuration.
 
 ---
 
-**Issue**: `WARNING: No segmentation masks were created` or placeholder output
+**Issue**: `WARNING: No segmentation masks were created` or missing masks
 
 **Solution**:
-- **Current Limitation**: Simpleware Console mode cannot programmatically create documents
-- The script currently creates placeholder output to demonstrate the workflow
-- To get real segmentation:
-  - Option 1: Use Simpleware GUI mode with Python scripting
-  - Option 2: Pre-create a .sip project file and use `--input-file`
-  - Option 3: Contact Synopsys for programmatic document creation API
-  - Option 4: Investigate Simpleware batch processing tools
+- Ensure the input NIfTI is passed correctly via `--input-file` so Simpleware has an active document
+- Check that ASCardio completed successfully (inspect Simpleware stdout in debug logging)
+- Verify input image contains clear heart anatomy and adequate contrast
 
 ---
 
@@ -311,6 +298,10 @@ For issues with:
 
 ## Version History
 
+- **v0.2.0** (2026-02-06): Documentation and alignment with current implementation
+  - README reflects actual notebook name (`simpleware_heart_segmentation.ipynb`) and correct label IDs (heart 1–6, vessels 7–10)
+  - Workflow description updated for `--input-file` (NIfTI) and `--input-value` (output dir) invocation
+  - Removed obsolete “placeholder output” limitation; integration works as expected
 - **v0.1.0** (2026-02-04): Initial implementation
   - Basic ASCardio integration
   - Heart and vessel segmentation
