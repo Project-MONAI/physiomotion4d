@@ -20,7 +20,6 @@ This directory contains comprehensive test suites for the PhysioMotion4D package
 ### Segmentation Tests (GPU Required)
 - **`test_segment_chest_total_segmentator.py`** - TotalSegmentator chest CT segmentation
 - **`test_segment_chest_vista_3d.py`** - NVIDIA VISTA-3D segmentation (requires 20GB+ RAM)
-- **`test_segment_heart_simpleware.py`** - Simpleware Medical ASCardio heart segmentation (same data as experiments/Heart-Simpleware_Segmentation)
 
 ### Registration Tests (Slow ~5-10 min)
 - **`test_register_images_ants.py`** - ANTs deformable registration
@@ -89,8 +88,7 @@ pytest tests/test_experiments.py::test_experiment_heart_gated_ct_to_usd -v -s --
 ```bash
 # Skip GPU-dependent tests
 pytest tests/ --ignore=tests/test_segment_chest_total_segmentator.py \
-              --ignore=tests/test_segment_chest_vista_3d.py \
-              --ignore=tests/test_segment_heart_simpleware.py
+              --ignore=tests/test_segment_chest_vista_3d.py
 
 # Run with coverage
 pytest tests/ --cov=src/physiomotion4d --cov-report=html

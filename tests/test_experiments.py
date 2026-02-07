@@ -210,7 +210,7 @@ def _heart_statistical_model_pca_prerequisites_met() -> tuple[bool, str]:
             False,
             f"PCA model output directory not found: {pca_output_dir}. "
             "Run the Heart-Create_Statistical_Model experiment first "
-            "(e.g. pytest tests/test_experiments.py::test_experiment_create_statistical_model -v -m experiment).",
+            "(e.g. pytest tests/test_experiments.py::test_experiment_create_statistical_model -v -s --run-experiments).",
         )
     if not pca_json.is_file():
         return (

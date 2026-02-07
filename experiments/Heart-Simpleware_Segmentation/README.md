@@ -57,9 +57,6 @@ input_image_path = "/path/to/your/cardiac_ct.nii.gz"
 
 # Set custom Simpleware path (if not default)
 custom_simpleware_path = "D:/CustomPath/Simpleware/ConsoleSimplewareMedical.exe"
-
-# Control re-running
-re_run_segmentation = True  # Set False to load cached results
 ```
 
 ### Expected Output
@@ -264,12 +261,6 @@ segmenter.set_target_spacing(2.0)  # Use 2mm instead of 1mm
 # Crop image to heart region before segmentation
 from physiomotion4d.image_tools import crop_to_roi
 cropped_image = crop_to_roi(input_image, roi_bounds)
-```
-
-3. **Cache results**:
-```python
-# Set re_run_segmentation = False to use cached results
-re_run_segmentation = False
 ```
 
 ## References

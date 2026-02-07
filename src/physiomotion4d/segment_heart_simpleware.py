@@ -35,7 +35,7 @@ class SegmentHeartSimpleware(SegmentChestBase):
 
     The class maintains specific ID mappings for:
     - Heart structures (left/right atrium, left/right ventricle, myocardium)
-    - Major vessels (aorta, pulmonary artery, vena cava)
+    - Major vessels (aorta, pulmonary artery)
 
     Attributes:
         target_spacing (float): Target spacing set to 1.0mm for Simpleware
@@ -175,7 +175,6 @@ class SegmentHeartSimpleware(SegmentChestBase):
 
             # Build command line for Simpleware Medical
             # Pass the input NIfTI file path directly as a command-line argument
-            # The script will receive it via sys.argv and also output path
             # Use --run-script to execute the Python script
             # Use --exit-after-script to close after execution
             cmd = [
@@ -258,6 +257,13 @@ class SegmentHeartSimpleware(SegmentChestBase):
             labelmap_array = np.where(
                 labelmap_array == 0, exterior_array, labelmap_array
             )
+
+            if not np.any(labelmap_array != 0):
+                raise ValueError(
+                    "Simpleware Medical produced no segmentation output: no mask_*.mhd "
+                    "files found or all masks are empty. Check Simpleware logs above and "
+                    "ensure the ASCardio module ran successfully."
+                )
 
             labelmap_image = itk.GetImageFromArray(labelmap_array.astype(np.uint8))
             labelmap_image.CopyInformation(preprocessed_image)

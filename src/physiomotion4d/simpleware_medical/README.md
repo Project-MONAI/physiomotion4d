@@ -181,13 +181,6 @@ cardio.auto_segment(
 )
 ```
 
-### Adding Custom Structures
-
-To segment additional structures:
-
-1. Update the `mask_id_mapping` dictionary in `SimplewareScript_heart_segmentation.py`
-2. Update `heart_mask_ids` or `major_vessels_mask_ids` in `segment_heart_simpleware.py`
-
 ## Reference Documentation
 
 For more information on Simpleware Medical and ASCardio:
