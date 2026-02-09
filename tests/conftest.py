@@ -241,12 +241,14 @@ def test_directories():
     """Set up test directories for data and results."""
     data_dir = Path("tests/data/Slicer-Heart-CT")
     output_dir = Path("tests/results")
+    baselines_dir = Path("tests/baselines")
 
     # Create directories if they don't exist
     data_dir.mkdir(parents=True, exist_ok=True)
     output_dir.mkdir(parents=True, exist_ok=True)
+    baselines_dir.mkdir(parents=True, exist_ok=True)
 
-    return {"data": data_dir, "output": output_dir}
+    return {"data": data_dir, "output": output_dir, "baselines": baselines_dir}
 
 
 @pytest.fixture(scope="session")
@@ -378,25 +380,23 @@ def segmenter_simpleware():
     return SegmentHeartSimpleware()
 
 
-# Heart-Simpleware_Segmentation uses same data as the notebook: data/CHOP-Valve4D/CT/RVOT28-Dias.nii.gz
-HEART_SIMPLEWARE_IMAGE_PATH = (
-    Path(__file__).resolve().parent.parent
-    / "data"
-    / "CHOP-Valve4D"
-    / "CT"
-    / "RVOT28-Dias.nii.gz"
-)
-
-
 @pytest.fixture(scope="session")
 def heart_simpleware_image_path():
     """Path to cardiac CT image used by experiments/Heart-Simpleware_Segmentation notebook."""
-    if not HEART_SIMPLEWARE_IMAGE_PATH.exists():
+    # Heart-Simpleware_Segmentation uses same data as the notebook: data/CHOP-Valve4D/CT/RVOT28-Dias.nii.gz
+    image_path = (
+        Path(__file__).resolve().parent.parent
+        / "data"
+        / "CHOP-Valve4D"
+        / "CT"
+        / "RVOT28-Dias.nii.gz"
+    )
+    if not image_path.exists():
         pytest.skip(
-            f"Heart Simpleware test data not found: {HEART_SIMPLEWARE_IMAGE_PATH}. "
+            f"Heart Simpleware test data not found: {image_path}. "
             "Place RVOT28-Dias.nii.gz there or run from repo with data/CHOP-Valve4D/CT/ populated."
         )
-    return HEART_SIMPLEWARE_IMAGE_PATH
+    return image_path
 
 
 @pytest.fixture(scope="session")
