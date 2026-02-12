@@ -94,7 +94,7 @@ class TestRegisterTimeSeriesImages:
 
         print("\n✓ Number of iterations set successfully")
 
-    def test_register_time_series_basic(self, test_images, test_directories):
+    def test_register_time_series_basic(self, test_images, test_directories) -> bool:
         """Test basic time series registration without prior transform."""
         # Use first 3 images for quick test
         fixed_image = test_images[0]
@@ -163,18 +163,22 @@ class TestRegisterTimeSeriesImages:
         test_tools.write_result_transform(
             forward_transforms[0], "basic_forward_transform_0.hdf"
         )
-        test_tools.compare_result_to_baseline_transform(
+        success = test_tools.compare_result_to_baseline_transform(
             "basic_forward_transform_0.hdf",
         )
 
         test_tools.write_result_image(
             moving_image, "basic_time_series_registered_0.mha"
         )
-        test_tools.compare_result_to_baseline_image(
+        success = success and test_tools.compare_result_to_baseline_image(
             "basic_time_series_registered_0.mha",
         )
 
-    def test_register_time_series_with_prior(self, test_images, test_directories):
+        return success
+
+    def test_register_time_series_with_prior(
+        self, test_images, test_directories
+    ) -> bool:
         """Test time series registration with prior transform usage."""
         fixed_image = test_images[0]
         moving_images = test_images[1:4]
@@ -222,16 +226,17 @@ class TestRegisterTimeSeriesImages:
         test_tools.write_result_transform(
             forward_transforms[0], "prior_forward_transform_0.hdf"
         )
-        test_tools.compare_result_to_baseline_transform(
+        success = test_tools.compare_result_to_baseline_transform(
             "prior_forward_transform_0.hdf",
         )
 
         test_tools.write_result_image(
             moving_image, "prior_time_series_registered_0.mha"
         )
-        test_tools.compare_result_to_baseline_image(
+        success = success and test_tools.compare_result_to_baseline_image(
             "prior_time_series_registered_0.mha",
         )
+        return success
 
     def test_register_time_series_identity_start(self, test_images):
         """Test time series registration with identity for starting image."""
@@ -342,7 +347,9 @@ class TestRegisterTimeSeriesImages:
 
         print("\n✓ Invalid prior portion correctly rejected")
 
-    def test_transform_application_time_series(self, test_images, test_directories):
+    def test_transform_application_time_series(
+        self, test_images, test_directories
+    ) -> bool:
         """Test applying transforms from time series registration."""
         fixed_image = test_images[0]
         moving_images = test_images[1:3]
@@ -388,9 +395,11 @@ class TestRegisterTimeSeriesImages:
         test_tools.write_result_image(
             registered_image, "transform_application_time_series_0.mha"
         )
-        test_tools.compare_result_to_baseline_image(
+        success = test_tools.compare_result_to_baseline_image(
             "transform_application_time_series_0.mha",
         )
+
+        return success
 
     def test_register_time_series_icon(self, test_images):
         """Test time series registration with ICON method."""

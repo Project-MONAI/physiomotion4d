@@ -40,12 +40,24 @@ def pytest_addoption(parser):
         default=False,
         help="Run experiment tests (extremely long-running notebook tests)",
     )
+    parser.addoption(
+        "--create-baselines",
+        action="store_true",
+        default=False,
+        help="Create baseline files from current test outputs when missing (otherwise missing baseline fails)",
+    )
 
 
 def pytest_configure(config):
     """Configure pytest with custom markers and settings."""
     global _pytest_config
     _pytest_config = config
+
+    from physiomotion4d import test_tools as _test_tools
+
+    _test_tools.set_create_baseline_if_missing(
+        config.getoption("--create-baselines", default=False)
+    )
 
     config.addinivalue_line(
         "markers",
