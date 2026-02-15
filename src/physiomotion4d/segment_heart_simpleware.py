@@ -97,6 +97,8 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         # From Base Class
         # self.contrast_mask_ids = {135: "contrast"}
 
+        self.clip_top_of_heart = False
+
         self.set_other_and_all_mask_ids()
 
         # Path to Simpleware Medical console executable
@@ -108,6 +110,14 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
             "simpleware_medical",
             "SimplewareScript_heart_segmentation.py",
         )
+
+    def set_clip_top_of_heart(self, clip_top_of_heart: bool) -> None:
+        """Set whether to clip the top of the heart.
+
+        Args:
+            clip_top_of_heart (bool): Whether to clip the top of the heart
+        """
+        self.clip_top_of_heart = clip_top_of_heart
 
     def set_simpleware_executable_path(self, path: str) -> None:
         """Set the path to the Simpleware Medical console executable.
@@ -223,7 +233,7 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
 
             # Simpleware's right ventricle, left atrium, right atrium correspond to
             #   the interior of those regions.
-            mask_ids_of_interior_regions = [2, 3, 4]
+            mask_ids_of_interior_regions = [1, 2, 3, 4]
 
             # Check if output file was created
             sz = [s for s in preprocessed_image.GetLargestPossibleRegion().GetSize()]
@@ -265,6 +275,16 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
                     "ensure the ASCardio module ran successfully."
                 )
 
+            if self.clip_top_of_heart:
+                z = labelmap_array.shape[2] - 1
+                z_classes = np.unique(labelmap_array[z, :, :])
+                heart_count = np.sum((c in [1, 2, 3, 4, 5]) for c in z_classes)
+                while heart_count > 2 and z > 0:
+                    z -= 1
+                    z_classes = np.unique(labelmap_array[z, :, :])
+                    heart_count = np.sum((c in [1, 2, 3, 4, 5]) for c in z_classes)
+                if heart_count > 2:
+                    labelmap_array[: z + 1, :, :] = 0
             labelmap_image = itk.GetImageFromArray(labelmap_array.astype(np.uint8))
             labelmap_image.CopyInformation(preprocessed_image)
 

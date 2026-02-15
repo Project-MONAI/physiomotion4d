@@ -188,7 +188,7 @@ class WorkflowCreateStatisticalModel(PhysioMotion4DBase):
         """Build corresponded shapes in reference space (notebook 4).
 
         For each case, reference_surface is warped by forward (image) deformation
-        (= inverse point) transform from step 3,so that we get reference topology
+        (= inverse point) transform from step 3, so that we get reference topology
         in ICP-aligned space with residual deformation per subject to be used as PCA
         input.
         """
@@ -254,6 +254,8 @@ class WorkflowCreateStatisticalModel(PhysioMotion4DBase):
             blur_sigma=2.5,
             ptype=itk.D,
         )
+        print(mean_deformation_field.GetLargestPossibleRegion().GetSize())
+        print(reference_image.GetLargestPossibleRegion().GetSize())
         mean_deformation_transform = itk.DisplacementFieldTransform[itk.D, 3].New()
         mean_deformation_transform.SetDisplacementField(mean_deformation_field)
         self.pca_mean_mesh = self.contour_tools.transform_contours(

@@ -189,6 +189,9 @@ class RegisterModelsDistanceMaps(PhysioMotion4DBase):
             norm_to_max_distance=50.0,
         )
 
+        self.fixed_model.save("fixed_model.vtp")
+        itk.imwrite(self.fixed_mask_image, "fixed_mask_image.nii.gz")
+        itk.imwrite(self.reference_image, "reference_image.nii.gz")
         # Create fixed ROI mask with dilation
         self.log_info("Dilating fixed mask by %.1fmm for ROI...", self.roi_dilation_mm)
         mask = self.contour_tools.create_mask_from_mesh(

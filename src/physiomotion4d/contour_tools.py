@@ -178,6 +178,8 @@ class ContourTools(PhysioMotion4DBase):
             # Handle other mesh types
             faces = mesh.faces.reshape((-1, 4))[:, 1:]
 
+        print(mesh.points.shape)
+        print(faces.shape)
         trimesh_mesh = trimesh.Trimesh(vertices=mesh.points, faces=faces)
 
         # Determine voxel spacing (use minimum spacing from reference)
@@ -265,6 +267,7 @@ class ContourTools(PhysioMotion4DBase):
 
         tmp_arr = np.zeros(size, dtype=np.int32)
         itk_point = itk.Point[itk.D, 3]()
+        point_count = 0
         for point in points:
             itk_point[0] = float(point[0])
             itk_point[1] = float(point[1])
@@ -278,10 +281,19 @@ class ContourTools(PhysioMotion4DBase):
                 or indx[1] >= size[1]
                 or indx[2] >= size[2]
             ):
+                print(point, indx)
                 continue
             tmp_arr[indx[2], indx[1], indx[0]] = 1
+            point_count += 1
+
+        print(f"point_count: {point_count}")
         tmp_binary_image = itk.GetImageFromArray(tmp_arr.astype(np.uint8))
         tmp_binary_image.CopyInformation(reference_image)
+        itk.imwrite(tmp_binary_image, "tmp_binary_image.nii.gz")
+        assert (
+            tmp_binary_image.GetLargestPossibleRegion().GetSize()
+            == reference_image.GetLargestPossibleRegion().GetSize()
+        )
 
         distance_filter = itk.SignedMaurerDistanceMapImageFilter.New(
             Input=tmp_binary_image
@@ -350,6 +362,10 @@ class ContourTools(PhysioMotion4DBase):
 
         norm_img = itk.GetImageFromArray(norm_map)
         norm_img.CopyInformation(reference_image)
+        assert (
+            norm_img.GetLargestPossibleRegion().GetSize()
+            == reference_image.GetLargestPossibleRegion().GetSize()
+        )
 
         blurred_norm = itk.SmoothingRecursiveGaussianImageFilter(
             Input=norm_img, Sigma=blur_sigma

@@ -175,6 +175,7 @@ current_version = "2025.05.0"
 version_pattern = "YYYY.0M.PATCH[PYTAGNUM]"
 commit_message = "Bump version {old_version} -> {new_version}"
 commit = true
+tag_message = "{new_version}"
 tag = true
 push = false
 
@@ -227,7 +228,7 @@ module = [
     "scripts.*",
     "SimpleITK",
     "simpleware.*",
-    "sklean.*",
+    "sklearn.*",
     "torch",
     "torch.*",
     "totalsegmentator.*",
