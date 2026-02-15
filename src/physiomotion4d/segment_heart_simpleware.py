@@ -2,7 +2,7 @@
 
 This module provides the SegmentHeartSimpleware class that implements
 heart segmentation using Synopsys Simpleware Medical's ASCardio module.
-It inherits from SegmentChestBase and provides heart-specific anatomical
+It inherits from SegmentAnatomyBase and provides heart-specific anatomical
 structure mappings.
 """
 
@@ -15,10 +15,10 @@ import itk
 import numpy as np
 from itk import TubeTK as tube
 
-from physiomotion4d.segment_chest_base import SegmentChestBase
+from physiomotion4d.segment_anatomy_base import SegmentAnatomyBase
 
 
-class SegmentHeartSimpleware(SegmentChestBase):
+class SegmentHeartSimpleware(SegmentAnatomyBase):
     """
     Heart CT segmentation using Simpleware Medical's ASCardio module.
 

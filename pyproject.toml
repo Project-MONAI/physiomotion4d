@@ -163,7 +163,9 @@ Changelog = "https://github.com/aylward/PhysioMotion4d/blob/main/CHANGELOG.md"
 # CLI commands installed via pip
 # Entry points reference the main() functions in the cli submodule
 physiomotion4d-heart-gated-ct = "physiomotion4d.cli.convert_heart_gated_ct_to_usd:main"
-physiomotion4d-register-heart-model = "physiomotion4d.cli.register_heart_model_to_patient:main"
+physiomotion4d-create-statistical-model = "physiomotion4d.cli.create_statistical_model:main"
+physiomotion4d-fit-statistical-model-to-patient = "physiomotion4d.cli.fit_statistical_model_to_patient:main"
+physiomotion4d-visualize-pca-modes = "physiomotion4d.cli.visualize_pca_modes:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -193,6 +195,7 @@ disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
 disallow_untyped_decorators = true
+ignore_missing_imports = true
 no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
@@ -224,6 +227,7 @@ module = [
     "scripts.*",
     "SimpleITK",
     "simpleware.*",
+    "sklean.*",
     "torch",
     "torch.*",
     "totalsegmentator.*",

@@ -270,6 +270,15 @@ class ContourTools(PhysioMotion4DBase):
             itk_point[1] = float(point[1])
             itk_point[2] = float(point[2])
             indx = reference_image.TransformPhysicalPointToIndex(itk_point)
+            if (
+                indx[0] < 0
+                or indx[1] < 0
+                or indx[2] < 0
+                or indx[0] >= size[0]
+                or indx[1] >= size[1]
+                or indx[2] >= size[2]
+            ):
+                continue
             tmp_arr[indx[2], indx[1], indx[0]] = 1
         tmp_binary_image = itk.GetImageFromArray(tmp_arr.astype(np.uint8))
         tmp_binary_image.CopyInformation(reference_image)
@@ -319,6 +328,15 @@ class ContourTools(PhysioMotion4DBase):
             itk_point[1] = float(point[1])
             itk_point[2] = float(point[2])
             indx = reference_image.TransformPhysicalPointToIndex(itk_point)
+            if (
+                indx[0] < 0
+                or indx[1] < 0
+                or indx[2] < 0
+                or indx[0] >= size[0]
+                or indx[1] >= size[1]
+                or indx[2] >= size[2]
+            ):
+                continue
             displacement_map_x[int(indx[2]), int(indx[1]), int(indx[0])] = (
                 point_displacements[i, 0]
             )
