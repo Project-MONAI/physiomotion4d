@@ -705,8 +705,10 @@ class RegisterModelsPCA(PhysioMotion4DBase):
         Returns:
             Transformed ITK point
 
-        Raises:
-            ValueError: If registration has not been completed yet
+        Notes:
+            1) if the point is outside the image bounds, the point is not transformed.
+            2) if the pre_pca_transform is set and enabled, it is applied.
+            3) if the forward point transform is not set, no errors are raised.
 
         Example:
             >>> p = itk.Point[itk.D, 3]()

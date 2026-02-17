@@ -196,7 +196,6 @@ disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
 disallow_untyped_decorators = true
-ignore_missing_imports = true
 no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
@@ -205,42 +204,19 @@ warn_unreachable = true
 strict_equality = true
 show_error_codes = true
 exclude = '(?x)(^src[/\\\\]physiomotion4d[/\\\\]network_weights[/\\\\]vista3d[/\\\\])'
+# Third-party libs (itk, pyvista, pxr, vtk, simpleware, etc.) have no stubs
+disable_error_code = ["import-not-found", "import-untyped"]
 
+# When type-checking our package, ignore missing imports for third-party libs.
+# Override applies to the module being checked (physiomotion4d.*).
 [[tool.mypy.overrides]]
-module = [
-    "ants",
-    "cupy",
-    "huggingface_hub",
-    "hugging_face_pipeline",
-    "icon_registration.*",
-    "ignite.*",
-    "itk.*",
-    "matplotlib",
-    "matplotlib.*",
-    "monai.*",
-    "nibabel.*",
-    "nrrd",
-    "numpy",
-    "numpy.*",
-    "pxr",
-    "pynrrd.*",
-    "pyvista.*",
-    "scripts.*",
-    "SimpleITK",
-    "simpleware.*",
-    "sklearn.*",
-    "torch",
-    "torch.*",
-    "totalsegmentator.*",
-    "transformers",
-    "transformers.*",
-    "trimesh",
-    "unigradicon.*",
-    "vista3d",
-    "vista3d.*",
-    "vtk.*"
-]
+module = ["physiomotion4d", "physiomotion4d.*"]
 ignore_missing_imports = true
+
+[tool.pyright]
+# Third-party packages (e.g. pyvista) are in dependencies but may have no stubs;
+# do not report import-not-found so analysis matches mypy overrides above.
+reportMissingImports = false
 
 [tool.pytest.ini_options]
 minversion = "7.0"

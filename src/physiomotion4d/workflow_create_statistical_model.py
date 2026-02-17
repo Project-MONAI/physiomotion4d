@@ -221,6 +221,10 @@ class WorkflowCreateStatisticalModel(PhysioMotion4DBase):
             data_matrix.append(mesh.points.flatten())
         data_matrix = np.array(data_matrix)
 
+        if data_matrix.shape[0] - 1 < 2:
+            raise ValueError(
+                f"At least 2 samples are required for PCA. Got {data_matrix.shape[0]} samples."
+            )
         n_comp = min(self.pca_number_of_components, data_matrix.shape[0] - 1)
         if n_comp < self.pca_number_of_components:
             self.log_warning(
@@ -254,8 +258,6 @@ class WorkflowCreateStatisticalModel(PhysioMotion4DBase):
             blur_sigma=2.5,
             ptype=itk.D,
         )
-        print(mean_deformation_field.GetLargestPossibleRegion().GetSize())
-        print(reference_image.GetLargestPossibleRegion().GetSize())
         mean_deformation_transform = itk.DisplacementFieldTransform[itk.D, 3].New()
         mean_deformation_transform.SetDisplacementField(mean_deformation_field)
         self.pca_mean_mesh = self.contour_tools.transform_contours(

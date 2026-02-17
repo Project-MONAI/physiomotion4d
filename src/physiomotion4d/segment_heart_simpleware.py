@@ -113,10 +113,10 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         )
 
     def set_trim_mesh_to_essentials(self, trim_mesh_to_essentials: bool) -> None:
-        """Set whether to trim mesh to structures common and critical
+        """Set whether to trim mesh to common and critical structures.
 
         Args:
-            trim_mesh_to_essentials (bool): Whether to reduce to essential
+            trim_mesh_to_essentials (bool): Whether to reduce to essential.
         """
         self.trim_mesh_to_essentials = trim_mesh_to_essentials
 
