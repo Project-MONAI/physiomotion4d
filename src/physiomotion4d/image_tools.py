@@ -246,19 +246,33 @@ class ImageTools(PhysioMotion4DBase):
 
         return itk_image
 
-    def flip_image_to_identity_direction(
-        self, in_image: itk.Image, in_mask: Optional[itk.Image] = None
+    def flip_image(
+        self,
+        in_image: itk.Image,
+        in_mask: Optional[itk.Image] = None,
+        flip_x: bool = False,
+        flip_y: bool = False,
+        flip_z: bool = False,
+        match_identity: bool = False,
     ) -> Any | tuple[Any, Any]:
         """
         Flip the image to the identity direction.
         """
-        flip0 = np.array(in_image.GetDirection())[0, 0] < 0
-        flip1 = np.array(in_image.GetDirection())[1, 1] < 0
-        flip2 = np.array(in_image.GetDirection())[2, 2] < 0
+        flip0 = False
+        flip1 = False
+        flip2 = False
+        if match_identity:
+            flip0 = np.array(in_image.GetDirection())[0, 0] < 0
+            flip1 = np.array(in_image.GetDirection())[1, 1] < 0
+            flip2 = np.array(in_image.GetDirection())[2, 2] < 0
+        if flip_x:
+            flip0 = True
+        if flip_y:
+            flip1 = True
+        if flip_z:
+            flip2 = True
         if flip0 or flip1 or flip2:
-            self.log_info(
-                f"Flipping image to identity direction: {flip0}, {flip1}, {flip2}"
-            )
+            self.log_info(f"Flipping image: {flip0}, {flip1}, {flip2}")
             flip_filter = itk.FlipImageFilter.New(Input=in_image)
             flip_filter.SetFlipAxes([int(flip0), int(flip1), int(flip2)])
             flip_filter.SetFlipAboutOrigin(True)
