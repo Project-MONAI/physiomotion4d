@@ -344,9 +344,13 @@ class TestFlipImage:
         out = image_tools.flip_image(itk_image, flip_x=True)
         out_arr = itk.array_from_image(out)
         expected = np.flip(arr, axis=2)
-        assert np.allclose(out_arr, expected), "flip_x should match np.flip(..., axis=2)"
+        assert np.allclose(out_arr, expected), (
+            "flip_x should match np.flip(..., axis=2)"
+        )
 
-    def test_flip_y_flips_along_middle_array_axis(self, image_tools: ImageTools) -> None:
+    def test_flip_y_flips_along_middle_array_axis(
+        self, image_tools: ImageTools
+    ) -> None:
         """flip_y flips the image along the y (middle) array dimension."""
         shape_xyz = (3, 2, 2)
         arr = np.arange(12, dtype=np.float32).reshape(2, 2, 3)
@@ -354,7 +358,9 @@ class TestFlipImage:
         out = image_tools.flip_image(itk_image, flip_y=True)
         out_arr = itk.array_from_image(out)
         expected = np.flip(arr, axis=1)
-        assert np.allclose(out_arr, expected), "flip_y should match np.flip(..., axis=1)"
+        assert np.allclose(out_arr, expected), (
+            "flip_y should match np.flip(..., axis=1)"
+        )
 
     def test_flip_z_flips_along_first_array_axis(self, image_tools: ImageTools) -> None:
         """flip_z flips the image along the z (first) array dimension."""
@@ -364,7 +370,9 @@ class TestFlipImage:
         out = image_tools.flip_image(itk_image, flip_z=True)
         out_arr = itk.array_from_image(out)
         expected = np.flip(arr, axis=0)
-        assert np.allclose(out_arr, expected), "flip_z should match np.flip(..., axis=0)"
+        assert np.allclose(out_arr, expected), (
+            "flip_z should match np.flip(..., axis=0)"
+        )
 
     def test_flip_xy_combines_flips(self, image_tools: ImageTools) -> None:
         """flip_x and flip_y together flip both axes."""
@@ -381,7 +389,9 @@ class TestFlipImage:
         shape_xyz = (2, 2, 2)
         arr = np.arange(8, dtype=np.float32).reshape(2, 2, 2)
         itk_image = _make_synthetic_itk_image(shape_xyz, arr=arr)
-        out = image_tools.flip_image(itk_image, flip_x=False, flip_y=False, flip_z=False)
+        out = image_tools.flip_image(
+            itk_image, flip_x=False, flip_y=False, flip_z=False
+        )
         out_arr = itk.array_from_image(out)
         assert np.allclose(out_arr, arr)
 
@@ -400,7 +410,9 @@ class TestFlipImage:
         expected_img = np.flip(np.flip(arr, axis=2), axis=0)
         expected_msk = np.flip(np.flip(mask_arr, axis=2), axis=0)
         assert np.allclose(out_img_arr, expected_img), "Image should be flipped x and z"
-        assert np.allclose(out_msk_arr, expected_msk), "Mask should be flipped in lockstep"
+        assert np.allclose(out_msk_arr, expected_msk), (
+            "Mask should be flipped in lockstep"
+        )
         # Consistency: mask value should still align with image (same pattern, flipped)
         assert np.allclose(out_msk_arr, (out_img_arr % 2 == 0).astype(np.float32))
 
@@ -429,7 +441,9 @@ class TestFlipImage:
         mask_arr = np.ones((2, 2, 2), dtype=np.float32)
         direction = np.diag([1.0, -1.0, 1.0])
         itk_image = _make_synthetic_itk_image(shape_xyz, arr=arr, direction=direction)
-        itk_mask = _make_synthetic_itk_image(shape_xyz, arr=mask_arr, direction=direction)
+        itk_mask = _make_synthetic_itk_image(
+            shape_xyz, arr=mask_arr, direction=direction
+        )
         out_image, out_mask = image_tools.flip_image(
             itk_image, in_mask=itk_mask, flip_and_make_identity=True
         )
