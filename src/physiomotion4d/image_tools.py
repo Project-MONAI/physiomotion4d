@@ -258,11 +258,13 @@ class ImageTools(PhysioMotion4DBase):
         """
         Flip the image and mask.
 
-        Only flips are supported.  If flip_and_make_identity is True, the image and
-        mask are flipped to have a positive direction matrix determinant, any
-        additional flips are then performed, and the direction matrix is set to
-        the identity matrix.  This is useful when combining ITK images with VTK
-        objects (that often do not support a direction matrix).
+        Only axis-aligned flips are supported. If ``flip_and_make_identity`` is
+        True, the image and mask are first flipped along any axes whose
+        corresponding diagonal entries in the direction matrix are negative
+        (assuming the direction matrix encodes only axis-aligned flips), then
+        any additional requested flips are performed, and finally the direction
+        matrix is set to the identity matrix. This is useful when combining ITK
+        images with VTK objects (that often do not support a direction matrix).
 
         Args:
             in_image: The input image to flip and mask
