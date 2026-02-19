@@ -267,7 +267,7 @@ class ImageTools(PhysioMotion4DBase):
         images with VTK objects (that often do not support a direction matrix).
 
         Args:
-            in_image: The input image to flip and mask
+            in_image: The input image to flip
             in_mask: The input mask to flip
             flip_x: Flip the image and mask along the x-axis
             flip_y: Flip the image and mask along the y-axis
