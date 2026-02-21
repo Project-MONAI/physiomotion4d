@@ -61,6 +61,7 @@ class WorkflowCreateStatisticalModel(PhysioMotion4DBase):
         pca_number_of_components: int = 15,
         reference_spatial_resolution: float = 1.0,
         reference_buffer_factor: float = 0.25,
+        reduce_reference_to_surface: bool = True,
         log_level: int | str = logging.INFO,
     ):
         """Initialize the create-statistical-model workflow.
@@ -71,6 +72,7 @@ class WorkflowCreateStatisticalModel(PhysioMotion4DBase):
             pca_number_of_components: Number of PCA components. Default 15.
             reference_spatial_resolution: Isotropic resolution (mm) for reference image. Default 1.0.
             reference_buffer_factor: Buffer factor around mesh for reference image. Default 0.25.
+            reduce_reference_to_surface: Whether to reduce the reference mesh to a surface. Default True.
             log_level: Logging level.
         """
         super().__init__(
@@ -81,6 +83,7 @@ class WorkflowCreateStatisticalModel(PhysioMotion4DBase):
         self.pca_number_of_components = pca_number_of_components
         self.reference_spatial_resolution = reference_spatial_resolution
         self.reference_buffer_factor = reference_buffer_factor
+        self.reduce_reference_to_surface = reduce_reference_to_surface
 
         self.contour_tools = ContourTools()
         self.transform_tools = TransformTools()
@@ -106,7 +109,10 @@ class WorkflowCreateStatisticalModel(PhysioMotion4DBase):
         self.log_section("Step 1: Extract reference and sample surfaces", width=70)
         if not self.sample_meshes:
             raise ValueError("sample_meshes must not be empty")
-        self.reference_surface = _extract_surface(self.reference_mesh)
+        if self.reduce_reference_to_surface:
+            self.reference_surface = _extract_surface(self.reference_mesh)
+        else:
+            self.reference_surface = self.reference_mesh
         self.log_info(
             "Reference surface: %d points",
             self.reference_surface.n_points,
@@ -114,7 +120,10 @@ class WorkflowCreateStatisticalModel(PhysioMotion4DBase):
         self.sample_surfaces = []
         self.sample_ids = []
         for i, mesh in enumerate(self.sample_meshes):
-            surface = _extract_surface(mesh)
+            if self.reduce_reference_to_surface:
+                surface = _extract_surface(mesh)
+            else:
+                surface = mesh
             self.sample_surfaces.append(surface)
             self.sample_ids.append(str(i))
         self.log_info("Extracted %d sample surfaces", len(self.sample_surfaces))
@@ -131,7 +140,7 @@ class WorkflowCreateStatisticalModel(PhysioMotion4DBase):
             self.log_info(
                 "ICP aligning %s (%d/%d)", sid, i + 1, len(self.sample_surfaces)
             )
-            if isinstance(moving, pv.UnstructuredGrid):
+            if self.reduce_reference_to_surface:
                 moving = moving.extract_surface()
             registrar = RegisterModelsICP(fixed_model=self.reference_surface)
             result = registrar.register(

@@ -117,7 +117,7 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
     def __init__(
         self,
         template_model: pv.UnstructuredGrid,
-        patient_models: list,
+        patient_models: list[pv.PolyData | pv.UnstructuredGrid],
         patient_image: Optional[itk.Image] = None,
         log_level: int | str = logging.INFO,
     ):
@@ -147,8 +147,8 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
 
         self.patient_models = patient_models
         patient_models_surfaces = [model.extract_surface() for model in patient_models]
-        combined_patient_model = pv.merge(patient_models_surfaces)
-        self.patient_model_surface = combined_patient_model.extract_surface()
+        self.combined_patient_model = pv.merge(patient_models_surfaces)
+        self.patient_model_surface = self.combined_patient_model.extract_surface()
 
         # Utilities (needed for create_reference_image when patient_image is None)
         self.transform_tools = TransformTools()
@@ -191,6 +191,7 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         self.icp_registrar: Optional[RegisterModelsICP] = None
         self.icp_inverse_point_transform: Optional[itk.Transform] = None
         self.icp_forward_point_transform: Optional[itk.Transform] = None
+        self.icp_template_model: Optional[pv.UnstructuredGrid] = None
         self.icp_template_model_surface: Optional[pv.PolyData] = None
         self.icp_template_labelmap: Optional[itk.Image] = None
 
@@ -202,6 +203,7 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         self.pca_model: Optional[dict[str, Any]] = None
         self.pca_number_of_modes: int = 0
         self.pca_coefficients: Optional[np.ndarray] = None
+        self.pca_template_model: Optional[pv.UnstructuredGrid] = None
         self.pca_template_model_surface: Optional[pv.PolyData] = None
         self.pca_template_labelmap: Optional[itk.Image] = None
 
@@ -448,6 +450,13 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         self.icp_inverse_point_transform = icp_result["inverse_point_transform"]
         self.icp_template_model_surface = icp_result["registered_model"]
 
+        self.icp_template_model = pv.UnstructuredGrid(
+            self.contour_tools.transform_contours(
+                self.template_model,
+                self.icp_forward_point_transform,
+            )
+        )
+
         if self.template_labelmap is not None:
             self.icp_template_labelmap = self.transform_tools.transform_image(
                 self.template_labelmap,
@@ -461,15 +470,17 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         self.log_info("Stage 1 complete: ICP alignment finished.")
 
         self.registered_template_model_surface = self.icp_template_model_surface
+        self.registered_template_model = self.icp_template_model
 
         return {
             "inverse_point_transform": self.icp_inverse_point_transform,
             "forward_point_transform": self.icp_forward_point_transform,
+            "registered_template_model": self.icp_template_model,
             "registered_template_model_surface": self.icp_template_model_surface,
             "registered_template_labelmap": self.icp_template_labelmap,
         }
 
-    def register_model_to_model_pca(self) -> dict:
+    def register_model_to_model_pca(self, pca_uses_surface: bool = True) -> dict:
         """Perform PCA-based registration after ICP alignment.
 
         Uses RegisterModelsPCA class for intensity-based PCA registration.
@@ -490,6 +501,7 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         )
 
         if not self.use_pca_registration or self.pca_model is None:
+            self.pca_template_model = self.icp_template_model
             self.pca_template_model_surface = self.icp_template_model_surface
             self.pca_template_labelmap = self.icp_template_labelmap
             return {
@@ -497,11 +509,18 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
                 "registered_model_surface": self.pca_template_model_surface,
             }
 
+        if pca_uses_surface:
+            pca_template_model = self.icp_template_model_surface
+            fixed_model = self.patient_model_surface
+        else:
+            pca_template_model = self.icp_template_model
+            fixed_model = self.combined_patient_model
+
         self.pca_registrar = RegisterModelsPCA.from_pca_model(
-            pca_template_model=self.icp_template_model_surface,
+            pca_template_model=pca_template_model,
             pca_model=self.pca_model,
             pca_number_of_modes=self.pca_number_of_modes,
-            fixed_model=self.patient_model_surface,
+            fixed_model=fixed_model,
             reference_image=self.patient_image,
         )
 
@@ -509,7 +528,12 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         assert self.pca_registrar is not None, "PCA registrar must be initialized"
         result = self.pca_registrar.register()
         self.pca_coefficients = result["pca_coefficients"]
-        self.pca_template_model_surface = result["registered_model"]
+        if pca_uses_surface:
+            self.pca_template_model_surface = result["registered_model"]
+        else:
+            self.pca_template_model_surface = result[
+                "registered_model"
+            ].extract_surface()
 
         pca_transforms = self.pca_registrar.compute_pca_transforms(
             reference_image=self.patient_image,
@@ -517,8 +541,36 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         self.pca_forward_point_transform = pca_transforms["forward_point_transform"]
         self.pca_inverse_point_transform = pca_transforms["inverse_point_transform"]
 
+        if self.log_level == logging.DEBUG:
+            tfm_arr = itk.GetArrayFromImage(
+                self.pca_forward_point_transform.GetDisplacementField()
+            )
+            tfm_x_arr = tfm_arr[:, :, :, 0]
+            tfm_y_arr = tfm_arr[:, :, :, 1]
+            tfm_z_arr = tfm_arr[:, :, :, 2]
+            tfm_x_img = itk.GetImageFromArray(tfm_x_arr)
+            tfm_y_img = itk.GetImageFromArray(tfm_y_arr)
+            tfm_z_img = itk.GetImageFromArray(tfm_z_arr)
+            tfm_x_img.CopyInformation(self.patient_image)
+            tfm_y_img.CopyInformation(self.patient_image)
+            tfm_z_img.CopyInformation(self.patient_image)
+            itk.imwrite(tfm_x_img, "pca_forward_point_transform_x.nii.gz")
+            itk.imwrite(tfm_y_img, "pca_forward_point_transform_y.nii.gz")
+            itk.imwrite(tfm_z_img, "pca_forward_point_transform_z.nii.gz")
+
+        if pca_uses_surface:
+            self.pca_template_model = pv.UnstructuredGrid(
+                self.contour_tools.transform_contours(
+                    self.icp_template_model,
+                    self.pca_forward_point_transform,
+                )
+            )
+        else:
+            self.pca_template_model = result["registered_model"]
+
         # Store results
 
+        self.registered_template_model = self.pca_template_model
         self.registered_template_model_surface = self.pca_template_model_surface
 
         if self.icp_template_labelmap is not None:
@@ -537,6 +589,7 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
             "pca_coefficients": self.pca_coefficients,
             "forward_point_transform": self.pca_forward_point_transform,
             "inverse_point_transform": self.pca_inverse_point_transform,
+            "registered_template_model": self.pca_template_model,
             "registered_template_model_surface": self.pca_template_model_surface,
             "registered_template_labelmap": self.pca_template_labelmap,
         }
@@ -698,10 +751,12 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         assert self.m2m_template_model_surface is not None, (
             "M2M template model surface must be set"
         )
-        self.m2i_template_model_surface = self.transform_tools.transform_pvcontour(
-            self.m2m_template_model_surface,
-            self.m2i_inverse_transform,
-            with_deformation_magnitude=True,
+        self.m2i_template_model_surface = pv.PolyData(
+            self.transform_tools.transform_pvcontour(
+                self.m2m_template_model_surface,
+                self.m2i_inverse_transform,
+                with_deformation_magnitude=True,
+            )
         )
 
         self.m2i_template_labelmap = self.transform_tools.transform_image(
@@ -801,6 +856,7 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         self,
         use_mask_to_image_registration: bool = False,
         use_mask_to_mask_registration: bool = True,
+        pca_uses_surface: bool = True,
         use_icon_registration_refinement: bool = False,
     ) -> dict:
         """Execute the complete multi-stage registration workflow.
@@ -836,9 +892,9 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         self.register_model_to_model_icp()
 
         # Stage 2: Optional PCA registration (if PCA data was set)
-        self.register_model_to_model_pca()
+        self.register_model_to_model_pca(pca_uses_surface=pca_uses_surface)
 
-        # Stage 3: Mask-to-mask deformable registration
+        # Stage 3: Optional Mask-to-mask deformable registration
         if self.use_m2m_registration:
             self.register_mask_to_mask(
                 use_icon_refinement=use_icon_registration_refinement
