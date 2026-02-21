@@ -720,6 +720,7 @@ class USDTools(PhysioMotion4DBase):
         *,
         cmap: str = "viridis",
         time_codes: list[float] | None = None,
+        intensity_range: tuple[float, float] | None = None,
         write_default_at_t0: bool = True,
         bind_vertex_color_material: bool = True,
     ) -> None:
@@ -738,6 +739,7 @@ class USDTools(PhysioMotion4DBase):
         - Handles multi-component data (vectors/tensors) by computing magnitude
         - Converts uniform (per-face) data to vertex data by averaging
         - Computes global value range across all time samples for consistent coloring
+          (or uses intensity_range when provided)
         - Writes both default and time-sampled displayColor for Omniverse compatibility
 
         Args:
@@ -746,6 +748,7 @@ class USDTools(PhysioMotion4DBase):
             source_primvar: Name of primvar to visualize (e.g., "vtk_cell_stress")
             cmap: Matplotlib colormap name (default: "viridis")
             time_codes: List of time codes to process. If None, uses stage time range.
+            intensity_range: Optional (vmin, vmax) for colormap. If None, computed from data.
             write_default_at_t0: If True, also write default value at t=0
             bind_vertex_color_material: If True, create/bind material using displayColor
 
@@ -903,11 +906,15 @@ class USDTools(PhysioMotion4DBase):
         if not scalar_samples:
             raise ValueError(f"No valid data found for primvar '{source_primvar}'")
 
-        # Compute global value range
-        all_values = np.concatenate([s for _, s in scalar_samples])
-        vmin = float(np.min(all_values))
-        vmax = float(np.max(all_values))
-        self.log_info(f"Value range: {vmin:.6g} to {vmax:.6g}")
+        # Value range: use provided intensity_range or compute from data
+        if intensity_range is not None:
+            vmin, vmax = intensity_range
+            self.log_info(f"Using specified intensity range: {vmin:.6g} to {vmax:.6g}")
+        else:
+            all_values = np.concatenate([s for _, s in scalar_samples])
+            vmin = float(np.min(all_values))
+            vmax = float(np.max(all_values))
+            self.log_info(f"Value range: {vmin:.6g} to {vmax:.6g}")
 
         # Apply colormap to each time sample
         try:
@@ -977,6 +984,103 @@ class USDTools(PhysioMotion4DBase):
         if stage_path:
             stage.Save()
             self.log_info(f"Saved USD file: {stage_path}")
+
+    def set_solid_display_color(
+        self,
+        stage_or_path: Usd.Stage | str,
+        mesh_path: str,
+        color: tuple[float, float, float],
+        *,
+        time_codes: list[float] | None = None,
+        bind_vertex_color_material: bool = True,
+    ) -> None:
+        """
+        Set a constant (solid) displayColor for a mesh.
+
+        Fills the mesh's displayColor primvar with the same RGB for every vertex,
+        optionally at each time code for animated meshes, and binds the vertex
+        color material so the color is visible in Omniverse.
+
+        Args:
+            stage_or_path: USD Stage or path to USD file
+            mesh_path: Path to mesh prim (e.g., "/World/Meshes/MyMesh")
+            color: RGB tuple in [0, 1] (e.g., (1, 0, 0) for red)
+            time_codes: If provided, set displayColor at each time. If None, set default only.
+            bind_vertex_color_material: If True, bind material that uses displayColor
+        """
+        from pxr import Gf, Sdf, Vt
+
+        if isinstance(stage_or_path, str):
+            stage = Usd.Stage.Open(stage_or_path)
+            stage_path = stage_or_path
+        else:
+            stage = stage_or_path
+            stage_path = None
+
+        mesh_prim = stage.GetPrimAtPath(mesh_path)
+        if not mesh_prim.IsValid() or not mesh_prim.IsA(UsdGeom.Mesh):
+            raise ValueError(f"Invalid mesh prim at path: {mesh_path}")
+
+        mesh = UsdGeom.Mesh(mesh_prim)
+        primvars_api = UsdGeom.PrimvarsAPI(mesh)
+        points_attr = mesh.GetPointsAttr()
+
+        # Resolve time codes: default only or at each sample
+        if time_codes is None:
+            time_codes = [Usd.TimeCode.Default().GetValue()]
+        vec = Gf.Vec3f(float(color[0]), float(color[1]), float(color[2]))
+
+        display_color_pv = primvars_api.CreatePrimvar(
+            "displayColor", Sdf.ValueTypeNames.Color3fArray, UsdGeom.Tokens.vertex
+        )
+
+        for tc in time_codes:
+            # Get point count at this time
+            pts = points_attr.Get(Usd.TimeCode(tc))
+            n_points = len(pts) if pts is not None else 0
+            if n_points == 0 and tc == Usd.TimeCode.Default().GetValue():
+                pts = points_attr.Get()
+                n_points = len(pts) if pts is not None else 0
+            if n_points == 0:
+                continue
+            color_array = Vt.Vec3fArray([vec] * n_points)
+            if tc == Usd.TimeCode.Default().GetValue():
+                display_color_pv.Set(color_array)
+            else:
+                display_color_pv.Set(color_array, Usd.TimeCode(tc))
+
+        if bind_vertex_color_material:
+            self._ensure_vertex_color_material(stage, mesh_prim)
+        if stage_path:
+            stage.Save()
+        self.log_info(f"Set solid displayColor on {mesh_path}")
+
+    def list_mesh_paths_under(
+        self, stage_or_path: Usd.Stage | str, parent_path: str = "/World/Meshes"
+    ) -> list[str]:
+        """
+        List paths of all mesh prims under a parent path.
+
+        Args:
+            stage_or_path: USD Stage or path to USD file
+            parent_path: Parent prim path (default: /World/Meshes)
+
+        Returns:
+            List of mesh prim paths (e.g. ["/World/Meshes/Mesh0", "/World/Meshes/Mesh1"])
+        """
+        if isinstance(stage_or_path, str):
+            stage = Usd.Stage.Open(stage_or_path)
+        else:
+            stage = stage_or_path
+
+        parent = stage.GetPrimAtPath(parent_path)
+        if not parent.IsValid():
+            return []
+        result = []
+        for prim in parent.GetAllChildren():
+            if prim.IsA(UsdGeom.Mesh):
+                result.append(str(prim.GetPath()))
+        return result
 
     def repair_mesh_primvar_element_sizes(
         self,

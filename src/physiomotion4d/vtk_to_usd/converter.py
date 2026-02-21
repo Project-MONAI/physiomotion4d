@@ -5,12 +5,13 @@ Provides high-level API for converting VTK files to USD format.
 
 import logging
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, Sequence
 
 from pxr import Usd, UsdGeom
 
 from .data_structures import ConversionSettings, MaterialData, MeshData
 from .material_manager import MaterialManager
+from .mesh_utils import split_mesh_data_by_cell_type, split_mesh_data_by_connectivity
 from .usd_mesh_converter import UsdMeshConverter
 from .vtk_reader import read_vtk_file
 
@@ -86,11 +87,24 @@ class VTKToUSDConverter:
         if material is not None:
             material_mgr.get_or_create_material(material)
 
-        # Create mesh
-        mesh_path = f"/World/Meshes/{mesh_name}"
-        self._ensure_parent_path(mesh_path)
-
-        mesh_converter.create_mesh(mesh_data, mesh_path, bind_material=True)
+        # Create mesh(es) - by connectivity, by cell type, or single
+        if self.settings.separate_objects_by_connectivity:
+            parts = split_mesh_data_by_connectivity(mesh_data)
+            for _idx, (part_data, base_name) in enumerate(parts):
+                mesh_path = f"/World/Meshes/{base_name}"
+                self._ensure_parent_path(mesh_path)
+                mesh_converter.create_mesh(part_data, mesh_path, bind_material=True)
+        elif self.settings.separate_objects_by_cell_type:
+            parts = split_mesh_data_by_cell_type(mesh_data)
+            for idx, (part_data, base_name) in enumerate(parts):
+                prim_name = f"{base_name}_{idx}"
+                mesh_path = f"/World/Meshes/{prim_name}"
+                self._ensure_parent_path(mesh_path)
+                mesh_converter.create_mesh(part_data, mesh_path, bind_material=True)
+        else:
+            mesh_path = f"/World/Meshes/{mesh_name}"
+            self._ensure_parent_path(mesh_path)
+            mesh_converter.create_mesh(mesh_data, mesh_path, bind_material=True)
 
         # Save stage
         stage.Save()
@@ -100,7 +114,7 @@ class VTKToUSDConverter:
 
     def convert_sequence(
         self,
-        vtk_files: list[str | Path],
+        vtk_files: Sequence[str | Path],
         output_usd: str | Path,
         mesh_name: str = "Mesh",
         time_codes: Optional[list[float]] = None,
@@ -160,13 +174,62 @@ class VTKToUSDConverter:
         stage.SetEndTimeCode(time_codes[-1])
         stage.SetTimeCodesPerSecond(self.settings.times_per_second)
 
-        # Create time-varying mesh
-        mesh_path = f"/World/Meshes/{mesh_name}"
-        self._ensure_parent_path(mesh_path)
-
-        mesh_converter.create_time_varying_mesh(
-            mesh_data_sequence, mesh_path, time_codes, bind_material=True
-        )
+        # Create time-varying mesh(es) - by connectivity, by cell type, or single
+        if self.settings.separate_objects_by_connectivity:
+            parts_sequence = [
+                split_mesh_data_by_connectivity(m) for m in mesh_data_sequence
+            ]
+            n_parts = len(parts_sequence[0])
+            if not all(len(p) == n_parts for p in parts_sequence):
+                logger.warning(
+                    "Connectivity split count varies across time steps; "
+                    "outputting single mesh per frame instead of splitting by connectivity."
+                )
+                mesh_path = f"/World/Meshes/{mesh_name}"
+                self._ensure_parent_path(mesh_path)
+                mesh_converter.create_time_varying_mesh(
+                    mesh_data_sequence, mesh_path, time_codes, bind_material=True
+                )
+            else:
+                for part_idx in range(n_parts):
+                    part_sequence = [p[part_idx][0] for p in parts_sequence]
+                    base_name = parts_sequence[0][part_idx][1]
+                    mesh_path = f"/World/Meshes/{base_name}"
+                    self._ensure_parent_path(mesh_path)
+                    mesh_converter.create_time_varying_mesh(
+                        part_sequence, mesh_path, time_codes, bind_material=True
+                    )
+        elif self.settings.separate_objects_by_cell_type:
+            parts_sequence = [
+                split_mesh_data_by_cell_type(m) for m in mesh_data_sequence
+            ]
+            n_parts = len(parts_sequence[0])
+            if not all(len(p) == n_parts for p in parts_sequence):
+                logger.warning(
+                    "Cell type split count varies across time steps; "
+                    "outputting single mesh per frame instead of splitting by cell type."
+                )
+                mesh_path = f"/World/Meshes/{mesh_name}"
+                self._ensure_parent_path(mesh_path)
+                mesh_converter.create_time_varying_mesh(
+                    mesh_data_sequence, mesh_path, time_codes, bind_material=True
+                )
+            else:
+                for part_idx in range(n_parts):
+                    part_sequence = [p[part_idx][0] for p in parts_sequence]
+                    base_name = parts_sequence[0][part_idx][1]
+                    prim_name = f"{base_name}_{part_idx}"
+                    mesh_path = f"/World/Meshes/{prim_name}"
+                    self._ensure_parent_path(mesh_path)
+                    mesh_converter.create_time_varying_mesh(
+                        part_sequence, mesh_path, time_codes, bind_material=True
+                    )
+        else:
+            mesh_path = f"/World/Meshes/{mesh_name}"
+            self._ensure_parent_path(mesh_path)
+            mesh_converter.create_time_varying_mesh(
+                mesh_data_sequence, mesh_path, time_codes, bind_material=True
+            )
 
         # Save stage
         stage.Save()
@@ -212,11 +275,24 @@ class VTKToUSDConverter:
         if material is not None:
             material_mgr.get_or_create_material(material)
 
-        # Create mesh
-        mesh_path = f"/World/Meshes/{mesh_name}"
-        self._ensure_parent_path(mesh_path)
-
-        mesh_converter.create_mesh(mesh_data, mesh_path, bind_material=True)
+        # Create mesh(es) - by connectivity, by cell type, or single
+        if self.settings.separate_objects_by_connectivity:
+            parts = split_mesh_data_by_connectivity(mesh_data)
+            for _idx, (part_data, base_name) in enumerate(parts):
+                mesh_path = f"/World/Meshes/{base_name}"
+                self._ensure_parent_path(mesh_path)
+                mesh_converter.create_mesh(part_data, mesh_path, bind_material=True)
+        elif self.settings.separate_objects_by_cell_type:
+            parts = split_mesh_data_by_cell_type(mesh_data)
+            for idx, (part_data, base_name) in enumerate(parts):
+                prim_name = f"{base_name}_{idx}"
+                mesh_path = f"/World/Meshes/{prim_name}"
+                self._ensure_parent_path(mesh_path)
+                mesh_converter.create_mesh(part_data, mesh_path, bind_material=True)
+        else:
+            mesh_path = f"/World/Meshes/{mesh_name}"
+            self._ensure_parent_path(mesh_path)
+            mesh_converter.create_mesh(mesh_data, mesh_path, bind_material=True)
 
         # Save stage
         stage.Save()
@@ -283,13 +359,62 @@ class VTKToUSDConverter:
         stage.SetEndTimeCode(time_codes[-1])
         stage.SetTimeCodesPerSecond(self.settings.times_per_second)
 
-        # Create time-varying mesh
-        mesh_path = f"/World/Meshes/{mesh_name}"
-        self._ensure_parent_path(mesh_path)
-
-        mesh_converter.create_time_varying_mesh(
-            mesh_data_sequence, mesh_path, time_codes, bind_material=True
-        )
+        # Create time-varying mesh(es) - by connectivity, by cell type, or single
+        if self.settings.separate_objects_by_connectivity:
+            parts_sequence = [
+                split_mesh_data_by_connectivity(m) for m in mesh_data_sequence
+            ]
+            n_parts = len(parts_sequence[0])
+            if not all(len(p) == n_parts for p in parts_sequence):
+                logger.warning(
+                    "Connectivity split count varies across time steps; "
+                    "outputting single mesh per frame instead of splitting by connectivity."
+                )
+                mesh_path = f"/World/Meshes/{mesh_name}"
+                self._ensure_parent_path(mesh_path)
+                mesh_converter.create_time_varying_mesh(
+                    mesh_data_sequence, mesh_path, time_codes, bind_material=True
+                )
+            else:
+                for part_idx in range(n_parts):
+                    part_sequence = [p[part_idx][0] for p in parts_sequence]
+                    base_name = parts_sequence[0][part_idx][1]
+                    mesh_path = f"/World/Meshes/{base_name}"
+                    self._ensure_parent_path(mesh_path)
+                    mesh_converter.create_time_varying_mesh(
+                        part_sequence, mesh_path, time_codes, bind_material=True
+                    )
+        elif self.settings.separate_objects_by_cell_type:
+            parts_sequence = [
+                split_mesh_data_by_cell_type(m) for m in mesh_data_sequence
+            ]
+            n_parts = len(parts_sequence[0])
+            if not all(len(p) == n_parts for p in parts_sequence):
+                logger.warning(
+                    "Cell type split count varies across time steps; "
+                    "outputting single mesh per frame instead of splitting by cell type."
+                )
+                mesh_path = f"/World/Meshes/{mesh_name}"
+                self._ensure_parent_path(mesh_path)
+                mesh_converter.create_time_varying_mesh(
+                    mesh_data_sequence, mesh_path, time_codes, bind_material=True
+                )
+            else:
+                for part_idx in range(n_parts):
+                    part_sequence = [p[part_idx][0] for p in parts_sequence]
+                    base_name = parts_sequence[0][part_idx][1]
+                    prim_name = f"{base_name}_{part_idx}"
+                    mesh_path = f"/World/Meshes/{prim_name}"
+                    self._ensure_parent_path(mesh_path)
+                    mesh_converter.create_time_varying_mesh(
+                        part_sequence, mesh_path, time_codes, bind_material=True
+                    )
+        else:
+            mesh_path = f"/World/Meshes/{mesh_name}"
+            self._ensure_parent_path(mesh_path)
+            mesh_converter.create_time_varying_mesh(
+                mesh_data_sequence, mesh_path, time_codes, bind_material=True
+            )
 
         # Save stage
         stage.Save()
