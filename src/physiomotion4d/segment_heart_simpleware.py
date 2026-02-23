@@ -406,8 +406,8 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         keep_mask = itk.image_from_array(keep_mask_arr)
         keep_mask.CopyInformation(labelmap_image)
         imMath.SetInput(keep_mask)
-        imMath.Dilate(round(5 / spacing[0]), 1, 0)
-        imMath.Erode(round(3 / spacing[0]), 1, 0)
+        imMath.Dilate(round(4 / spacing[0]), 1, 0)
+        imMath.Erode(round(2 / spacing[0]), 1, 0)
         heart_mask = imMath.GetOutput()
 
         #  Insert the heart and myo labels back into the labelmap
@@ -426,7 +426,7 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         lv_img = itk.image_from_array(lv_arr)
         lv_img.CopyInformation(labelmap_image)
         imMath.SetInput(lv_img)
-        imMath.Dilate(round(3 / spacing[0]), 1, 0)
+        imMath.Dilate(round(2 / spacing[0]), 1, 0)
         lv_img = imMath.GetOutput()
         lv_arr = itk.array_from_image(lv_img)
         lv_arr = lv_arr * 5  # Myocardium label is 5
@@ -435,11 +435,5 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         heart_arr = np.where(heart_arr == 0, lv_arr, heart_arr)
         heart_img = itk.image_from_array(heart_arr)
         heart_img.CopyInformation(labelmap_image)
-        heart_arr = itk.array_from_image(labelmap_image)
-        heart_arr[heart_arr < 5] = 0
-        heart_arr[heart_arr > 7] = 0
-        heart_arr = np.where(heart_arr > 0, 1, 0).astype(np.uint8)
-        heart_mask = itk.image_from_array(heart_arr)
-        heart_mask.CopyInformation(labelmap_image)
 
-        return heart_mask
+        return heart_img

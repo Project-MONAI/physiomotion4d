@@ -71,6 +71,8 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         patient_models (list of pv.PolyData): Patient-specific surface models
         patient_model_surface (pv.PolyData): Primary patient model surface (first in
             list)
+        combined_patient_model (pv.PolyData): Merged patient models before surface
+            extraction; used when pca_uses_surface=False.
         patient_image (itk.Image): Reference image providing coordinate frame
         patient_mask (itk.Image): Binary/multi-label mask for patient model
         patient_roi (itk.Image): ROI mask for patient model
@@ -85,6 +87,7 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         icp_forward_point_transform : ICP transforms
         icp_inverse_point_transform : ICP inverse transforms
         icp_template_model_surface: template model surface after ICP alignment
+        icp_template_model: template model (UnstructuredGrid) after ICP alignment
         pca_coefficients: PCA shape coefficients (if PCA used)
         pca_template_model (pv.UnstructuredGrid): template model after PCA registration
             (if PCA used)
