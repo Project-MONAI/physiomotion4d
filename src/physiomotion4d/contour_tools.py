@@ -72,10 +72,10 @@ class ContourTools(PhysioMotion4DBase):
 
     def transform_contours(
         self,
-        contours: pv.PolyData | pv.UnstructuredGrid,
+        contours: pv.PolyData,
         tfm: itk.Transform,
         with_deformation_magnitude: bool = False,
-    ) -> pv.PolyData | pv.UnstructuredGrid:
+    ) -> pv.PolyData:
         """
         Transform contours using a given transform.
 

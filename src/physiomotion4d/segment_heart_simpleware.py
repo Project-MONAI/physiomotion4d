@@ -283,8 +283,9 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
             interior_image = itk.GetImageFromArray(interior_array.astype(np.uint8))
             interior_image.CopyInformation(preprocessed_image)
             imMath = tube.ImageMath.New(interior_image)
-            imMath.Dilate(7, 1, 0)
-            imMath.Erode(4, 1, 0)
+            spacing = interior_image.GetSpacing()
+            imMath.Dilate(round(7 / spacing[0]), 1, 0)
+            imMath.Erode(round(4 / spacing[0]), 1, 0)
             exterior_image = imMath.GetOutputUChar()
             exterior_array = itk.GetArrayFromImage(exterior_image)
             mask_id = 6  # Heart mask id
@@ -300,16 +301,19 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
                     "ensure the ASCardio module ran successfully."
                 )
 
-            if self._trim_mask:
-                labelmap_array = self.trim_mask_to_essentials(labelmap_array)
-
             labelmap_image = itk.GetImageFromArray(labelmap_array.astype(np.uint8))
             labelmap_image.CopyInformation(preprocessed_image)
+
+            if self._trim_mask:
+                labelmap_image = self.trim_mask_to_essentials(labelmap_image)
 
         return labelmap_image
 
     def trim_mask_to_essentials(self, labelmap_image: itk.image) -> itk.image:
         """Trim mask to essentials."""
+
+        # Reference code for cropping aorta and pulmonary artery to
+        #    portions adjacent to the heart.
         # Trim z-axis
         # z = labelmap_array.shape[2] - 1
         # z_classes = np.unique(labelmap_array[z, :, :])
@@ -335,12 +339,13 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         imMath = tube.ImageMath.New(img)
 
         #  2) Dilate then erode Left Atrium label
-        imMath.Erode(20, 3, 0)
-        imMath.Dilate(20, 3, 0)
+        spacing = labelmap_image.GetSpacing()
+        imMath.Erode(round(7 / spacing[0]), 3, 0)
+        imMath.Dilate(round(7 / spacing[0]), 3, 0)
 
         #  3) Dilate then erode Right Atrium label
-        imMath.Erode(20, 4, 0)
-        imMath.Dilate(20, 4, 0)
+        imMath.Erode(round(7 / spacing[0]), 4, 0)
+        imMath.Dilate(round(7 / spacing[0]), 4, 0)
         simple_img = imMath.GetOutput()
         simple_arr = itk.array_from_image(simple_img)
 
@@ -384,7 +389,7 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         keep_mask = itk.image_from_array(keep_mask_arr)
         keep_mask.CopyInformation(labelmap_image)
         imMath.SetInput(keep_mask)
-        imMath.Dilate(20, 1, 0)
+        imMath.Dilate(round(7 / spacing[0]), 1, 0)
         keep_mask = imMath.GetOutput()
 
         #  Add the left and right atrium labels to the keep_mask
@@ -401,8 +406,8 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         keep_mask = itk.image_from_array(keep_mask_arr)
         keep_mask.CopyInformation(labelmap_image)
         imMath.SetInput(keep_mask)
-        imMath.Dilate(12, 1, 0)
-        imMath.Erode(6, 1, 0)
+        imMath.Dilate(round(5 / spacing[0]), 1, 0)
+        imMath.Erode(round(3 / spacing[0]), 1, 0)
         heart_mask = imMath.GetOutput()
 
         #  Insert the heart and myo labels back into the labelmap
@@ -421,7 +426,7 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         lv_img = itk.image_from_array(lv_arr)
         lv_img.CopyInformation(labelmap_image)
         imMath.SetInput(lv_img)
-        imMath.Dilate(6, 1, 0)
+        imMath.Dilate(round(3 / spacing[0]), 1, 0)
         lv_img = imMath.GetOutput()
         lv_arr = itk.array_from_image(lv_img)
         lv_arr = lv_arr * 5  # Myocardium label is 5

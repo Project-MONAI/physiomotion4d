@@ -284,10 +284,10 @@ class TransformTools(PhysioMotion4DBase):
 
     def transform_pvcontour(
         self,
-        contour: pv.PolyData | pv.UnstructuredGrid,
+        contour: pv.PolyData,
         tfm: itk.Transform,
         with_deformation_magnitude: bool = False,
-    ) -> pv.PolyData | pv.UnstructuredGrid:
+    ) -> pv.PolyData:
         """
         Transform PyVista contour meshes using an ITK transform.
 

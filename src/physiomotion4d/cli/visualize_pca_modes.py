@@ -140,8 +140,8 @@ Examples:
         traceback.print_exc()
         return 1
 
-    if not isinstance(mean_mesh, pv.PolyData):
-        print("Error: PCA mean surface must be a PolyData (.vtp).")
+    if not isinstance(mean_mesh, pv.PolyData | pv.UnstructuredGrid):
+        print("Error: PCA mean surface must be PolyData or UnstructuredGrid.")
         return 1
 
     try:
