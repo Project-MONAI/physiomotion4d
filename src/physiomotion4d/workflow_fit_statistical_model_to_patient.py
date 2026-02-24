@@ -211,6 +211,7 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         self.pca_template_model: Optional[pv.UnstructuredGrid] = None
         self.pca_template_model_surface: Optional[pv.PolyData] = None
         self.pca_template_labelmap: Optional[itk.Image] = None
+        self.pca_uses_surface: bool = False
 
         # Stage 2: Mask-to-mask registration results
         self.use_m2m_registration = True
@@ -881,11 +882,6 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
             set via set_use_mask_to_image_registration(True, ...).
 
         Args:
-            use_mask_to_image_registration: Whether to include mask-to-image
-                registration stage. Default: False. When True, template labelmap and
-                label IDs must have been set via set_use_mask_to_image_registration(True, ...).
-            use_mask_to_mask_registration: Whether to include mask-to-mask registration
-                stage. Default: True
             use_icon_registration_refinement: Whether to include icon registration
                 refinement stage. Default: False
 

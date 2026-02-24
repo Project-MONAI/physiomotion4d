@@ -330,6 +330,8 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         #     left or right atrium
 
         #  1) Erase Heart and Myo label
+        labelmap_arr = itk.array_from_image(labelmap_image)
+
         heart_arr = itk.array_from_image(labelmap_image)
         heart_arr[heart_arr == 6] = 0
         heart_arr[heart_arr == 5] = 0
@@ -338,12 +340,12 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         img.CopyInformation(labelmap_image)
         imMath = tube.ImageMath.New(img)
 
-        #  2) Dilate then erode Left Atrium label
+        #  2) Erode then Dilate Left Atrium label to clip vessels
         spacing = labelmap_image.GetSpacing()
         imMath.Erode(round(7 / spacing[0]), 3, 0)
         imMath.Dilate(round(7 / spacing[0]), 3, 0)
 
-        #  3) Dilate then erode Right Atrium label
+        #  3) Erode then Dilate Right Atrium label to clip vessels
         imMath.Erode(round(7 / spacing[0]), 4, 0)
         imMath.Dilate(round(7 / spacing[0]), 4, 0)
         simple_img = imMath.GetOutput()
@@ -391,6 +393,7 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         imMath.SetInput(keep_mask)
         imMath.Dilate(round(7 / spacing[0]), 1, 0)
         keep_mask = imMath.GetOutput()
+        keep_mask_arr = itk.array_from_image(keep_mask)
 
         #  Add the left and right atrium labels to the keep_mask
         heart_arr = heart_arr * keep_mask_arr
@@ -406,7 +409,7 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
         keep_mask = itk.image_from_array(keep_mask_arr)
         keep_mask.CopyInformation(labelmap_image)
         imMath.SetInput(keep_mask)
-        imMath.Dilate(round(4 / spacing[0]), 1, 0)
+        imMath.Dilate(round(5 / spacing[0]), 1, 0)
         imMath.Erode(round(2 / spacing[0]), 1, 0)
         heart_mask = imMath.GetOutput()
 
@@ -433,6 +436,8 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
 
         #  Add the gap-filled myocardium back into the labelmap
         heart_arr = np.where(heart_arr == 0, lv_arr, heart_arr)
+        # Eliminate overlap with other labels
+        heart_arr = np.where(labelmap_arr > 6, 0, heart_arr)
         heart_img = itk.image_from_array(heart_arr)
         heart_img.CopyInformation(labelmap_image)
 
