@@ -12,7 +12,6 @@ import re
 from pathlib import Path
 from typing import Literal
 
-
 from physiomotion4d.physiomotion4d_base import PhysioMotion4DBase
 from physiomotion4d.usd_anatomy_tools import USDAnatomyTools
 from physiomotion4d.usd_tools import USDTools
@@ -146,6 +145,7 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
             self.vtk_files, pattern=self.time_series_pattern
         )
         time_steps = [t for t, _ in time_series]
+        time_codes = [float(t) for t in time_steps]
         paths_ordered = [p for _, p in time_series]
         n_frames = len(paths_ordered)
 
@@ -182,7 +182,6 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
                 extract_surface=self.extract_surface,
             )
         else:
-            time_codes = [float(t) for t in time_steps]
             # Optional: validate topology consistency across frames
             try:
                 mesh_sequence = [
@@ -221,21 +220,12 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
         )
 
         if self.appearance == "solid":
-            time_codes_for_color: list[float] | None = None
-            if n_frames > 1 and stage.HasAuthoredTimeCodeRange():
-                time_codes_for_color = [
-                    float(t)
-                    for t in range(
-                        int(stage.GetStartTimeCode()),
-                        int(stage.GetEndTimeCode()) + 1,
-                    )
-                ]
             for mesh_path in mesh_paths:
                 usd_tools.set_solid_display_color(
                     str(self.output_usd),
                     mesh_path,
                     self.solid_color,
-                    time_codes=time_codes_for_color,
+                    time_codes=time_codes,
                     bind_vertex_color_material=True,
                 )
 

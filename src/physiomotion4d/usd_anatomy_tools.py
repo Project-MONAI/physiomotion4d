@@ -218,9 +218,9 @@ class USDAnatomyTools(PhysioMotion4DBase):
             raise ValueError(f"Invalid prim at path: {mesh_path}")
         if not prim.IsA(UsdGeom.Mesh):
             raise ValueError(f"Prim at {mesh_path} is not a Mesh")
-        self._apply_surgical_materials(prim, params)
+        self.apply_anatomy_material_to_prim(prim, params)
 
-    def _apply_surgical_materials(
+    def apply_anatomy_material_to_prim(
         self, prim: Any, material_params: Mapping[str, Any]
     ) -> None:
         """Corrected material application with Omniverse-specific fixes"""
@@ -405,4 +405,4 @@ class USDAnatomyTools(PhysioMotion4DBase):
                 assert anatomy_params is not None
                 mesh_prim = UsdGeom.Mesh(prim)
                 if mesh_prim:
-                    self._apply_surgical_materials(prim, anatomy_params)
+                    self.apply_anatomy_material_to_prim(prim, anatomy_params)

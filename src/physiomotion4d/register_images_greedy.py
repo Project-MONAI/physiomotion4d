@@ -48,7 +48,7 @@ class RegisterImagesGreedy(RegisterImagesBase):
     - Rigid and affine registration (-a -dof 6 or 12)
     - Deformable registration with multi-resolution (-n, -s)
     - Metrics: NMI, NCC, SSD (mapped from CC, Mattes, MeanSquares)
-    - Optional mask support (-gm)
+    - Optional mask support (-gm fixed, -mm moving when both provided)
     - SimpleITK in-memory interface via ImageTools
 
     Inherits from RegisterImagesBase:
@@ -98,6 +98,10 @@ class RegisterImagesGreedy(RegisterImagesBase):
 
     def set_metric(self, metric: str) -> None:
         """Set the similarity metric (CC→NCC, Mattes→NMI, MeanSquares→SSD).
+
+        This metric is used for both affine and deformable registration stages.
+        Greedy recommends NCC or SSD for deformable registration; NMI works
+        well for affine but is less suited to deformable.
 
         Args:
             metric: 'CC', 'Mattes', or 'MeanSquares'.
@@ -188,8 +192,9 @@ class RegisterImagesGreedy(RegisterImagesBase):
             "aff_out": None,
         }
         if fixed_mask_sitk is not None and moving_mask_sitk is not None:
-            cmd += " -gm fixed_mask"
+            cmd += " -gm fixed_mask -mm moving_mask"
             kwargs["fixed_mask"] = fixed_mask_sitk
+            kwargs["moving_mask"] = moving_mask_sitk
         if initial_affine is not None:
             cmd += " -ia aff_initial"
             kwargs["aff_initial"] = initial_affine
@@ -210,27 +215,27 @@ class RegisterImagesGreedy(RegisterImagesBase):
         fixed_mask_sitk: Optional[Any],
         moving_mask_sitk: Optional[Any],
         iterations_str: str,
+        metric_str: str,
         initial_affine: Optional[NDArray[np.float64]] = None,
     ) -> tuple[Optional[NDArray[np.float64]], Any, float]:
         """Run Greedy deformable registration. Returns (affine 4x4 or None, warp_sitk, loss)."""
         Greedy3D = _try_import_greedy()
         g = Greedy3D()
 
-        # Optional affine init
+        # Optional affine init (uses configured metric)
         if initial_affine is None:
-            cmd_aff = (
-                f"-i fixed moving -a -dof 6 -n {iterations_str} -m NMI -o aff_init"
-            )
+            cmd_aff = f"-i fixed moving -a -dof 6 -n {iterations_str} -m {metric_str} -o aff_init"
             kwargs_aff = {"fixed": fixed_sitk, "moving": moving_sitk, "aff_init": None}
             if fixed_mask_sitk is not None and moving_mask_sitk is not None:
-                cmd_aff += " -gm fixed_mask"
+                cmd_aff += " -gm fixed_mask -mm moving_mask"
                 kwargs_aff["fixed_mask"] = fixed_mask_sitk
+                kwargs_aff["moving_mask"] = moving_mask_sitk
             g.execute(cmd_aff, **kwargs_aff)
             initial_affine = np.array(g["aff_init"], dtype=np.float64)
 
         cmd_def = (
             f"-i fixed moving -it aff_init -n {iterations_str} "
-            f"-m NCC 2x2x2 -s {self.deformable_smoothing} -o warp_out"
+            f"-m {metric_str} -s {self.deformable_smoothing} -o warp_out"
         )
         kwargs_def = {
             "fixed": fixed_sitk,
@@ -239,8 +244,9 @@ class RegisterImagesGreedy(RegisterImagesBase):
             "warp_out": None,
         }
         if fixed_mask_sitk is not None and moving_mask_sitk is not None:
-            cmd_def += " -gm fixed_mask"
+            cmd_def += " -gm fixed_mask -mm moving_mask"
             kwargs_def["fixed_mask"] = fixed_mask_sitk
+            kwargs_def["moving_mask"] = moving_mask_sitk
 
         g.execute(cmd_def, **kwargs_def)
         warp_out = g["warp_out"]
@@ -342,6 +348,7 @@ class RegisterImagesGreedy(RegisterImagesBase):
                 fixed_mask_sitk,
                 moving_mask_sitk,
                 iterations_str,
+                metric_str,
                 initial_affine=initial_affine,
             )
             aff_tfm = (

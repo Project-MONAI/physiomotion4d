@@ -721,6 +721,7 @@ class USDTools(PhysioMotion4DBase):
         cmap: str = "viridis",
         time_codes: list[float] | None = None,
         intensity_range: tuple[float, float] | None = None,
+        use_sigmoid_scale: bool = False,
         write_default_at_t0: bool = True,
         bind_vertex_color_material: bool = True,
     ) -> None:
@@ -944,10 +945,15 @@ class USDTools(PhysioMotion4DBase):
 
         for idx, (tc, scalar) in enumerate(scalar_samples):
             # Normalize to [0, 1]
+
             if vmax > vmin:
                 normalized = (scalar - vmin) / (vmax - vmin)
             else:
                 normalized = np.full_like(scalar, 0.5)
+
+            if use_sigmoid_scale:
+                normalized = 1 / (1 + np.exp(-4 * normalized))
+
             normalized = np.clip(normalized, 0.0, 1.0)
 
             # Apply colormap
@@ -1026,28 +1032,38 @@ class USDTools(PhysioMotion4DBase):
         points_attr = mesh.GetPointsAttr()
 
         # Resolve time codes: default only or at each sample
-        if time_codes is None:
-            time_codes = [Usd.TimeCode.Default().GetValue()]
         vec = Gf.Vec3f(float(color[0]), float(color[1]), float(color[2]))
 
         display_color_pv = primvars_api.CreatePrimvar(
             "displayColor", Sdf.ValueTypeNames.Color3fArray, UsdGeom.Tokens.vertex
         )
 
-        for tc in time_codes:
-            # Get point count at this time
-            pts = points_attr.Get(Usd.TimeCode(tc))
+        if time_codes is None:
+            # Default time: get points and set primvar without an explicit time code
+            pts = points_attr.Get()
             n_points = len(pts) if pts is not None else 0
-            if n_points == 0 and tc == Usd.TimeCode.Default().GetValue():
-                pts = points_attr.Get()
-                n_points = len(pts) if pts is not None else 0
-            if n_points == 0:
-                continue
-            color_array = Vt.Vec3fArray([vec] * n_points)
-            if tc == Usd.TimeCode.Default().GetValue():
+            if n_points > 0:
+                color_array = Vt.Vec3fArray([vec] * n_points)
                 display_color_pv.Set(color_array)
-            else:
-                display_color_pv.Set(color_array, Usd.TimeCode(tc))
+        else:
+            for tc in time_codes:
+                # Normalize to a Usd.TimeCode
+                usd_tc = tc if isinstance(tc, Usd.TimeCode) else Usd.TimeCode(tc)
+
+                # Get point count at this time
+                pts = points_attr.Get(usd_tc)
+                n_points = len(pts) if pts is not None else 0
+                if n_points == 0 and usd_tc.IsDefault():
+                    # Fallback: use time-independent points if default has no sample
+                    pts = points_attr.Get()
+                    n_points = len(pts) if pts is not None else 0
+                if n_points == 0:
+                    continue
+                color_array = Vt.Vec3fArray([vec] * n_points)
+                if usd_tc.IsDefault():
+                    display_color_pv.Set(color_array)
+                else:
+                    display_color_pv.Set(color_array, usd_tc)
 
         if bind_vertex_color_material:
             self._ensure_vertex_color_material(stage, mesh_prim)

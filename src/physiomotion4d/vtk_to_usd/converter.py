@@ -89,13 +89,13 @@ class VTKToUSDConverter:
 
         # Create mesh(es) - by connectivity, by cell type, or single
         if self.settings.separate_objects_by_connectivity:
-            parts = split_mesh_data_by_connectivity(mesh_data)
+            parts = split_mesh_data_by_connectivity(mesh_data, mesh_name=mesh_name)
             for _idx, (part_data, base_name) in enumerate(parts):
                 mesh_path = f"/World/Meshes/{base_name}"
                 self._ensure_parent_path(mesh_path)
                 mesh_converter.create_mesh(part_data, mesh_path, bind_material=True)
         elif self.settings.separate_objects_by_cell_type:
-            parts = split_mesh_data_by_cell_type(mesh_data)
+            parts = split_mesh_data_by_cell_type(mesh_data, mesh_name=mesh_name)
             for idx, (part_data, base_name) in enumerate(parts):
                 prim_name = f"{base_name}_{idx}"
                 mesh_path = f"/World/Meshes/{prim_name}"
@@ -177,7 +177,8 @@ class VTKToUSDConverter:
         # Create time-varying mesh(es) - by connectivity, by cell type, or single
         if self.settings.separate_objects_by_connectivity:
             parts_sequence = [
-                split_mesh_data_by_connectivity(m) for m in mesh_data_sequence
+                split_mesh_data_by_connectivity(m, mesh_name=mesh_name)
+                for m in mesh_data_sequence
             ]
             n_parts = len(parts_sequence[0])
             if not all(len(p) == n_parts for p in parts_sequence):
@@ -201,7 +202,8 @@ class VTKToUSDConverter:
                     )
         elif self.settings.separate_objects_by_cell_type:
             parts_sequence = [
-                split_mesh_data_by_cell_type(m) for m in mesh_data_sequence
+                split_mesh_data_by_cell_type(m, mesh_name=mesh_name)
+                for m in mesh_data_sequence
             ]
             n_parts = len(parts_sequence[0])
             if not all(len(p) == n_parts for p in parts_sequence):
@@ -277,13 +279,13 @@ class VTKToUSDConverter:
 
         # Create mesh(es) - by connectivity, by cell type, or single
         if self.settings.separate_objects_by_connectivity:
-            parts = split_mesh_data_by_connectivity(mesh_data)
+            parts = split_mesh_data_by_connectivity(mesh_data, mesh_name=mesh_name)
             for _idx, (part_data, base_name) in enumerate(parts):
                 mesh_path = f"/World/Meshes/{base_name}"
                 self._ensure_parent_path(mesh_path)
                 mesh_converter.create_mesh(part_data, mesh_path, bind_material=True)
         elif self.settings.separate_objects_by_cell_type:
-            parts = split_mesh_data_by_cell_type(mesh_data)
+            parts = split_mesh_data_by_cell_type(mesh_data, mesh_name=mesh_name)
             for idx, (part_data, base_name) in enumerate(parts):
                 prim_name = f"{base_name}_{idx}"
                 mesh_path = f"/World/Meshes/{prim_name}"
@@ -362,7 +364,8 @@ class VTKToUSDConverter:
         # Create time-varying mesh(es) - by connectivity, by cell type, or single
         if self.settings.separate_objects_by_connectivity:
             parts_sequence = [
-                split_mesh_data_by_connectivity(m) for m in mesh_data_sequence
+                split_mesh_data_by_connectivity(m, mesh_name=mesh_name)
+                for m in mesh_data_sequence
             ]
             n_parts = len(parts_sequence[0])
             if not all(len(p) == n_parts for p in parts_sequence):
@@ -386,7 +389,8 @@ class VTKToUSDConverter:
                     )
         elif self.settings.separate_objects_by_cell_type:
             parts_sequence = [
-                split_mesh_data_by_cell_type(m) for m in mesh_data_sequence
+                split_mesh_data_by_cell_type(m, mesh_name=mesh_name)
+                for m in mesh_data_sequence
             ]
             n_parts = len(parts_sequence[0])
             if not all(len(p) == n_parts for p in parts_sequence):

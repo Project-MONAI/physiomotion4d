@@ -13,7 +13,6 @@ from numpy.typing import NDArray
 
 from .data_structures import GenericArray, MeshData
 
-
 # Map face vertex count to cell type name (matches VTK semantics: triangle=3, quad=4, tetra=4, hex=8)
 # For 4 we use "Quad" (surface); volume tet would also be 4 - we don't distinguish here.
 CELL_TYPE_NAME_BY_VERTEX_COUNT: dict[int, str] = {
@@ -30,7 +29,9 @@ def cell_type_name_for_vertex_count(count: int) -> str:
     return CELL_TYPE_NAME_BY_VERTEX_COUNT.get(count, f"Cell_{count}")
 
 
-def split_mesh_data_by_cell_type(mesh_data: MeshData) -> list[tuple[MeshData, str]]:
+def split_mesh_data_by_cell_type(
+    mesh_data: MeshData, mesh_name: str
+) -> list[tuple[MeshData, str]]:
     """Split MeshData into one mesh per distinct face vertex count (cell type).
 
     Each part is named by cell type (e.g. Triangle, Quad, Hexahedron). The caller
@@ -58,7 +59,7 @@ def split_mesh_data_by_cell_type(mesh_data: MeshData) -> list[tuple[MeshData, st
     if len(unique_counts) <= 1:
         # Single cell type: return one mesh with that type name
         name = cell_type_name_for_vertex_count(int(counts[0])) if n_faces else "Mesh"
-        return [(mesh_data, name)]
+        return [(mesh_data, f"{mesh_name}_{name}")]
 
     result: list[tuple[MeshData, str]] = []
 
@@ -140,7 +141,7 @@ def split_mesh_data_by_cell_type(mesh_data: MeshData) -> list[tuple[MeshData, st
             material_id=mesh_data.material_id,
         )
         name = cell_type_name_for_vertex_count(count)
-        result.append((part, name))
+        result.append((part, f"{mesh_name}_{name}"))
 
     return result
 
@@ -275,7 +276,9 @@ def _extract_mesh_part_by_face_indices(
     )
 
 
-def split_mesh_data_by_connectivity(mesh_data: MeshData) -> list[tuple[MeshData, str]]:
+def split_mesh_data_by_connectivity(
+    mesh_data: MeshData, mesh_name: str
+) -> list[tuple[MeshData, str]]:
     """Split MeshData into one mesh per connected component.
 
     A connected component is a maximal set of cells that share vertices (directly
@@ -295,19 +298,19 @@ def split_mesh_data_by_connectivity(mesh_data: MeshData) -> list[tuple[MeshData,
     n_faces = len(counts)
 
     if n_faces == 0:
-        return [(mesh_data, "object1")]
+        return [(mesh_data, f"{mesh_name}_object1")]
 
     cum = np.concatenate([[0], np.cumsum(counts)]).astype(np.int64)
 
     component_face_lists = _connected_components_face_indices(n_faces, indices, cum)
     if len(component_face_lists) <= 1:
-        return [(mesh_data, "object1")]
+        return [(mesh_data, f"{mesh_name}_object1")]
 
     result: list[tuple[MeshData, str]] = []
     for k, face_idxs in enumerate(component_face_lists, start=1):
         part = _extract_mesh_part_by_face_indices(
             mesh_data, face_idxs, n_points, n_faces, counts, indices, cum, points
         )
-        result.append((part, f"object{k}"))
+        result.append((part, f"{mesh_name}_object{k}"))
 
     return result

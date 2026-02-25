@@ -130,8 +130,9 @@ Examples:
     )
     parser.add_argument(
         "--color",
-        type=str,
-        metavar="R G B",
+        nargs=3,
+        type=float,
+        metavar=("R", "G", "B"),
         help="Solid color as R G B in [0,1] or [0,255] (default: 0.8 0.8 0.8). Used when --appearance solid.",
     )
     parser.add_argument(
