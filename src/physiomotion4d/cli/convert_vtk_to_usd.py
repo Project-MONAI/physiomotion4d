@@ -183,7 +183,23 @@ Examples:
     solid_color = (0.8, 0.8, 0.8)
     if args.color:
         try:
-            solid_color = _parse_color(args.color)
+            # If argparse defined --color with nargs=3 and type=float, args.color will be a list of floats.
+            # Handle that case directly by normalizing into [0, 1] and forming an RGB tuple.
+            if isinstance(args.color, (list, tuple)):
+                components = [float(v) for v in args.color]
+                if len(components) != 3:
+                    raise ValueError("Color must have exactly three components (R G B).")
+                # Interpret either as normalized [0, 1] or byte [0, 255] values, but do not mix scales.
+                if all(0.0 <= v <= 1.0 for v in components):
+                    solid_color = tuple(components)
+                elif all(0.0 <= v <= 255.0 for v in components):
+                    solid_color = tuple(v / 255.0 for v in components)
+                else:
+                    raise ValueError(
+                        "Color values must all be in [0, 1] or all in [0, 255]."
+                    )
+            else:
+                solid_color = _parse_color(args.color)
         except ValueError as e:
             print(f"Error: {e}")
             return 1
