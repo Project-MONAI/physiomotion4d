@@ -188,12 +188,18 @@ Examples:
             if isinstance(args.color, (list, tuple)):
                 components = [float(v) for v in args.color]
                 if len(components) != 3:
-                    raise ValueError("Color must have exactly three components (R G B).")
+                    raise ValueError(
+                        "Color must have exactly three components (R G B)."
+                    )
                 # Interpret either as normalized [0, 1] or byte [0, 255] values, but do not mix scales.
                 if all(0.0 <= v <= 1.0 for v in components):
-                    solid_color = tuple(components)
+                    solid_color = (components[0], components[1], components[2])
                 elif all(0.0 <= v <= 255.0 for v in components):
-                    solid_color = tuple(v / 255.0 for v in components)
+                    solid_color = (
+                        components[0] / 255.0,
+                        components[1] / 255.0,
+                        components[2] / 255.0,
+                    )
                 else:
                     raise ValueError(
                         "Color values must all be in [0, 1] or all in [0, 255]."
