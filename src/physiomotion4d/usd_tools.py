@@ -909,7 +909,21 @@ class USDTools(PhysioMotion4DBase):
 
         # Value range: use provided intensity_range or compute from data
         if intensity_range is not None:
-            vmin, vmax = intensity_range
+            try:
+                vmin, vmax = float(intensity_range[0]), float(intensity_range[1])
+            except (TypeError, IndexError) as e:
+                raise ValueError(
+                    "intensity_range must be a sequence of two floats (vmin, vmax)"
+                ) from e
+            if not (np.isfinite(vmin) and np.isfinite(vmax)):
+                raise ValueError(
+                    f"intensity_range values must be finite; got ({vmin}, {vmax})"
+                )
+            if vmin >= vmax:
+                vmin, vmax = vmax, vmin
+                self.log_info(
+                    f"intensity_range was (vmax, vmin); swapped to {vmin:.6g} to {vmax:.6g}"
+                )
             self.log_info(f"Using specified intensity range: {vmin:.6g} to {vmax:.6g}")
         else:
             all_values = np.concatenate([s for _, s in scalar_samples])
@@ -952,7 +966,7 @@ class USDTools(PhysioMotion4DBase):
                 normalized = np.full_like(scalar, 0.5)
 
             if use_sigmoid_scale:
-                normalized = 1 / (1 + np.exp(-4 * normalized))
+                normalized = 1 / (1 + np.exp(-4 * (normalized - 0.5)))
 
             normalized = np.clip(normalized, 0.0, 1.0)
 
@@ -1046,6 +1060,7 @@ class USDTools(PhysioMotion4DBase):
                 color_array = Vt.Vec3fArray([vec] * n_points)
                 display_color_pv.Set(color_array)
         else:
+            default_point_count: int | None = None
             for tc in time_codes:
                 # Normalize to a Usd.TimeCode
                 usd_tc = tc if isinstance(tc, Usd.TimeCode) else Usd.TimeCode(tc)
@@ -1059,11 +1074,19 @@ class USDTools(PhysioMotion4DBase):
                     n_points = len(pts) if pts is not None else 0
                 if n_points == 0:
                     continue
+                if default_point_count is None:
+                    default_point_count = n_points
                 color_array = Vt.Vec3fArray([vec] * n_points)
                 if usd_tc.IsDefault():
                     display_color_pv.Set(color_array)
                 else:
                     display_color_pv.Set(color_array, usd_tc)
+
+            # Author a default (time-independent) value so consumers that query the
+            # default when not time-scrubbing still see the solid color.
+            if default_point_count is not None:
+                default_color_array = Vt.Vec3fArray([vec] * default_point_count)
+                display_color_pv.Set(default_color_array)
 
         if bind_vertex_color_material:
             self._ensure_vertex_color_material(stage, mesh_prim)

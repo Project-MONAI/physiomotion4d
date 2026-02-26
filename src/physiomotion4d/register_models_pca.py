@@ -81,7 +81,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
         pca_template_model_point_subsample: int = 4,
         pre_pca_transform: Optional[itk.Transform] = None,
         fixed_distance_map: Optional[itk.Image] = None,
-        fixed_model: Optional[pv.UnstructuredGrid] = None,
+        fixed_model: Optional[pv.UnstructuredGrid | pv.PolyData] = None,
         reference_image: Optional[itk.Image] = None,
         log_level: int | str = logging.INFO,
     ):
@@ -186,7 +186,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
         pca_template_model_point_subsample: int = 4,
         pre_pca_transform: Optional[itk.Transform] = None,
         fixed_distance_map: Optional[itk.Image] = None,
-        fixed_model: Optional[pv.UnstructuredGrid] = None,
+        fixed_model: Optional[pv.UnstructuredGrid | pv.PolyData] = None,
         reference_image: Optional[itk.Image] = None,
         log_level: int | str = logging.INFO,
     ) -> Self:

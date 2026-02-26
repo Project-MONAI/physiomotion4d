@@ -27,7 +27,7 @@ from physiomotion4d.vtk_to_usd import (
 def discover_time_series(
     paths: list[Path],
     pattern: str = r"\.t(\d+)\.(vtk|vtp|vtu)$",
-) -> list[tuple[int, Path]]:
+) -> tuple[list[tuple[int, Path]], bool]:
     """Discover and sort time-series VTK files by extracted time index.
 
     Args:
@@ -35,18 +35,22 @@ def discover_time_series(
         pattern: Regex with one group for time step number (default matches .t123.vtk)
 
     Returns:
-        Sorted list of (time_step, path) tuples. If no match, returns [(0, p) for p in paths].
+        (time_series, pattern_matched): Sorted list of (time_step, path) tuples, and
+        a flag True if at least one path matched the pattern. If no path matches,
+        time_series is [(0, p) for p in paths] and pattern_matched is False.
     """
     time_series: list[tuple[int, Path]] = []
     regex = re.compile(pattern, re.IGNORECASE)
+    pattern_matched = False
     for p in paths:
         match = regex.search(p.name)
         if match:
             time_series.append((int(match.group(1)), Path(p)))
+            pattern_matched = True
         else:
             time_series.append((0, Path(p)))
     time_series.sort(key=lambda x: (x[0], str(x[1])))
-    return time_series
+    return time_series, pattern_matched
 
 
 AppearanceKind = Literal["solid", "anatomy", "colormap"]
@@ -141,7 +145,7 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
             raise ValueError("vtk_files must not be empty")
 
         # Discover time series
-        time_series = discover_time_series(
+        time_series, pattern_matched = discover_time_series(
             self.vtk_files, pattern=self.time_series_pattern
         )
         time_steps = [t for t, _ in time_series]
@@ -149,9 +153,16 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
         paths_ordered = [p for _, p in time_series]
         n_frames = len(paths_ordered)
 
+        # Multiple files but no pattern match: treat as static scene (all at time 0, no time samples)
+        is_static_merge = n_frames > 1 and not pattern_matched
+
         self.log_info("Input: %d file(s), time steps: %s", n_frames, time_steps[:5])
         if n_frames > 5:
             self.log_info("  ... and %d more", n_frames - 5)
+        if is_static_merge:
+            self.log_info(
+                "Filenames do not match time-series pattern; outputting static scene (no time samples)"
+            )
         self.log_info("Output: %s", self.output_usd)
 
         settings = ConversionSettings(
@@ -163,7 +174,7 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
             separate_objects_by_cell_type=self.separate_by_cell_type,
             up_axis=self.up_axis,
             times_per_second=self.times_per_second,
-            use_time_samples=True,
+            use_time_samples=not is_static_merge,
         )
 
         converter = VTKToUSDConverter(settings)
@@ -181,13 +192,22 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
                 material=default_material,
                 extract_surface=self.extract_surface,
             )
+        elif is_static_merge:
+            stage = converter.convert_files_static(
+                paths_ordered,
+                self.output_usd,
+                mesh_name=self.mesh_name,
+                material=default_material,
+                extract_surface=self.extract_surface,
+            )
         else:
+            # Load mesh sequence once for both validation and conversion (avoids double I/O)
+            mesh_sequence = [
+                read_vtk_file(p, extract_surface=self.extract_surface)
+                for p in paths_ordered
+            ]
             # Optional: validate topology consistency across frames
             try:
-                mesh_sequence = [
-                    read_vtk_file(p, extract_surface=self.extract_surface)
-                    for p in paths_ordered
-                ]
                 report = validate_time_series_topology(mesh_sequence)
                 if report.get("topology_changes"):
                     self.log_warning(
@@ -197,13 +217,12 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
             except Exception as e:
                 self.log_debug("Time series validation skipped: %s", e)
 
-            stage = converter.convert_sequence(
-                paths_ordered,
+            stage = converter.convert_mesh_data_sequence(
+                mesh_sequence,
                 self.output_usd,
                 mesh_name=self.mesh_name,
                 time_codes=time_codes,
                 material=default_material,
-                extract_surface=self.extract_surface,
             )
 
         # Post-process: apply chosen appearance to all meshes under /World/Meshes
@@ -215,6 +234,9 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
             self.log_warning("No mesh prims found under /World/Meshes")
             return str(self.output_usd)
 
+        # Static merge has no time samples; pass None so only default time is used
+        appearance_time_codes = None if is_static_merge else time_codes
+
         self.log_info(
             "Applying appearance '%s' to %d mesh(es)", self.appearance, len(mesh_paths)
         )
@@ -225,7 +247,7 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
                     str(self.output_usd),
                     mesh_path,
                     self.solid_color,
-                    time_codes=time_codes,
+                    time_codes=appearance_time_codes,
                     bind_vertex_color_material=True,
                 )
 
@@ -249,7 +271,6 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
                     self.log_warning(
                         "No color primvar found for %s; skip colormap", mesh_path
                     )
-                    primvar = self.colormap_primvar
                     continue
                 self.log_info(
                     "Applying colormap to %s from primvar %s", mesh_path, primvar

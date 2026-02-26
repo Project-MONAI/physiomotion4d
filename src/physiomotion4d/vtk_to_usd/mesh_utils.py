@@ -34,15 +34,17 @@ def split_mesh_data_by_cell_type(
 ) -> list[tuple[MeshData, str]]:
     """Split MeshData into one mesh per distinct face vertex count (cell type).
 
-    Each part is named by cell type (e.g. Triangle, Quad, Hexahedron). The caller
-    should append a unique number to form final prim names (e.g. Triangle_0, Quad_0).
+    Each part is named as mesh_name plus the cell type (e.g. MeshName_Triangle,
+    MeshName_Quad). The caller should append a unique number to form final prim
+    names (e.g. MeshName_Triangle_0, MeshName_Quad_0).
 
     Args:
         mesh_data: Single mesh that may contain mixed cell types.
+        mesh_name: Name of the source mesh; used as prefix in returned base_name.
 
     Returns:
         List of (MeshData, base_name) for each cell type present. base_name is
-        the cell type name (e.g. "Triangle", "Quad").
+        mesh_name + "_" + cell type name (e.g. "MeshName_Triangle", "MeshName_Quad").
     """
     counts = np.asarray(mesh_data.face_vertex_counts, dtype=np.int32)
     indices = np.asarray(mesh_data.face_vertex_indices, dtype=np.int32)
@@ -282,14 +284,15 @@ def split_mesh_data_by_connectivity(
     """Split MeshData into one mesh per connected component.
 
     A connected component is a maximal set of cells that share vertices (directly
-    or transitively). Components are named object1, object2, etc.
+    or transitively). Components are named mesh_name_object1, mesh_name_object2, etc.
 
     Args:
         mesh_data: Single mesh that may contain multiple disconnected parts.
+        mesh_name: Name of the source mesh; used as prefix in returned base_name.
 
     Returns:
         List of (MeshData, base_name) for each component. base_name is
-        "object1", "object2", ...
+        mesh_name + "_objectN" (e.g. "MeshName_object1", "MeshName_object2", ...).
     """
     counts = np.asarray(mesh_data.face_vertex_counts, dtype=np.int32)
     indices = np.asarray(mesh_data.face_vertex_indices, dtype=np.int32)

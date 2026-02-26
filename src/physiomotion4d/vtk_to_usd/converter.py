@@ -112,6 +112,83 @@ class VTKToUSDConverter:
 
         return stage
 
+    def convert_files_static(
+        self,
+        vtk_files: Sequence[str | Path],
+        output_usd: str | Path,
+        mesh_name: str = "Mesh",
+        material: Optional[MaterialData] = None,
+        extract_surface: bool = True,
+    ) -> Usd.Stage:
+        """Convert multiple VTK files into one static USD stage (no time samples).
+
+        All meshes from all files are added to the scene at default time. Use this
+        when multiple files are provided but filenames do not match a time-series
+        pattern, so they should be combined as a single static scene rather than
+        time steps.
+
+        Args:
+            vtk_files: List of VTK file paths
+            output_usd: Path to output USD file
+            mesh_name: Base name for meshes (each file/part gets a unique name)
+            material: Optional material data. If None, uses default.
+            extract_surface: For .vtu files, whether to extract surface
+
+        Returns:
+            Usd.Stage: Created USD stage
+        """
+        if len(vtk_files) == 0:
+            raise ValueError("Empty file list")
+
+        logger.info(
+            "Converting %d files to static USD (no time samples): %s",
+            len(vtk_files),
+            output_usd,
+        )
+
+        # Create USD stage once (no time range)
+        self._create_stage(output_usd)
+        stage = self.stage
+        mesh_converter = self.mesh_converter
+        material_mgr = self.material_mgr
+        assert stage is not None
+        assert mesh_converter is not None
+        assert material_mgr is not None
+
+        if material is not None:
+            material_mgr.get_or_create_material(material)
+
+        for file_idx, vtk_file in enumerate(vtk_files):
+            mesh_data = read_vtk_file(vtk_file, extract_surface=extract_surface)
+            if material is not None:
+                mesh_data.material_id = material.name
+
+            # Unique base per file to avoid prim path collisions
+            file_base = f"{mesh_name}_{file_idx}"
+
+            if self.settings.separate_objects_by_connectivity:
+                parts = split_mesh_data_by_connectivity(mesh_data, mesh_name=file_base)
+                for _idx, (part_data, base_name) in enumerate(parts):
+                    mesh_path = f"/World/Meshes/{base_name}"
+                    self._ensure_parent_path(mesh_path)
+                    mesh_converter.create_mesh(part_data, mesh_path, bind_material=True)
+            elif self.settings.separate_objects_by_cell_type:
+                parts = split_mesh_data_by_cell_type(mesh_data, mesh_name=file_base)
+                for idx, (part_data, base_name) in enumerate(parts):
+                    prim_name = f"{base_name}_{idx}"
+                    mesh_path = f"/World/Meshes/{prim_name}"
+                    self._ensure_parent_path(mesh_path)
+                    mesh_converter.create_mesh(part_data, mesh_path, bind_material=True)
+            else:
+                mesh_path = f"/World/Meshes/{file_base}"
+                self._ensure_parent_path(mesh_path)
+                mesh_converter.create_mesh(mesh_data, mesh_path, bind_material=True)
+
+        stage.Save()
+        logger.info(f"Saved USD file: {output_usd}")
+
+        return stage
+
     def convert_sequence(
         self,
         vtk_files: Sequence[str | Path],
