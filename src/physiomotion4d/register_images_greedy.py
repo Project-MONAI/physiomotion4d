@@ -290,7 +290,6 @@ class RegisterImagesGreedy(RegisterImagesBase):
         # Optional initial transform: convert ITK -> 4x4 for Greedy
         initial_affine: Optional[NDArray[np.float64]] = None
         if initial_forward_transform is not None:
-            transform_tools = TransformTools()
             # If it's affine-like, extract 4x4; else convert to displacement and skip for Greedy init
             if hasattr(initial_forward_transform, "GetMatrix"):
                 M = np.eye(4, dtype=np.float64)
@@ -371,7 +370,7 @@ class RegisterImagesGreedy(RegisterImagesBase):
                 )
                 disp_tfm = itk.DisplacementFieldTransform[itk.D, 3].New()
                 disp_tfm.SetDisplacementField(disp_itk)
-            # Forward = warp then affine (moving -> fixed: first affine then deformable in Greedy)
+            # Forward = moving -> fixed: first affine then deformable in Greedy
             forward_composite = itk.CompositeTransform[itk.D, 3].New()
             if aff_tfm is not None:
                 forward_composite.AddTransform(aff_tfm)

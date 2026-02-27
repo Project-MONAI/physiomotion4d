@@ -97,8 +97,7 @@ class VTKToUSDConverter:
         elif self.settings.separate_objects_by_cell_type:
             parts = split_mesh_data_by_cell_type(mesh_data, mesh_name=mesh_name)
             for idx, (part_data, base_name) in enumerate(parts):
-                prim_name = f"{base_name}_{idx}"
-                mesh_path = f"/World/Meshes/{prim_name}"
+                mesh_path = f"/World/Meshes/{base_name}"
                 self._ensure_parent_path(mesh_path)
                 mesh_converter.create_mesh(part_data, mesh_path, bind_material=True)
         else:
@@ -175,8 +174,7 @@ class VTKToUSDConverter:
             elif self.settings.separate_objects_by_cell_type:
                 parts = split_mesh_data_by_cell_type(mesh_data, mesh_name=file_base)
                 for idx, (part_data, base_name) in enumerate(parts):
-                    prim_name = f"{base_name}_{idx}"
-                    mesh_path = f"/World/Meshes/{prim_name}"
+                    mesh_path = f"/World/Meshes/{base_name}"
                     self._ensure_parent_path(mesh_path)
                     mesh_converter.create_mesh(part_data, mesh_path, bind_material=True)
             else:
@@ -297,8 +295,7 @@ class VTKToUSDConverter:
                 for part_idx in range(n_parts):
                     part_sequence = [p[part_idx][0] for p in parts_sequence]
                     base_name = parts_sequence[0][part_idx][1]
-                    prim_name = f"{base_name}_{part_idx}"
-                    mesh_path = f"/World/Meshes/{prim_name}"
+                    mesh_path = f"/World/Meshes/{base_name}"
                     self._ensure_parent_path(mesh_path)
                     mesh_converter.create_time_varying_mesh(
                         part_sequence, mesh_path, time_codes, bind_material=True
@@ -364,8 +361,7 @@ class VTKToUSDConverter:
         elif self.settings.separate_objects_by_cell_type:
             parts = split_mesh_data_by_cell_type(mesh_data, mesh_name=mesh_name)
             for idx, (part_data, base_name) in enumerate(parts):
-                prim_name = f"{base_name}_{idx}"
-                mesh_path = f"/World/Meshes/{prim_name}"
+                mesh_path = f"/World/Meshes/{base_name}"
                 self._ensure_parent_path(mesh_path)
                 mesh_converter.create_mesh(part_data, mesh_path, bind_material=True)
         else:
@@ -484,8 +480,7 @@ class VTKToUSDConverter:
                 for part_idx in range(n_parts):
                     part_sequence = [p[part_idx][0] for p in parts_sequence]
                     base_name = parts_sequence[0][part_idx][1]
-                    prim_name = f"{base_name}_{part_idx}"
-                    mesh_path = f"/World/Meshes/{prim_name}"
+                    mesh_path = f"/World/Meshes/{base_name}"
                     self._ensure_parent_path(mesh_path)
                     mesh_converter.create_time_varying_mesh(
                         part_sequence, mesh_path, time_codes, bind_material=True

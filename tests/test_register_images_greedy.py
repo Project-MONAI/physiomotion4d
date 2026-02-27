@@ -209,3 +209,7 @@ class TestRegisterImagesGreedy:
             str(reg_output_dir / "greedy_registered_image.mha"),
             compression=True,
         )
+
+
+if __name__ == "__main__":
+    pytest.main([__file__])

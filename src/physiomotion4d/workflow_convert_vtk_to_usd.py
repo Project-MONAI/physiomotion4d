@@ -23,36 +23,6 @@ from physiomotion4d.vtk_to_usd import (
     validate_time_series_topology,
 )
 
-
-def discover_time_series(
-    paths: list[Path],
-    pattern: str = r"\.t(\d+)\.(vtk|vtp|vtu)$",
-) -> tuple[list[tuple[int, Path]], bool]:
-    """Discover and sort time-series VTK files by extracted time index.
-
-    Args:
-        paths: List of paths to VTK files
-        pattern: Regex with one group for time step number (default matches .t123.vtk)
-
-    Returns:
-        (time_series, pattern_matched): Sorted list of (time_step, path) tuples, and
-        a flag True if at least one path matched the pattern. If no path matches,
-        time_series is [(0, p) for p in paths] and pattern_matched is False.
-    """
-    time_series: list[tuple[int, Path]] = []
-    regex = re.compile(pattern, re.IGNORECASE)
-    pattern_matched = False
-    for p in paths:
-        match = regex.search(p.name)
-        if match:
-            time_series.append((int(match.group(1)), Path(p)))
-            pattern_matched = True
-        else:
-            time_series.append((0, Path(p)))
-    time_series.sort(key=lambda x: (x[0], str(x[1])))
-    return time_series, pattern_matched
-
-
 AppearanceKind = Literal["solid", "anatomy", "colormap"]
 
 
@@ -132,6 +102,42 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
                 "separate_by_connectivity and separate_by_cell_type cannot both be True"
             )
 
+    def discover_time_series(
+        self,
+        paths: list[Path],
+        pattern: str = r"\.t(\d+)\.(vtk|vtp|vtu)$",
+    ) -> tuple[list[tuple[int, Path]], bool]:
+        """Discover and sort time-series VTK files by extracted time index.
+
+        Args:
+            paths: List of paths to VTK files
+            pattern: Regex with one group for time step number (default matches .t123.vtk)
+
+        Returns:
+            (time_series, pattern_matched): Sorted list of (time_step, path) tuples, and
+            a flag True only when every path matched the pattern (true time series).
+            If any path does not match, time_series is [(0, p) for p in paths] and
+            pattern_matched is False (static merge).
+        """
+        regex = re.compile(pattern, re.IGNORECASE)
+        invalid_series = False
+        parsed: list[tuple[int, Path]] = []
+        for p in paths:
+            match = regex.search(p.name)
+            if match:
+                parsed.append((int(match.group(1)), Path(p)))
+            else:
+                parsed.append((-1, Path(p)))
+                invalid_series = True
+        # Only treat as time series when all paths match; otherwise static merge
+        if invalid_series:
+            self.log_warning("Not a time series: %s", paths)
+            time_series = [(0, p) for _, p in parsed]
+            return time_series, False
+        time_series = [(t, p) for t, p in parsed]
+        time_series.sort(key=lambda x: (x[0], str(x[1])))
+        return time_series, True
+
     def run(self) -> str:
         """
         Run the full workflow: convert VTK to USD, then apply the chosen appearance.
@@ -145,7 +151,7 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
             raise ValueError("vtk_files must not be empty")
 
         # Discover time series
-        time_series, pattern_matched = discover_time_series(
+        time_series, pattern_matched = self.discover_time_series(
             self.vtk_files, pattern=self.time_series_pattern
         )
         time_steps = [t for t, _ in time_series]
@@ -271,6 +277,7 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
                     self.log_warning(
                         "No color primvar found for %s; skip colormap", mesh_path
                     )
+                    primvar = self.colormap_primvar
                     continue
                 self.log_info(
                     "Applying colormap to %s from primvar %s", mesh_path, primvar

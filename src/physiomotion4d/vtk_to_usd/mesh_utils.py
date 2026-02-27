@@ -53,7 +53,7 @@ def split_mesh_data_by_cell_type(
     n_faces = len(counts)
 
     if n_faces == 0:
-        return [(mesh_data, "Mesh")]
+        return [(mesh_data, f"{mesh_name}_Empty")]
 
     cum = np.concatenate([[0], np.cumsum(counts)]).astype(np.int64)
 

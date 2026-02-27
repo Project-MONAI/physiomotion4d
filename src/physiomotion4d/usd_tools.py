@@ -749,7 +749,9 @@ class USDTools(PhysioMotion4DBase):
             source_primvar: Name of primvar to visualize (e.g., "vtk_cell_stress")
             cmap: Matplotlib colormap name (default: "viridis")
             time_codes: List of time codes to process. If None, uses stage time range.
-            intensity_range: Optional (vmin, vmax) for colormap. If None, computed from data.
+            intensity_range: Optional (vmin, vmax) for colormap. If None, computed from
+            data.
+            use_sigmoid_scale: If True, use sigmoid scale for colormap normalization.
             write_default_at_t0: If True, also write default value at t=0
             bind_vertex_color_material: If True, create/bind material using displayColor
 
@@ -1051,6 +1053,10 @@ class USDTools(PhysioMotion4DBase):
         display_color_pv = primvars_api.CreatePrimvar(
             "displayColor", Sdf.ValueTypeNames.Color3fArray, UsdGeom.Tokens.vertex
         )
+        display_color_attr = display_color_pv.GetAttr()
+        # Clear any existing authored default and time samples to avoid stale colors
+        if display_color_attr:
+            display_color_attr.Clear()
 
         if time_codes is None:
             # Default time: get points and set primvar without an explicit time code
@@ -1086,7 +1092,7 @@ class USDTools(PhysioMotion4DBase):
             # default when not time-scrubbing still see the solid color.
             if default_point_count is not None:
                 default_color_array = Vt.Vec3fArray([vec] * default_point_count)
-                display_color_pv.Set(default_color_array)
+                display_color_pv.Set(default_color_array)  # , Usd.TimeCode.Default())
 
         if bind_vertex_color_material:
             self._ensure_vertex_color_material(stage, mesh_prim)
