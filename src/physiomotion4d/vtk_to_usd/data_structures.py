@@ -154,7 +154,7 @@ class ConversionSettings:
     preserve_point_arrays: bool = True
     preserve_cell_arrays: bool = True
     separate_objects_by_cell_type: bool = False  # Split into separate USD meshes by cell type (triangle/quad/tetra/hex etc.)
-    separate_objects_by_connectivity: bool = True  # Split into separate USD meshes by connected components (object1, object2, ...). Mutually exclusive with separate_objects_by_cell_type.
+    separate_objects_by_connectivity: bool = False  # Split into separate USD meshes by connected components (object1, object2, ...). Mutually exclusive with separate_objects_by_cell_type.
 
     # Material settings
     use_preview_surface: bool = True

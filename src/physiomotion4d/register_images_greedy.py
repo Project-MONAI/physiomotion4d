@@ -91,10 +91,10 @@ class RegisterImagesGreedy(RegisterImagesBase):
         Args:
             transform_type: 'Deformable', 'Affine', or 'Rigid'.
         """
-        self.transform_type = transform_type
         if transform_type not in ("Deformable", "Affine", "Rigid"):
             self.log_error("Invalid transform type: %s", transform_type)
             raise ValueError(f"Invalid transform type: {transform_type}")
+        self.transform_type = transform_type
 
     def set_metric(self, metric: str) -> None:
         """Set the similarity metric (CC→NCC, Mattes→NMI, MeanSquares→SSD).
@@ -106,10 +106,10 @@ class RegisterImagesGreedy(RegisterImagesBase):
         Args:
             metric: 'CC', 'Mattes', or 'MeanSquares'.
         """
-        self.metric = metric
         if metric not in ("CC", "Mattes", "MeanSquares"):
             self.log_error("Invalid metric: %s", metric)
             raise ValueError(f"Invalid metric: {metric}")
+        self.metric = metric
 
     def _itk_to_sitk(self, itk_image: itk.Image) -> Any:
         """Convert ITK image to SimpleITK (for Greedy)."""

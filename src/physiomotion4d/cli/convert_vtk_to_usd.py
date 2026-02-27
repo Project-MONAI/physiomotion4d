@@ -27,19 +27,6 @@ ANATOMY_TYPES = [
 ]
 
 
-def _parse_color(s: str) -> tuple[float, float, float]:
-    """Parse 'R G B' or 'R,G,B' into (r,g,b) in [0,1]."""
-    parts = s.replace(",", " ").split()
-    if len(parts) != 3:
-        raise ValueError("Color must be three numbers (R G B) in [0,1] or [0,255]")
-    vals = [float(x) for x in parts]
-    if all(0 <= v <= 1 for v in vals):
-        return (vals[0], vals[1], vals[2])
-    if all(0 <= v <= 255 for v in vals):
-        return (vals[0] / 255.0, vals[1] / 255.0, vals[2] / 255.0)
-    raise ValueError("Color values must be in [0,1] or [0,255]")
-
-
 def main() -> int:
     """Command-line interface for VTK to USD conversion."""
     parser = argparse.ArgumentParser(
@@ -183,8 +170,6 @@ Examples:
     solid_color = (0.8, 0.8, 0.8)
     if args.color:
         try:
-            # If argparse defined --color with nargs=3 and type=float, args.color will be a list of floats.
-            # Handle that case directly by normalizing into [0, 1] and forming an RGB tuple.
             if isinstance(args.color, (list, tuple)):
                 components = [float(v) for v in args.color]
                 if len(components) != 3:
@@ -205,7 +190,7 @@ Examples:
                         "Color values must all be in [0, 1] or all in [0, 255]."
                     )
             else:
-                solid_color = _parse_color(args.color)
+                raise ValueError("Color must be specified as a list of 3 float values")
         except ValueError as e:
             print(f"Error: {e}")
             return 1

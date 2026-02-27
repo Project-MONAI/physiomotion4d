@@ -35,8 +35,7 @@ def split_mesh_data_by_cell_type(
     """Split MeshData into one mesh per distinct face vertex count (cell type).
 
     Each part is named as mesh_name plus the cell type (e.g. MeshName_Triangle,
-    MeshName_Quad). The caller should append a unique number to form final prim
-    names (e.g. MeshName_Triangle_0, MeshName_Quad_0).
+    MeshName_Quad).
 
     Args:
         mesh_data: Single mesh that may contain mixed cell types.

@@ -32,7 +32,7 @@ repos:
     hooks:
       - id: prepare-notebooks-for-commit
         name: Prepare notebooks for commit (strip outputs and widget state)
-        entry: py utils/prepare_notebooks_for_commit.py
+        entry: python utils/prepare_notebooks_for_commit.py
         language: system
         pass_filenames: false
         files: \.ipynb$
