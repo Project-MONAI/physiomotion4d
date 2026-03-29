@@ -784,6 +784,18 @@ _Re-run `python utils/generate_api_map.py` whenever public APIs change._
 - **class TestIntegration** (line 495): Integration tests combining multiple features.
   - `def test_end_to_end_conversion(self, test_directories, kcl_average_surface)` (line 498): Test complete conversion workflow with all features.
 
+## utils/claude_github_reviews.py
+
+- `def get_repo_root()` (line 44)
+- `def get_repo_slug(repo_root)` (line 58): Derive owner/repo from the git remote origin URL.
+- `def fetch_pr_data(pr_number, repo)` (line 129)
+- `def fetch_inline_comments(pr_number, repo)` (line 135)
+- `def fetch_reviews(pr_number, repo)` (line 140)
+- `def build_prompt(pr_number, pr_data, reviews, inline_comments, summary_filename)` (line 213)
+- `def invoke_claude(prompt, repo_root)` (line 328): Invoke Claude Code non-interactively via stdin.
+- `def parse_args()` (line 371)
+- `def main()` (line 400)
+
 ## utils/generate_api_map.py
 
 - `def first_docstring_line(node)` (line 47): Return the first non-empty line of a class or function docstring.
@@ -814,18 +826,18 @@ _Re-run `python utils/generate_api_map.py` whenever public APIs change._
 
 ## utils/setup_feature_worktree.py
 
-- `def run(cmd, *, cwd=None, capture=False, description='')` (line 37): Run a command, raising on failure with a helpful message.
-- `def require_tool(name)` (line 81): Ensure a tool is on PATH. Returns its resolved path.
-- `def check_prerequisites()` (line 99): Check that git and py.exe are available on PATH.
-- `def get_repo_root()` (line 118): Return the absolute path to the repository root.
-- `def get_current_branch()` (line 139): Return the name of the currently checked-out branch.
-- `def branch_exists(branch_name)` (line 161): Return True if a local branch with this name already exists.
-- `def sanitize_name(raw)` (line 176): Convert a raw feature name into a safe branch name and folder name.
-- `def create_worktree(worktree_path, branch_name, base_branch)` (line 218): Create a new git branch and worktree.
-- `def create_venv(worktree_path, py_path)` (line 261): Create a virtual environment inside the worktree.
-- `def install_uv(venv_dir)` (line 282): Install uv into the venv using pip.
-- `def detect_dependency_mode(worktree_path)` (line 317): Auto-detect the best dependency installation mode for the project.
-- `def install_dependencies(uv_exe, worktree_path, mode)` (line 338): Install project dependencies using uv.
-- `def print_summary(branch_name, worktree_path, venv_dir)` (line 410): Print a formatted summary of the created worktree environment.
-- `def parse_args()` (line 440): Parse and return command-line arguments.
-- `def main()` (line 499): Main entry point for the worktree setup script.
+- `def run(cmd, *, cwd=None, capture=False, description='')` (line 38): Run a command, raising on failure with a helpful message.
+- `def require_tool(name)` (line 82): Ensure a tool is on PATH. Returns its resolved path.
+- `def check_prerequisites()` (line 100): Check that git and py.exe are available on PATH.
+- `def get_repo_root()` (line 119): Return the absolute path to the repository root.
+- `def get_current_branch()` (line 140): Return the name of the currently checked-out branch.
+- `def branch_exists(branch_name)` (line 162): Return True if a local branch with this name already exists.
+- `def sanitize_name(raw)` (line 177): Convert a raw feature name into a safe branch name and folder name.
+- `def create_worktree(worktree_path, branch_name, base_branch)` (line 219): Create a new git branch and worktree.
+- `def create_venv(worktree_path, py_path)` (line 262): Create a virtual environment inside the worktree.
+- `def install_uv(venv_dir)` (line 283): Install uv into the venv using pip.
+- `def detect_dependency_mode(worktree_path)` (line 318): Auto-detect the best dependency installation mode for the project.
+- `def install_dependencies(uv_exe, worktree_path, mode)` (line 339): Install project dependencies using uv.
+- `def print_summary(branch_name, worktree_path, venv_dir)` (line 411): Print a formatted summary of the created worktree environment.
+- `def parse_args()` (line 441): Parse and return command-line arguments.
+- `def main()` (line 500): Main entry point for the worktree setup script.

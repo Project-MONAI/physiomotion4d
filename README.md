@@ -587,6 +587,13 @@ pytest tests/ --cov=src/physiomotion4d --cov-report=html
 
 Tests automatically run on pull requests via GitHub Actions. See `tests/README.md` for detailed testing guide.
 
+### Developer Tool Prerequisites
+
+| Tool | Required for | Install |
+|------|-------------|---------|
+| [Claude Code](https://claude.ai/code) | All `/plan`, `/impl`, `/test-feature`, `/doc-feature` skills and `claude_github_reviews.py` | `winget install Anthropic.ClaudeCode` |
+| [gh CLI](https://cli.github.com) | `claude_github_reviews.py` | `winget install GitHub.cli`, then `gh auth login` |
+
 ### AI-Assisted Development (Claude Code)
 
 The repository includes a complete [Claude Code](https://claude.ai/code) configuration
@@ -615,7 +622,7 @@ and four slash-command skills tailored to this codebase.
 Use `/plan` to get an inspection of the affected classes, a numbered implementation
 plan, and a list of open questions — without touching any files.
 
-```
+```text
 /plan add a confidence-weighted voting mode to SegmentChestEnsemble
 ```
 
@@ -628,11 +635,11 @@ will change, and flag any coordinate-system or shape implications.
 
 Use `/impl` for end-to-end implementation: read → summarize → plan → diff → lint.
 
-```
+```text
 /impl add set_regularization_weight() to RegisterImagesANTs
 ```
 
-```
+```text
 /impl fix the RAS-to-Y-up transform being applied twice in vtk_to_usd/usd_utils.py
 ```
 
@@ -646,11 +653,11 @@ smallest reviewable diff, update docstrings, run `ruff`, and call out breaking c
 Use `/test-feature` to get a test plan and a complete pytest file using synthetic
 `itk.Image` or `pv.PolyData` objects — no real patient data required.
 
-```
+```text
 /test-feature ContourTools.extract_surface — test with a synthetic 32x32x32 sphere mask
 ```
 
-```
+```text
 /test-feature RegisterImagesANTs with a pair of small synthetic ITK images
 ```
 
@@ -665,12 +672,28 @@ run command.
 Use `/doc-feature` after modifying a public API to refresh docstrings and regenerate
 the API map.
 
-```
+```text
 /doc-feature update docstrings for RegisterImagesANTs after adding set_regularization_weight
 ```
 
 Claude will update affected docstrings in NumPy style, add shape/axis annotations
 where arrays are involved, and run `python utils/generate_api_map.py`.
+
+---
+
+**Applying PR review suggestions (CodeRabbit / Copilot)**
+
+Use `claude_github_reviews.py` to fetch all review comments for a PR, have Claude
+screen each one against `CLAUDE.md`, apply accepted edits as pending changes, and
+write a Markdown summary to the repo root:
+
+```bash
+py utils/claude_github_reviews.py --pr 42
+py utils/claude_github_reviews.py --pr 42 --dry-run   # preview prompt only
+```
+
+Claude decides APPLY / REVISE / REJECT for each suggestion, with reasoning.
+No changes are committed — review with `git diff`, then `git add -p`.
 
 ---
 
@@ -696,7 +719,7 @@ design plan. Claude will produce the six-section format (current state → propo
 change → affected files → trade-offs → open questions → recommended next action)
 without writing any code.
 
-```
+```text
 /plan redesign the segmentation return type to use a dataclass instead of a tuple
 ```
 

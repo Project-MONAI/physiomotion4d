@@ -19,7 +19,7 @@ pytest tests that exercise the library's scientific pipelines.
 ```bash
 py -m pytest tests/ -m "not slow and not requires_data" -v   # fast, recommended
 py -m pytest tests/test_contour_tools.py -v                   # single file
-py -m pytest tests/test_contour_tools.py::test_extract_surface -v  # single test
+py -m pytest tests/test_contour_tools.py::TestContourTools -v      # single class
 py -m pytest tests/ --create-baselines                        # create missing baselines
 ```
 

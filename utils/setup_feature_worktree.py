@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 setup_feature_worktree.py — Automate creation of a Git feature worktree on Windows.
 
@@ -238,7 +239,7 @@ def create_worktree(
 
     if branch_exists(branch_name):
         print(f'[ERROR] Branch "{branch_name}" already exists locally.')
-        print("        Delete it with: git branch -D {branch_name}")
+        print(f"        Delete it with: git branch -D {branch_name}")
         sys.exit(1)
 
     print(f'[*] Creating branch "{branch_name}" and worktree at:')

@@ -32,7 +32,7 @@ repos:
     hooks:
       - id: generate-api-map
         name: Regenerate API map (docs/API_MAP.md)
-        entry: bash -c "python utils/generate_api_map.py && git add docs/API_MAP.md"
+        entry: bash -c "py utils/generate_api_map.py && git add docs/API_MAP.md"
         language: system
         pass_filenames: false
         files: \.py$

@@ -9,7 +9,7 @@ clear numbered design plans with explicit trade-offs. Do not write implementatio
 
 ## Codebase map
 
-```
+```text
 src/physiomotion4d/
   physiomotion4d_base.py      — base class with shared logger
   segment_anatomy_base.py     — abstract segmentation interface

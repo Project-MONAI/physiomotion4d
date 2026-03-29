@@ -51,7 +51,7 @@ All classes inherit from `PhysioMotion4DBase` (`physiomotion4d_base.py`), which 
 a shared logger. Use `self.log_info()`, `self.log_debug()` — never `print()`.
 
 Consult `docs/API_MAP.md` for the full index of classes, methods, and signatures.
-Regenerate it after any public API change: `python utils/generate_api_map.py`
+Regenerate it after any public API change: `py utils/generate_api_map.py`
 
 **Key data conventions:**
 - Images: `itk.Image`, axes X, Y, Z [, T] in RAS world space
@@ -65,7 +65,7 @@ Regenerate it after any public API change: `python utils/generate_api_map.py`
 
 - Baselines in `tests/baselines/` via Git LFS — run `git lfs pull` after cloning
 - `tests/conftest.py`: session-scoped fixtures chaining download → convert → segment → register
-- `src/physiomotion4d/test_tools.py`: baseline comparison utilities (`CompareImages`, etc.)
+- `src/physiomotion4d/test_tools.py`: baseline comparison utilities (`TestTools`, etc.)
 - Markers: `slow`, `requires_gpu`, `requires_data`, `experiment` (skipped by default)
 - Prefer synthetic `itk.Image` / `pv.PolyData` over real data; keep volumes ≤64 voxels/side
 

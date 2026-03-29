@@ -6,6 +6,16 @@ PhysioMotion4D converts 4D CT scans into animated USD models for NVIDIA Omnivers
 It is an **early-alpha** scientific Python library. Clarity beats premature optimization.
 Breaking changes are acceptable. Backward compatibility is not a goal.
 
+## Developer tool prerequisites
+
+Two non-Python tools are required for contributor workflows:
+
+- **Claude Code CLI** (`claude`) — powers all slash skills and `claude_github_reviews.py`.
+  Install: `winget install Anthropic.ClaudeCode`
+- **gh CLI** (`gh`) — required by `claude_github_reviews.py` to fetch PR review data.
+  Install: `winget install GitHub.cli` then `gh auth login`
+  Not installable via pip/uv — it is a compiled Go binary.
+
 ## Universal rules
 
 - Read the relevant source files before proposing changes.
@@ -36,7 +46,7 @@ Breaking changes are acceptable. Backward compatibility is not a goal.
 - Update docstrings for every changed public method. Keep claims factual.
 - Do not create new `.md` files unless explicitly requested.
 - Regenerate `docs/API_MAP.md` after any public API change:
-  `python utils/generate_api_map.py`
+  `py utils/generate_api_map.py`
 
 ## Architecture role
 
