@@ -16,6 +16,12 @@ Usage:
   py utils/claude_github_reviews.py --pr 42
   py utils/claude_github_reviews.py --pr 42 --repo owner/repo
   py utils/claude_github_reviews.py --pr 42 --dry-run
+  py utils/claude_github_reviews.py --pr 42 --since-last-push --dry-run
+
+  With --since-last-push, only inline comments and PR-level reviews created after
+  the latest reflog time for refs/remotes/<remote>/<PR_head_branch> are included.
+  That time is when this clone last saw the remote ref move (push or fetch), not
+  necessarily the exact server push timestamp.
 
 Requirements:
   - gh CLI (GitHub CLI) — not a Python package; install separately:
@@ -33,6 +39,7 @@ import re
 import subprocess
 import sys
 import textwrap
+from datetime import datetime
 from pathlib import Path
 
 
@@ -74,6 +81,90 @@ def get_repo_slug(repo_root: Path) -> str:
         print(f"[ERROR] Cannot parse owner/repo from remote: {remote}")
         sys.exit(1)
     return m.group(1)
+
+
+def parse_github_datetime(iso_str: str) -> datetime:
+    """Parse GitHub API timestamps (may end with Z)."""
+    s = iso_str.strip()
+    if s.endswith("Z"):
+        s = s[:-1] + "+00:00"
+    return datetime.fromisoformat(s)
+
+
+def _parse_reflog_timestamp(line: str) -> datetime:
+    """Parse the @{...} timestamp from one `git reflog show -1` line."""
+    m = re.search(r"@\{([^}]+)\}", line)
+    if not m:
+        raise ValueError(f"no reflog timestamp in line: {line!r}")
+    return datetime.fromisoformat(m.group(1).strip())
+
+
+def get_remote_reflog_cutoff(repo_root: Path, remote: str, head_ref: str) -> datetime:
+    """
+    Latest reflog time for refs/remotes/<remote>/<head_ref> (when the ref last
+    moved in this clone).
+    """
+    ref = f"refs/remotes/{remote}/{head_ref}"
+    cmd = ["git", "reflog", "show", "-1", "--date=iso-strict", ref]
+    try:
+        out = subprocess.run(
+            cmd,
+            check=True,
+            text=True,
+            capture_output=True,
+            cwd=repo_root,
+            encoding="utf-8",
+        )
+    except FileNotFoundError:
+        print('[ERROR] "git" not found in PATH.')
+        sys.exit(1)
+    except subprocess.CalledProcessError as exc:
+        err = (exc.stderr or exc.stdout or "").strip()
+        print(f"[ERROR] Could not read reflog for {ref}.")
+        if err:
+            print(f"        {err}")
+        print(f"        Hint: git fetch {remote} {head_ref}")
+        sys.exit(1)
+
+    line = out.stdout.strip().splitlines()
+    if not line or not line[0].strip():
+        print(f"[ERROR] Empty reflog for {ref}.")
+        print(f"        Hint: git fetch {remote} {head_ref}")
+        sys.exit(1)
+
+    try:
+        return _parse_reflog_timestamp(line[0])
+    except ValueError as exc:
+        print(f"[ERROR] Could not parse reflog timestamp: {exc}")
+        sys.exit(1)
+
+
+def filter_since_cutoff(
+    inline_comments: list[dict],
+    reviews: list[dict],
+    cutoff: datetime,
+) -> tuple[list[dict], list[dict]]:
+    """
+    Keep inline comments with created_at > cutoff and reviews with
+    submitted_at > cutoff (submitted_at required).
+    """
+    filtered_inline: list[dict] = []
+    for c in inline_comments:
+        created = c.get("created_at")
+        if not created:
+            continue
+        if parse_github_datetime(created) > cutoff:
+            filtered_inline.append(c)
+
+    filtered_reviews: list[dict] = []
+    for r in reviews:
+        submitted = r.get("submitted_at")
+        if not submitted:
+            continue
+        if parse_github_datetime(submitted) > cutoff:
+            filtered_reviews.append(r)
+
+    return filtered_inline, filtered_reviews
 
 
 # ---------------------------------------------------------------------------
@@ -272,8 +363,10 @@ def build_prompt(
         - Introduces `X | None` instead of `Optional[X]` (ruff UP007 is suppressed)
         - Adds backward-compat shims, re-exports, or removed-symbol stubs
         - Adds error handling for internal states that cannot happen
-        - Uses `print()` instead of `self.log_info()` / `self.log_debug()`
-        - New class does not inherit from `PhysioMotion4DBase`
+        - In classes that inherit from `PhysioMotion4DBase`, uses `print()` instead
+          of `self.log_info()` / `self.log_debug()`
+        - New runtime workflow / segmentation / registration class does not inherit
+          from `PhysioMotion4DBase`; helper/data/container classes need not
         - Adds features or abstractions beyond what was requested
         - Calls `vtk_to_usd` internals from outside `convert_vtk_to_usd.py`
         - Applies coordinate conversion (RAS->Y-up) more than once
@@ -339,17 +432,22 @@ def invoke_claude(prompt: str, repo_root: Path) -> None:
 
     try:
         subprocess.run(
-            ["claude", "--print", "--allowedTools", "Read,Edit,Glob,Grep,Bash"],
+            ["claude", "--print", "--allowedTools", "Read,Edit,Glob,Grep"],
             input=prompt,
             text=True,
             encoding="utf-8",
             cwd=repo_root,
+            check=True,
         )
     except FileNotFoundError:
         print('[ERROR] "claude" CLI not found.')
         print("        Install Claude Code: https://claude.ai/code")
         _save_prompt_fallback(prompt, repo_root)
         sys.exit(1)
+    except subprocess.CalledProcessError as exc:
+        print(f'[ERROR] "claude" exited with status {exc.returncode}.')
+        _save_prompt_fallback(prompt, repo_root)
+        sys.exit(exc.returncode)
 
 
 def _save_prompt_fallback(prompt: str, repo_root: Path) -> None:
@@ -358,7 +456,7 @@ def _save_prompt_fallback(prompt: str, repo_root: Path) -> None:
     print("[*] Prompt saved to .claude_review_prompt.txt")
     print("    Run manually with:")
     print(
-        '      claude --print --allowedTools "Read,Edit,Glob,Grep,Bash" '
+        '      claude --print --allowedTools "Read,Edit,Glob,Grep" '
         "< .claude_review_prompt.txt"
     )
 
@@ -394,6 +492,21 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Print the prompt that would be sent to Claude and exit without changes",
     )
+    parser.add_argument(
+        "--since-last-push",
+        action="store_true",
+        dest="since_last_push",
+        help=(
+            "Only include inline comments and reviews after the latest reflog time "
+            "for refs/remotes/<remote>/<PR_head_branch> (this clone)"
+        ),
+    )
+    parser.add_argument(
+        "--remote",
+        metavar="NAME",
+        default="origin",
+        help="Git remote name for reflog (default: origin; used with --since-last-push)",
+    )
     return parser.parse_args()
 
 
@@ -426,6 +539,28 @@ def main() -> None:
     ]
     print(f"    {len(review_bodies)} review(s) with body text")
 
+    if args.since_last_push:
+        head_ref = pr_data.get("head", {}).get("ref")
+        if not head_ref:
+            print("[ERROR] PR has no head branch ref; cannot use --since-last-push.")
+            sys.exit(1)
+        remote_ref = f"refs/remotes/{args.remote}/{head_ref}"
+        cutoff = get_remote_reflog_cutoff(repo_root, args.remote, head_ref)
+        print()
+        print("[*] --since-last-push")
+        print(f"    Remote ref : {remote_ref}")
+        print(f"    Cutoff     : {cutoff.isoformat()}")
+        inline_comments, reviews = filter_since_cutoff(inline_comments, reviews, cutoff)
+        review_bodies = [
+            r
+            for r in reviews
+            if r.get("body", "").strip() and r.get("state") not in ("PENDING", "")
+        ]
+        print(
+            f"    After filter: {len(inline_comments)} inline comment(s), "
+            f"{len(review_bodies)} review(s) with body text"
+        )
+
     total = len(inline_comments) + len(review_bodies)
     if total == 0:
         print("\n[*] No review comments found. Nothing to do.")
@@ -442,6 +577,12 @@ def main() -> None:
 
     if args.dry_run:
         separator = "=" * 60
+        if args.since_last_push:
+            print()
+            print(
+                "[dry-run] --since-last-push: using cutoff and counts above "
+                "(full prompt follows)."
+            )
         print(f"\n{separator}")
         print("PROMPT (dry run — not sent to Claude)")
         print(separator)

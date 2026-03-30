@@ -23,8 +23,9 @@ or other PhysioMotion4D modules should call.
 - Low-level data structures: `MeshData`, `ConversionSettings`, `MaterialData`
 - USD primitive writing: normals, primvars, time samples, materials
 
-It is **not** a user-facing API. External callers and other PhysioMotion4D modules
-should never import directly from `physiomotion4d.vtk_to_usd`.
+Other PhysioMotion4D modules (workflow, segmentation, registration) should never
+import directly from `physiomotion4d.vtk_to_usd`; they must go through
+`ConvertVTKToUSD`. External library users may use the file-based API.
 
 ## When to edit this subpackage
 

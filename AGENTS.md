@@ -19,8 +19,11 @@ Two non-Python tools are required for contributor workflows:
 ## Universal rules
 
 - Read the relevant source files before proposing changes.
-- All classes inherit from `PhysioMotion4DBase`; new classes must too.
-- Use `self.log_info()` / `self.log_debug()` — never `print()`.
+- Runtime classes (workflow, segmentation, registration, USD tools) inherit from
+  `PhysioMotion4DBase`; new runtime classes must too. Standalone utility scripts
+  and data/container/helper classes do not.
+- In classes that inherit from `PhysioMotion4DBase`, use `self.log_info()` /
+  `self.log_debug()` — never `print()`. Standalone scripts may use `print()`.
 - Single quotes for strings; double quotes for docstrings. 88-char line limit.
 - Full type hints (`mypy` strict). Use `Optional[X]` not `X | None`.
 - Run `py -m pytest tests/ -m "not slow and not requires_data" -v` to verify changes.

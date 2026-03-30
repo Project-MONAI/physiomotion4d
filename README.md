@@ -677,7 +677,7 @@ the API map.
 ```
 
 Claude will update affected docstrings in NumPy style, add shape/axis annotations
-where arrays are involved, and run `python utils/generate_api_map.py`.
+where arrays are involved, and run `py utils/generate_api_map.py`.
 
 ---
 
@@ -690,7 +690,11 @@ write a Markdown summary to the repo root:
 ```bash
 py utils/claude_github_reviews.py --pr 42
 py utils/claude_github_reviews.py --pr 42 --dry-run   # preview prompt only
+py utils/claude_github_reviews.py --pr 42 --since-last-push --dry-run
 ```
+
+When executing these from the repo root (including in automation), use the project
+interpreter: `venv/Scripts/python` on Windows instead of `py`.
 
 Claude decides APPLY / REVISE / REJECT for each suggestion, with reasoning.
 No changes are committed — review with `git diff`, then `git add -p`.
