@@ -187,7 +187,7 @@ class RegisterImagesBase(PhysioMotion4DBase):
         if self.mask_dilation_mm > 0:
             imMath = ttk.ImageMath.New(self.fixed_mask)
             imMath.Dilate(
-                int(self.fixed_image.GetSpacing()[0] / self.mask_dilation_mm), 1, 0
+                int(self.mask_dilation_mm / self.fixed_image.GetSpacing()[0]), 1, 0
             )
             self.fixed_mask = imMath.GetOutputUChar()
 
@@ -320,7 +320,7 @@ class RegisterImagesBase(PhysioMotion4DBase):
             if self.mask_dilation_mm > 0:
                 imMath = ttk.ImageMath.New(new_moving_mask)
                 imMath.Dilate(
-                    int(moving_image.GetSpacing()[0] / self.mask_dilation_mm), 1, 0
+                    int(self.mask_dilation_mm / moving_image.GetSpacing()[0]), 1, 0
                 )
                 new_moving_mask = imMath.GetOutputUChar()
 
