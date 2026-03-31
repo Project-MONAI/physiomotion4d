@@ -15,8 +15,8 @@ Workflow:
 Usage:
   py utils/claude_github_reviews.py --pr 42
   py utils/claude_github_reviews.py --pr 42 --repo owner/repo
-  py utils/claude_github_reviews.py --pr 42 --dry-run
-  py utils/claude_github_reviews.py --pr 42 --since-last-push --dry-run
+  py utils/claude_github_reviews.py --pr 42 --prompt-only
+  py utils/claude_github_reviews.py --pr 42 --since-last-push --prompt-only
 
   With --since-last-push, only inline comments and PR-level reviews created after
   the latest reflog time for refs/remotes/<remote>/<PR_head_branch> are included.
@@ -48,6 +48,20 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 
+def git_fetch(repo_root: Path, remote: str, branch: str) -> None:
+    """Run ``git fetch <remote> <branch>``, printing progress."""
+    print(f"[*] Fetching {remote}/{branch} ...")
+    try:
+        subprocess.run(
+            ["git", "fetch", remote, branch],
+            check=True,
+            cwd=repo_root,
+        )
+    except subprocess.CalledProcessError as exc:
+        print(f"[ERROR] git fetch {remote} {branch} failed (exit {exc.returncode}).")
+        sys.exit(exc.returncode)
+
+
 def get_repo_root() -> Path:
     try:
         out = subprocess.run(
@@ -63,18 +77,22 @@ def get_repo_root() -> Path:
 
 
 def get_repo_slug(repo_root: Path) -> str:
-    """Derive owner/repo from the git remote origin URL."""
-    try:
-        out = subprocess.run(
-            ["git", "remote", "get-url", "origin"],
-            check=True,
-            text=True,
-            capture_output=True,
-            cwd=repo_root,
-        )
-        remote = out.stdout.strip()
-    except subprocess.CalledProcessError:
-        print("[ERROR] Could not read git remote origin.")
+    """Derive owner/repo from the git remote URL (upstream, falling back to origin)."""
+    for remote_name in ("upstream", "origin"):
+        try:
+            out = subprocess.run(
+                ["git", "remote", "get-url", remote_name],
+                check=True,
+                text=True,
+                capture_output=True,
+                cwd=repo_root,
+            )
+            remote = out.stdout.strip()
+            break
+        except subprocess.CalledProcessError:
+            continue
+    else:
+        print("[ERROR] Could not read git remote URL from 'upstream' or 'origin'.")
         sys.exit(1)
     m = re.search(r"[:/]([^/:]+/[^/:]+?)(?:\.git)?$", remote)
     if not m:
@@ -432,7 +450,7 @@ def invoke_claude(prompt: str, repo_root: Path) -> None:
 
     try:
         subprocess.run(
-            ["claude", "--print", "--allowedTools", "Read,Edit,Glob,Grep"],
+            ["claude", "--print", "--allowedTools", "Read,Write,Edit,Glob,Grep"],
             input=prompt,
             text=True,
             encoding="utf-8",
@@ -456,7 +474,7 @@ def _save_prompt_fallback(prompt: str, repo_root: Path) -> None:
     print("[*] Prompt saved to .claude_review_prompt.txt")
     print("    Run manually with:")
     print(
-        '      claude --print --allowedTools "Read,Edit,Glob,Grep" '
+        '      claude --print --allowedTools "Read,Write,Edit,Glob,Grep" '
         "< .claude_review_prompt.txt"
     )
 
@@ -485,17 +503,19 @@ def parse_args() -> argparse.Namespace:
         "--repo",
         metavar="OWNER/REPO",
         default=None,
-        help="GitHub repo slug (default: inferred from git remote origin)",
+        help="GitHub repo slug (default: inferred from git remote upstream, falling back to origin)",
     )
     parser.add_argument(
+        "--prompt-only",
         "--dry-run",
+        dest="prompt_only",
         action="store_true",
         help="Print the prompt that would be sent to Claude and exit without changes",
     )
     parser.add_argument(
         "--since-last-push",
-        action="store_true",
         dest="since_last_push",
+        action="store_true",
         help=(
             "Only include inline comments and reviews after the latest reflog time "
             "for refs/remotes/<remote>/<PR_head_branch> (this clone)"
@@ -505,7 +525,7 @@ def parse_args() -> argparse.Namespace:
         "--remote",
         metavar="NAME",
         default="origin",
-        help="Git remote name for reflog (default: origin; used with --since-last-push)",
+        help="Git remote name for fetch/reflog (default: origin; used with --since-last-push)",
     )
     return parser.parse_args()
 
@@ -544,6 +564,12 @@ def main() -> None:
         if not head_ref:
             print("[ERROR] PR has no head branch ref; cannot use --since-last-push.")
             sys.exit(1)
+        if head_ref == "main":
+            print(
+                "[ERROR] PR head branch is 'main'; --since-last-push is not meaningful here."
+            )
+            sys.exit(1)
+        git_fetch(repo_root, args.remote, head_ref)
         remote_ref = f"refs/remotes/{args.remote}/{head_ref}"
         cutoff = get_remote_reflog_cutoff(repo_root, args.remote, head_ref)
         print()
@@ -575,21 +601,21 @@ def main() -> None:
         summary_filename=summary_filename,
     )
 
-    if args.dry_run:
+    if args.prompt_only:
         separator = "=" * 60
         if args.since_last_push:
             print()
             print(
-                "[dry-run] --since-last-push: using cutoff and counts above "
+                "[prompt-only] --since-last-push: using cutoff and counts above "
                 "(full prompt follows)."
             )
         print(f"\n{separator}")
-        print("PROMPT (dry run — not sent to Claude)")
+        print("PROMPT (prompt-only — not sent to Claude)")
         print(separator)
         print(prompt)
         print(separator)
-        print("\n[dry-run] No files changed.")
-        print(f"[dry-run] Summary would be written to: {summary_filename}")
+        print("\n[prompt-only] No files changed.")
+        print(f"[prompt-only] Summary would be written to: {summary_filename}")
         sys.exit(0)
 
     invoke_claude(prompt, repo_root)
