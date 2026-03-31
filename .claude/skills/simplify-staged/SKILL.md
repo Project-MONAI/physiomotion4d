@@ -25,7 +25,8 @@ and skill levels. Every change should meet the following bar before it is commit
 
 2. For each modified Python file, read the **entire file** — not just the diff.
    Understanding the unchanged context is necessary to judge whether the new code
-   fits naturally.
+   fits naturally. If a path from `git diff HEAD --name-only` no longer exists on
+   disk (deleted or renamed), skip it — do not attempt to read or edit it.
 
 3. For each changed section, apply the checks below. Fix every issue found directly
    in the file using small, targeted edits. Do not refactor code that was not changed.
@@ -56,8 +57,9 @@ and skill levels. Every change should meet the following bar before it is commit
 - [ ] Is there dead code (unreachable branches, unused imports, stale comments)?
       Remove it.
 
-4. After editing, run ruff only on the Python files that appear in the diff
-   (`git diff HEAD --name-only`). Pass only those `.py` files to
+4. After editing, run ruff only on Python files that are modified and still exist
+   on disk. Use `git diff --diff-filter=d --name-only HEAD -- '*.py'` to list
+   changed, non-deleted `.py` files, then pass only that list to
    `ruff check --fix` and `ruff format`. Do not run ruff project-wide — it
    may reformat files outside the current change set.
 

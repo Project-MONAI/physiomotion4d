@@ -10,8 +10,8 @@ $ARGUMENTS
 Instructions:
 
 0. Run `git branch --show-current` to check the active branch.
-   If the branch is `main`, stop immediately and report:
-   "ERROR: Refusing to commit directly to main. Please switch to a feature branch first."
+   If the output is empty (detached HEAD) or the branch is `main`, stop immediately and report:
+   "ERROR: Refusing to commit in detached HEAD state or directly to main. Please switch to a named feature branch first."
    Do not proceed further.
 
 1. Run `git diff HEAD` and `git status` to understand what has changed.
@@ -38,9 +38,9 @@ Instructions:
 4. If the commit fails because a pre-commit hook rejected it:
    a. Read the hook output carefully.
    b. Fix every reported issue (formatting, lint errors, type errors, test failures, etc.).
-      - For `ruff` formatting/lint: run ruff only on the modified Python files
-        (`git diff HEAD --name-only`), not the whole repo. Pass only those `.py`
-        files to `ruff check --fix` and `ruff format`.
+      - For `ruff` formatting/lint: use `git diff --diff-filter=d --name-only HEAD -- '*.py'`
+        to list modified, non-deleted `.py` files, then pass only those to
+        `ruff check --fix` and `ruff format`. Do not run ruff project-wide.
       - For `mypy` errors: fix the type annotations in the flagged files.
       - For other hook failures: diagnose and fix the root cause; do NOT use `--no-verify`.
    c. Return to step 3 and retry — repeat until the commit succeeds or you have exhausted reasonable fixes.
