@@ -38,7 +38,9 @@ Instructions:
 4. If the commit fails because a pre-commit hook rejected it:
    a. Read the hook output carefully.
    b. Fix every reported issue (formatting, lint errors, type errors, test failures, etc.).
-      - For `ruff` formatting/lint: run `ruff check . --fix && ruff format .`
+      - For `ruff` formatting/lint: run ruff only on the modified Python files
+        (`git diff HEAD --name-only`), not the whole repo. Pass only those `.py`
+        files to `ruff check --fix` and `ruff format`.
       - For `mypy` errors: fix the type annotations in the flagged files.
       - For other hook failures: diagnose and fix the root cause; do NOT use `--no-verify`.
    c. Return to step 3 and retry — repeat until the commit succeeds or you have exhausted reasonable fixes.

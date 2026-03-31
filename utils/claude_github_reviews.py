@@ -16,9 +16,9 @@ Usage:
   py utils/claude_github_reviews.py --pr 42
   py utils/claude_github_reviews.py --pr 42 --repo owner/repo
   py utils/claude_github_reviews.py --pr 42 --prompt_only
-  py utils/claude_github_reviews.py --pr 42 --since-last-push --prompt_only
+  py utils/claude_github_reviews.py --pr 42 --since_last_push --prompt_only
 
-  With --since-last-push, only inline comments and PR-level reviews created after
+  With --since_last_push, only inline comments and PR-level reviews created after
   the latest reflog time for refs/remotes/<remote>/<PR_head_branch> are included.
   That time is when this clone last saw the remote ref move (push or fetch), not
   necessarily the exact server push timestamp.
@@ -46,6 +46,35 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 # Git / repo helpers
 # ---------------------------------------------------------------------------
+
+
+def get_current_branch(repo_root: Path) -> str:
+    """Return the name of the currently checked-out branch."""
+    try:
+        out = subprocess.run(
+            ["git", "branch", "--show-current"],
+            check=True,
+            text=True,
+            capture_output=True,
+            cwd=repo_root,
+        )
+        return out.stdout.strip()
+    except subprocess.CalledProcessError:
+        return ""
+
+
+def git_fetch(repo_root: Path, remote: str, branch: str) -> None:
+    """Run ``git fetch <remote> <branch>``, printing progress."""
+    print(f"[*] Fetching {remote}/{branch} ...")
+    try:
+        subprocess.run(
+            ["git", "fetch", remote, branch],
+            check=True,
+            cwd=repo_root,
+        )
+    except subprocess.CalledProcessError as exc:
+        print(f"[ERROR] git fetch {remote} {branch} failed (exit {exc.returncode}).")
+        sys.exit(exc.returncode)
 
 
 def get_repo_root() -> Path:
@@ -493,13 +522,14 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--prompt_only",
+        "--dry-run",
+        dest="prompt_only",
         action="store_true",
         help="Print the prompt that would be sent to Claude and exit without changes",
     )
     parser.add_argument(
-        "--since-last-push",
+        "--since_last_push",
         action="store_true",
-        dest="since_last_push",
         help=(
             "Only include inline comments and reviews after the latest reflog time "
             "for refs/remotes/<remote>/<PR_head_branch> (this clone)"
@@ -508,8 +538,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--remote",
         metavar="NAME",
-        default="upstream",
-        help="Git remote name for reflog (default: upstream; used with --since-last-push)",
+        default="origin",
+        help="Git remote name for fetch/reflog (default: origin; used with --since_last_push)",
     )
     return parser.parse_args()
 
@@ -546,12 +576,18 @@ def main() -> None:
     if args.since_last_push:
         head_ref = pr_data.get("head", {}).get("ref")
         if not head_ref:
-            print("[ERROR] PR has no head branch ref; cannot use --since-last-push.")
+            print("[ERROR] PR has no head branch ref; cannot use --since_last_push.")
             sys.exit(1)
+        if head_ref == "main":
+            print(
+                "[ERROR] PR head branch is 'main'; --since_last_push is not meaningful here."
+            )
+            sys.exit(1)
+        git_fetch(repo_root, args.remote, head_ref)
         remote_ref = f"refs/remotes/{args.remote}/{head_ref}"
         cutoff = get_remote_reflog_cutoff(repo_root, args.remote, head_ref)
         print()
-        print("[*] --since-last-push")
+        print("[*] --since_last_push")
         print(f"    Remote ref : {remote_ref}")
         print(f"    Cutoff     : {cutoff.isoformat()}")
         inline_comments, reviews = filter_since_cutoff(inline_comments, reviews, cutoff)
@@ -584,11 +620,11 @@ def main() -> None:
         if args.since_last_push:
             print()
             print(
-                "[prompt_only] --since-last-push: using cutoff and counts above "
+                "[prompt_only] --since_last_push: using cutoff and counts above "
                 "(full prompt follows)."
             )
         print(f"\n{separator}")
-        print("PROMPT (dry run — not sent to Claude)")
+        print("PROMPT (prompt_only — not sent to Claude)")
         print(separator)
         print(prompt)
         print(separator)

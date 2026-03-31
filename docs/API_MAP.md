@@ -787,18 +787,20 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## utils/claude_github_reviews.py
 
-- `def get_repo_root()` (line 51)
-- `def get_repo_slug(repo_root)` (line 65): Derive owner/repo from the git remote URL (upstream, falling back to origin).
-- `def parse_github_datetime(iso_str)` (line 90): Parse GitHub API timestamps (may end with Z).
-- `def get_remote_reflog_cutoff(repo_root, remote, head_ref)` (line 106): Latest reflog time for refs/remotes/<remote>/<head_ref> (when the ref last
-- `def filter_since_cutoff(inline_comments, reviews, cutoff)` (line 146): Keep inline comments with created_at > cutoff and reviews with
-- `def fetch_pr_data(pr_number, repo)` (line 224)
-- `def fetch_inline_comments(pr_number, repo)` (line 230)
-- `def fetch_reviews(pr_number, repo)` (line 235)
-- `def build_prompt(pr_number, pr_data, reviews, inline_comments, summary_filename)` (line 308)
-- `def invoke_claude(prompt, repo_root)` (line 425): Invoke Claude Code non-interactively via stdin.
-- `def parse_args()` (line 473)
-- `def main()` (line 517)
+- `def get_current_branch(repo_root)` (line 51): Return the name of the currently checked-out branch.
+- `def git_fetch(repo_root, remote, branch)` (line 66): Run ``git fetch <remote> <branch>``, printing progress.
+- `def get_repo_root()` (line 80)
+- `def get_repo_slug(repo_root)` (line 94): Derive owner/repo from the git remote URL (upstream, falling back to origin).
+- `def parse_github_datetime(iso_str)` (line 119): Parse GitHub API timestamps (may end with Z).
+- `def get_remote_reflog_cutoff(repo_root, remote, head_ref)` (line 135): Latest reflog time for refs/remotes/<remote>/<head_ref> (when the ref last
+- `def filter_since_cutoff(inline_comments, reviews, cutoff)` (line 175): Keep inline comments with created_at > cutoff and reviews with
+- `def fetch_pr_data(pr_number, repo)` (line 253)
+- `def fetch_inline_comments(pr_number, repo)` (line 259)
+- `def fetch_reviews(pr_number, repo)` (line 264)
+- `def build_prompt(pr_number, pr_data, reviews, inline_comments, summary_filename)` (line 337)
+- `def invoke_claude(prompt, repo_root)` (line 454): Invoke Claude Code non-interactively via stdin.
+- `def parse_args()` (line 502)
+- `def main()` (line 547)
 
 ## utils/generate_api_map.py
 
