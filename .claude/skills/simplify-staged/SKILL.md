@@ -56,7 +56,10 @@ and skill levels. Every change should meet the following bar before it is commit
 - [ ] Is there dead code (unreachable branches, unused imports, stale comments)?
       Remove it.
 
-4. After editing, run `ruff check . --fix && ruff format .` to enforce code style.
+4. After editing, run ruff only on the Python files that appear in the diff
+   (`git diff HEAD --name-only`). Pass only those `.py` files to
+   `ruff check --fix` and `ruff format`. Do not run ruff project-wide — it
+   may reformat files outside the current change set.
 
 5. Report a concise summary of every change made, grouped by file. If a file needed
    no changes, say so explicitly. Do not describe changes you did not make.

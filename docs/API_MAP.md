@@ -788,17 +788,17 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 ## utils/claude_github_reviews.py
 
 - `def get_repo_root()` (line 51)
-- `def get_repo_slug(repo_root)` (line 65): Derive owner/repo from the git remote origin URL.
-- `def parse_github_datetime(iso_str)` (line 86): Parse GitHub API timestamps (may end with Z).
-- `def get_remote_reflog_cutoff(repo_root, remote, head_ref)` (line 102): Latest reflog time for refs/remotes/<remote>/<head_ref> (when the ref last
-- `def filter_since_cutoff(inline_comments, reviews, cutoff)` (line 142): Keep inline comments with created_at > cutoff and reviews with
-- `def fetch_pr_data(pr_number, repo)` (line 220)
-- `def fetch_inline_comments(pr_number, repo)` (line 226)
-- `def fetch_reviews(pr_number, repo)` (line 231)
-- `def build_prompt(pr_number, pr_data, reviews, inline_comments, summary_filename)` (line 304)
-- `def invoke_claude(prompt, repo_root)` (line 421): Invoke Claude Code non-interactively via stdin.
-- `def parse_args()` (line 469)
-- `def main()` (line 513)
+- `def get_repo_slug(repo_root)` (line 65): Derive owner/repo from the git remote URL (upstream, falling back to origin).
+- `def parse_github_datetime(iso_str)` (line 90): Parse GitHub API timestamps (may end with Z).
+- `def get_remote_reflog_cutoff(repo_root, remote, head_ref)` (line 106): Latest reflog time for refs/remotes/<remote>/<head_ref> (when the ref last
+- `def filter_since_cutoff(inline_comments, reviews, cutoff)` (line 146): Keep inline comments with created_at > cutoff and reviews with
+- `def fetch_pr_data(pr_number, repo)` (line 224)
+- `def fetch_inline_comments(pr_number, repo)` (line 230)
+- `def fetch_reviews(pr_number, repo)` (line 235)
+- `def build_prompt(pr_number, pr_data, reviews, inline_comments, summary_filename)` (line 308)
+- `def invoke_claude(prompt, repo_root)` (line 425): Invoke Claude Code non-interactively via stdin.
+- `def parse_args()` (line 473)
+- `def main()` (line 517)
 
 ## utils/generate_api_map.py
 
