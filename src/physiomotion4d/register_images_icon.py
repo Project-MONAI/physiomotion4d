@@ -221,16 +221,13 @@ class RegisterImagesICON(RegisterImagesBase):
                 self.fixed_image,
             )
 
-        # Prefer labelmap over binary mask when both are available.
-        moving_effective_mask = (
-            moving_labelmap if moving_labelmap is not None else moving_mask
-        )
-        fixed_effective_mask = (
-            self.fixed_labelmap if moving_labelmap is not None else self.fixed_mask
-        )
+        # Prefer labelmap over binary mask when both sides have a labelmap.
+        use_labelmaps = moving_labelmap is not None and self.fixed_labelmap is not None
+        moving_effective_mask = moving_labelmap if use_labelmaps else moving_mask
+        fixed_effective_mask = self.fixed_labelmap if use_labelmaps else self.fixed_mask
 
         if self.net is None:
-            dice_loss_weight = 1.0 if moving_labelmap is not None else 0.0
+            dice_loss_weight = 1.0 if use_labelmaps else 0.0
             if self.use_multi_modality:
                 self.net = get_multigradicon(
                     loss_fn=icon.LNCC(sigma=5),
