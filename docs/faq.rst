@@ -34,8 +34,42 @@ Installation Questions
 Do I need a GPU?
 ----------------
 
-* **Recommended**: NVIDIA GPU with CUDA 12.6+ for fast processing
-* **Optional**: CPU-only mode available (slower)
+No. A plain ``pip install physiomotion4d`` works without a GPU. At import time
+a ``UserWarning`` is emitted (visible by default in all standard Python runs):
+
+.. code-block:: text
+
+   CuPy is not installed — GPU acceleration is unavailable and processing will be
+   slow. Re-install with uv to get CuPy and CUDA-enabled PyTorch in one step
+   (pip alone will not select the correct CUDA wheel):
+     uv pip install 'physiomotion4d[cuda13]'  # CUDA 13
+     uv pip install 'physiomotion4d[cuda12]'  # CUDA 12
+
+CPU-only mode is suitable for evaluation and small datasets. For production
+workloads an NVIDIA GPU is strongly recommended.
+
+Which CUDA version is required?
+--------------------------------
+
+CUDA 13 and CUDA 12 are both supported. Install the extra that matches your
+system CUDA version:
+
+.. code-block:: bash
+
+   # CUDA 13 (recommended)
+   uv pip install "physiomotion4d[cuda13]"
+
+   # CUDA 12
+   uv pip install "physiomotion4d[cuda12]"
+
+Each extra installs both CuPy and a CUDA-built PyTorch wheel in one step —
+there is no need to install PyTorch separately. The ``[cuda13]`` extra provides
+``cupy-cuda13x>=13.6.0`` and sources PyTorch, torchvision, and torchaudio from
+``https://download.pytorch.org/whl/cu130``. The ``[cuda12]`` extra provides
+``cupy-cuda12x>=12.0.0`` and sources them from
+``https://download.pytorch.org/whl/cu128``. PyTorch is listed in both extras
+so that uv's dependency resolver fetches the GPU wheel instead of the CPU wheel
+from PyPI.
 
 What Python version is required?
 ---------------------------------
@@ -83,5 +117,5 @@ More Questions?
 
 * Check the :doc:`cli_scripts/heart_gated_ct`
 * Browse :doc:`examples`
-* Open an issue on `GitHub <https://github.com/aylward/PhysioMotion4d/issues>`_
+* Open an issue on `GitHub <https://github.com/Project-MONAI/physiomotion4d/issues>`_
 

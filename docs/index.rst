@@ -17,19 +17,19 @@ PhysioMotion4D is a comprehensive medical imaging package that converts 3D and 4
    :alt: Python Versions
 
 .. image:: https://img.shields.io/badge/license-Apache%202.0-blue.svg
-   :target: https://github.com/aylward/PhysioMotion4d/blob/main/LICENSE
+   :target: https://github.com/Project-MONAI/physiomotion4d/blob/main/LICENSE
    :alt: License
 
-.. image:: https://img.shields.io/github/actions/workflow/status/aylward/PhysioMotion4d/ci.yml?branch=main&label=CI%20Tests
-   :target: https://github.com/aylward/PhysioMotion4d/actions/workflows/ci.yml
+.. image:: https://img.shields.io/github/actions/workflow/status/Project-MONAI/physiomotion4d/ci.yml?branch=main&label=CI%20Tests
+   :target: https://github.com/Project-MONAI/physiomotion4d/actions/workflows/ci.yml
    :alt: CI Tests
 
 .. image:: https://img.shields.io/badge/tests-Windows%20%7C%20Linux%20%7C%20Python%203.10--3.12-blue
-   :target: https://github.com/aylward/PhysioMotion4d/actions/workflows/ci.yml
+   :target: https://github.com/Project-MONAI/physiomotion4d/actions/workflows/ci.yml
    :alt: Test Matrix: Windows, Linux, Python 3.10-3.12
 
-.. image:: https://codecov.io/gh/aylward/PhysioMotion4d/branch/main/graph/badge.svg
-   :target: https://codecov.io/gh/aylward/PhysioMotion4d
+.. image:: https://codecov.io/gh/Project-MONAI/physiomotion4d/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/Project-MONAI/physiomotion4d
    :alt: Test Coverage
 
 🚀 Key Features

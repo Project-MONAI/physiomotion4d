@@ -4,12 +4,16 @@
 
 import os
 import sys
+import warnings
 from datetime import datetime
 from unittest.mock import MagicMock
 
 
 # Add the source directory to the path
 sys.path.insert(0, os.path.abspath("../src"))
+
+# Suppress the ImportWarning emitted when cupy is absent (CPU-only docs build)
+warnings.filterwarnings("ignore", category=UserWarning, message="CuPy is not installed")
 
 
 # Create a more robust mock for complex packages
@@ -98,8 +102,8 @@ html_show_sphinx = True
 
 html_context = {
     "display_github": True,
-    "github_user": "aylward",
-    "github_repo": "PhysioMotion4d",
+    "github_user": "Project-MONAI",
+    "github_repo": "physiomotion4d",
     "github_version": "main",
     "conf_py_path": "/docs/",
 }

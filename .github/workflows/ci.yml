@@ -87,10 +87,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip setuptools wheel
 
-    - name: Install PyTorch (CPU)
-      run: |
-        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-
     - name: Install package with test dependencies
       run: |
         pip install -e ".[test]"
@@ -196,10 +192,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip setuptools wheel
 
-    - name: Install PyTorch (CPU)
-      run: |
-        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-
     - name: Install package with test dependencies
       run: |
         pip install -e ".[test]"
@@ -235,7 +227,7 @@ jobs:
 
     - name: Run all integration tests
       run: |
-        pytest tests/ -v -m "not slow and not experiment"
+        pytest tests/ -v -m "not slow and not experiment and not requires_gpu"
       continue-on-error: true
 
     - name: Upload coverage to Codecov
@@ -254,7 +246,7 @@ jobs:
   # or by setting the 'run-gpu-tests' label on the PR.
   gpu-tests:
     name: GPU Tests (Python ${{ matrix.python-version }})
-    runs-on: [self-hosted, linux, gpu]
+    runs-on: [self-hosted, linux, gpu, cuda13]
     needs: unit-tests
     timeout-minutes: 30
     # Only run GPU tests on manual trigger or if 'run-gpu-tests' label is present
@@ -293,15 +285,12 @@ jobs:
 
     - name: Upgrade pip and build tools
       run: |
-        python -m pip install --upgrade pip setuptools wheel
-
-    - name: Install PyTorch (CUDA 12.6)
-      run: |
-        pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
+        python -m pip install --upgrade pip setuptools wheel uv
 
     - name: Install package with test dependencies
+      # uv respects [tool.uv.sources], routing torch to pytorch-cu130 for cuda13
       run: |
-        pip install -e ".[test]"
+        uv pip install --system -e ".[test,cuda13]"
 
     - name: Verify GPU setup
       run: |
@@ -360,6 +349,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install ruff mypy
+        pip install -e ".[dev]"
 
     - name: Check formatting with Ruff
       run: |

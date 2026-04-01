@@ -19,6 +19,21 @@ Main Components:
 
 __version__ = "2025.05.0"
 
+import warnings as _warnings
+
+try:
+    import cupy as _cupy  # noqa: F401
+except ImportError:
+    _warnings.warn(
+        "CuPy is not installed — GPU acceleration is unavailable and processing "
+        "will be slow. Re-install with uv to get CuPy and CUDA-enabled PyTorch "
+        "in one step (pip alone will not select the correct CUDA wheel):\n"
+        "  uv pip install 'physiomotion4d[cuda13]'  # CUDA 13\n"
+        "  uv pip install 'physiomotion4d[cuda12]'  # CUDA 12",
+        UserWarning,
+        stacklevel=2,
+    )
+
 # VTK to USD library
 # VTK to USD library (new modular implementation)
 from . import vtk_to_usd
