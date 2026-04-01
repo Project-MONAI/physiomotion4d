@@ -326,23 +326,23 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## src/physiomotion4d/transform_tools.py
 
-- **class TransformTools** (line 33): Utilities for transforming and manipulating ITK transforms.
-  - `def __init__(self, log_level=logging.INFO)` (line 66): Initialize the TransformTools class.
-  - `def combine_displacement_field_transforms(self, tfm1, tfm2, reference_image, tfm1_weight=1.0, tfm2_weight=1.0, mode='compose', tfm1_blur_sigma=0.0, tfm2_blur_sigma=0.0)` (line 74): Compose two displacement field transforms.
-  - `def convert_transform_to_displacement_field(self, tfm, reference_image, np_component_type=np.float64, use_reference_image_as_mask=False)` (line 158): Generate a dense deformation field from an ITK transform.
-  - `def convert_transform_to_displacement_field_transform(self, tfm, reference_image)` (line 246): Convert an ITK transform to a displacement field transform.
-  - `def invert_displacement_field_transform(self, tfm)` (line 263): Invert a displacement field transform.
-  - `def transform_pvcontour(self, contour, tfm, with_deformation_magnitude=False)` (line 285): Transform PyVista contour meshes using an ITK transform.
-  - `def transform_image(self, img, tfm, reference_image, interpolation_method='linear')` (line 348): Transform an ITK image using a specified transform and interpolation.
-  - `def convert_vtk_matrix_to_itk_transform(self, vtk_mat)` (line 425): Convert a VTK matrix to an ITK transform.
-  - `def smooth_transform(self, tfm, sigma, reference_image)` (line 460): Smooth a transform using Gaussian filtering to reduce noise.
-  - `def combine_transforms_with_masks(self, transform1, transform2, mask1, mask2, reference_image, max_iter=10, jacobian_threshold=0.1)` (line 519): Combine two transforms using spatial masks with folding correction.
-  - `def compute_jacobian_determinant_from_field(self, field)` (line 609): Compute Jacobian determinant of a displacement field.
-  - `def detect_folding_in_field(self, jacobian_det, threshold=0.1)` (line 638): Detect spatial folding in a transform.
-  - `def reduce_folding_in_field(self, field, jacobian_det, reduction_factor=0.8, threshold=0.1)` (line 662): Reduce folding by scaling displacement field in problematic regions.
-  - `def generate_grid_image(self, reference_image, grid_size=60, line_width=3)` (line 701): Generate a grid image.
-  - `def convert_field_to_grid_visualization(self, tfm, reference_image, grid_size=60, line_width=3)` (line 734): Generate a visual deformation grid for transform visualization.
-  - `def convert_itk_transform_to_usd_visualization(self, tfm, reference_image, output_filename, visualization_type='arrows', subsample_factor=4, arrow_scale=1.0, magnitude_threshold=0.0)` (line 770): Convert an ITK transform to a USD visualization for NVIDIA Omniverse.
+- **class TransformTools** (line 36): Utilities for transforming and manipulating ITK transforms.
+  - `def __init__(self, log_level=logging.INFO)` (line 69): Initialize the TransformTools class.
+  - `def combine_displacement_field_transforms(self, tfm1, tfm2, reference_image, tfm1_weight=1.0, tfm2_weight=1.0, mode='compose', tfm1_blur_sigma=0.0, tfm2_blur_sigma=0.0)` (line 77): Compose two displacement field transforms.
+  - `def convert_transform_to_displacement_field(self, tfm, reference_image, np_component_type=np.float64, use_reference_image_as_mask=False)` (line 161): Generate a dense deformation field from an ITK transform.
+  - `def convert_transform_to_displacement_field_transform(self, tfm, reference_image)` (line 249): Convert an ITK transform to a displacement field transform.
+  - `def invert_displacement_field_transform(self, tfm)` (line 266): Invert a displacement field transform.
+  - `def transform_pvcontour(self, contour, tfm, with_deformation_magnitude=False)` (line 288): Transform PyVista contour meshes using an ITK transform.
+  - `def transform_image(self, img, tfm, reference_image, interpolation_method='linear')` (line 356): Transform an ITK image using a specified transform and interpolation.
+  - `def convert_vtk_matrix_to_itk_transform(self, vtk_mat)` (line 433): Convert a VTK matrix to an ITK transform.
+  - `def smooth_transform(self, tfm, sigma, reference_image)` (line 468): Smooth a transform using Gaussian filtering to reduce noise.
+  - `def combine_transforms_with_masks(self, transform1, transform2, mask1, mask2, reference_image, max_iter=10, jacobian_threshold=0.1)` (line 527): Combine two transforms using spatial masks with folding correction.
+  - `def compute_jacobian_determinant_from_field(self, field)` (line 617): Compute Jacobian determinant of a displacement field.
+  - `def detect_folding_in_field(self, jacobian_det, threshold=0.1)` (line 646): Detect spatial folding in a transform.
+  - `def reduce_folding_in_field(self, field, jacobian_det, reduction_factor=0.8, threshold=0.1)` (line 670): Reduce folding by scaling displacement field in problematic regions.
+  - `def generate_grid_image(self, reference_image, grid_size=60, line_width=3)` (line 709): Generate a grid image.
+  - `def convert_field_to_grid_visualization(self, tfm, reference_image, grid_size=60, line_width=3)` (line 742): Generate a visual deformation grid for transform visualization.
+  - `def convert_itk_transform_to_usd_visualization(self, tfm, reference_image, output_filename, visualization_type='arrows', subsample_factor=4, arrow_scale=1.0, magnitude_threshold=0.0)` (line 778): Convert an ITK transform to a USD visualization for NVIDIA Omniverse.
 
 ## src/physiomotion4d/usd_anatomy_tools.py
 

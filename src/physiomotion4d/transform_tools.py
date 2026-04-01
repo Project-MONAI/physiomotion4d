@@ -15,7 +15,10 @@ import logging
 from collections.abc import Sequence
 from typing import TypeAlias
 
-import cupy as cp
+try:
+    import cupy as cp  # optional (GPU)
+except ModuleNotFoundError:  # CPU-only environments (e.g., CI unit-tests)
+    cp = None
 import itk
 import numpy as np
 import pyvista as pv
@@ -336,12 +339,17 @@ class TransformTools(PhysioMotion4DBase):
         ]
         new_contour.points = np.asarray(new_pnts, dtype=float)
 
-        new_pnts = cp.array(new_pnts)
-        pnts = cp.array(pnts)
         if with_deformation_magnitude:
-            new_contour.point_data["DeformationMagnitude"] = cp.linalg.norm(
-                new_pnts - pnts, axis=1
-            ).get()
+            if cp is not None:
+                new_pnts_cp = cp.array(new_pnts)
+                pnts_cp = cp.array(pnts)
+                new_contour.point_data["DeformationMagnitude"] = cp.linalg.norm(
+                    new_pnts_cp - pnts_cp, axis=1
+                ).get()
+            else:
+                new_contour.point_data["DeformationMagnitude"] = np.linalg.norm(
+                    np.asarray(new_pnts) - np.asarray(pnts), axis=1
+                )
 
         return new_contour
 
