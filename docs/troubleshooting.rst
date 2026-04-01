@@ -33,6 +33,34 @@ CUDA Out of Memory
 
       processor.set_batch_size(1)
 
+CUDA Version Mismatch
+---------------------
+
+**Problem**: Errors such as ``cupy`` failing to import, ``torch.cuda.is_available()``
+returning ``False``, or runtime messages indicating a CUDA library version conflict.
+
+**Cause**: The installed ``cupy`` or PyTorch wheel was built for a different CUDA
+version than the one present on the system.
+
+**Solution**: Install the extra that matches your system CUDA version:
+
+.. code-block:: bash
+
+   # CUDA 13 (default)
+   uv pip install physiomotion4d
+
+   # CUDA 12
+   uv pip install "physiomotion4d[cuda12]"
+
+Verify the active CUDA version before reinstalling:
+
+.. code-block:: bash
+
+   nvidia-smi   # shows driver and CUDA version
+
+.. note::
+   CPU-only installation is not supported. A CUDA-capable NVIDIA GPU is required.
+
 Import Errors
 -------------
 
@@ -179,7 +207,7 @@ Getting Help
 If you still have issues:
 
 1. Check :doc:`faq`
-2. Search `GitHub Issues <https://github.com/aylward/PhysioMotion4d/issues>`_
+2. Search `GitHub Issues <https://github.com/Project-MONAI/physiomotion4d/issues>`_
 3. Open a new issue with:
 
    * Python version

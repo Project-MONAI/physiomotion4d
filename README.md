@@ -26,7 +26,7 @@ PhysioMotion4D is a comprehensive medical imaging package that converts 4D CT sc
 ### Prerequisites
 
 - Python 3.10+ (Python 3.10, 3.11, or 3.12 recommended)
-- NVIDIA GPU with CUDA 12.6+ (for AI models and registration)
+- NVIDIA GPU with CUDA 13 (default) or CUDA 12 — CPU-only installation is not supported
 - 16GB+ RAM (32GB+ recommended for large datasets)
 - NVIDIA Omniverse (for USD visualization)
 - **Git LFS** (required for running tests: baseline files in `tests/baselines/` are stored with Git LFS; install from [git-lfs.github.com](https://git-lfs.github.com), then run `git lfs install` and `git lfs pull` after cloning)
@@ -34,7 +34,11 @@ PhysioMotion4D is a comprehensive medical imaging package that converts 4D CT sc
 ### Installation from PyPI
 
 ```bash
-pip install physiomotion4d
+# Default install — requires CUDA 13
+uv pip install physiomotion4d
+
+# CUDA 12 install
+uv pip install "physiomotion4d[cuda12]"
 ```
 
 For development with NVIDIA NIM cloud services:
@@ -65,12 +69,11 @@ pip install physiomotion4d[nim]
 
 4. **Install PhysioMotion4D**:
    ```bash
+   # CUDA 13 (default)
    uv pip install -e .
-   ```
 
-   Or with pip:
-   ```bash
-   pip install -e .
+   # CUDA 12
+   uv pip install -e ".[cuda12]"
    ```
 
 ### Verify Installation
@@ -125,7 +128,7 @@ print(f"PhysioMotion4D version: {physiomotion4d.__version__}")
 ### Key Dependencies
 
 - **Medical Imaging**: ITK, TubeTK, MONAI, nibabel, PyVista
-- **AI/ML**: PyTorch (CUDA 12.6), transformers, MONAI
+- **AI/ML**: PyTorch, CuPy (CUDA 13 default; CUDA 12 via `[cuda12]` extra), transformers, MONAI
 - **Registration**: icon-registration, unigradicon
 - **Visualization**: USD-core, PyVista
 - **Segmentation**: TotalSegmentator, VISTA-3D models

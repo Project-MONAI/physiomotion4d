@@ -34,8 +34,21 @@ Installation Questions
 Do I need a GPU?
 ----------------
 
-* **Recommended**: NVIDIA GPU with CUDA 12.6+ for fast processing
-* **Optional**: CPU-only mode available (slower)
+Yes. An NVIDIA GPU is required; CPU-only installation is not supported.
+
+Which CUDA version is required?
+--------------------------------
+
+CUDA 13 is the default. If your system has CUDA 12, install the ``[cuda12]`` extra
+instead:
+
+.. code-block:: bash
+
+   uv pip install "physiomotion4d[cuda12]"
+
+The ``[cuda12]`` extra provides ``cupy-cuda12x>=12.0.0`` and sources PyTorch,
+torchvision, and torchaudio from ``https://download.pytorch.org/whl/cu128``.
+The default install provides ``cupy-cuda13x>=13.6.0``.
 
 What Python version is required?
 ---------------------------------
@@ -83,5 +96,5 @@ More Questions?
 
 * Check the :doc:`cli_scripts/heart_gated_ct`
 * Browse :doc:`examples`
-* Open an issue on `GitHub <https://github.com/aylward/PhysioMotion4d/issues>`_
+* Open an issue on `GitHub <https://github.com/Project-MONAI/physiomotion4d/issues>`_
 

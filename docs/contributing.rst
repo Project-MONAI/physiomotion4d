@@ -448,4 +448,4 @@ See Also
 
 * :doc:`architecture` - System architecture
 * :doc:`testing` - Testing guide
-* `GitHub Repository <https://github.com/aylward/PhysioMotion4d>`_
+* `GitHub Repository <https://github.com/Project-MONAI/physiomotion4d>`_

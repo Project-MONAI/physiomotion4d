@@ -11,7 +11,7 @@ System Requirements
 -------------------
 
 * **Python**: 3.10, 3.11, or 3.12
-* **GPU**: NVIDIA GPU with CUDA 12.6+ (for AI models and registration)
+* **GPU**: NVIDIA GPU with CUDA 13 (default) or CUDA 12 — CPU-only installation is not supported
 * **RAM**: 16GB minimum (32GB+ recommended for large datasets)
 * **Storage**: 10GB+ for package and model weights
 * **Visualization**: NVIDIA Omniverse (optional, for USD visualization)
@@ -22,7 +22,7 @@ Software Dependencies
 PhysioMotion4D relies on several key packages:
 
 * **Medical Imaging**: ITK, TubeTK, MONAI, nibabel, PyVista
-* **AI/ML**: PyTorch (CUDA 12.6), transformers, MONAI
+* **AI/ML**: PyTorch, CuPy (CUDA 13 default; CUDA 12 via ``[cuda12]`` extra), transformers, MONAI
 * **Registration**: icon-registration, unigradicon
 * **Visualization**: USD-core, PyVista
 * **Segmentation**: TotalSegmentator, VISTA-3D models
@@ -33,11 +33,19 @@ Installation Methods
 Method 1: Install from PyPI (Recommended)
 ------------------------------------------
 
-The simplest way to install PhysioMotion4D is from PyPI:
+The simplest way to install PhysioMotion4D is from PyPI.
+
+Default install (CUDA 13):
 
 .. code-block:: bash
 
-   pip install physiomotion4d
+   uv pip install physiomotion4d
+
+CUDA 12 install:
+
+.. code-block:: bash
+
+   uv pip install "physiomotion4d[cuda12]"
 
 For development with NVIDIA NIM cloud services:
 
@@ -54,7 +62,7 @@ For development or to get the latest features:
 
 .. code-block:: bash
 
-   git clone https://github.com/aylward/PhysioMotion4d.git
+   git clone https://github.com/Project-MONAI/physiomotion4d.git
    cd PhysioMotion4D
 
 **Step 2: Create virtual environment**
@@ -83,17 +91,17 @@ For development or to get the latest features:
 
 **Step 4: Install PhysioMotion4D**
 
-With uv:
+With uv (CUDA 13, default):
 
 .. code-block:: bash
 
    uv pip install -e .
 
-Or with pip:
+With uv (CUDA 12):
 
 .. code-block:: bash
 
-   pip install -e .
+   uv pip install -e ".[cuda12]"
 
 Optional Dependencies
 =====================
@@ -172,10 +180,15 @@ GPU Setup
 CUDA Installation
 -----------------
 
-PhysioMotion4D requires CUDA 12.6+ for GPU acceleration. If you don't have CUDA installed:
+PhysioMotion4D requires an NVIDIA GPU. Two CUDA versions are supported:
 
-1. Download and install CUDA Toolkit from `NVIDIA's website <https://developer.nvidia.com/cuda-downloads>`_
-2. Verify CUDA installation:
+* **CUDA 13** — default; installed when you run ``uv pip install physiomotion4d``
+* **CUDA 12** — optional; installed when you add the ``[cuda12]`` extra
+
+CPU-only installation is not supported.
+
+If CUDA is not yet installed, download the CUDA Toolkit from
+`NVIDIA's website <https://developer.nvidia.com/cuda-downloads>`_, then verify:
 
 .. code-block:: bash
 
@@ -185,7 +198,9 @@ PhysioMotion4D requires CUDA 12.6+ for GPU acceleration. If you don't have CUDA 
 PyTorch with CUDA
 -----------------
 
-The package automatically installs PyTorch with CUDA 12.6 support. To verify:
+The default install pulls PyTorch built against CUDA 13. The ``[cuda12]`` extra
+sources PyTorch, torchvision, and torchaudio from
+``https://download.pytorch.org/whl/cu128``. To verify the active version:
 
 .. code-block:: python
 
@@ -193,14 +208,6 @@ The package automatically installs PyTorch with CUDA 12.6 support. To verify:
    print(f"PyTorch version: {torch.__version__}")
    print(f"CUDA available: {torch.cuda.is_available()}")
    print(f"CUDA version: {torch.version.cuda}")
-
-Expected output:
-
-.. code-block:: text
-
-   PyTorch version: 2.x.x+cu126
-   CUDA available: True
-   CUDA version: 12.6
 
 Troubleshooting
 ===============
@@ -243,7 +250,7 @@ Getting Help
 If you encounter issues:
 
 1. Check the :doc:`troubleshooting` guide
-2. Search `GitHub Issues <https://github.com/aylward/PhysioMotion4d/issues>`_
+2. Search `GitHub Issues <https://github.com/Project-MONAI/physiomotion4d/issues>`_
 3. Open a new issue with:
 
    * Python version

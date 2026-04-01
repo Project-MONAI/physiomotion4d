@@ -98,8 +98,8 @@ html_show_sphinx = True
 
 html_context = {
     "display_github": True,
-    "github_user": "aylward",
-    "github_repo": "PhysioMotion4d",
+    "github_user": "Project-MONAI",
+    "github_repo": "physiomotion4d",
     "github_version": "main",
     "conf_py_path": "/docs/",
 }
