@@ -39,16 +39,20 @@ Yes. An NVIDIA GPU is required; CPU-only installation is not supported.
 Which CUDA version is required?
 --------------------------------
 
-CUDA 13 is the default. If your system has CUDA 12, install the ``[cuda12]`` extra
-instead:
+CUDA 13 and CUDA 12 are both supported. Install the extra that matches your system:
 
 .. code-block:: bash
 
+   # CUDA 13 (recommended)
+   uv pip install "physiomotion4d[cuda13]"
+
+   # CUDA 12
    uv pip install "physiomotion4d[cuda12]"
 
-The ``[cuda12]`` extra provides ``cupy-cuda12x>=12.0.0`` and sources PyTorch,
-torchvision, and torchaudio from ``https://download.pytorch.org/whl/cu128``.
-The default install provides ``cupy-cuda13x>=13.6.0``.
+The ``[cuda13]`` extra provides ``cupy-cuda13x>=13.6.0`` and sources PyTorch from
+``https://download.pytorch.org/whl/cu130``. The ``[cuda12]`` extra provides
+``cupy-cuda12x>=12.0.0`` and sources PyTorch from
+``https://download.pytorch.org/whl/cu128``. Install exactly one of these extras.
 
 What Python version is required?
 ---------------------------------

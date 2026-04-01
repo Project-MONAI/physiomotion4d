@@ -34,8 +34,8 @@ PhysioMotion4D is a comprehensive medical imaging package that converts 4D CT sc
 ### Installation from PyPI
 
 ```bash
-# Default install — requires CUDA 13
-uv pip install physiomotion4d
+# CUDA 13 install (recommended)
+uv pip install "physiomotion4d[cuda13]"
 
 # CUDA 12 install
 uv pip install "physiomotion4d[cuda12]"
@@ -69,8 +69,8 @@ pip install physiomotion4d[nim]
 
 4. **Install PhysioMotion4D**:
    ```bash
-   # CUDA 13 (default)
-   uv pip install -e .
+   # CUDA 13
+   uv pip install -e ".[cuda13]"
 
    # CUDA 12
    uv pip install -e ".[cuda12]"

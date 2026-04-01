@@ -19,6 +19,17 @@ Main Components:
 
 __version__ = "2025.05.0"
 
+try:
+    import cupy as _cupy  # noqa: F401
+except ImportError as _err:
+    raise ImportError(
+        "PhysioMotion4D requires CuPy with a matching CUDA toolkit. "
+        "Re-install with the extra that matches your system:\n\n"
+        "  uv pip install 'physiomotion4d[cuda13]'  # CUDA 13 (recommended)\n"
+        "  uv pip install 'physiomotion4d[cuda12]'  # CUDA 12\n\n"
+        "CPU-only installation is not supported."
+    ) from _err
+
 # VTK to USD library
 # VTK to USD library (new modular implementation)
 from . import vtk_to_usd

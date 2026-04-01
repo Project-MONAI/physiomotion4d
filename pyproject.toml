@@ -82,7 +82,6 @@ dependencies = [
     # Utilities
     "matplotlib>=3.5.0",
     "typing-extensions>=4.0.0",
-    "cupy-cuda13x>=13.6.0",
 
 ]
 
@@ -114,6 +113,9 @@ url = "https://download.pytorch.org/whl/cu128"
 explicit = true
 
 [project.optional-dependencies]
+cuda13 = [
+    "cupy-cuda13x>=13.6.0",
+]
 cuda12 = [
     "cupy-cuda12x>=12.0.0",
     "torch>=2.0.0,<3.0.0",

@@ -35,11 +35,11 @@ Method 1: Install from PyPI (Recommended)
 
 The simplest way to install PhysioMotion4D is from PyPI.
 
-Default install (CUDA 13):
+CUDA 13 install (recommended):
 
 .. code-block:: bash
 
-   uv pip install physiomotion4d
+   uv pip install "physiomotion4d[cuda13]"
 
 CUDA 12 install:
 
@@ -63,7 +63,7 @@ For development or to get the latest features:
 .. code-block:: bash
 
    git clone https://github.com/Project-MONAI/physiomotion4d.git
-   cd PhysioMotion4D
+   cd physiomotion4d
 
 **Step 2: Create virtual environment**
 
@@ -91,11 +91,11 @@ For development or to get the latest features:
 
 **Step 4: Install PhysioMotion4D**
 
-With uv (CUDA 13, default):
+With uv (CUDA 13):
 
 .. code-block:: bash
 
-   uv pip install -e .
+   uv pip install -e ".[cuda13]"
 
 With uv (CUDA 12):
 
@@ -182,8 +182,8 @@ CUDA Installation
 
 PhysioMotion4D requires an NVIDIA GPU. Two CUDA versions are supported:
 
-* **CUDA 13** — default; installed when you run ``uv pip install physiomotion4d``
-* **CUDA 12** — optional; installed when you add the ``[cuda12]`` extra
+* **CUDA 13** — installed when you use the ``[cuda13]`` extra (recommended)
+* **CUDA 12** — installed when you use the ``[cuda12]`` extra
 
 CPU-only installation is not supported.
 

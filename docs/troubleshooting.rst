@@ -46,8 +46,8 @@ version than the one present on the system.
 
 .. code-block:: bash
 
-   # CUDA 13 (default)
-   uv pip install physiomotion4d
+   # CUDA 13
+   uv pip install "physiomotion4d[cuda13]"
 
    # CUDA 12
    uv pip install "physiomotion4d[cuda12]"
@@ -59,7 +59,10 @@ Verify the active CUDA version before reinstalling:
    nvidia-smi   # shows driver and CUDA version
 
 .. note::
-   CPU-only installation is not supported. A CUDA-capable NVIDIA GPU is required.
+   CPU-only *installation* is not supported — a CUDA-capable NVIDIA GPU and either
+   the ``[cuda13]`` or ``[cuda12]`` extra is required. CPU *execution* of individual
+   operations (e.g. ``processor.set_registration_device('cpu')``) is possible after
+   a CUDA-enabled install.
 
 Import Errors
 -------------
