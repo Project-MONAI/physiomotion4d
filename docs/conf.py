@@ -4,12 +4,16 @@
 
 import os
 import sys
+import warnings
 from datetime import datetime
 from unittest.mock import MagicMock
 
 
 # Add the source directory to the path
 sys.path.insert(0, os.path.abspath("../src"))
+
+# Suppress the ImportWarning emitted when cupy is absent (CPU-only docs build)
+warnings.filterwarnings("ignore", category=ImportWarning, module="physiomotion4d")
 
 
 # Create a more robust mock for complex packages

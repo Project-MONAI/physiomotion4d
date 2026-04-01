@@ -11,7 +11,7 @@ System Requirements
 -------------------
 
 * **Python**: 3.10, 3.11, or 3.12
-* **GPU**: NVIDIA GPU with CUDA 13 (default) or CUDA 12 — CPU-only installation is not supported
+* **GPU**: NVIDIA GPU with CUDA 13 (default) or CUDA 12 — recommended for production use; CPU-only installation is supported but will be slow and will emit a runtime warning
 * **RAM**: 16GB minimum (32GB+ recommended for large datasets)
 * **Storage**: 10GB+ for package and model weights
 * **Visualization**: NVIDIA Omniverse (optional, for USD visualization)
@@ -35,7 +35,22 @@ Method 1: Install from PyPI (Recommended)
 
 The simplest way to install PhysioMotion4D is from PyPI.
 
-CUDA 13 install (recommended):
+CPU-only install (evaluation / no GPU):
+
+.. code-block:: bash
+
+   pip install physiomotion4d
+
+This works immediately. CuPy is absent, so an ``ImportWarning`` is emitted at
+runtime:
+
+.. code-block:: text
+
+   CuPy is not installed — GPU acceleration is unavailable and processing will be
+   slow. Install CuPy matching your CUDA version: pip install
+   'physiomotion4d[cuda13]' or 'physiomotion4d[cuda12]'
+
+CUDA 13 install (recommended for production):
 
 .. code-block:: bash
 
@@ -46,6 +61,12 @@ CUDA 12 install:
 .. code-block:: bash
 
    uv pip install "physiomotion4d[cuda12]"
+
+The ``[cuda13]`` and ``[cuda12]`` extras install both CuPy and the correct
+CUDA-built PyTorch wheel in one step. PyTorch is listed inside the extras so
+that uv's dependency resolver fetches the GPU wheel from the PyTorch index
+rather than the CPU wheel from PyPI. There is no need to install PyTorch
+separately.
 
 For development with NVIDIA NIM cloud services:
 
@@ -91,7 +112,13 @@ For development or to get the latest features:
 
 **Step 4: Install PhysioMotion4D**
 
-With uv (CUDA 13):
+CPU-only (evaluation / no GPU):
+
+.. code-block:: bash
+
+   uv pip install -e "."
+
+With uv (CUDA 13, recommended for production):
 
 .. code-block:: bash
 
@@ -180,12 +207,15 @@ GPU Setup
 CUDA Installation
 -----------------
 
-PhysioMotion4D requires an NVIDIA GPU. Two CUDA versions are supported:
+An NVIDIA GPU is strongly recommended. Two CUDA versions are supported via
+optional extras:
 
 * **CUDA 13** — installed when you use the ``[cuda13]`` extra (recommended)
 * **CUDA 12** — installed when you use the ``[cuda12]`` extra
 
-CPU-only installation is not supported.
+A plain ``pip install physiomotion4d`` installs a CPU-only build. It runs
+without error but emits an ``ImportWarning`` at startup and will be
+significantly slower than a GPU-enabled install.
 
 If CUDA is not yet installed, download the CUDA Toolkit from
 `NVIDIA's website <https://developer.nvidia.com/cuda-downloads>`_, then verify:
@@ -198,9 +228,11 @@ If CUDA is not yet installed, download the CUDA Toolkit from
 PyTorch with CUDA
 -----------------
 
-The default install pulls PyTorch built against CUDA 13. The ``[cuda12]`` extra
-sources PyTorch, torchvision, and torchaudio from
-``https://download.pytorch.org/whl/cu128``. To verify the active version:
+A plain install pulls a CPU-only PyTorch wheel from PyPI. The ``[cuda13]``
+extra sources PyTorch, torchvision, and torchaudio from the
+``https://download.pytorch.org/whl/cu130`` index. The ``[cuda12]`` extra
+sources them from ``https://download.pytorch.org/whl/cu128``. To verify the
+active version:
 
 .. code-block:: python
 

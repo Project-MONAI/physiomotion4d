@@ -52,6 +52,8 @@ version than the one present on the system.
    # CUDA 12
    uv pip install "physiomotion4d[cuda12]"
 
+Each extra installs both CuPy and the correct CUDA-built PyTorch wheel.
+
 Verify the active CUDA version before reinstalling:
 
 .. code-block:: bash
@@ -59,10 +61,10 @@ Verify the active CUDA version before reinstalling:
    nvidia-smi   # shows driver and CUDA version
 
 .. note::
-   CPU-only *installation* is not supported — a CUDA-capable NVIDIA GPU and either
-   the ``[cuda13]`` or ``[cuda12]`` extra is required. CPU *execution* of individual
-   operations (e.g. ``processor.set_registration_device('cpu')``) is possible after
-   a CUDA-enabled install.
+   If you have no NVIDIA GPU, a plain ``pip install physiomotion4d`` installs a
+   CPU-only build. CuPy is absent and an ``ImportWarning`` is emitted at startup.
+   CPU execution of all operations is supported but will be significantly slower
+   than a GPU-enabled install.
 
 Import Errors
 -------------

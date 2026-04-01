@@ -5,9 +5,9 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## docs/conf.py
 
-- **class Mock** (line 16)
-- `def autodoc_skip_member(app, what, name, obj, skip, options)` (line 211): Custom function to skip certain members during autodoc processing.
-- `def setup(app)` (line 219): Custom setup function for Sphinx.
+- **class Mock** (line 20)
+- `def autodoc_skip_member(app, what, name, obj, skip, options)` (line 215): Custom function to skip certain members during autodoc processing.
+- `def setup(app)` (line 223): Custom setup function for Sphinx.
 
 ## experiments/Lung-GatedCT_To_USD/data_dirlab_4d_ct.py
 

@@ -10,7 +10,7 @@ Prerequisites
 Before starting, ensure you have:
 
 * PhysioMotion4D installed (see :doc:`installation`)
-* NVIDIA GPU with CUDA 13 (default) or CUDA 12 — see :doc:`installation` for the ``[cuda12]`` extra
+* NVIDIA GPU with CUDA 13 (default) or CUDA 12 — recommended for production performance; see :doc:`installation` for the ``[cuda13]`` and ``[cuda12]`` extras. A CPU-only install works for evaluation but is slow.
 * 4D cardiac CT data or access to sample datasets
 
 Basic Workflow

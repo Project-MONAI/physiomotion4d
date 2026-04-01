@@ -34,12 +34,23 @@ Installation Questions
 Do I need a GPU?
 ----------------
 
-Yes. An NVIDIA GPU is required; CPU-only installation is not supported.
+No. A plain ``pip install physiomotion4d`` works without a GPU. At runtime you
+will see an ``ImportWarning``:
+
+.. code-block:: text
+
+   CuPy is not installed — GPU acceleration is unavailable and processing will be
+   slow. Install CuPy matching your CUDA version: pip install
+   'physiomotion4d[cuda13]' or 'physiomotion4d[cuda12]'
+
+CPU-only mode is suitable for evaluation and small datasets. For production
+workloads an NVIDIA GPU is strongly recommended.
 
 Which CUDA version is required?
 --------------------------------
 
-CUDA 13 and CUDA 12 are both supported. Install the extra that matches your system:
+CUDA 13 and CUDA 12 are both supported. Install the extra that matches your
+system CUDA version:
 
 .. code-block:: bash
 
@@ -49,10 +60,14 @@ CUDA 13 and CUDA 12 are both supported. Install the extra that matches your syst
    # CUDA 12
    uv pip install "physiomotion4d[cuda12]"
 
-The ``[cuda13]`` extra provides ``cupy-cuda13x>=13.6.0`` and sources PyTorch from
+Each extra installs both CuPy and a CUDA-built PyTorch wheel in one step —
+there is no need to install PyTorch separately. The ``[cuda13]`` extra provides
+``cupy-cuda13x>=13.6.0`` and sources PyTorch, torchvision, and torchaudio from
 ``https://download.pytorch.org/whl/cu130``. The ``[cuda12]`` extra provides
-``cupy-cuda12x>=12.0.0`` and sources PyTorch from
-``https://download.pytorch.org/whl/cu128``. Install exactly one of these extras.
+``cupy-cuda12x>=12.0.0`` and sources them from
+``https://download.pytorch.org/whl/cu128``. PyTorch is listed in both extras
+so that uv's dependency resolver fetches the GPU wheel instead of the CPU wheel
+from PyPI.
 
 What Python version is required?
 ---------------------------------
