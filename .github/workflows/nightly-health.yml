@@ -42,7 +42,7 @@ jobs:
   health-tests:
     name: Health Tests (GPU)
     runs-on: [self-hosted, Windows, X64, gpu]
-    timeout-minutes: 90
+    timeout-minutes: 360
 
     outputs:
       # Captures the pytest step's actual outcome (success / failure / skipped)
@@ -99,7 +99,7 @@ jobs:
         # The step outcome (success/failure) is still captured and passed downstream.
         continue-on-error: true
         run: |
-          pytest tests/ -v -m "not experiment" `
+          pytest tests/ -v --run-experiments `
             --cov=physiomotion4d `
             --cov-report=xml `
             --cov-report=json `
