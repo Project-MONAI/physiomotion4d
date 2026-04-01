@@ -10,7 +10,7 @@ on:
 jobs:
   test-slow-gpu:
     name: Slow Tests on GPU
-    runs-on: [self-hosted, linux, gpu, cuda13]
+    runs-on: [self-hosted, Windows, X64, gpu]
     timeout-minutes: 60
     continue-on-error: true
 
@@ -33,7 +33,7 @@ jobs:
     - name: Cache pip packages
       uses: actions/cache@v4
       with:
-        path: ~/.cache/pip
+        path: ~\AppData\Local\pip\Cache
         key: ${{ runner.os }}-pip-slow-gpu-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
           ${{ runner.os }}-pip-slow-gpu-

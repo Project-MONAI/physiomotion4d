@@ -1,0 +1,198 @@
+name: Nightly Health
+
+# Run the full test suite on the GPU runner every night and publish a
+# one-page health dashboard to GitHub Pages.
+#
+# Schedule: 07:00 UTC daily ≈ 02:00 EST / 03:00 EDT
+#
+# Pages note: this workflow deploys the health dashboard to the same
+# github-pages environment used by docs.yml. The last deployment wins,
+# so pushing to main (which triggers docs.yml) will temporarily replace
+# the health page until the next nightly run. The README badge below is
+# independent of Pages and always reflects the latest run status.
+#
+# README badge (workflow status — always current):
+#   [![Nightly Health](https://github.com/Project-MONAI/physiomotion4d/actions/workflows/nightly-health.yml/badge.svg)](https://github.com/Project-MONAI/physiomotion4d/actions/workflows/nightly-health.yml)
+#
+# README badge (shields.io endpoint — reflects last Pages deploy):
+#   [![Health](https://img.shields.io/endpoint?url=https://project-monai.github.io/physiomotion4d/status.json)](https://project-monai.github.io/physiomotion4d/)
+
+on:
+  schedule:
+    - cron: '0 7 * * *'   # 07:00 UTC = ~02:00 EST / 03:00 EDT
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for manual trigger'
+        required: false
+        default: 'Manual health check'
+      ref:
+        description: 'Git ref to check out (default: main)'
+        required: false
+        default: 'main'
+
+# Minimal default permissions; deploy-pages job escalates its own permissions.
+permissions:
+  contents: read
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # 1. Run the full test suite on the GPU Windows runner
+  # ──────────────────────────────────────────────────────────────────────────
+  health-tests:
+    name: Health Tests (GPU)
+    runs-on: [self-hosted, Windows, X64, gpu]
+    timeout-minutes: 90
+
+    outputs:
+      # Captures the pytest step's actual outcome (success / failure / skipped)
+      # even though the job itself is not failed by a test failure.
+      test-outcome: ${{ steps.run-tests.outcome }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          ref: ${{ inputs.ref || 'main' }}
+
+      - name: Check GPU availability
+        run: nvidia-smi
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-health-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-health-
+            ${{ runner.os }}-pip-
+
+      - name: Cache test data
+        uses: actions/cache@v4
+        with:
+          path: |
+            tests/data/
+            tests/results/
+          key: test-data-${{ hashFiles('tests/test_*.py') }}-v2
+          restore-keys: |
+            test-data-
+
+      - name: Install uv and package
+        run: |
+          python -m pip install --upgrade pip uv
+          uv pip install --system -e ".[test,cuda13]"
+
+      - name: Verify GPU setup
+        run: |
+          python -c "import torch; print(f'PyTorch {torch.__version__}, CUDA={torch.cuda.is_available()}, GPUs={torch.cuda.device_count()}')"
+          python -c "import cupy; print(f'CuPy {cupy.__version__}')"
+
+      - name: Run health test suite
+        id: run-tests
+        # continue-on-error keeps the job running so artifacts are always uploaded.
+        # The step outcome (success/failure) is still captured and passed downstream.
+        continue-on-error: true
+        run: |
+          pytest tests/ -v -m "not experiment" `
+            --cov=physiomotion4d `
+            --cov-report=xml `
+            --cov-report=json `
+            --junitxml=test-results.xml
+        env:
+          CUDA_VISIBLE_DEVICES: 0
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: health-test-results
+          path: |
+            test-results.xml
+            coverage.xml
+            coverage.json
+          retention-days: 90
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 2. Build the HTML dashboard from test results (runs even if tests failed)
+  # ──────────────────────────────────────────────────────────────────────────
+  build-dashboard:
+    name: Build Dashboard
+    runs-on: ubuntu-latest
+    needs: health-tests
+    if: always()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          name: health-test-results
+          path: results/
+        # Artifact may be absent if health-tests was cancelled before upload.
+        continue-on-error: true
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Build dashboard
+        run: |
+          python .github/scripts/build_dashboard.py \
+            --results-dir results/ \
+            --output-dir dashboard/ \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --timestamp "$(python -c 'from datetime import datetime, timezone; print(datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))')" \
+            --health-outcome "${{ needs.health-tests.outputs.test-outcome }}"
+
+      - name: Write GitHub Actions job summary
+        run: cat dashboard/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload dashboard artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-dashboard
+          path: dashboard/
+          retention-days: 90
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 3. Deploy dashboard to GitHub Pages
+  # ──────────────────────────────────────────────────────────────────────────
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build-dashboard
+    if: always()
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: Download dashboard artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: health-dashboard
+          path: dashboard/
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dashboard/
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
