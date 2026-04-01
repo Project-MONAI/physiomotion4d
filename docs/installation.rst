@@ -41,14 +41,16 @@ CPU-only install (evaluation / no GPU):
 
    pip install physiomotion4d
 
-This works immediately. CuPy is absent, so an ``ImportWarning`` is emitted at
-runtime:
+This works immediately. CuPy is absent, so a ``UserWarning`` is emitted at
+import time (visible by default in all standard Python runs):
 
 .. code-block:: text
 
    CuPy is not installed — GPU acceleration is unavailable and processing will be
-   slow. Install CuPy matching your CUDA version: pip install
-   'physiomotion4d[cuda13]' or 'physiomotion4d[cuda12]'
+   slow. Re-install with uv to get CuPy and CUDA-enabled PyTorch in one step
+   (pip alone will not select the correct CUDA wheel):
+     uv pip install 'physiomotion4d[cuda13]'  # CUDA 13
+     uv pip install 'physiomotion4d[cuda12]'  # CUDA 12
 
 CUDA 13 install (recommended for production):
 
@@ -214,7 +216,7 @@ optional extras:
 * **CUDA 12** — installed when you use the ``[cuda12]`` extra
 
 A plain ``pip install physiomotion4d`` installs a CPU-only build. It runs
-without error but emits an ``ImportWarning`` at startup and will be
+without error but emits a ``UserWarning`` at import time and will be
 significantly slower than a GPU-enabled install.
 
 If CUDA is not yet installed, download the CUDA Toolkit from

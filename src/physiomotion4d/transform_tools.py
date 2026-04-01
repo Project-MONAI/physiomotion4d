@@ -17,7 +17,10 @@ from typing import TypeAlias
 
 try:
     import cupy as cp  # optional (GPU)
-except ModuleNotFoundError:  # CPU-only environments (e.g., CI unit-tests)
+except (ImportError, OSError):
+    # ImportError: cupy not installed or CUDA libraries missing/mismatched.
+    # OSError: driver/library load failure on some platforms.
+    # In all cases fall back to CPU (NumPy) paths.
     cp = None
 import itk
 import numpy as np

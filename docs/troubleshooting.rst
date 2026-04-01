@@ -62,7 +62,7 @@ Verify the active CUDA version before reinstalling:
 
 .. note::
    If you have no NVIDIA GPU, a plain ``pip install physiomotion4d`` installs a
-   CPU-only build. CuPy is absent and an ``ImportWarning`` is emitted at startup.
+   CPU-only build. CuPy is absent and a ``UserWarning`` is emitted at import time.
    CPU execution of all operations is supported but will be significantly slower
    than a GPU-enabled install.
 

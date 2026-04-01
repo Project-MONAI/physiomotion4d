@@ -34,14 +34,16 @@ Installation Questions
 Do I need a GPU?
 ----------------
 
-No. A plain ``pip install physiomotion4d`` works without a GPU. At runtime you
-will see an ``ImportWarning``:
+No. A plain ``pip install physiomotion4d`` works without a GPU. At import time
+a ``UserWarning`` is emitted (visible by default in all standard Python runs):
 
 .. code-block:: text
 
    CuPy is not installed — GPU acceleration is unavailable and processing will be
-   slow. Install CuPy matching your CUDA version: pip install
-   'physiomotion4d[cuda13]' or 'physiomotion4d[cuda12]'
+   slow. Re-install with uv to get CuPy and CUDA-enabled PyTorch in one step
+   (pip alone will not select the correct CUDA wheel):
+     uv pip install 'physiomotion4d[cuda13]'  # CUDA 13
+     uv pip install 'physiomotion4d[cuda12]'  # CUDA 12
 
 CPU-only mode is suitable for evaluation and small datasets. For production
 workloads an NVIDIA GPU is strongly recommended.

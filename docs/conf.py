@@ -13,7 +13,7 @@ from unittest.mock import MagicMock
 sys.path.insert(0, os.path.abspath("../src"))
 
 # Suppress the ImportWarning emitted when cupy is absent (CPU-only docs build)
-warnings.filterwarnings("ignore", category=ImportWarning, module="physiomotion4d")
+warnings.filterwarnings("ignore", category=UserWarning, message="CuPy is not installed")
 
 
 # Create a more robust mock for complex packages
