@@ -24,10 +24,9 @@ on:
         description: 'Reason for manual trigger'
         required: false
         default: 'Manual health check'
-      ref:
-        description: 'Git ref to check out (default: main)'
-        required: false
-        default: 'main'
+        # Branch selection is handled by the standard GitHub UI branch picker —
+        # no free-text ref input, so arbitrary non-default refs cannot be used
+        # to produce a misleading public artifact or dashboard.
 
 permissions:
   contents: read
@@ -51,7 +50,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
-          ref: ${{ inputs.ref || 'main' }}
 
       - name: Check GPU availability
         run: nvidia-smi
