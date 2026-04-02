@@ -20,15 +20,11 @@ jobs:
       with:
         lfs: true
 
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.10"
+    - name: Verify Python
+      run: python --version
 
     - name: Check GPU availability
-      run: |
-        nvidia-smi
-        python -c "import torch; print(f'PyTorch CUDA available: {torch.cuda.is_available()}')" || echo "PyTorch not installed yet"
+      run: nvidia-smi
 
     - name: Cache pip packages
       uses: actions/cache@v4

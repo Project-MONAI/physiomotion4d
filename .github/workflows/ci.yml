@@ -245,16 +245,12 @@ jobs:
   # if no self-hosted runner is available. Enable manually via workflow_dispatch
   # or by setting the 'run-gpu-tests' label on the PR.
   gpu-tests:
-    name: GPU Tests (Python ${{ matrix.python-version }})
+    name: GPU Tests
     runs-on: [self-hosted, Windows, X64, gpu]
     needs: unit-tests
     timeout-minutes: 30
     # Only run GPU tests on manual trigger or if 'run-gpu-tests' label is present
     if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'run-gpu-tests')
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10", "3.11"]
     continue-on-error: true
 
     steps:
@@ -263,10 +259,8 @@ jobs:
       with:
         lfs: true
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
+    - name: Verify Python
+      run: python --version
 
     - name: Check GPU availability
       run: nvidia-smi
@@ -275,9 +269,8 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~\AppData\Local\pip\Cache
-        key: ${{ runner.os }}-pip-gpu-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}
+        key: ${{ runner.os }}-pip-gpu-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ runner.os }}-pip-gpu-${{ matrix.python-version }}-
           ${{ runner.os }}-pip-gpu-
           ${{ runner.os }}-pip-
 
@@ -309,16 +302,14 @@ jobs:
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
-      if: matrix.python-version == '3.10'
       with:
         file: ./coverage.xml
         flags: gpu-tests
-        name: codecov-gpu-py${{ matrix.python-version }}
+        name: codecov-gpu
         fail_ci_if_error: false
 
     - name: Upload coverage artifacts
       uses: actions/upload-artifact@v4
-      if: matrix.python-version == '3.10'
       with:
         name: coverage-report-gpu
         path: htmlcov/

@@ -3,25 +3,38 @@
 claude_github_reviews.py — Screen GitHub PR review comments with Claude.
 
 Workflow:
-  1. Fetch all inline review comments and PR-level review bodies via gh CLI.
+  1. Fetch all inline review threads and PR-level review bodies via gh CLI
+     (GraphQL for threads, REST for PR-level reviews).  Threads already marked
+     as resolved are skipped automatically.
   2. Build a structured prompt that includes file paths, line numbers, diff
      hunks, and suggestion blocks for every comment.
   3. Invoke Claude Code non-interactively; Claude reads CLAUDE.md and AGENTS.md,
      reads the referenced source files for context, and for each comment decides
      APPLY / REVISE / REJECT with explicit reasoning against project conventions.
   4. Accepted edits are applied as pending working-tree changes (not committed).
-  5. A Markdown summary tagged by PR number is written to the repo root.
+  5. Each processed inline-comment thread is marked as resolved on GitHub
+     (unless --no-resolve is passed).
+  6. A Markdown summary tagged by PR number is written to the repo root.
 
 Usage:
   py utils/claude_github_reviews.py --pr 42
   py utils/claude_github_reviews.py --pr 42 --repo owner/repo
   py utils/claude_github_reviews.py --pr 42 --prompt-only
   py utils/claude_github_reviews.py --pr 42 --since-last-push --prompt-only
+  py utils/claude_github_reviews.py --pr 42 --no-resolve
+  py utils/claude_github_reviews.py --pr 42 --prompt-only --mark-resolved
 
   With --since-last-push, only inline comments and PR-level reviews created after
   the latest reflog time for refs/remotes/<remote>/<PR_head_branch> are included.
   That time is when this clone last saw the remote ref move (push or fetch), not
   necessarily the exact server push timestamp.
+
+  With --no-resolve, inline-comment threads are NOT marked as resolved after
+  Claude processes them (useful for dry-runs or re-processing).
+
+  With --mark-resolved, threads are marked as resolved even when --prompt-only is
+  set (no Claude invocation).  Useful for bulk-dismissing comments you have
+  already handled manually.
 
 Requirements:
   - gh CLI (GitHub CLI) — not a Python package; install separately:
@@ -235,20 +248,161 @@ def _gh_api(endpoint: str, *, paginate: bool = False) -> list | dict:
     return json.loads(raw)
 
 
+def _gh_graphql(query: str, variables: dict) -> dict:
+    """
+    Execute a GitHub GraphQL query/mutation via ``gh api graphql --input -``.
+
+    Sends the query as a JSON body on stdin to avoid shell escaping and
+    Windows command-line length limits.  Exits on network or GraphQL errors.
+    """
+    payload = json.dumps({"query": query, "variables": variables})
+    try:
+        out = subprocess.run(
+            ["gh", "api", "graphql", "--input", "-"],
+            input=payload,
+            check=True,
+            text=True,
+            capture_output=True,
+            encoding="utf-8",
+        )
+    except FileNotFoundError:
+        print('[ERROR] "gh" CLI not found. Install from https://cli.github.com')
+        sys.exit(1)
+    except subprocess.CalledProcessError as exc:
+        msg = exc.stderr.strip() if exc.stderr else ""
+        print("[ERROR] gh api graphql failed.")
+        if msg:
+            print(f"        {msg}")
+        sys.exit(exc.returncode)
+
+    result: dict = json.loads(out.stdout.strip())
+    if "errors" in result:
+        print(f"[ERROR] GraphQL errors: {result['errors']}")
+        sys.exit(1)
+    return result
+
+
+# GraphQL query — fetches all review threads with resolution status and
+# the first 50 comments per thread.  Covers up to 100 threads per PR;
+# PRs with more than 100 threads will silently miss the remainder.
+_REVIEW_THREADS_QUERY = """
+query GetPRReviewThreads($owner: String!, $name: String!, $number: Int!) {
+  repository(owner: $owner, name: $name) {
+    pullRequest(number: $number) {
+      reviewThreads(first: 100) {
+        nodes {
+          id
+          isResolved
+          comments(first: 50) {
+            nodes {
+              databaseId
+              path
+              line
+              originalLine
+              body
+              createdAt
+              diffHunk
+              author { login }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+"""
+
+_RESOLVE_THREAD_MUTATION = """
+mutation ResolveReviewThread($threadId: ID!) {
+  resolveReviewThread(input: {threadId: $threadId}) {
+    thread { id isResolved }
+  }
+}
+"""
+
+
+def fetch_review_threads(pr_number: int, repo: str) -> list[dict]:
+    """
+    Return all review threads for a PR via GraphQL.
+
+    Each entry has:
+      ``id``         — GraphQL node ID (used for resolution mutation)
+      ``isResolved`` — bool
+      ``comments``   — list of comment dicts shaped like the REST API response
+                       (keys: path, line, original_line, diff_hunk, body,
+                        created_at, user.login) plus ``_thread_id``
+    """
+    owner, name = repo.split("/", 1)
+    result = _gh_graphql(
+        _REVIEW_THREADS_QUERY,
+        {"owner": owner, "name": name, "number": pr_number},
+    )
+    raw_threads = (
+        result.get("data", {})
+        .get("repository", {})
+        .get("pullRequest", {})
+        .get("reviewThreads", {})
+        .get("nodes", [])
+    )
+
+    threads: list[dict] = []
+    for t in raw_threads:
+        thread_id: str = t["id"]
+        comments: list[dict] = []
+        for c in t.get("comments", {}).get("nodes", []):
+            comments.append(
+                {
+                    "id": c.get("databaseId"),
+                    "path": c.get("path", ""),
+                    "line": c.get("line"),
+                    "original_line": c.get("originalLine"),
+                    "body": c.get("body", ""),
+                    "created_at": c.get("createdAt", ""),
+                    "diff_hunk": c.get("diffHunk", ""),
+                    "user": {"login": (c.get("author") or {}).get("login", "unknown")},
+                    "_thread_id": thread_id,
+                }
+            )
+        threads.append(
+            {
+                "id": thread_id,
+                "isResolved": t.get("isResolved", False),
+                "comments": comments,
+            }
+        )
+    return threads
+
+
 def fetch_pr_data(pr_number: int, repo: str) -> dict:
     result = _gh_api(f"repos/{repo}/pulls/{pr_number}")
     assert isinstance(result, dict)
     return result
 
 
-def fetch_inline_comments(pr_number: int, repo: str) -> list[dict]:
-    result = _gh_api(f"repos/{repo}/pulls/{pr_number}/comments", paginate=True)
-    return result if isinstance(result, list) else []
-
-
 def fetch_reviews(pr_number: int, repo: str) -> list[dict]:
     result = _gh_api(f"repos/{repo}/pulls/{pr_number}/reviews", paginate=True)
     return result if isinstance(result, list) else []
+
+
+def resolve_review_threads(thread_ids: list[str], repo: str) -> None:
+    """
+    Mark each thread in *thread_ids* as resolved via the GitHub GraphQL API.
+
+    Resolution failures print a warning but do not abort; other threads are
+    still attempted.  PR-level reviews have no resolution concept and are not
+    handled here.
+    """
+    if not thread_ids:
+        return
+    print(f"[*] Resolving {len(thread_ids)} inline-comment thread(s)...")
+    owner, name = repo.split("/", 1)  # noqa: F841 — kept for future use
+    for tid in thread_ids:
+        try:
+            _gh_graphql(_RESOLVE_THREAD_MUTATION, {"threadId": tid})
+            print(f"    Resolved thread {tid}")
+        except SystemExit:
+            # _gh_graphql calls sys.exit on error; catch so we can continue.
+            print(f"    [WARNING] Could not resolve thread {tid} — skipping.")
 
 
 # ---------------------------------------------------------------------------
@@ -503,7 +657,10 @@ def parse_args() -> argparse.Namespace:
         "--repo",
         metavar="OWNER/REPO",
         default=None,
-        help="GitHub repo slug (default: inferred from git remote upstream, falling back to origin)",
+        help=(
+            "GitHub repo slug "
+            "(default: inferred from git remote upstream, falling back to origin)"
+        ),
     )
     parser.add_argument(
         "--prompt-only",
@@ -527,6 +684,23 @@ def parse_args() -> argparse.Namespace:
         default="origin",
         help="Git remote name for fetch/reflog (default: origin; used with --since-last-push)",
     )
+    parser.add_argument(
+        "--no-resolve",
+        dest="no_resolve",
+        action="store_true",
+        help=(
+            "Do not mark inline-comment threads as resolved after Claude processes them"
+        ),
+    )
+    parser.add_argument(
+        "--mark-resolved",
+        dest="mark_resolved",
+        action="store_true",
+        help=(
+            "Mark threads as resolved even when --prompt-only is set "
+            "(no Claude invocation required)"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -546,9 +720,17 @@ def main() -> None:
     pr_data = fetch_pr_data(pr_number, repo)
     print(f'    "{pr_data.get("title", "")}"')
 
-    print("[*] Fetching inline review comments...")
-    inline_comments = fetch_inline_comments(pr_number, repo)
-    print(f"    {len(inline_comments)} inline comment(s)")
+    print("[*] Fetching inline review threads (unresolved only)...")
+    threads = fetch_review_threads(pr_number, repo)
+    unresolved_threads = [t for t in threads if not t["isResolved"]]
+    resolved_count = len(threads) - len(unresolved_threads)
+    # Flatten to a comment list; each comment carries _thread_id for later resolution.
+    inline_comments: list[dict] = [c for t in unresolved_threads for c in t["comments"]]
+    thread_ids: list[str] = [t["id"] for t in unresolved_threads if t["comments"]]
+    print(
+        f"    {len(inline_comments)} comment(s) in {len(unresolved_threads)} "
+        f"unresolved thread(s) ({resolved_count} already resolved, skipped)"
+    )
 
     print("[*] Fetching PR-level reviews...")
     reviews = fetch_reviews(pr_number, repo)
@@ -582,6 +764,10 @@ def main() -> None:
             for r in reviews
             if r.get("body", "").strip() and r.get("state") not in ("PENDING", "")
         ]
+        # Re-derive thread IDs from comments that survived the time filter.
+        thread_ids = list(
+            {c["_thread_id"] for c in inline_comments if "_thread_id" in c}
+        )
         print(
             f"    After filter: {len(inline_comments)} inline comment(s), "
             f"{len(review_bodies)} review(s) with body text"
@@ -589,7 +775,7 @@ def main() -> None:
 
     total = len(inline_comments) + len(review_bodies)
     if total == 0:
-        print("\n[*] No review comments found. Nothing to do.")
+        print("\n[*] No unresolved review comments found. Nothing to do.")
         sys.exit(0)
 
     print(f"\n[*] Building prompt for {total} comment(s)...")
@@ -616,9 +802,16 @@ def main() -> None:
         print(separator)
         print("\n[prompt-only] No files changed.")
         print(f"[prompt-only] Summary would be written to: {summary_filename}")
+        if args.mark_resolved and thread_ids:
+            resolve_review_threads(thread_ids, repo)
         sys.exit(0)
 
     invoke_claude(prompt, repo_root)
+
+    if not args.no_resolve and thread_ids:
+        resolve_review_threads(thread_ids, repo)
+    elif args.no_resolve:
+        print(f"[*] --no-resolve: skipped resolving {len(thread_ids)} thread(s).")
 
     print()
     summary_path = repo_root / summary_filename
