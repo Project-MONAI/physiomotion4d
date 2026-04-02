@@ -261,7 +261,7 @@ jobs:
 
     - name: Create venv in RUNNER_TEMP
       run: |
-        & "C:\Program Files\Python3.10\python.exe" -m venv "$env:RUNNER_TEMP\physiomotion4d-venv"
+        & "C:\Program Files\Python310\python.exe" -m venv "$env:RUNNER_TEMP\physiomotion4d-venv"
         echo "$env:RUNNER_TEMP\physiomotion4d-venv\Scripts" >> $env:GITHUB_PATH
 
     - name: Check GPU availability
