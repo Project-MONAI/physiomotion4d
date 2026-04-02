@@ -135,6 +135,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: health-tests
     if: always()
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
@@ -172,9 +174,18 @@ jobs:
           path: dashboard/
           retention-days: 90
 
-      - name: Upload status.json as standalone artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: nightly-status-json
-          path: dashboard/status.json
-          retention-days: 90
+      - name: Push status.json to nightly-status branch
+        # Force-push a single-file orphan branch so docs.yml can fetch
+        # status.json via the GitHub API and include it in the Pages bundle.
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          cp dashboard/status.json /tmp/status.json
+          git checkout --orphan nightly-status-tmp
+          git rm -rf . --quiet || true
+          cp /tmp/status.json status.json
+          git add status.json
+          git commit -m "chore: update nightly status [skip ci]"
+          git push origin HEAD:nightly-status --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
