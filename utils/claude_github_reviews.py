@@ -282,18 +282,22 @@ def _gh_graphql(query: str, variables: dict) -> dict:
     return result
 
 
-# GraphQL query — fetches all review threads with resolution status and
-# the first 50 comments per thread.  Covers up to 100 threads per PR;
-# PRs with more than 100 threads will silently miss the remainder.
+# GraphQL query — fetches one page of review threads (up to 100) with the
+# first 50 comments per thread.  Both connections include pageInfo so the
+# caller can paginate until exhausted.
 _REVIEW_THREADS_QUERY = """
-query GetPRReviewThreads($owner: String!, $name: String!, $number: Int!) {
+query GetPRReviewThreads(
+  $owner: String!, $name: String!, $number: Int!, $after: String
+) {
   repository(owner: $owner, name: $name) {
     pullRequest(number: $number) {
-      reviewThreads(first: 100) {
+      reviewThreads(first: 100, after: $after) {
+        pageInfo { hasNextPage endCursor }
         nodes {
           id
           isResolved
           comments(first: 50) {
+            pageInfo { hasNextPage endCursor }
             nodes {
               databaseId
               path
@@ -312,6 +316,29 @@ query GetPRReviewThreads($owner: String!, $name: String!, $number: Int!) {
 }
 """
 
+# Used when a thread's comment list was truncated in the main query.
+_THREAD_COMMENTS_QUERY = """
+query GetThreadComments($threadId: ID!, $after: String) {
+  node(id: $threadId) {
+    ... on PullRequestReviewThread {
+      comments(first: 50, after: $after) {
+        pageInfo { hasNextPage endCursor }
+        nodes {
+          databaseId
+          path
+          line
+          originalLine
+          body
+          createdAt
+          diffHunk
+          author { login }
+        }
+      }
+    }
+  }
+}
+"""
+
 _RESOLVE_THREAD_MUTATION = """
 mutation ResolveReviewThread($threadId: ID!) {
   resolveReviewThread(input: {threadId: $threadId}) {
@@ -321,55 +348,98 @@ mutation ResolveReviewThread($threadId: ID!) {
 """
 
 
+def _parse_comment(c: dict, thread_id: str) -> dict:
+    """Normalise a GraphQL comment node into the shape the rest of the code expects."""
+    return {
+        "id": c.get("databaseId"),
+        "path": c.get("path", ""),
+        "line": c.get("line"),
+        "original_line": c.get("originalLine"),
+        "body": c.get("body", ""),
+        "created_at": c.get("createdAt", ""),
+        "diff_hunk": c.get("diffHunk", ""),
+        "user": {"login": (c.get("author") or {}).get("login", "unknown")},
+        "_thread_id": thread_id,
+    }
+
+
+def _fetch_remaining_comments(thread_id: str, after: str) -> list[dict]:
+    """
+    Fetch comment pages for *thread_id* starting after *after* cursor.
+
+    Called only when the comments connection returned by the main threads
+    query reports ``hasNextPage = true``.
+    """
+    comments: list[dict] = []
+    cursor: str | None = after
+    while cursor:
+        result = _gh_graphql(
+            _THREAD_COMMENTS_QUERY, {"threadId": thread_id, "after": cursor}
+        )
+        conn = (result.get("data", {}).get("node") or {}).get("comments", {})
+        for c in conn.get("nodes", []):
+            comments.append(_parse_comment(c, thread_id))
+        page_info = conn.get("pageInfo", {})
+        cursor = page_info.get("endCursor") if page_info.get("hasNextPage") else None
+    return comments
+
+
 def fetch_review_threads(pr_number: int, repo: str) -> list[dict]:
     """
-    Return all review threads for a PR via GraphQL.
+    Return all review threads for a PR via GraphQL, paginating both the
+    thread list and per-thread comments until exhausted.
 
     Each entry has:
       ``id``         — GraphQL node ID (used for resolution mutation)
       ``isResolved`` — bool
-      ``comments``   — list of comment dicts shaped like the REST API response
-                       (keys: path, line, original_line, diff_hunk, body,
-                        created_at, user.login) plus ``_thread_id``
+      ``comments``   — list of comment dicts (keys: path, line, original_line,
+                       diff_hunk, body, created_at, user.login, _thread_id)
     """
     owner, name = repo.split("/", 1)
-    result = _gh_graphql(
-        _REVIEW_THREADS_QUERY,
-        {"owner": owner, "name": name, "number": pr_number},
-    )
-    raw_threads = (
-        result.get("data", {})
-        .get("repository", {})
-        .get("pullRequest", {})
-        .get("reviewThreads", {})
-        .get("nodes", [])
-    )
-
     threads: list[dict] = []
-    for t in raw_threads:
-        thread_id: str = t["id"]
-        comments: list[dict] = []
-        for c in t.get("comments", {}).get("nodes", []):
-            comments.append(
+    thread_cursor: str | None = None
+
+    while True:
+        result = _gh_graphql(
+            _REVIEW_THREADS_QUERY,
+            {"owner": owner, "name": name, "number": pr_number, "after": thread_cursor},
+        )
+        threads_conn = (
+            result.get("data", {})
+            .get("repository", {})
+            .get("pullRequest", {})
+            .get("reviewThreads", {})
+        )
+
+        for t in threads_conn.get("nodes", []):
+            thread_id: str = t["id"]
+            comments_conn = t.get("comments", {})
+
+            comments = [
+                _parse_comment(c, thread_id) for c in comments_conn.get("nodes", [])
+            ]
+
+            # Paginate comments if the first page was truncated.
+            if comments_conn.get("pageInfo", {}).get("hasNextPage"):
+                comments.extend(
+                    _fetch_remaining_comments(
+                        thread_id, comments_conn["pageInfo"]["endCursor"]
+                    )
+                )
+
+            threads.append(
                 {
-                    "id": c.get("databaseId"),
-                    "path": c.get("path", ""),
-                    "line": c.get("line"),
-                    "original_line": c.get("originalLine"),
-                    "body": c.get("body", ""),
-                    "created_at": c.get("createdAt", ""),
-                    "diff_hunk": c.get("diffHunk", ""),
-                    "user": {"login": (c.get("author") or {}).get("login", "unknown")},
-                    "_thread_id": thread_id,
+                    "id": thread_id,
+                    "isResolved": t.get("isResolved", False),
+                    "comments": comments,
                 }
             )
-        threads.append(
-            {
-                "id": thread_id,
-                "isResolved": t.get("isResolved", False),
-                "comments": comments,
-            }
-        )
+
+        page_info = threads_conn.get("pageInfo", {})
+        if not page_info.get("hasNextPage"):
+            break
+        thread_cursor = page_info["endCursor"]
+
     return threads
 
 

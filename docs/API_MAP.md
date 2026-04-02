@@ -793,14 +793,14 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - `def parse_github_datetime(iso_str)` (line 117): Parse GitHub API timestamps (may end with Z).
 - `def get_remote_reflog_cutoff(repo_root, remote, head_ref)` (line 133): Latest reflog time for refs/remotes/<remote>/<head_ref> (when the ref last
 - `def filter_since_cutoff(inline_comments, reviews, cutoff)` (line 173): Keep inline comments with created_at > cutoff and reviews with
-- `def fetch_review_threads(pr_number, repo)` (line 324): Return all review threads for a PR via GraphQL.
-- `def fetch_pr_data(pr_number, repo)` (line 376)
-- `def fetch_reviews(pr_number, repo)` (line 382)
-- `def resolve_review_threads(thread_ids, repo)` (line 387): Mark each thread in *thread_ids* as resolved via the GitHub GraphQL API.
-- `def build_prompt(pr_number, pr_data, reviews, inline_comments, summary_filename)` (line 476)
-- `def invoke_claude(prompt, repo_root)` (line 593): Invoke Claude Code non-interactively via stdin.
-- `def parse_args()` (line 641)
-- `def main()` (line 707)
+- `def fetch_review_threads(pr_number, repo)` (line 387): Return all review threads for a PR via GraphQL, paginating both the
+- `def fetch_pr_data(pr_number, repo)` (line 446)
+- `def fetch_reviews(pr_number, repo)` (line 452)
+- `def resolve_review_threads(thread_ids, repo)` (line 457): Mark each thread in *thread_ids* as resolved via the GitHub GraphQL API.
+- `def build_prompt(pr_number, pr_data, reviews, inline_comments, summary_filename)` (line 546)
+- `def invoke_claude(prompt, repo_root)` (line 663): Invoke Claude Code non-interactively via stdin.
+- `def parse_args()` (line 711)
+- `def main()` (line 777)
 
 ## utils/generate_api_map.py
 
