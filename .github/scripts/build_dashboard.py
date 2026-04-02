@@ -250,9 +250,9 @@ def build_status_json(data: dict) -> dict:
         ![Health](https://img.shields.io/endpoint?url=https://project-monai.github.io/physiomotion4d/status.json)
     """
     junit = data["junit"]
-    outcome = data["health_outcome"]
 
-    if not junit.get("available") or outcome not in ("success", "skipped", ""):
+    if not junit.get("available"):
+        # JUnit XML missing or unparseable — step was cancelled or never ran.
         color, message = "critical", "unknown"
     elif (junit["failed"] + junit["errors"]) > 0:
         n_bad = junit["failed"] + junit["errors"]

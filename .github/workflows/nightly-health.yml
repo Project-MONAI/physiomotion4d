@@ -1,21 +1,19 @@
 name: Nightly Health
 
-# Run the full test suite on the GPU runner every night and publish a
-# one-page health dashboard to GitHub Pages.
+# Run the full test suite (including experiments) on the GPU runner every night.
 #
 # Schedule: 07:00 UTC daily ≈ 02:00 EST / 03:00 EDT
 #
-# Pages note: this workflow deploys the health dashboard to the same
-# github-pages environment used by docs.yml. The last deployment wins,
-# so pushing to main (which triggers docs.yml) will temporarily replace
-# the health page until the next nightly run. The README badge below is
-# independent of Pages and always reflects the latest run status.
+# Outputs:
+#   - GitHub Actions job summary (visible in the Actions UI after each run)
+#   - Artifact "health-dashboard": index.html + status.json (90-day retention)
+#   - Artifact "health-test-results": JUnit XML + coverage reports (90-day retention)
 #
-# README badge (workflow status — always current):
+# The dashboard is NOT deployed to GitHub Pages to avoid overwriting the
+# documentation site published by docs.yml.  Use the workflow status badge
+# for a live pass/fail indicator in README:
+#
 #   [![Nightly Health](https://github.com/Project-MONAI/physiomotion4d/actions/workflows/nightly-health.yml/badge.svg)](https://github.com/Project-MONAI/physiomotion4d/actions/workflows/nightly-health.yml)
-#
-# README badge (shields.io endpoint — reflects last Pages deploy):
-#   [![Health](https://img.shields.io/endpoint?url=https://project-monai.github.io/physiomotion4d/status.json)](https://project-monai.github.io/physiomotion4d/)
 
 on:
   schedule:
@@ -31,7 +29,6 @@ on:
         required: false
         default: 'main'
 
-# Minimal default permissions; deploy-pages job escalates its own permissions.
 permissions:
   contents: read
 
@@ -160,37 +157,3 @@ jobs:
           name: health-dashboard
           path: dashboard/
           retention-days: 90
-
-  # ──────────────────────────────────────────────────────────────────────────
-  # 3. Deploy dashboard to GitHub Pages
-  # ──────────────────────────────────────────────────────────────────────────
-  deploy-pages:
-    name: Deploy to GitHub Pages
-    runs-on: ubuntu-latest
-    needs: build-dashboard
-    if: always()
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-
-    steps:
-      - name: Download dashboard artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: health-dashboard
-          path: dashboard/
-
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dashboard/
-
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
