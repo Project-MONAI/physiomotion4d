@@ -836,13 +836,27 @@ def main() -> None:
             for r in reviews
             if r.get("body", "").strip() and r.get("state") not in ("PENDING", "")
         ]
-        # Re-derive thread IDs from comments that survived the time filter.
-        thread_ids = list(
-            {c["_thread_id"] for c in thread_comments if "_thread_id" in c}
-        )
+        # Only resolve threads where every comment survived the cutoff filter.
+        # A thread with pre-cutoff comments was not fully represented in the
+        # prompt, so resolving it would be premature.
+        surviving_thread_ids = {
+            c["_thread_id"] for c in thread_comments if "_thread_id" in c
+        }
+        thread_ids = [
+            t["id"]
+            for t in unresolved_threads
+            if t["id"] in surviving_thread_ids
+            and t["comments"]
+            and all(
+                parse_github_datetime(c.get("created_at", "1970-01-01T00:00:00Z"))
+                > cutoff
+                for c in t["comments"]
+            )
+        ]
         print(
             f"    After filter: {len(thread_comments)} thread comment(s), "
-            f"{len(review_bodies)} review(s) with body text"
+            f"{len(review_bodies)} review(s) with body text, "
+            f"{len(thread_ids)} thread(s) eligible for auto-resolve"
         )
 
     total = len(thread_comments) + len(review_bodies)
