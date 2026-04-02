@@ -20,21 +20,23 @@ jobs:
       with:
         lfs: true
 
-    - name: Verify Python
-      run: python --version
+    - name: Create / activate venv
+      run: |
+        if (-not (Test-Path "C:\actions-venvs\physiomotion4d")) {
+          & "C:\Program Files\Python3.10\python.exe" -m venv C:\actions-venvs\physiomotion4d
+        }
+        echo "C:\actions-venvs\physiomotion4d\Scripts" >> $env:GITHUB_PATH
 
     - name: Check GPU availability
       run: nvidia-smi
 
-    - name: Cache pip packages
+    - name: Cache venv packages
       uses: actions/cache@v4
       with:
-        path: ~\AppData\Local\pip\Cache
-        key: ${{ runner.os }}-pip-slow-gpu-${{ hashFiles('pyproject.toml') }}
+        path: C:\actions-venvs\physiomotion4d
+        key: ${{ runner.os }}-venv-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
-          ${{ runner.os }}-pip-slow-gpu-
-          ${{ runner.os }}-pip-gpu-
-          ${{ runner.os }}-pip-
+          ${{ runner.os }}-venv-
 
     - name: Cache test data
       uses: actions/cache@v4
@@ -53,7 +55,7 @@ jobs:
     - name: Install package with test dependencies
       # uv respects [tool.uv.sources], routing torch to pytorch-cu130 for cuda13
       run: |
-        uv pip install --system -e ".[test,cuda13]"
+        uv pip install -e ".[test,cuda13]"
 
     - name: Run slow tests
       run: |
