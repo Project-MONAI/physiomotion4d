@@ -23,6 +23,7 @@ Usage:
   py utils/claude_github_reviews.py --pr 42 --since-last-push --prompt-only
   py utils/claude_github_reviews.py --pr 42 --no-resolve
   py utils/claude_github_reviews.py --pr 42 --prompt-only --mark-resolved
+  # --no-resolve and --mark-resolved are mutually exclusive
 
   With --since-last-push, only inline comments and PR-level reviews created after
   the latest reflog time for refs/remotes/<remote>/<PR_head_branch> are included.
@@ -35,6 +36,8 @@ Usage:
   With --mark-resolved, threads are marked as resolved even when --prompt-only is
   set (no Claude invocation).  Useful for bulk-dismissing comments you have
   already handled manually.
+
+  --no-resolve and --mark-resolved are mutually exclusive; passing both is an error.
 
 Requirements:
   - gh CLI (GitHub CLI) — not a Python package; install separately:
@@ -754,15 +757,14 @@ def parse_args() -> argparse.Namespace:
         default="origin",
         help="Git remote name for fetch/reflog (default: origin; used with --since-last-push)",
     )
-    parser.add_argument(
+    resolve_group = parser.add_mutually_exclusive_group()
+    resolve_group.add_argument(
         "--no-resolve",
         dest="no_resolve",
         action="store_true",
-        help=(
-            "Do not mark inline-comment threads as resolved after Claude processes them"
-        ),
+        help="Do not mark inline-comment threads as resolved after Claude processes them",
     )
-    parser.add_argument(
+    resolve_group.add_argument(
         "--mark-resolved",
         dest="mark_resolved",
         action="store_true",

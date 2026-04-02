@@ -787,20 +787,20 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## utils/claude_github_reviews.py
 
-- `def git_fetch(repo_root, remote, branch)` (line 64): Run ``git fetch <remote> <branch>``, printing progress.
-- `def get_repo_root()` (line 78)
-- `def get_repo_slug(repo_root)` (line 92): Derive owner/repo from the git remote URL (upstream, falling back to origin).
-- `def parse_github_datetime(iso_str)` (line 117): Parse GitHub API timestamps (may end with Z).
-- `def get_remote_reflog_cutoff(repo_root, remote, head_ref)` (line 133): Latest reflog time for refs/remotes/<remote>/<head_ref> (when the ref last
-- `def filter_since_cutoff(inline_comments, reviews, cutoff)` (line 173): Keep inline comments with created_at > cutoff and reviews with
-- `def fetch_review_threads(pr_number, repo)` (line 387): Return all review threads for a PR via GraphQL, paginating both the
-- `def fetch_pr_data(pr_number, repo)` (line 446)
-- `def fetch_reviews(pr_number, repo)` (line 452)
-- `def resolve_review_threads(thread_ids, repo)` (line 457): Mark each thread in *thread_ids* as resolved via the GitHub GraphQL API.
-- `def build_prompt(pr_number, pr_data, reviews, inline_comments, summary_filename)` (line 546)
-- `def invoke_claude(prompt, repo_root)` (line 663): Invoke Claude Code non-interactively via stdin.
-- `def parse_args()` (line 711)
-- `def main()` (line 777)
+- `def git_fetch(repo_root, remote, branch)` (line 67): Run ``git fetch <remote> <branch>``, printing progress.
+- `def get_repo_root()` (line 81)
+- `def get_repo_slug(repo_root)` (line 95): Derive owner/repo from the git remote URL (upstream, falling back to origin).
+- `def parse_github_datetime(iso_str)` (line 120): Parse GitHub API timestamps (may end with Z).
+- `def get_remote_reflog_cutoff(repo_root, remote, head_ref)` (line 136): Latest reflog time for refs/remotes/<remote>/<head_ref> (when the ref last
+- `def filter_since_cutoff(inline_comments, reviews, cutoff)` (line 176): Keep inline comments with created_at > cutoff and reviews with
+- `def fetch_review_threads(pr_number, repo)` (line 390): Return all review threads for a PR via GraphQL, paginating both the
+- `def fetch_pr_data(pr_number, repo)` (line 449)
+- `def fetch_reviews(pr_number, repo)` (line 455)
+- `def resolve_review_threads(thread_ids, repo)` (line 460): Mark each thread in *thread_ids* as resolved via the GitHub GraphQL API.
+- `def build_prompt(pr_number, pr_data, reviews, inline_comments, summary_filename)` (line 549)
+- `def invoke_claude(prompt, repo_root)` (line 666): Invoke Claude Code non-interactively via stdin.
+- `def parse_args()` (line 714)
+- `def main()` (line 779)
 
 ## utils/generate_api_map.py
 
