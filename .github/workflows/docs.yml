@@ -11,6 +11,8 @@ on:
 jobs:
   build-docs:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     permissions:
       contents: read
     
@@ -84,6 +86,8 @@ jobs:
     needs: build-docs
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     permissions:
       contents: read
       pages: write
@@ -118,6 +122,8 @@ jobs:
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
+      with:
+        enablement: true
       
     - name: Upload artifact for Pages
       uses: actions/upload-pages-artifact@v3
