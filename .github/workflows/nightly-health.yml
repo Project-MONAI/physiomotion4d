@@ -78,9 +78,10 @@ jobs:
             test-data-
 
       - name: Install uv and package
+        # Invoke via python -m uv so uv targets the active venv interpreter.
         run: |
           python -m pip install --upgrade pip uv
-          uv pip install -e ".[test,cuda13]"
+          python -m uv pip install -e ".[test,cuda13]"
 
       - name: Assert CUDA is accessible
         run: |

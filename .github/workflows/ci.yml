@@ -281,8 +281,9 @@ jobs:
 
     - name: Install package with test dependencies
       # uv respects [tool.uv.sources], routing torch to pytorch-cu130 for cuda13
+      # Invoke via python -m uv so uv targets the active venv interpreter.
       run: |
-        uv pip install -e ".[test,cuda13]"
+        python -m uv pip install -e ".[test,cuda13]"
 
     - name: Assert CUDA is accessible
       run: |
