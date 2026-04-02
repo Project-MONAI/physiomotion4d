@@ -170,3 +170,10 @@ jobs:
           name: health-dashboard
           path: dashboard/
           retention-days: 90
+
+      - name: Upload status.json as standalone artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-status-json
+          path: dashboard/status.json
+          retention-days: 90

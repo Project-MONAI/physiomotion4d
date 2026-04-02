@@ -14,6 +14,19 @@ Usage (called from nightly-health.yml):
         --run-url "https://github.com/Project-MONAI/physiomotion4d/actions/runs/123" \\
         --timestamp "2026-03-31T07:05:42Z" \\
         --health-outcome "success"
+
+Artifact publishing:
+    ``status.json`` is uploaded by ``nightly-health.yml`` as a standalone
+    artifact named ``nightly-status-json`` (90-day retention).  ``docs.yml``
+    downloads that artifact during its ``deploy`` job and copies
+    ``status.json`` into the Pages output directory so that the file is
+    served at the live URL:
+
+        https://<pages-root>/status.json
+
+    The copy step uses ``continue-on-error: true`` so the first docs deploy
+    (before any nightly run has produced the artifact) succeeds without
+    ``status.json`` being present.
 """
 
 from __future__ import annotations

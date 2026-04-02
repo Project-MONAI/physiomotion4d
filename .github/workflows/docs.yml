@@ -97,7 +97,18 @@ jobs:
       with:
         name: documentation
         path: ./docs-html
-        
+
+    - name: Download nightly status.json
+      uses: actions/download-artifact@v4
+      with:
+        name: nightly-status-json
+        path: results/
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true
+
+    - name: Merge status.json into docs
+      run: cp results/status.json ./docs-html/status.json || true
+
     - name: Setup Pages
       uses: actions/configure-pages@v4
       
