@@ -98,7 +98,11 @@ jobs:
           if n == 0:
               print('ERROR: torch.cuda.device_count() == 0', file=sys.stderr)
               sys.exit(1)
-          print(f'OK: {n} GPU(s) visible')
+          cn = cupy.cuda.runtime.getDeviceCount()
+          if cn == 0:
+              print('ERROR: cupy.cuda.runtime.getDeviceCount() == 0', file=sys.stderr)
+              sys.exit(1)
+          print(f'OK: {n} GPU(s) visible to PyTorch and CuPy')
           "
 
       - name: Run health test suite
