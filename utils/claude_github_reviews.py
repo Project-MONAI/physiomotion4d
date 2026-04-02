@@ -174,16 +174,16 @@ def get_remote_reflog_cutoff(repo_root: Path, remote: str, head_ref: str) -> dat
 
 
 def filter_since_cutoff(
-    inline_comments: list[dict],
+    thread_comments: list[dict],
     reviews: list[dict],
     cutoff: datetime,
 ) -> tuple[list[dict], list[dict]]:
     """
-    Keep inline comments with created_at > cutoff and reviews with
+    Keep thread comments with created_at > cutoff and reviews with
     submitted_at > cutoff (submitted_at required).
     """
     filtered_inline: list[dict] = []
-    for c in inline_comments:
+    for c in thread_comments:
         created = c.get("created_at")
         if not created:
             continue
@@ -550,7 +550,7 @@ def build_prompt(
     pr_number: int,
     pr_data: dict,
     reviews: list[dict],
-    inline_comments: list[dict],
+    thread_comments: list[dict],
     summary_filename: str,
 ) -> str:
     title = pr_data.get("title", f"PR #{pr_number}")
@@ -562,14 +562,14 @@ def build_prompt(
         for r in reviews
         if r.get("body", "").strip() and r.get("state") not in ("PENDING", "")
     ]
-    total = len(inline_comments) + len(review_bodies)
+    total = len(thread_comments) + len(review_bodies)
 
     comments_block = "\n".join(
         filter(
             None,
             [
                 _format_review_bodies(reviews),
-                _format_inline_comments(inline_comments),
+                _format_inline_comments(thread_comments),
             ],
         )
     )
@@ -797,10 +797,10 @@ def main() -> None:
     unresolved_threads = [t for t in threads if not t["isResolved"]]
     resolved_count = len(threads) - len(unresolved_threads)
     # Flatten to a comment list; each comment carries _thread_id for later resolution.
-    inline_comments: list[dict] = [c for t in unresolved_threads for c in t["comments"]]
+    thread_comments: list[dict] = [c for t in unresolved_threads for c in t["comments"]]
     thread_ids: list[str] = [t["id"] for t in unresolved_threads if t["comments"]]
     print(
-        f"    {len(inline_comments)} comment(s) in {len(unresolved_threads)} "
+        f"    {len(thread_comments)} comment(s) in {len(unresolved_threads)} "
         f"unresolved thread(s) ({resolved_count} already resolved, skipped)"
     )
 
@@ -830,7 +830,7 @@ def main() -> None:
         print("[*] --since-last-push")
         print(f"    Remote ref : {remote_ref}")
         print(f"    Cutoff     : {cutoff.isoformat()}")
-        inline_comments, reviews = filter_since_cutoff(inline_comments, reviews, cutoff)
+        thread_comments, reviews = filter_since_cutoff(thread_comments, reviews, cutoff)
         review_bodies = [
             r
             for r in reviews
@@ -838,14 +838,14 @@ def main() -> None:
         ]
         # Re-derive thread IDs from comments that survived the time filter.
         thread_ids = list(
-            {c["_thread_id"] for c in inline_comments if "_thread_id" in c}
+            {c["_thread_id"] for c in thread_comments if "_thread_id" in c}
         )
         print(
-            f"    After filter: {len(inline_comments)} inline comment(s), "
+            f"    After filter: {len(thread_comments)} thread comment(s), "
             f"{len(review_bodies)} review(s) with body text"
         )
 
-    total = len(inline_comments) + len(review_bodies)
+    total = len(thread_comments) + len(review_bodies)
     if total == 0:
         print("\n[*] No unresolved review comments found. Nothing to do.")
         sys.exit(0)
@@ -855,7 +855,7 @@ def main() -> None:
         pr_number=pr_number,
         pr_data=pr_data,
         reviews=reviews,
-        inline_comments=inline_comments,
+        thread_comments=thread_comments,
         summary_filename=summary_filename,
     )
 
