@@ -18,6 +18,10 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - `def create_deformed_mesh(base_mesh_data, time_step, num_steps=10)` (line 276): Create a deformed version of the mesh for animation.
 - `def verify_usd_file(usd_path)` (line 391): Verify USD file integrity.
 
+## experiments/DisplacementField_To_USD/displacement_field_to_usd.py
+
+- `def generate_sample_displacement_fields(output_dir, n_timesteps=10, size=(32, 32, 32))` (line 79): Generate synthetic time-varying displacement fields for demonstration.
+
 ## experiments/Heart-Create_Statistical_Model/5-compute_pca_model.py
 
 - `def generate_pc_variation(pc_index, std_dev_multiplier=3.0)` (line 155): Generate shape variations along a principal component.
