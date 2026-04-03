@@ -63,8 +63,6 @@ def vista3d_inference_from_itk(
         itk_image, channel_dim=None, dtype=torch.float32
     )
 
-    input_size = itk_image.GetLargestPossibleRegion().GetSize()
-
     # 5. Preprocessing pipeline
     processed = meta_tensor
     processed = EnsureChannelFirst(channel_dim=None)(processed)
@@ -74,6 +72,15 @@ def vista3d_inference_from_itk(
         a_min=-1024, a_max=1024, b_min=0.0, b_max=1.0, clip=True
     )(processed)
     processed = CropForeground()(processed)
+
+    # Save the MONAI affine now (Spacing + CropForeground have updated it).
+    # We need it later to place the label map in the processed world space before
+    # resampling back to the original ITK grid.
+    processed_affine = (
+        processed.meta["affine"].numpy()
+        if hasattr(processed, "meta") and "affine" in processed.meta
+        else None
+    )
 
     # 6. Load VISTA3D
     model = vista3d132(encoder_embed_dim=48, in_channels=1)
@@ -152,18 +159,39 @@ def vista3d_inference_from_itk(
     else:
         label_map = (output > 0.5).squeeze(0).cpu().numpy().astype(np.uint8)
 
-    # Ensure output is zyx order for ITK
-    if label_map.shape != tuple(reversed(input_size)):
-        # Some transforms may flip axes; reorder as needed.
-        label_map_for_itk = np.transpose(label_map, axes=range(label_map.ndim)[::-1])
-    else:
-        label_map_for_itk = label_map
+    # MONAI outputs are in (D, H, W) = (z, y, x) — matches ITK's GetImageFromArray
+    # convention, so no transpose is needed.
+    label_map_for_itk = label_map
 
-    # ITK expects z,y,x ordering for GetImageFromArray
+    # Build an ITK image in the processed (1.5 mm, cropped) world space.
     output_itk = itk.GetImageFromArray(label_map_for_itk)
-    output_itk.SetSpacing(itk_image.GetSpacing())
-    output_itk.SetOrigin(itk_image.GetOrigin())
-    output_itk.SetDirection(itk_image.GetDirection())
+    if processed_affine is not None:
+        # Extract spacing and origin from the MONAI affine matrix.
+        # Columns norms of the 3×3 rotation-scale block give voxel spacing.
+        spacing_processed = np.sqrt(
+            (processed_affine[:3, :3] ** 2).sum(axis=0)
+        ).tolist()
+        origin_processed = processed_affine[:3, 3].tolist()
+        output_itk.SetSpacing(spacing_processed)
+        output_itk.SetOrigin(origin_processed)
+        output_itk.SetDirection(itk_image.GetDirection())
+
+        # Resample the label map back to the original input image grid using
+        # nearest-neighbour interpolation (preserves discrete label values).
+        resampler = itk.ResampleImageFilter.New(output_itk)
+        resampler.SetReferenceImage(itk_image)
+        resampler.SetUseReferenceImage(True)
+        resampler.SetInterpolator(
+            itk.NearestNeighborInterpolateImageFunction.New(output_itk)
+        )
+        resampler.SetDefaultPixelValue(0)
+        resampler.Update()
+        output_itk = resampler.GetOutput()
+    else:
+        # Fallback: copy input metadata (spatial alignment may be approximate).
+        output_itk.SetSpacing(itk_image.GetSpacing())
+        output_itk.SetOrigin(itk_image.GetOrigin())
+        output_itk.SetDirection(itk_image.GetDirection())
 
     return output_itk
 

@@ -14,7 +14,6 @@
 
 # %%
 import itk
-import sys
 
 from pathlib import Path
 
@@ -26,9 +25,6 @@ import pyvista as pv
 from physiomotion4d.contour_tools import ContourTools
 from physiomotion4d.notebook_utils import running_as_test
 from physiomotion4d.register_models_icp import RegisterModelsICP
-
-# Add the src directory to the path to import the registration class
-sys.path.insert(0, str(Path.cwd().parent.parent / "src"))
 
 _HERE = Path(__file__).parent
 

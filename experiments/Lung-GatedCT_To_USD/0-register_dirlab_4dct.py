@@ -65,8 +65,8 @@ def register_image(
     reg_images.set_fixed_image(fixed_image)
     moving_mask_d = None
     if fixed_mask is not None:
-        fixed_mask_d = dilate_mask(fixed_mask, 5)
-        moving_mask_d = dilate_mask(moving_mask, 5)
+        fixed_mask_d = dilate_mask(fixed_mask, heart_mask_dilation)
+        moving_mask_d = dilate_mask(moving_mask, heart_mask_dilation)
         reg_images.set_fixed_mask(fixed_mask_d)
     results = reg_images.register(moving_image, moving_mask_d)
     inverse_transform = results["inverse_transform"]
@@ -122,7 +122,7 @@ for case_name in case_names:
         compression=True,
     )
 
-    # Create heart mask by including major vessels and contrast masks
+    # Dynamic anatomy = lung (the structure that moves with respiration)
     lung_mask_arr = itk.array_from_image(fixed_image_lung_mask)
     fixed_image_dynamic_anatomy_mask_arr = lung_mask_arr
     fixed_image_dynamic_anatomy_mask = itk.image_from_array(
@@ -130,13 +130,13 @@ for case_name in case_names:
     )
     fixed_image_dynamic_anatomy_mask.CopyInformation(fixed_image_mask)
 
-    # Create other mask by including heart, bone and soft tissue masks
+    # Static anatomy = heart, major vessels, contrast, bone, other (all non-lung)
     heart_mask_arr = itk.array_from_image(fixed_image_heart_mask)
     major_vessels_mask_arr = itk.array_from_image(fixed_image_major_vessels_mask)
     contrast_mask_arr = itk.array_from_image(fixed_image_contrast_mask)
     bone_mask_arr = itk.array_from_image(fixed_image_bone_mask)
     other_mask_arr = itk.array_from_image(fixed_image_other_mask)
-    fixex_image_static_anatomy_mask_arr = (
+    fixed_image_static_anatomy_mask_arr = (
         heart_mask_arr
         + major_vessels_mask_arr
         + contrast_mask_arr
@@ -144,7 +144,7 @@ for case_name in case_names:
         + other_mask_arr
     )
     fixed_image_static_anatomy_mask = itk.image_from_array(
-        fixex_image_static_anatomy_mask_arr.astype(np.uint16)
+        fixed_image_static_anatomy_mask_arr.astype(np.uint16)
     )
     fixed_image_static_anatomy_mask.CopyInformation(fixed_image_mask)
     print("Segmenting fixed image...Done!")
@@ -199,7 +199,7 @@ for case_name in case_names:
             )
             moving_image_static_anatomy_mask.CopyInformation(moving_image_mask)
 
-            print("Segmenting fixed image...Done!")
+            print("Segmenting moving image...Done!")
 
             itk.imwrite(
                 moving_image_mask,
