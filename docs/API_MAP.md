@@ -9,6 +9,10 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - `def autodoc_skip_member(app, what, name, obj, skip, options)` (line 215): Custom function to skip certain members during autodoc processing.
 - `def setup(app)` (line 223): Custom setup function for Sphinx.
 
+## experiments/Colormap-VTK_To_USD/colormap_vtk_to_usd.py
+
+- `def create_example_mesh_with_data(time_step)` (line 49): Create a sphere mesh with synthetic data for demonstration.
+
 ## experiments/Lung-GatedCT_To_USD/data_dirlab_4d_ct.py
 
 - **class DataDirLab4DCT** (line 10): This class is used to store the data for the DirLab 4DCT dataset.
