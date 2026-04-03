@@ -13,6 +13,11 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 - `def create_example_mesh_with_data(time_step)` (line 49): Create a sphere mesh with synthetic data for demonstration.
 
+## experiments/Convert_VTK_To_USD/convert_vtk_to_usd_using_class.py
+
+- `def create_deformed_mesh(base_mesh_data, time_step, num_steps=10)` (line 276): Create a deformed version of the mesh for animation.
+- `def verify_usd_file(usd_path)` (line 391): Verify USD file integrity.
+
 ## experiments/Lung-GatedCT_To_USD/data_dirlab_4d_ct.py
 
 - **class DataDirLab4DCT** (line 10): This class is used to store the data for the DirLab 4DCT dataset.
