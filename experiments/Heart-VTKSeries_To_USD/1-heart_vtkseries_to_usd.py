@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+# %%
+import glob
+import os
+
+import pyvista as pv
+
+from physiomotion4d import ConvertVTKToUSD
+
+# %%
+if not os.path.exists(
+    os.path.join("..", "..", "data", "Slicer-Heart-CT", "slice_000.vtp")
+):
+    # Segment chest from CT images to generate vtk files
+    import itk
+
+    from physiomotion4d.contour_tools import ContourTools
+    from physiomotion4d.segment_chest_total_segmentator import (
+        SegmentChestTotalSegmentator,
+    )
+
+    input_images = sorted(
+        glob.glob(os.path.join("..", "..", "data", "Slicer-Heart-CT", "slice_*.mha"))
+    )
+    seg = SegmentChestTotalSegmentator()
+    seg.contrast_threshold = 500
+    con = ContourTools()
+    for i, img_path in enumerate(input_images):
+        print(f"Segmenting {img_path}...")
+        img = itk.imread(img_path)
+        result = seg.segment(img, contrast_enhanced_study=True)
+        labelmap_mask = result["labelmap"]
+        lung_mask = result["lung"]
+        heart_mask = result["heart"]
+        major_vessels_mask = result["major_vessels"]
+        bone_mask = result["bone"]
+        soft_tissue_mask = result["soft_tissue"]
+        other_mask = result["other"]
+        contrast_mask = result["contrast"]
+        img_con = con.extract_contours(labelmap_mask)
+        img_con.save(
+            os.path.join("..", "..", "data", "Slicer-Heart-CT", f"slice_{i:03d}.vtp")
+        )
+
+# %%
+project_name = "Heart_VTKSeries_To_USD_all"
+
+input_files = sorted(
+    glob.glob(os.path.join("..", "..", "data", "Slicer-Heart-CT", "slice_*.vtp"))
+)
+
+output_dir = os.path.abspath(os.path.join("results"))
+os.makedirs(output_dir, exist_ok=True)
+
+input_polydata = []
+for file in input_files:
+    print(f"Processing file: {file}")
+    pd = pv.read(file)
+    print(f"  Number of points: {pd.n_points}")
+    # Print available data arrays
+    if len(input_polydata) == 0:  # Only print for first file
+        print(f"  Point data arrays: {list(pd.point_data.keys())}")
+    input_polydata.append(pd)
+
+# Convert with transmembrane potential coloring
+converter = ConvertVTKToUSD(
+    project_name,
+    input_polydata,
+)
+# converter.set_colormap(
+# color_by_array='transmembrane_potential',
+# colormap='viridis',
+# intensity_range=(-80.0, 40.0),
+# )
+stage = converter.convert(
+    os.path.join(output_dir, f"{project_name}.usd"), convert_to_surface=True
+)
+
+print("\nUSD files created!")
+print(f"  - {os.path.join(output_dir, f'{project_name}.usd')}")
