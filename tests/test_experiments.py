@@ -114,9 +114,9 @@ def execute_script(script_path: Path, timeout: int = 3600) -> dict:
         success = result.returncode == 0
 
         if success:
-            print(f"✅ Successfully executed: {script_path.name}")
+            print(f"OK: {script_path.name}")
         else:
-            print(f"❌ Failed to execute: {script_path.name}")
+            print(f"FAILED: {script_path.name}")
             print(f"Return code: {result.returncode}")
             if result.stderr:
                 print(f"Error output:\n{result.stderr}")
@@ -129,7 +129,7 @@ def execute_script(script_path: Path, timeout: int = 3600) -> dict:
         }
 
     except subprocess.TimeoutExpired:
-        print(f"⏱️ Timeout executing: {script_path.name}")
+        print(f"TIMEOUT: {script_path.name}")
         print(f"Exceeded: {timeout} seconds")
         raise
 
@@ -224,7 +224,7 @@ def run_experiment_scripts(subdir_name: str, timeout_per_script: int = 3600):
                     }
                 )
                 # Stop execution on first failure to maintain dependencies
-                print(f"\n⚠️ Stopping execution: {script.name} failed")
+                print(f"\nStopping execution: {script.name} failed")
                 print("Remaining scripts in this experiment will not run.")
                 break
 
@@ -237,7 +237,7 @@ def run_experiment_scripts(subdir_name: str, timeout_per_script: int = 3600):
                 }
             )
             # Stop execution on timeout
-            print(f"\n⚠️ Stopping execution: {script.name} timed out")
+            print(f"\nStopping execution: {script.name} timed out")
             print("Remaining scripts in this experiment will not run.")
             break
 
@@ -246,7 +246,7 @@ def run_experiment_scripts(subdir_name: str, timeout_per_script: int = 3600):
                 {"name": script.name, "returncode": -2, "stderr": str(e)}
             )
             # Stop execution on exception
-            print(f"\n⚠️ Stopping execution: {script.name} raised exception")
+            print(f"\nStopping execution: {script.name} raised exception")
             print("Remaining scripts in this experiment will not run.")
             break
 
@@ -259,12 +259,12 @@ def run_experiment_scripts(subdir_name: str, timeout_per_script: int = 3600):
     print(f"Failed: {len(failed_scripts)}")
 
     if successful_scripts:
-        print("\n✅ Successful scripts:")
+        print("\nSuccessful scripts:")
         for name in successful_scripts:
             print(f"  - {name}")
 
     if failed_scripts:
-        print("\n❌ Failed scripts:")
+        print("\nFailed scripts:")
         for failure in failed_scripts:
             print(f"  - {failure['name']}")
             print(f"    Return code: {failure['returncode']}")
@@ -446,7 +446,7 @@ def test_experiment_heart_statistical_model_to_patient():
     This experiment demonstrates heart model to patient registration using
     statistical shape models (PCA).
 
-    ⚠️ PREREQUISITE: Complete Heart-Create_Statistical_Model experiment first to generate
+    PREREQUISITE: Complete Heart-Create_Statistical_Model experiment first to generate
     the PCA model data required for this experiment.
 
     If PCA outputs (kcl-heart-model/pca_model.json, pca_mean.vtp) are missing, this test
@@ -548,10 +548,10 @@ def test_experiment_structure():
 
     # Report findings
     if missing_subdirs:
-        print(f"\n⚠️ Missing subdirectories: {missing_subdirs}")
+        print(f"\nWARNING: Missing subdirectories: {missing_subdirs}")
 
     if empty_subdirs:
-        print(f"\n⚠️ Empty subdirectories (no scripts): {empty_subdirs}")
+        print(f"\nWARNING: Empty subdirectories (no scripts): {empty_subdirs}")
 
     # Print discovered scripts
     print("\nDiscovered Scripts:")
