@@ -554,7 +554,7 @@ def test_experiment_structure():
         print(f"\n⚠️ Empty subdirectories (no scripts): {empty_subdirs}")
 
     # Print discovered scripts
-    print("\n🐍 Discovered Scripts:")
+    print("\nDiscovered Scripts:")
     for subdir_name in EXPERIMENT_SUBDIRS:
         scripts = get_scripts_in_subdir(subdir_name)
         if scripts:
