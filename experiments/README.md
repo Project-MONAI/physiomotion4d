@@ -194,7 +194,7 @@ code you should use and extend for real-world digital twin projects.
 
 ## Automated Testing
 
-A comprehensive test suite is available to validate all experiment notebooks:
+A comprehensive test suite is available to validate all experiment scripts:
 
 ```bash
 # Run all experiment tests (EXTREMELY SLOW - may take hours)
@@ -204,7 +204,7 @@ pytest tests/test_experiments.py -v --run-experiments
 # Run a specific experiment subdirectory
 pytest tests/test_experiments.py::test_experiment_heart_gated_ct_to_usd -v -s --run-experiments
 
-# List all notebooks that would be run (without executing)
+# List all scripts that would be run (without executing)
 pytest tests/test_experiments.py::test_list_notebooks_in_subdir -v -s --run-experiments
 
 # Validate experiment directory structure
@@ -215,10 +215,10 @@ pytest tests/test_experiments.py::test_experiment_structure -v --run-experiments
 
 ### Test Features
 
-- **Test-mode flag** - When run as tests (pytest with `--run-experiments`), the runner sets `PHYSIOMOTION_RUNNING_AS_TEST=1`. Notebooks can read this (e.g. via `physiomotion4d.notebook_utils.running_as_test()`) and use reduced parameters so test runs stay fast. See [tests/EXPERIMENT_TESTS_GUIDE.md](../tests/EXPERIMENT_TESTS_GUIDE.md#running-as-test-physiomotion_running_as_test).
+- **Test-mode flag** - When run as tests (pytest with `--run-experiments`), the runner sets `PHYSIOMOTION_RUNNING_AS_TEST=1`. Scripts can read this (e.g. via `physiomotion4d.notebook_utils.running_as_test()`) and use reduced parameters so test runs stay fast. See [tests/EXPERIMENT_TESTS_GUIDE.md](../tests/EXPERIMENT_TESTS_GUIDE.md#running-as-test-physiomotion_running_as_test).
 - **One test per subdirectory** - Each experiment subdirectory gets its own test function
-- **Alphanumeric ordering** - Notebooks execute in alphanumeric order (e.g., `0-`, `1-`, `2-`)
-- **Long timeouts** - Each notebook has up to 1 hour execution time, tests have multi-hour timeouts
+- **Alphanumeric ordering** - Scripts execute in alphanumeric order (e.g., `0-`, `1-`, `2-`)
+- **Long timeouts** - Each script has up to 1 hour execution time, tests have multi-hour timeouts
 - **Detailed output** - Progress reporting, execution summaries, and failure diagnostics
 - **Opt-in only** - Requires `--run-experiments` flag; automatically skipped otherwise
 - **Protected from CI/CD** - NEVER runs in automated workflows
@@ -229,7 +229,7 @@ These tests require:
 - All dependencies installed (see `pyproject.toml`)
 - GPU/CUDA support for most experiments
 - Large amounts of disk space and memory
-- External data downloads (see individual experiment notebooks)
+- External data downloads (see individual experiment scripts)
 
 ### Important Notes
 
