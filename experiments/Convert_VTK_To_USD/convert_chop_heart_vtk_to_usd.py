@@ -2,7 +2,6 @@
 # %%
 from pathlib import Path
 
-import os
 
 from physiomotion4d.workflow_convert_vtk_to_usd import WorkflowConvertVTKToUSD
 
@@ -28,15 +27,16 @@ output_dir.mkdir(parents=True, exist_ok=True)
 
 all_files = []
 for vtkname, usdname in zip(vtknames, usdnames):
-    if os.path.exists(Path.absolute(_HERE / f"RVOT28-Dias-{usdname}.usd")):
-        os.remove(Path.absolute(_HERE / f"RVOT28-Dias-{usdname}.usd"))
+    out_usd = Path.absolute(output_dir / f"RVOT28-Dias-{usdname}.usd")
+    if out_usd.exists():
+        out_usd.unlink()
 
     in_name = input_dir / f"{vtkname}.vtk"
     all_files.append(in_name)
 
     converter = WorkflowConvertVTKToUSD(
         vtk_files=[in_name],
-        output_usd=Path.absolute(output_dir / Path(f"RVOT28-Dias-{usdname}.usd")),
+        output_usd=out_usd,
         separate_by_connectivity=False,
         separate_by_cell_type=False,
         mesh_name=f"RVOT28Dias_{usdname}",

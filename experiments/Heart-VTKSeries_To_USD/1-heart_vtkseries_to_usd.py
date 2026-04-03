@@ -29,13 +29,6 @@ if not os.path.exists(os.path.join(_DATA_DIR, "slice_000.vtp")):
         img = itk.imread(img_path)
         result = seg.segment(img, contrast_enhanced_study=True)
         labelmap_mask = result["labelmap"]
-        lung_mask = result["lung"]
-        heart_mask = result["heart"]
-        major_vessels_mask = result["major_vessels"]
-        bone_mask = result["bone"]
-        soft_tissue_mask = result["soft_tissue"]
-        other_mask = result["other"]
-        contrast_mask = result["contrast"]
         img_con = con.extract_contours(labelmap_mask)
         img_con.save(os.path.join(_DATA_DIR, f"slice_{i:03d}.vtp"))
 

@@ -351,49 +351,52 @@ else:
 # Create 3D surface meshes of the segmented structures using PyVista.
 
 # %%
-print("Creating 3D visualization...")
+if result is not None:
+    print("Creating 3D visualization...")
 
-# Create VTK images from ITK images for PyVista
+    # Create VTK images from ITK images for PyVista
 
-# Convert heart mask to VTK
-heart_vtk = itk.vtk_image_from_image(result["heart"])
-heart_essentials_vtk = itk.vtk_image_from_image(labelmap_essentials)
-vessels_vtk = itk.vtk_image_from_image(result["major_vessels"])
+    # Convert heart mask to VTK
+    heart_vtk = itk.vtk_image_from_image(result["heart"])
+    heart_essentials_vtk = itk.vtk_image_from_image(labelmap_essentials)
+    vessels_vtk = itk.vtk_image_from_image(result["major_vessels"])
 
-# Create PyVista plotter
-plotter = pv.Plotter()
+    # Create PyVista plotter
+    plotter = pv.Plotter()
 
-# Extract heart surface
-heart_grid = pv.wrap(heart_vtk)
-heart_surface = heart_grid.contour([0.5])
-if heart_surface.n_points > 0:
-    plotter.add_mesh(heart_surface, color="red", opacity=0.5, label="Heart")
+    # Extract heart surface
+    heart_grid = pv.wrap(heart_vtk)
+    heart_surface = heart_grid.contour([0.5])
+    if heart_surface.n_points > 0:
+        plotter.add_mesh(heart_surface, color="red", opacity=0.5, label="Heart")
 
-# Extract heart surface
-heart_essentials_grid = pv.wrap(heart_essentials_vtk)
-heart_essentials_surface = heart_essentials_grid.contour([0.5])
-if heart_essentials_surface.n_points > 0:
-    plotter.add_mesh(
-        heart_essentials_surface, color="grey", opacity=1.0, label="Heart Essential"
-    )
+    # Extract heart surface
+    heart_essentials_grid = pv.wrap(heart_essentials_vtk)
+    heart_essentials_surface = heart_essentials_grid.contour([0.5])
+    if heart_essentials_surface.n_points > 0:
+        plotter.add_mesh(
+            heart_essentials_surface, color="grey", opacity=1.0, label="Heart Essential"
+        )
 
-# Extract vessels surface
-vessels_grid = pv.wrap(vessels_vtk)
-vessels_surface = vessels_grid.contour([0.5])
-if vessels_surface.n_points > 0:
-    plotter.add_mesh(vessels_surface, color="blue", opacity=1.0, label="Vessels")
+    # Extract vessels surface
+    vessels_grid = pv.wrap(vessels_vtk)
+    vessels_surface = vessels_grid.contour([0.5])
+    if vessels_surface.n_points > 0:
+        plotter.add_mesh(vessels_surface, color="blue", opacity=1.0, label="Vessels")
 
-# Configure plotter
-plotter.add_legend()
-plotter.set_background("white")
-plotter.add_axes()
+    # Configure plotter
+    plotter.add_legend()
+    plotter.set_background("white")
+    plotter.add_axes()
 
-# Save screenshot
-screenshot_path = os.path.join(output_dir, "3d_visualization.png")
-if not running_as_test():
-    plotter.show(screenshot=screenshot_path)
+    # Save screenshot
+    screenshot_path = os.path.join(output_dir, "3d_visualization.png")
+    if not running_as_test():
+        plotter.show(screenshot=screenshot_path)
 
-print(f"3D visualization saved to: {screenshot_path}")
+    print(f"3D visualization saved to: {screenshot_path}")
+else:
+    print("No results available for 3D visualization.")
 
 # %%
 

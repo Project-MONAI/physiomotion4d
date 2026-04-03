@@ -28,8 +28,8 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## experiments/Heart-GatedCT_To_USD/3-transform_dynamic_and_static_contours.py
 
-- `def transform_contours(contours, transform_filenames, base_name, output_dir, project_name)` (line 28)
-- `def convert_contours(contours, transform_filenames, base_name, output_dir, project_name, compute_normals=False)` (line 46)
+- `def transform_contours(contours, transform_filenames, base_name, output_dir)` (line 27)
+- `def convert_contours(base_name, output_dir, project_name, compute_normals=False)` (line 43)
 
 ## experiments/Heart-GatedCT_To_USD/test_vista3d_inMem.py
 
@@ -37,8 +37,8 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## experiments/Lung-GatedCT_To_USD/0-register_dirlab_4dct.py
 
-- `def dilate_mask(mask, dilation)` (line 29)
-- `def register_image(fixed_image, fixed_mask, moving_image, moving_mask, case_name, image_num, mask_name, output_dir)` (line 38): Register a moving image to a fixed image using a mask.
+- `def dilate_mask(mask, dilation)` (line 30)
+- `def register_image(fixed_image, fixed_mask, moving_image, moving_mask, case_name, image_num, mask_name, output_dir)` (line 39): Register a moving image to a fixed image using a mask.
 
 ## experiments/Lung-GatedCT_To_USD/1-make_dirlab_models.py
 

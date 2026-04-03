@@ -161,8 +161,10 @@ def vista3d_inference_from_itk(
 
     # ITK expects z,y,x ordering for GetImageFromArray
     output_itk = itk.GetImageFromArray(label_map_for_itk)
+    output_itk.SetSpacing(itk_image.GetSpacing())
+    output_itk.SetOrigin(itk_image.GetOrigin())
+    output_itk.SetDirection(itk_image.GetDirection())
 
-    # Return output in ITK format matching the input (size, spacing, origin, direction, type)
     return output_itk
 
 

@@ -205,7 +205,7 @@ pytest tests/test_experiments.py -v --run-experiments
 pytest tests/test_experiments.py::test_experiment_heart_gated_ct_to_usd -v -s --run-experiments
 
 # List all scripts that would be run (without executing)
-pytest tests/test_experiments.py::test_list_notebooks_in_subdir -v -s --run-experiments
+pytest tests/test_experiments.py::test_list_scripts_in_subdir -v -s --run-experiments
 
 # Validate experiment directory structure
 pytest tests/test_experiments.py::test_experiment_structure -v --run-experiments

@@ -34,7 +34,7 @@ for f in tfm_filenames:
 
 # %%
 for tfm_fname in tfm_filenames:
-    tfm = itk.transformread(tfm_fname)
+    tfm = itk.transformread(tfm_fname)[0]
     correspond_mesh = contour_tools.transform_contours(
         template_mesh,
         tfm,

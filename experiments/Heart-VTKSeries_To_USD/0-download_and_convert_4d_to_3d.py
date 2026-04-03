@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # %%
 import os
-import urllib
+import urllib.request
 
 from physiomotion4d.convert_nrrd_4d_to_3d import ConvertNRRD4DTo3D
 

@@ -29,7 +29,6 @@ lung_mask = result["lung"]
 heart_mask = result["heart"]
 major_vessels_mask = result["major_vessels"]
 bone_mask = result["bone"]
-soft_tissue_mask = result["soft_tissue"]
 other_mask = result["other"]
 contrast_mask = result["contrast"]
 
@@ -79,7 +78,6 @@ for i in range(0, 21, 4):  # Process every 4th slice to save time testing
     heart_mask = result["heart"]
     major_vessels_mask = result["major_vessels"]
     bone_mask = result["bone"]
-    soft_tissue_mask = result["soft_tissue"]
     other_mask = result["other"]
     contrast_mask = result["contrast"]
     itk.imwrite(

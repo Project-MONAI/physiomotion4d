@@ -58,7 +58,9 @@ def make_dirlab_models(
     labelmap_arr = itk.array_view_from_image(labelmap_image)
 
     print(f"Extracting contours from {case_name} - {label} Contours")
-    label_labelmap_arr = (all_labelmap_arr * labelmap_arr).astype(np.uint8)
+    label_labelmap_arr = np.where(labelmap_arr > 0, all_labelmap_arr, 0).astype(
+        np.uint8
+    )
     label_labelmap_image = itk.image_from_array(label_labelmap_arr)
     label_labelmap_image.CopyInformation(labelmap_image)
 

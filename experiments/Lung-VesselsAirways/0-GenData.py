@@ -147,7 +147,7 @@ def add_noise_to_patch(
                 patch[z, y, x] += point_noise + edge_noise + slope_noise
 
     patch_max = np.max(patch)
-    patch = patch / patch_max
+    patch /= patch_max
 
 
 # %%

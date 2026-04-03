@@ -4,7 +4,7 @@
 #
 # This notebook times **Greedy**, **ANTs**, and **ICON** when registering two time points of CT from the Slicer-Heart-CT data (TruncalValve 4D CT).
 #
-# **Prerequisites:** Run `0-download_and_convert_4d_to_3d.ipynb` first so that `data/Slicer-Heart-CT/` contains the 4D NRRD and the 3D slice series (`slice_000.mha`, `slice_001.mha`, ...), and `results/slice_fixed.mha` exists.
+# **Prerequisites:** Run `0-download_and_convert_4d_to_3d.py` first so that `data/Slicer-Heart-CT/` contains the 4D NRRD and the 3D slice series (`slice_000.mha`, `slice_001.mha`, ...), and `results/slice_fixed.mha` exists.
 
 # %%
 import os
@@ -34,12 +34,12 @@ moving_image_path = os.path.join(data_dir, "slice_000.mha")
 if not os.path.exists(fixed_image_path):
     raise FileNotFoundError(
         f"Fixed image not found: {fixed_image_path}. "
-        "Run 0-download_and_convert_4d_to_3d.ipynb first."
+        "Run 0-download_and_convert_4d_to_3d.py first."
     )
 if not os.path.exists(moving_image_path):
     raise FileNotFoundError(
         f"Moving image not found: {moving_image_path}. "
-        "Run 0-download_and_convert_4d_to_3d.ipynb first."
+        "Run 0-download_and_convert_4d_to_3d.py first."
     )
 
 fixed_image = itk.imread(fixed_image_path)

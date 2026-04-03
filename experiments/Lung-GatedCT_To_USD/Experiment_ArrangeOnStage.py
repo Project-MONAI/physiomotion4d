@@ -21,6 +21,6 @@ for label in ["dynamic_anatomy", "static_anatomy"]:
     usd_file_names = [
         f"results/{case_name}_{label}_lungGated_painted.usd" for case_name in case_names
     ]
-    new_stage = usd_tools.save_usd_file_arrangement(
+    usd_tools.save_usd_file_arrangement(
         f"Results_ArrangeOnStage/stage-{label}.usd", usd_file_names
     )

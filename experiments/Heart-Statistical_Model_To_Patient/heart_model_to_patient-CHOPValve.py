@@ -41,8 +41,6 @@ output_dir = Path.cwd() / "results-chop"
 patient_image = itk.imread(str(patient_ct_path))
 
 template_model = pv.read(str(model_mesh_path))
-template_model_surface = template_model.extract_surface()
-template_labelmap = itk.imread(str(model_labelmap_path))
 
 with open(model_pca_json_path, encoding="utf-8") as f:
     model_pca_data = json.load(f)
@@ -78,6 +76,9 @@ registered_model_surface = results["registered_template_model_surface"]
 registered_model.save(str(output_dir / "registered_model.vtp"))
 registered_model_surface.save(str(output_dir / "registered_model_surface.vtp"))
 registered_labelmap = results["registered_template_labelmap"]
+itk.imwrite(
+    registered_labelmap, str(output_dir / "registered_labelmap.mha"), compression=True
+)
 
 # %%
 pca_model = registrar.pca_template_model

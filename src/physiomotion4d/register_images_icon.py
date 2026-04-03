@@ -227,21 +227,18 @@ class RegisterImagesICON(RegisterImagesBase):
         fixed_effective_mask = self.fixed_labelmap if use_labelmaps else self.fixed_mask
 
         if self.net is None:
-            dice_loss_weight = 1.0 if use_labelmaps else 0.0
             if self.use_multi_modality:
                 self.net = get_multigradicon(
                     loss_fn=icon.LNCC(sigma=5),
                     # loss_fn=icon.losses.MINDSSC(radius=2, dilation=2),
                     apply_intensity_conservation_loss=self.use_mass_preservation,
                     weights_location=self.weights_path,
-                    dice_loss_weight=dice_loss_weight,
                 )
             else:
                 self.net = get_unigradicon(
                     loss_fn=icon.LNCC(sigma=5),
                     apply_intensity_conservation_loss=self.use_mass_preservation,
                     weights_location=self.weights_path,
-                    dice_loss_weight=dice_loss_weight,
                 )
 
         inverse_transform = None

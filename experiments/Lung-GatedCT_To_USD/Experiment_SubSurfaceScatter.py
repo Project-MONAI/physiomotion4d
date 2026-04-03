@@ -20,7 +20,6 @@ sphere1.CreateRadiusAttr().Set(10)
 
 mtl_path = Sdf.Path("/World/Looks/OmniSurface_Subsurface")
 shader_path = mtl_path.AppendPath("Shader")
-vista3d_running = False
 # Create material and shader prims
 mtl = UsdShade.Material.Define(stage, mtl_path)
 shader = UsdShade.Shader.Define(stage, shader_path)

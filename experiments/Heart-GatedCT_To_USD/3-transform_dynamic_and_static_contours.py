@@ -13,7 +13,6 @@ from physiomotion4d.usd_anatomy_tools import USDAnatomyTools
 _HERE = os.path.dirname(os.path.abspath(__file__))
 
 # %%
-data_dir = os.path.join(_HERE, "..", "..", "data")
 output_dir = os.path.join(_HERE, "results")
 
 base_name = "slice_fixed"
@@ -25,9 +24,7 @@ do_transform_contours = True
 
 
 # %%
-def transform_contours(
-    contours, transform_filenames, base_name, output_dir, project_name
-):
+def transform_contours(contours, transform_filenames, base_name, output_dir):
     con = ContourTools()
     for i, transform_filename in enumerate(transform_filenames):
         forward_transform = itk.transformread(transform_filename)[0]
@@ -43,14 +40,7 @@ def transform_contours(
         )
 
 
-def convert_contours(
-    contours,
-    transform_filenames,
-    base_name,
-    output_dir,
-    project_name,
-    compute_normals=False,
-):
+def convert_contours(base_name, output_dir, project_name, compute_normals=False):
     files = [
         f"{output_dir}/slice_{i:03d}.reg_{base_name}_inv.{base_name}_mask.vtp"
         for i in range(21)
@@ -104,46 +94,15 @@ static_anatomy_contours = pv.read(
 all_contours = pv.read(os.path.join(output_dir, f"{base_name}.all_mask.vtp"))
 
 # %%
+transform_contours(all_contours, all_transform_filenames, "all", output_dir)
 transform_contours(
-    all_contours, all_transform_filenames, "all", output_dir, project_name
+    dynamic_anatomy_contours, dynamic_transform_filenames, "dynamic_anatomy", output_dir
 )
 transform_contours(
-    dynamic_anatomy_contours,
-    dynamic_transform_filenames,
-    "dynamic_anatomy",
-    output_dir,
-    project_name,
-)
-transform_contours(
-    static_anatomy_contours,
-    static_transform_filenames,
-    "static_anatomy",
-    output_dir,
-    project_name,
+    static_anatomy_contours, static_transform_filenames, "static_anatomy", output_dir
 )
 
 # %%
-convert_contours(
-    all_contours,
-    all_transform_filenames,
-    "all",
-    output_dir,
-    project_name,
-    compute_normals=True,
-)
-convert_contours(
-    dynamic_anatomy_contours,
-    dynamic_transform_filenames,
-    "dynamic_anatomy",
-    output_dir,
-    project_name,
-    compute_normals=True,
-)
-convert_contours(
-    static_anatomy_contours,
-    static_transform_filenames,
-    "static_anatomy",
-    output_dir,
-    project_name,
-    compute_normals=True,
-)
+convert_contours("all", output_dir, project_name, compute_normals=True)
+convert_contours("dynamic_anatomy", output_dir, project_name, compute_normals=True)
+convert_contours("static_anatomy", output_dir, project_name, compute_normals=True)

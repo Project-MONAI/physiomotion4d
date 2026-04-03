@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # %%
 import os
+from typing import Optional
 
 import itk
 import numpy as np
@@ -26,11 +27,11 @@ output_dir = os.path.join(_HERE, "results")
 
 
 # %%
-def dilate_mask(mask: itk.image, dilation: int) -> itk.image:
+def dilate_mask(mask: Optional[itk.image], dilation: int) -> Optional[itk.image]:
     if mask is not None:
-        imMath = tube.ImageMath.New(mask)
-        imMath.Dilate(dilation, 1, 0)
-        dilated_mask = imMath.GetOutputShort()
+        im_math = tube.ImageMath.New(mask)
+        im_math.Dilate(dilation, 1, 0)
+        dilated_mask = im_math.GetOutputShort()
         return dilated_mask
     return None
 
@@ -44,7 +45,7 @@ def register_image(
     image_num: int,
     mask_name: str,
     output_dir: str,
-) -> itk.image:
+) -> None:
     """
     Register a moving image to a fixed image using a mask.
     """
@@ -266,7 +267,7 @@ for case_name in case_names:
                 )
 
                 itk.imwrite(
-                    moving_image,
+                    fixed_image,
                     f"{output_dir}/{case_name}_T{image_num * 10:02d}_{mask_name}_reg.mha",
                     compression=True,
                 )
