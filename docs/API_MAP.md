@@ -18,6 +18,10 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - `def create_deformed_mesh(base_mesh_data, time_step, num_steps=10)` (line 276): Create a deformed version of the mesh for animation.
 - `def verify_usd_file(usd_path)` (line 391): Verify USD file integrity.
 
+## experiments/Heart-Create_Statistical_Model/5-compute_pca_model.py
+
+- `def generate_pc_variation(pc_index, std_dev_multiplier=3.0)` (line 155): Generate shape variations along a principal component.
+
 ## experiments/Lung-GatedCT_To_USD/data_dirlab_4d_ct.py
 
 - **class DataDirLab4DCT** (line 10): This class is used to store the data for the DirLab 4DCT dataset.
@@ -576,20 +580,19 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## tests/test_experiments.py
 
-- `def get_notebooks_in_subdir(subdir_name)` (line 53): Get all Jupyter notebooks in a subdirectory, sorted alphanumerically.
-- `def clear_notebook_outputs(notebook_path)` (line 71): Clear all cell outputs from a Jupyter notebook.
-- `def execute_notebook(notebook_path, timeout=3600)` (line 113): Execute a Jupyter notebook using nbconvert.
-- `def run_experiment_notebooks(subdir_name, timeout_per_notebook=3600)` (line 236): Run all notebooks in an experiment subdirectory in alphanumeric order.
-- `def test_experiment_colormap_vtk_to_usd()` (line 358): Test Colormap-VTK_To_USD experiment notebooks.
-- `def test_experiment_reconstruct_4dct()` (line 392): Test Reconstruct4DCT experiment notebooks.
-- `def test_experiment_heart_vtk_series_to_usd()` (line 411): Test Heart-VTKSeries_To_USD experiment notebooks.
-- `def test_experiment_heart_gated_ct_to_usd()` (line 432): Test Heart-GatedCT_To_USD experiment notebooks.
-- `def test_experiment_convert_vtk_to_usd()` (line 458): Test Convert_VTK_To_USD experiment notebooks.
-- `def test_experiment_create_statistical_model()` (line 478): Test Heart-Create_Statistical_Model experiment notebooks.
-- `def test_experiment_heart_statistical_model_to_patient()` (line 505): Test Heart-Statistical_Model_To_Patient experiment notebooks.
-- `def test_experiment_lung_gated_ct_to_usd()` (line 540): Test Lung-GatedCT_To_USD experiment notebooks.
-- `def test_experiment_structure()` (line 585): Validate the structure of the experiments directory.
-- `def test_list_notebooks_in_subdir(subdir_name)` (line 639): List all notebooks in each experiment subdirectory.
+- `def get_scripts_in_subdir(subdir_name)` (line 55): Get all Python scripts in a subdirectory, sorted alphanumerically.
+- `def execute_script(script_path, timeout=3600)` (line 73): Execute a Python experiment script.
+- `def run_experiment_scripts(subdir_name, timeout_per_script=3600)` (line 175): Run all Python scripts in an experiment subdirectory in alphanumeric order.
+- `def test_experiment_colormap_vtk_to_usd()` (line 297): Test Colormap-VTK_To_USD experiment scripts.
+- `def test_experiment_reconstruct_4dct()` (line 331): Test Reconstruct4DCT experiment scripts.
+- `def test_experiment_heart_vtk_series_to_usd()` (line 350): Test Heart-VTKSeries_To_USD experiment scripts.
+- `def test_experiment_heart_gated_ct_to_usd()` (line 371): Test Heart-GatedCT_To_USD experiment scripts.
+- `def test_experiment_convert_vtk_to_usd()` (line 397): Test Convert_VTK_To_USD experiment scripts.
+- `def test_experiment_create_statistical_model()` (line 417): Test Heart-Create_Statistical_Model experiment scripts.
+- `def test_experiment_heart_statistical_model_to_patient()` (line 442): Test Heart-Statistical_Model_To_Patient experiment scripts.
+- `def test_experiment_lung_gated_ct_to_usd()` (line 477): Test Lung-GatedCT_To_USD experiment scripts.
+- `def test_experiment_structure()` (line 522): Validate the structure of the experiments directory.
+- `def test_list_scripts_in_subdir(subdir_name)` (line 576): List all scripts in each experiment subdirectory.
 
 ## tests/test_image_tools.py
 

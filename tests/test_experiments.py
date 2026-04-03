@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 """
-Test suite for running experiment notebooks.
+Test suite for running experiment scripts.
 
-These tests execute Jupyter notebooks in the experiments/ directory. Each subdirectory
-in experiments/ gets its own test that runs all notebooks in that subdirectory in
+These tests execute Python scripts in the experiments/ directory. Each subdirectory
+in experiments/ gets its own test that runs all scripts in that subdirectory in
 alphanumeric order.
+
+Scripts are Jupytext percent-format files (# %% cell separators), converted from the
+original Jupyter notebooks while preserving git history via git mv.
 
 WARNING: These are EXTREMELY long-running tests that may take hours to complete.
 They are NOT part of CI/CD and should only be run manually.
@@ -28,7 +31,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-import nbformat
 import pytest
 
 # Base directories
@@ -39,83 +41,41 @@ EXPERIMENTS_DIR = REPO_ROOT / "experiments"
 EXPERIMENT_SUBDIRS = [
     "Colormap-VTK_To_USD",
     "Convert_VTK_To_USD",
-    # 'DisplacementField_To_USD',  # Disabled - notebooks not ready
+    # 'DisplacementField_To_USD',  # Disabled - scripts not ready
     "Reconstruct4DCT",
     "Heart-VTKSeries_To_USD",
     "Heart-GatedCT_To_USD",
     "Heart-Create_Statistical_Model",
     "Heart-Statistical_Model_To_Patient",
     "Lung-GatedCT_To_USD",
-    # 'Lung-VesselsAirways',  # Disabled - notebooks not ready
+    # 'Lung-VesselsAirways',  # Disabled - scripts not ready
 ]
 
 
-def get_notebooks_in_subdir(subdir_name: str) -> list[Path]:
+def get_scripts_in_subdir(subdir_name: str) -> list[Path]:
     """
-    Get all Jupyter notebooks in a subdirectory, sorted alphanumerically.
+    Get all Python scripts in a subdirectory, sorted alphanumerically.
 
     Args:
         subdir_name: Name of the subdirectory in experiments/
 
     Returns:
-        List of Path objects for notebook files, sorted alphanumerically
+        List of Path objects for .py script files, sorted alphanumerically
     """
     subdir = EXPERIMENTS_DIR / subdir_name
     if not subdir.exists():
         return []
 
-    notebooks = sorted(subdir.glob("*.ipynb"))
-    return notebooks
+    scripts = sorted(subdir.glob("*.py"))
+    return scripts
 
 
-def clear_notebook_outputs(notebook_path: Path) -> bool:
+def execute_script(script_path: Path, timeout: int = 3600) -> dict:
     """
-    Clear all cell outputs from a Jupyter notebook.
-
-    This removes execution outputs, execution counts, and metadata from all cells
-    to keep the repository clean and avoid committing large output data.
+    Execute a Python experiment script.
 
     Args:
-        notebook_path: Path to the notebook file
-
-    Returns:
-        True if outputs were successfully cleared, False otherwise
-    """
-    try:
-        print(f"Clearing outputs from: {notebook_path.name}")
-
-        # Read the notebook
-        with open(notebook_path, "r", encoding="utf-8") as f:
-            notebook = nbformat.read(f, as_version=4)
-
-        # Clear outputs and execution counts from all cells
-        for cell in notebook.cells:
-            if cell.cell_type == "code":
-                cell.outputs = []
-                cell.execution_count = None
-
-        # Clear notebook-level metadata
-        if "execution" in notebook.metadata:
-            del notebook.metadata["execution"]
-
-        # Write the cleaned notebook back
-        with open(notebook_path, "w", encoding="utf-8") as f:
-            nbformat.write(notebook, f)
-
-        print(f"✅ Cleared outputs from: {notebook_path.name}")
-        return True
-
-    except Exception as e:
-        print(f"⚠️ Failed to clear outputs from {notebook_path.name}: {e}")
-        return False
-
-
-def execute_notebook(notebook_path: Path, timeout: int = 3600) -> dict:
-    """
-    Execute a Jupyter notebook using nbconvert.
-
-    Args:
-        notebook_path: Path to the notebook file
+        script_path: Path to the .py script file
         timeout: Maximum execution time in seconds (default: 1 hour)
 
     Returns:
@@ -126,34 +86,17 @@ def execute_notebook(notebook_path: Path, timeout: int = 3600) -> dict:
             - returncode: int
 
     Raises:
-        subprocess.TimeoutExpired: If notebook execution exceeds timeout
+        subprocess.TimeoutExpired: If script execution exceeds timeout
     """
     print(f"\n{'=' * 80}")
-    print(f"Executing notebook: {notebook_path.name}")
-    print(f"Path: {notebook_path}")
+    print(f"Executing script: {script_path.name}")
+    print(f"Path: {script_path}")
     print(f"Timeout: {timeout} seconds ({timeout // 60} minutes)")
     print(f"{'=' * 80}\n")
 
-    # Use nbconvert to execute the notebook in place
-    # --execute: Execute the notebook
-    # --to notebook: Output as notebook (not HTML/PDF)
-    # --inplace: Overwrite the original notebook with execution results
-    # --ExecutePreprocessor.timeout: Set timeout per cell
-    cmd = [
-        sys.executable,
-        "-m",
-        "jupyter",
-        "nbconvert",
-        "--execute",
-        "--to",
-        "notebook",
-        "--inplace",
-        f"--ExecutePreprocessor.timeout={timeout}",
-        "--ExecutePreprocessor.kernel_name=python3",
-        str(notebook_path),
-    ]
+    cmd = [sys.executable, str(script_path)]
 
-    # So notebooks can use reduced parameters when run as tests (see EXPERIMENT_TESTS_GUIDE.md)
+    # So scripts can use reduced parameters when run as tests
     env = os.environ.copy()
     env["PHYSIOMOTION_RUNNING_AS_TEST"] = "1"
 
@@ -162,8 +105,8 @@ def execute_notebook(notebook_path: Path, timeout: int = 3600) -> dict:
             cmd,
             capture_output=True,
             text=True,
-            timeout=timeout * 1.5,  # Give extra time for nbconvert overhead
-            cwd=notebook_path.parent,  # Run in notebook's directory
+            timeout=timeout * 1.5,  # Give extra time for startup overhead
+            cwd=script_path.parent,  # Run in script's directory
             env=env,
             check=False,
         )
@@ -171,13 +114,9 @@ def execute_notebook(notebook_path: Path, timeout: int = 3600) -> dict:
         success = result.returncode == 0
 
         if success:
-            print(f"✅ Successfully executed: {notebook_path.name}")
-
-            # Clear outputs from the notebook after successful execution
-            print("Clearing cell outputs to keep repository clean...")
-            clear_notebook_outputs(notebook_path)
+            print(f"✅ Successfully executed: {script_path.name}")
         else:
-            print(f"❌ Failed to execute: {notebook_path.name}")
+            print(f"❌ Failed to execute: {script_path.name}")
             print(f"Return code: {result.returncode}")
             if result.stderr:
                 print(f"Error output:\n{result.stderr}")
@@ -190,7 +129,7 @@ def execute_notebook(notebook_path: Path, timeout: int = 3600) -> dict:
         }
 
     except subprocess.TimeoutExpired:
-        print(f"⏱️ Timeout executing: {notebook_path.name}")
+        print(f"⏱️ Timeout executing: {script_path.name}")
         print(f"Exceeded: {timeout} seconds")
         raise
 
@@ -199,8 +138,8 @@ def _heart_statistical_model_pca_prerequisites_met() -> tuple[bool, str]:
     """
     Check whether PCA model outputs from Heart-Create_Statistical_Model exist.
 
-    Heart-Statistical_Model_To_Patient notebooks expect these artifacts from
-    the Heart-Create_Statistical_Model experiment (notably 5-compute_pca_model.ipynb).
+    Heart-Statistical_Model_To_Patient scripts expect these artifacts from
+    the Heart-Create_Statistical_Model experiment (notably 5-compute_pca_model.py).
 
     Returns:
         (True, "") if all required paths exist, else (False, reason_message).
@@ -222,111 +161,111 @@ def _heart_statistical_model_pca_prerequisites_met() -> tuple[bool, str]:
         return (
             False,
             f"PCA model JSON not found: {pca_json}. "
-            "Complete Heart-Create_Statistical_Model (including 5-compute_pca_model.ipynb) first.",
+            "Complete Heart-Create_Statistical_Model (including 5-compute_pca_model.py) first.",
         )
     if not pca_mean_vtp.is_file():
         return (
             False,
             f"PCA mean surface not found: {pca_mean_vtp}. "
-            "Complete Heart-Create_Statistical_Model (including 5-compute_pca_model.ipynb) first.",
+            "Complete Heart-Create_Statistical_Model (including 5-compute_pca_model.py) first.",
         )
     return (True, "")
 
 
-def run_experiment_notebooks(subdir_name: str, timeout_per_notebook: int = 3600):
+def run_experiment_scripts(subdir_name: str, timeout_per_script: int = 3600):
     """
-    Run all notebooks in an experiment subdirectory in alphanumeric order.
+    Run all Python scripts in an experiment subdirectory in alphanumeric order.
 
-    IMPORTANT: Notebooks are executed SEQUENTIALLY in alphanumeric order within
+    IMPORTANT: Scripts are executed SEQUENTIALLY in alphanumeric order within
     this function. This ensures proper dependency handling even when running
     tests with multiple pytest workers (e.g., pytest -n 2).
 
     The sequential execution is enforced by:
     1. Using a standard Python for loop (not parallelized)
-    2. Each notebook must complete before the next begins
-    3. Failures in earlier notebooks prevent later ones from running
+    2. Each script must complete before the next begins
+    3. Failures in earlier scripts prevent later ones from running
 
     Args:
         subdir_name: Name of the subdirectory in experiments/
-        timeout_per_notebook: Timeout in seconds for each notebook (default: 1 hour)
+        timeout_per_script: Timeout in seconds for each script (default: 1 hour)
 
     Raises:
-        AssertionError: If any notebook fails to execute successfully
+        AssertionError: If any script fails to execute successfully
     """
-    notebooks = get_notebooks_in_subdir(subdir_name)
+    scripts = get_scripts_in_subdir(subdir_name)
 
-    if not notebooks:
-        pytest.skip(f"No notebooks found in experiments/{subdir_name}")
+    if not scripts:
+        pytest.skip(f"No scripts found in experiments/{subdir_name}")
 
     print(f"\n{'#' * 80}")
     print(f"# Experiment: {subdir_name}")
-    print(f"# Found {len(notebooks)} notebook(s)")
-    print("# Sequential execution enforced (notebooks run in order)")
+    print(f"# Found {len(scripts)} script(s)")
+    print("# Sequential execution enforced (scripts run in order)")
     print(f"{'#' * 80}\n")
 
-    failed_notebooks = []
-    successful_notebooks = []
+    failed_scripts = []
+    successful_scripts = []
 
-    for i, notebook in enumerate(notebooks, 1):
-        print(f"\n--- Notebook {i}/{len(notebooks)} ---")
-        print(f"Sequential execution: notebook {i} must complete before {i + 1} starts")
+    for i, script in enumerate(scripts, 1):
+        print(f"\n--- Script {i}/{len(scripts)} ---")
+        print(f"Sequential execution: script {i} must complete before {i + 1} starts")
 
         try:
-            result = execute_notebook(notebook, timeout=timeout_per_notebook)
+            result = execute_script(script, timeout=timeout_per_script)
 
             if result["success"]:
-                successful_notebooks.append(notebook.name)
+                successful_scripts.append(script.name)
             else:
-                failed_notebooks.append(
+                failed_scripts.append(
                     {
-                        "name": notebook.name,
+                        "name": script.name,
                         "returncode": result["returncode"],
                         "stderr": result["stderr"],
                     }
                 )
                 # Stop execution on first failure to maintain dependencies
-                print(f"\n⚠️ Stopping execution: {notebook.name} failed")
-                print("Remaining notebooks in this experiment will not run.")
+                print(f"\n⚠️ Stopping execution: {script.name} failed")
+                print("Remaining scripts in this experiment will not run.")
                 break
 
         except subprocess.TimeoutExpired:
-            failed_notebooks.append(
+            failed_scripts.append(
                 {
-                    "name": notebook.name,
+                    "name": script.name,
                     "returncode": -1,
-                    "stderr": f"Timeout after {timeout_per_notebook} seconds",
+                    "stderr": f"Timeout after {timeout_per_script} seconds",
                 }
             )
             # Stop execution on timeout
-            print(f"\n⚠️ Stopping execution: {notebook.name} timed out")
-            print("Remaining notebooks in this experiment will not run.")
+            print(f"\n⚠️ Stopping execution: {script.name} timed out")
+            print("Remaining scripts in this experiment will not run.")
             break
 
         except Exception as e:
-            failed_notebooks.append(
-                {"name": notebook.name, "returncode": -2, "stderr": str(e)}
+            failed_scripts.append(
+                {"name": script.name, "returncode": -2, "stderr": str(e)}
             )
             # Stop execution on exception
-            print(f"\n⚠️ Stopping execution: {notebook.name} raised exception")
-            print("Remaining notebooks in this experiment will not run.")
+            print(f"\n⚠️ Stopping execution: {script.name} raised exception")
+            print("Remaining scripts in this experiment will not run.")
             break
 
     # Print summary
     print(f"\n{'=' * 80}")
     print(f"Experiment Summary: {subdir_name}")
     print(f"{'=' * 80}")
-    print(f"Total notebooks: {len(notebooks)}")
-    print(f"Successful: {len(successful_notebooks)}")
-    print(f"Failed: {len(failed_notebooks)}")
+    print(f"Total scripts: {len(scripts)}")
+    print(f"Successful: {len(successful_scripts)}")
+    print(f"Failed: {len(failed_scripts)}")
 
-    if successful_notebooks:
-        print("\n✅ Successful notebooks:")
-        for name in successful_notebooks:
+    if successful_scripts:
+        print("\n✅ Successful scripts:")
+        for name in successful_scripts:
             print(f"  - {name}")
 
-    if failed_notebooks:
-        print("\n❌ Failed notebooks:")
-        for failure in failed_notebooks:
+    if failed_scripts:
+        print("\n❌ Failed scripts:")
+        for failure in failed_scripts:
             print(f"  - {failure['name']}")
             print(f"    Return code: {failure['returncode']}")
             if failure["stderr"]:
@@ -337,10 +276,10 @@ def run_experiment_notebooks(subdir_name: str, timeout_per_notebook: int = 3600)
 
     print(f"{'=' * 80}\n")
 
-    # Assert all notebooks succeeded
-    assert not failed_notebooks, (
-        f"{len(failed_notebooks)} notebook(s) failed in {subdir_name}: "
-        f"{[f['name'] for f in failed_notebooks]}"
+    # Assert all scripts succeeded
+    assert not failed_scripts, (
+        f"{len(failed_scripts)} script(s) failed in {subdir_name}: "
+        f"{[f['name'] for f in failed_scripts]}"
     )
 
 
@@ -357,31 +296,31 @@ def run_experiment_notebooks(subdir_name: str, timeout_per_notebook: int = 3600)
 )  # Prevent parallel execution within group
 def test_experiment_colormap_vtk_to_usd():
     """
-    Test Colormap-VTK_To_USD experiment notebooks.
+    Test Colormap-VTK_To_USD experiment scripts.
 
     This experiment demonstrates converting VTK files with colormaps to USD format.
 
     EXECUTION MODEL:
-    - Notebooks run SEQUENTIALLY in alphanumeric order within this test
+    - Scripts run SEQUENTIALLY in alphanumeric order within this test
     - This test function is atomic - pytest-xdist treats it as a single unit
     - Multiple experiment tests CAN run in parallel (different subdirectories)
-    - Notebooks within THIS experiment CANNOT run in parallel or out of order
+    - Scripts within THIS experiment CANNOT run in parallel or out of order
     """
-    run_experiment_notebooks("Colormap-VTK_To_USD", timeout_per_notebook=3600)
+    run_experiment_scripts("Colormap-VTK_To_USD", timeout_per_script=3600)
 
 
-# DISABLED - Notebooks not ready
+# DISABLED - Scripts not ready
 # @pytest.mark.experiment
 # @pytest.mark.slow
 # @pytest.mark.timeout(7200)  # 2 hours total timeout
 # def test_experiment_displacement_field_to_usd():
 #     """
-#     Test DisplacementField_To_USD experiment notebooks.
+#     Test DisplacementField_To_USD experiment scripts.
 #
 #     This experiment demonstrates converting registration displacement fields to USD
 #     format for visualization in PhysicsNeMo and Omniverse.
 #     """
-#     run_experiment_notebooks('DisplacementField_To_USD', timeout_per_notebook=3600)
+#     run_experiment_scripts('DisplacementField_To_USD', timeout_per_script=3600)
 
 
 @pytest.mark.experiment
@@ -391,16 +330,16 @@ def test_experiment_colormap_vtk_to_usd():
 @pytest.mark.xdist_group(name="experiment_reconstruct4dct")
 def test_experiment_reconstruct_4dct():
     """
-    Test Reconstruct4DCT experiment notebooks.
+    Test Reconstruct4DCT experiment scripts.
 
     This experiment demonstrates 4D CT reconstruction techniques.
 
     EXECUTION MODEL:
-    - Notebooks run SEQUENTIALLY in alphanumeric order within this test
-    - Each notebook must complete before the next begins
-    - Failure in one notebook stops execution of remaining notebooks
+    - Scripts run SEQUENTIALLY in alphanumeric order within this test
+    - Each script must complete before the next begins
+    - Failure in one script stops execution of remaining scripts
     """
-    run_experiment_notebooks("Reconstruct4DCT", timeout_per_notebook=7200)
+    run_experiment_scripts("Reconstruct4DCT", timeout_per_script=7200)
 
 
 @pytest.mark.experiment
@@ -410,17 +349,17 @@ def test_experiment_reconstruct_4dct():
 @pytest.mark.xdist_group(name="experiment_heart_vtk")
 def test_experiment_heart_vtk_series_to_usd():
     """
-    Test Heart-VTKSeries_To_USD experiment notebooks.
+    Test Heart-VTKSeries_To_USD experiment scripts.
 
     This experiment converts heart VTK time series data to USD format.
 
     EXECUTION ORDER (ENFORCED):
-    1. 0-download_and_convert_4d_to_3d.ipynb (downloads data)
-    2. 1-heart_vtkseries_to_usd.ipynb (uses downloaded data)
+    1. 0-download_and_convert_4d_to_3d.py (downloads data)
+    2. 1-heart_vtkseries_to_usd.py (uses downloaded data)
 
-    Each notebook must complete successfully before the next begins.
+    Each script must complete successfully before the next begins.
     """
-    run_experiment_notebooks("Heart-VTKSeries_To_USD", timeout_per_notebook=5400)
+    run_experiment_scripts("Heart-VTKSeries_To_USD", timeout_per_script=5400)
 
 
 @pytest.mark.experiment
@@ -431,23 +370,23 @@ def test_experiment_heart_vtk_series_to_usd():
 @pytest.mark.xdist_group(name="experiment_heart_gated_ct")
 def test_experiment_heart_gated_ct_to_usd():
     """
-    Test Heart-GatedCT_To_USD experiment notebooks.
+    Test Heart-GatedCT_To_USD experiment scripts.
 
     This is the main cardiac imaging pipeline experiment with strict dependencies.
 
     EXECUTION ORDER (STRICTLY ENFORCED):
-    1. 0-download_and_convert_4d_to_3d.ipynb (downloads and converts data)
-    2. 1-register_images.ipynb (registers converted images)
-    3. 2-generate_segmentation.ipynb (segments registered images)
-    4. 3-transform_dynamic_and_static_contours.ipynb (transforms segmentations)
-    5. 4-merge_dynamic_and_static_usd.ipynb (merges into final USD)
-    6. test_vista3d_class.ipynb (tests segmentation class)
-    7. test_vista3d_inMem.ipynb (tests in-memory segmentation)
+    1. 0-download_and_convert_4d_to_3d.py (downloads and converts data)
+    2. 1-register_images.py (registers converted images)
+    3. 2-generate_segmentation.py (segments registered images)
+    4. 3-transform_dynamic_and_static_contours.py (transforms segmentations)
+    5. 4-merge_dynamic_and_static_usd.py (merges into final USD)
+    6. test_vista3d_class.py (tests segmentation class)
+    7. test_vista3d_inMem.py (tests in-memory segmentation)
 
-    Each notebook depends on outputs from previous notebooks.
+    Each script depends on outputs from previous scripts.
     Execution stops on first failure to prevent cascading errors.
     """
-    run_experiment_notebooks("Heart-GatedCT_To_USD", timeout_per_notebook=5400)
+    run_experiment_scripts("Heart-GatedCT_To_USD", timeout_per_script=5400)
 
 
 @pytest.mark.experiment
@@ -457,17 +396,17 @@ def test_experiment_heart_gated_ct_to_usd():
 @pytest.mark.xdist_group(name="experiment_convert_vtk_to_usd")
 def test_experiment_convert_vtk_to_usd():
     """
-    Test Convert_VTK_To_USD experiment notebooks.
+    Test Convert_VTK_To_USD experiment scripts.
 
     This experiment demonstrates VTK to USD conversion using the library classes.
 
     EXECUTION ORDER (ENFORCED):
-    1. convert_chop_valve_to_usd.ipynb (converts CHOP valve data)
-    2. convert_vtk_to_usd_using_class.ipynb (demonstrates library usage)
+    1. convert_chop_valve_to_usd.py (converts CHOP valve data)
+    2. convert_vtk_to_usd_using_class.py (demonstrates library usage)
 
     Sequential execution ensures examples build on each other.
     """
-    run_experiment_notebooks("Convert_VTK_To_USD", timeout_per_notebook=3600)
+    run_experiment_scripts("Convert_VTK_To_USD", timeout_per_script=3600)
 
 
 @pytest.mark.experiment
@@ -477,23 +416,21 @@ def test_experiment_convert_vtk_to_usd():
 @pytest.mark.xdist_group(name="experiment_create_statistical_model")
 def test_experiment_create_statistical_model():
     """
-    Test Heart-Create_Statistical_Model experiment notebooks.
+    Test Heart-Create_Statistical_Model experiment scripts.
 
     This experiment demonstrates creating a PCA statistical shape model from the
     KCL Heart Model dataset.
 
     EXECUTION ORDER (ENFORCED):
-    1. 1-input_meshes_to_input_surfaces.ipynb (convert meshes to surfaces)
-    2. 2-input_surfaces_to_surfaces_aligned.ipynb (align surfaces)
-    3. 3-registration_based_correspondence.ipynb (establish point correspondence)
-    4. 4-surfaces_aligned_correspond_to_pca_inputs.ipynb (prepare PCA inputs)
-    5. 5-compute_pca_model.ipynb (compute PCA model using sklearn)
+    1. 1-input_meshes_to_input_surfaces.py (convert meshes to surfaces)
+    2. 2-input_surfaces_to_surfaces_aligned.py (align surfaces)
+    3. 3-registration_based_correspondence.py (establish point correspondence)
+    4. 4-surfaces_aligned_correspond_to_pca_inputs.py (prepare PCA inputs)
+    5. 5-compute_pca_model.py (compute PCA model using sklearn)
 
     Sequential execution ensures data dependencies are met.
     """
-    run_experiment_notebooks(
-        "Heart-Create_Statistical_Model", timeout_per_notebook=5400
-    )
+    run_experiment_scripts("Heart-Create_Statistical_Model", timeout_per_script=5400)
 
 
 @pytest.mark.experiment
@@ -504,7 +441,7 @@ def test_experiment_create_statistical_model():
 @pytest.mark.xdist_group(name="experiment_heart_statistical_model")
 def test_experiment_heart_statistical_model_to_patient():
     """
-    Test Heart-Statistical_Model_To_Patient experiment notebooks.
+    Test Heart-Statistical_Model_To_Patient experiment scripts.
 
     This experiment demonstrates heart model to patient registration using
     statistical shape models (PCA).
@@ -516,9 +453,9 @@ def test_experiment_heart_statistical_model_to_patient():
     is skipped with a clear message so it can be run in isolation after generating them.
 
     EXECUTION ORDER (ENFORCED):
-    1. heart_model_to_model_icp_itk.ipynb (ICP registration)
-    2. heart_model_to_model_registration_pca.ipynb (PCA-based registration)
-    3. heart_model_to_patient.ipynb (applies registration to patient)
+    1. heart_model_to_model_icp_itk.py (ICP registration)
+    2. heart_model_to_model_registration_pca.py (PCA-based registration)
+    3. heart_model_to_patient.py (applies registration to patient)
 
     Sequential execution ensures registration results are available for subsequent steps.
     """
@@ -526,8 +463,8 @@ def test_experiment_heart_statistical_model_to_patient():
     if not prereq_met:
         pytest.skip(skip_reason)
 
-    run_experiment_notebooks(
-        "Heart-Statistical_Model_To_Patient", timeout_per_notebook=7200
+    run_experiment_scripts(
+        "Heart-Statistical_Model_To_Patient", timeout_per_script=7200
     )
 
 
@@ -539,26 +476,26 @@ def test_experiment_heart_statistical_model_to_patient():
 @pytest.mark.xdist_group(name="experiment_lung_gated_ct")
 def test_experiment_lung_gated_ct_to_usd():
     """
-    Test Lung-GatedCT_To_USD experiment notebooks.
+    Test Lung-GatedCT_To_USD experiment scripts.
 
     This is the lung imaging pipeline experiment using DirLab 4DCT data.
 
     EXECUTION ORDER (STRICTLY ENFORCED):
-    1. 0-register_dirlab_4dct.ipynb (registers lung 4DCT data)
-    2. 1-make_dirlab_models.ipynb (creates 3D models from registered data)
-    3. 2-paint_dirlab_models.ipynb (applies textures/materials to models)
-    4. Experiment_ArrangeOnStage.ipynb (arranges models in USD scene)
-    5. Experiment_CombineModels.ipynb (combines models into single USD)
-    6. Experiment_SegReg.ipynb (segmentation and registration experiments)
-    7. Experiment_SubSurfaceScatter.ipynb (applies advanced materials)
+    1. 0-register_dirlab_4dct.py (registers lung 4DCT data)
+    2. 1-make_dirlab_models.py (creates 3D models from registered data)
+    3. 2-paint_dirlab_models.py (applies textures/materials to models)
+    4. Experiment_ArrangeOnStage.py (arranges models in USD scene)
+    5. Experiment_CombineModels.py (combines models into single USD)
+    6. Experiment_SegReg.py (segmentation and registration experiments)
+    7. Experiment_SubSurfaceScatter.py (applies advanced materials)
 
-    Each notebook depends on outputs from previous notebooks.
+    Each script depends on outputs from previous scripts.
     Execution is sequential and stops on first failure.
     """
-    run_experiment_notebooks("Lung-GatedCT_To_USD", timeout_per_notebook=5400)
+    run_experiment_scripts("Lung-GatedCT_To_USD", timeout_per_script=5400)
 
 
-# DISABLED - Notebooks not ready
+# DISABLED - Scripts not ready
 # @pytest.mark.experiment
 # @pytest.mark.slow
 # @pytest.mark.requires_gpu
@@ -566,14 +503,14 @@ def test_experiment_lung_gated_ct_to_usd():
 # @pytest.mark.timeout(7200)  # 2 hours total timeout
 # def test_experiment_lung_vessels_airways():
 #     """
-#     Test Lung-VesselsAirways experiment notebooks.
+#     Test Lung-VesselsAirways experiment scripts.
 #
 #     This experiment demonstrates specialized vessel and airway segmentation
 #     using deep learning models.
-#     Expected notebooks (in order):
-#     - 0-GenData.ipynb
+#     Expected scripts (in order):
+#     - 0-GenData.py
 #     """
-#     run_experiment_notebooks('Lung-VesselsAirways', timeout_per_notebook=3600)
+#     run_experiment_scripts('Lung-VesselsAirways', timeout_per_script=3600)
 
 
 # ============================================================================
@@ -589,7 +526,7 @@ def test_experiment_structure():
     This test checks that:
     1. The experiments directory exists
     2. Each expected subdirectory exists
-    3. Each subdirectory contains at least one notebook
+    3. Each subdirectory contains at least one .py script
     """
     assert EXPERIMENTS_DIR.exists(), (
         f"Experiments directory not found: {EXPERIMENTS_DIR}"
@@ -605,8 +542,8 @@ def test_experiment_structure():
             missing_subdirs.append(subdir_name)
             continue
 
-        notebooks = list(subdir.glob("*.ipynb"))
-        if not notebooks:
+        scripts = list(subdir.glob("*.py"))
+        if not scripts:
             empty_subdirs.append(subdir_name)
 
     # Report findings
@@ -614,57 +551,42 @@ def test_experiment_structure():
         print(f"\n⚠️ Missing subdirectories: {missing_subdirs}")
 
     if empty_subdirs:
-        print(f"\n⚠️ Empty subdirectories (no notebooks): {empty_subdirs}")
+        print(f"\n⚠️ Empty subdirectories (no scripts): {empty_subdirs}")
 
-    # Print discovered notebooks
-    print("\n📓 Discovered Notebooks:")
+    # Print discovered scripts
+    print("\n🐍 Discovered Scripts:")
     for subdir_name in EXPERIMENT_SUBDIRS:
-        notebooks = get_notebooks_in_subdir(subdir_name)
-        if notebooks:
-            print(f"\n{subdir_name}/ ({len(notebooks)} notebook(s)):")
-            for nb in notebooks:
-                print(f"  - {nb.name}")
+        scripts = get_scripts_in_subdir(subdir_name)
+        if scripts:
+            print(f"\n{subdir_name}/ ({len(scripts)} script(s)):")
+            for s in scripts:
+                print(f"  - {s.name}")
 
     assert not missing_subdirs, f"Missing subdirectories: {missing_subdirs}"
     assert not empty_subdirs, f"Empty subdirectories: {empty_subdirs}"
 
 
 # ============================================================================
-# Helper Test - Notebook Discovery
+# Helper Test - Script Discovery
 # ============================================================================
 
 
 @pytest.mark.experiment
 @pytest.mark.parametrize("subdir_name", EXPERIMENT_SUBDIRS)
-def test_list_notebooks_in_subdir(subdir_name):
+def test_list_scripts_in_subdir(subdir_name):
     """
-    List all notebooks in each experiment subdirectory.
+    List all scripts in each experiment subdirectory.
 
-    This helper test can be used to preview what notebooks will be run
+    This helper test can be used to preview what scripts will be run
     without actually executing them.
 
     Usage:
-        pytest tests/test_experiments.py::test_list_notebooks_in_subdir -v -s
+        pytest tests/test_experiments.py::test_list_scripts_in_subdir -v -s
     """
-    notebooks = get_notebooks_in_subdir(subdir_name)
+    scripts = get_scripts_in_subdir(subdir_name)
 
-    print(f"\n{subdir_name}/ - {len(notebooks)} notebook(s):")
-    for i, nb in enumerate(notebooks, 1):
-        print(f"  {i}. {nb.name}")
+    print(f"\n{subdir_name}/ - {len(scripts)} script(s):")
+    for i, s in enumerate(scripts, 1):
+        print(f"  {i}. {s.name}")
 
-    assert notebooks, f"No notebooks found in {subdir_name}"
-
-
-# ============================================================================
-# Notes for Future Enhancements
-# ============================================================================
-
-# TODO: Consider adding these features:
-# 1. Parallel execution of independent experiments
-# 2. HTML report generation from executed notebooks
-# 3. Automatic artifact collection (generated USD files, images, etc.)
-# 4. Smoke tests that run only first cell of each notebook
-# 5. Integration with papermill for parameterized notebook execution
-# 6. Checkpointing to resume failed experiment runs
-# 7. Resource usage monitoring (memory, GPU, disk)
-# 8. Comparison of outputs with baseline results
+    assert scripts, f"No scripts found in {subdir_name}"
