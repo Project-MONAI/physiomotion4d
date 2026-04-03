@@ -22,6 +22,15 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 - `def generate_pc_variation(pc_index, std_dev_multiplier=3.0)` (line 155): Generate shape variations along a principal component.
 
+## experiments/Heart-GatedCT_To_USD/3-transform_dynamic_and_static_contours.py
+
+- `def transform_contours(contours, transform_filenames, base_name, output_dir, project_name)` (line 26)
+- `def convert_contours(contours, transform_filenames, base_name, output_dir, project_name, compute_normals=False)` (line 44)
+
+## experiments/Heart-GatedCT_To_USD/test_vista3d_inMem.py
+
+- `def vista3d_inference_from_itk(itk_image, label_prompt=None, points=None, point_labels=None, device=None, bundle_path=None, model_cache_dir=None)` (line 8)
+
 ## experiments/Lung-GatedCT_To_USD/data_dirlab_4d_ct.py
 
 - **class DataDirLab4DCT** (line 10): This class is used to store the data for the DirLab 4DCT dataset.
