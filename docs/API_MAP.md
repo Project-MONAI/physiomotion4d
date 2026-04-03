@@ -31,6 +31,16 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 - `def vista3d_inference_from_itk(itk_image, label_prompt=None, points=None, point_labels=None, device=None, bundle_path=None, model_cache_dir=None)` (line 8)
 
+## experiments/Lung-GatedCT_To_USD/0-register_dirlab_4dct.py
+
+- `def dilate_mask(mask, dilation)` (line 28)
+- `def register_image(fixed_image, fixed_mask, moving_image, moving_mask, case_name, image_num, mask_name, output_dir)` (line 37): Register a moving image to a fixed image using a mask.
+
+## experiments/Lung-GatedCT_To_USD/1-make_dirlab_models.py
+
+- `def transform_contours_list(contours, case_name, mask_name, output_dir)` (line 22): Transform a list of contours to a list of transformed contours.
+- `def make_dirlab_models(output_dir, label, case_name, base_timepoint, all_labelmap_arr, all_mask_ids, con_tools)` (line 42): Make DirLab models for a list of cases.
+
 ## experiments/Lung-GatedCT_To_USD/data_dirlab_4d_ct.py
 
 - **class DataDirLab4DCT** (line 10): This class is used to store the data for the DirLab 4DCT dataset.
