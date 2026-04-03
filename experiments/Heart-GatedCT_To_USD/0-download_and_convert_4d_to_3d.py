@@ -6,9 +6,11 @@ import urllib
 
 from physiomotion4d.convert_nrrd_4d_to_3d import ConvertNRRD4DTo3D
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
 # %%
-data_dir = "../../data/Slicer-Heart-CT"
-output_dir = "./results/"
+data_dir = os.path.join(_HERE, "..", "..", "data", "Slicer-Heart-CT")
+output_dir = os.path.join(_HERE, "results")
 
 if not os.path.exists(data_dir):
     os.makedirs(data_dir)

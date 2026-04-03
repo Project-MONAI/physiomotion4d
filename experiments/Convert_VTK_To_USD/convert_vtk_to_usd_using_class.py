@@ -25,12 +25,10 @@
 import copy
 import logging
 import os
+from pathlib import Path
 
 import numpy as np
 import pyvista as pv
-
-from pathlib import Path
-
 from pxr import Usd, UsdGeom, UsdShade
 
 from physiomotion4d import ContourTools
@@ -49,6 +47,8 @@ from physiomotion4d.vtk_to_usd import (
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
+_HERE = Path(__file__).parent
+
 # %% [markdown]
 # ## 1. Basic Conversion: VTP to USD
 #
@@ -56,8 +56,8 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 # %%
 # Define file paths
-data_dir = Path.cwd().parent.parent / "data" / "KCL-Heart-Model"
-output_dir = Path.cwd() / "results"
+data_dir = _HERE / "../../data/KCL-Heart-Model"
+output_dir = _HERE / "results"
 output_dir.mkdir(exist_ok=True)
 
 vtk_file = data_dir / "average_mesh.vtk"

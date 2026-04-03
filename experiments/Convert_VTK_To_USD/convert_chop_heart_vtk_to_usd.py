@@ -21,10 +21,8 @@ usdnames = [
     "RightVentricle",
 ]
 
-input_dir = (
-    Path.cwd().parent.parent / "data" / "CHOP-Valve4D" / "CT" / "Simpleware" / "parts"
-)
-output_dir = Path.cwd() / "results" / "heart"
+input_dir = _HERE / "../../data/CHOP-Valve4D/CT/Simpleware/parts"
+output_dir = _HERE / "results" / "heart"
 
 output_dir.mkdir(parents=True, exist_ok=True)
 

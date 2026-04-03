@@ -7,10 +7,11 @@ import pyvista as pv
 
 from physiomotion4d import ConvertVTKToUSD
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_DATA_DIR = os.path.join(_HERE, "..", "..", "data", "Slicer-Heart-CT")
+
 # %%
-if not os.path.exists(
-    os.path.join("..", "..", "data", "Slicer-Heart-CT", "slice_000.vtp")
-):
+if not os.path.exists(os.path.join(_DATA_DIR, "slice_000.vtp")):
     # Segment chest from CT images to generate vtk files
     import itk
 
@@ -19,9 +20,7 @@ if not os.path.exists(
         SegmentChestTotalSegmentator,
     )
 
-    input_images = sorted(
-        glob.glob(os.path.join("..", "..", "data", "Slicer-Heart-CT", "slice_*.mha"))
-    )
+    input_images = sorted(glob.glob(os.path.join(_DATA_DIR, "slice_*.mha")))
     seg = SegmentChestTotalSegmentator()
     seg.contrast_threshold = 500
     con = ContourTools()
@@ -38,18 +37,14 @@ if not os.path.exists(
         other_mask = result["other"]
         contrast_mask = result["contrast"]
         img_con = con.extract_contours(labelmap_mask)
-        img_con.save(
-            os.path.join("..", "..", "data", "Slicer-Heart-CT", f"slice_{i:03d}.vtp")
-        )
+        img_con.save(os.path.join(_DATA_DIR, f"slice_{i:03d}.vtp"))
 
 # %%
 project_name = "Heart_VTKSeries_To_USD_all"
 
-input_files = sorted(
-    glob.glob(os.path.join("..", "..", "data", "Slicer-Heart-CT", "slice_*.vtp"))
-)
+input_files = sorted(glob.glob(os.path.join(_DATA_DIR, "slice_*.vtp")))
 
-output_dir = os.path.abspath(os.path.join("results"))
+output_dir = os.path.join(_HERE, "results")
 os.makedirs(output_dir, exist_ok=True)
 
 input_polydata = []

@@ -10,6 +10,8 @@ from physiomotion4d.contour_tools import ContourTools
 from physiomotion4d.notebook_utils import running_as_test
 from physiomotion4d.segment_chest_total_segmentator import SegmentChestTotalSegmentator
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
 # %%
 # When re-running, you can bypass certain long-running steps
 re_run_image_max = True
@@ -17,7 +19,7 @@ use_fixed_image = True
 re_run_image_segmentation = True
 
 # %%
-output_dir = "./results"
+output_dir = os.path.join(_HERE, "results")
 max_image = None
 print("Computing max image...")
 if re_run_image_max and not use_fixed_image:

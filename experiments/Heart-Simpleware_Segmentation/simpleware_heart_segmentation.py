@@ -22,8 +22,8 @@
 # ## 1. Setup and Imports
 
 # %%
-import os
 import logging
+import os
 
 import itk
 import matplotlib.pyplot as plt
@@ -33,12 +33,14 @@ import pyvista as pv
 from physiomotion4d.notebook_utils import running_as_test
 from physiomotion4d.segment_heart_simpleware import SegmentHeartSimpleware
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
 # %% [markdown]
 # ## 2. Configuration
 
 # %%
 # Directory setup
-output_dir = "./results"
+output_dir = os.path.join(_HERE, "results")
 os.makedirs(output_dir, exist_ok=True)
 
 # Optional: Set custom Simpleware path if not in default location
@@ -55,7 +57,9 @@ log_level = logging.INFO  # Change to logging.DEBUG for more detail
 # Load a cardiac CT image for segmentation. This should be a 3D volume containing the heart.
 
 # %%
-input_image_path = "../../data/CHOP-Valve4D/CT/RVOT28-Dias.nii.gz"
+input_image_path = os.path.join(
+    _HERE, "..", "..", "data", "CHOP-Valve4D", "CT", "RVOT28-Dias.nii.gz"
+)
 
 # Load the image
 try:

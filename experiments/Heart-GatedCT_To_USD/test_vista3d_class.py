@@ -6,8 +6,9 @@ import itk
 
 from physiomotion4d.segment_chest_vista_3d import SegmentChestVista3D
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
 
-output_dir = "./results"
+output_dir = os.path.join(_HERE, "results")
 max_image = itk.imread(os.path.join(output_dir, "slice_fixed.mha"))
 
 # %%

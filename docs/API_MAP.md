@@ -20,7 +20,7 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## experiments/DisplacementField_To_USD/displacement_field_to_usd.py
 
-- `def generate_sample_displacement_fields(output_dir, n_timesteps=10, size=(32, 32, 32))` (line 79): Generate synthetic time-varying displacement fields for demonstration.
+- `def generate_sample_displacement_fields(output_dir, n_timesteps=10, size=(32, 32, 32))` (line 81): Generate synthetic time-varying displacement fields for demonstration.
 
 ## experiments/Heart-Create_Statistical_Model/5-compute_pca_model.py
 
@@ -28,8 +28,8 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## experiments/Heart-GatedCT_To_USD/3-transform_dynamic_and_static_contours.py
 
-- `def transform_contours(contours, transform_filenames, base_name, output_dir, project_name)` (line 26)
-- `def convert_contours(contours, transform_filenames, base_name, output_dir, project_name, compute_normals=False)` (line 44)
+- `def transform_contours(contours, transform_filenames, base_name, output_dir, project_name)` (line 28)
+- `def convert_contours(contours, transform_filenames, base_name, output_dir, project_name, compute_normals=False)` (line 46)
 
 ## experiments/Heart-GatedCT_To_USD/test_vista3d_inMem.py
 
@@ -37,8 +37,8 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## experiments/Lung-GatedCT_To_USD/0-register_dirlab_4dct.py
 
-- `def dilate_mask(mask, dilation)` (line 28)
-- `def register_image(fixed_image, fixed_mask, moving_image, moving_mask, case_name, image_num, mask_name, output_dir)` (line 37): Register a moving image to a fixed image using a mask.
+- `def dilate_mask(mask, dilation)` (line 29)
+- `def register_image(fixed_image, fixed_mask, moving_image, moving_mask, case_name, image_num, mask_name, output_dir)` (line 38): Register a moving image to a fixed image using a mask.
 
 ## experiments/Lung-GatedCT_To_USD/1-make_dirlab_models.py
 
@@ -65,7 +65,7 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## experiments/Reconstruct4DCT/reconstruct_4d_ct.py
 
-- `def register_slices(reg_tool, reg_tool_name, fixed_image, images, files_indx, reference_image_num, reference_image_reg_use_identity, portion_of_prior_to_use=0.0)` (line 59)
+- `def register_slices(reg_tool, reg_tool_name, fixed_image, images, files_indx, reference_image_num, reference_image_reg_use_identity, portion_of_prior_to_use=0.0)` (line 62)
 
 ## src/physiomotion4d/cli/convert_ct_to_vtk.py
 

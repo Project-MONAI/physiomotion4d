@@ -11,6 +11,7 @@ from physiomotion4d.register_images_icon import RegisterImagesICON
 from physiomotion4d.segment_chest_total_segmentator import SegmentChestTotalSegmentator
 from physiomotion4d.transform_tools import TransformTools
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
 
 fixed_image_num = 3
 heart_mask_dilation = 5
@@ -20,8 +21,8 @@ case_names = [case_names[4]]
 images = range(10)
 # images = [1]
 
-input_dir = "../../data/DirLab-4DCT"
-output_dir = "./results"
+input_dir = os.path.join(_HERE, "..", "..", "data", "DirLab-4DCT")
+output_dir = os.path.join(_HERE, "results")
 
 
 # %%
@@ -150,7 +151,7 @@ for case_name in case_names:
     for image_num in images:
         if image_num != fixed_image_num:
             moving_image = itk.imread(
-                f"../../data/DirLab-4DCT/{case_name}_T{image_num * 10:02d}.mhd"
+                os.path.join(input_dir, f"{case_name}_T{image_num * 10:02d}.mhd")
             )
             moving_image = DataDirLab4DCT().fix_image(moving_image)
 

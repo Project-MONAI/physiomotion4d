@@ -19,6 +19,8 @@ import numpy as np
 from physiomotion4d import RegisterTimeSeriesImages, TransformTools
 from physiomotion4d.notebook_utils import running_as_test
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
 # %% [markdown]
 # ## Load Data and Set Parameters
 #
@@ -27,7 +29,7 @@ from physiomotion4d.notebook_utils import running_as_test
 
 # %%
 # Load image files
-data_dir = os.path.join("..", "..", "data", "Slicer-Heart-CT")
+data_dir = os.path.join(_HERE, "..", "..", "data", "Slicer-Heart-CT")
 files = [
     os.path.join(data_dir, f)
     for f in sorted(os.listdir(data_dir))
@@ -92,8 +94,9 @@ print(f"Fixed image size: {itk.size(fixed_image)}")
 print(f"Fixed image spacing: {itk.spacing(fixed_image)}")
 
 # Save fixed image for reference
-os.makedirs("results", exist_ok=True)
-out_file = os.path.join("results", "slice_fixed.mha")
+_RESULTS_DIR = os.path.join(_HERE, "results")
+os.makedirs(_RESULTS_DIR, exist_ok=True)
+out_file = os.path.join(_RESULTS_DIR, "slice_fixed.mha")
 itk.imwrite(fixed_image, out_file)
 print(f"Saved fixed image to: {out_file}")
 
@@ -210,7 +213,8 @@ for registration_method in registration_methods:
 
         # Save reconstructed image (moving to fixed using inverse transform)
         out_file = os.path.join(
-            "results", f"slice_{registration_method}_reconstructed_{img_indx:03d}.mha"
+            _RESULTS_DIR,
+            f"slice_{registration_method}_reconstructed_{img_indx:03d}.mha",
         )
         itk.imwrite(reconstructed_images[i], out_file, compression=True)
 
@@ -220,7 +224,8 @@ for registration_method in registration_methods:
             images[i], forward_transforms[i], fixed_image
         )
         out_file = os.path.join(
-            "results", f"slice_{registration_method}_forward_{img_indx:03d}.mha"
+            _RESULTS_DIR,
+            f"slice_{registration_method}_forward_{img_indx:03d}.mha",
         )
         itk.imwrite(reg_image, out_file, compression=True)
 
@@ -229,7 +234,8 @@ for registration_method in registration_methods:
             fixed_image, inverse_transforms[i], images[i]
         )
         out_file = os.path.join(
-            "results", f"slice_fixed_{registration_method}_inverse_{img_indx:03d}.mha"
+            _RESULTS_DIR,
+            f"slice_fixed_{registration_method}_inverse_{img_indx:03d}.mha",
         )
         itk.imwrite(reg_image_inv, out_file, compression=True)
 
@@ -237,14 +243,16 @@ for registration_method in registration_methods:
         itk.transformwrite(
             forward_transforms[i],
             os.path.join(
-                "results", f"slice_{registration_method}_forward_{img_indx:03d}.hdf"
+                _RESULTS_DIR,
+                f"slice_{registration_method}_forward_{img_indx:03d}.hdf",
             ),
             compression=True,
         )
         itk.transformwrite(
             inverse_transforms[i],
             os.path.join(
-                "results", f"slice_{registration_method}_inverse_{img_indx:03d}.hdf"
+                _RESULTS_DIR,
+                f"slice_{registration_method}_inverse_{img_indx:03d}.hdf",
             ),
             compression=True,
         )
@@ -289,7 +297,8 @@ for registration_method in registration_methods:
     # Save upsampled reconstructed images
     for i, img_indx in enumerate(files_indx):
         out_file = os.path.join(
-            "results", f"slice_{registration_method}_upsampled_{img_indx:03d}.mha"
+            _RESULTS_DIR,
+            f"slice_{registration_method}_upsampled_{img_indx:03d}.mha",
         )
         itk.imwrite(upsampled_images[i], out_file, compression=True)
 
@@ -351,7 +360,7 @@ for registration_method in registration_methods:
         itk.imwrite(
             inverse_grid_image,
             os.path.join(
-                "results",
+                _RESULTS_DIR,
                 f"slice_fixed_{registration_method}_inverse_grid_{img_indx:03d}.mha",
             ),
             compression=True,
@@ -366,7 +375,7 @@ for registration_method in registration_methods:
         itk.imwrite(
             inverse_transform_image,
             os.path.join(
-                "results",
+                _RESULTS_DIR,
                 f"slice_{registration_method}_inverse_{img_indx:03d}_field.mha",
             ),
             compression=True,

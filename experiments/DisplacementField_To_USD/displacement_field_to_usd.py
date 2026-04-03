@@ -53,6 +53,8 @@ import numpy as np
 import vtk
 from displacement_field_converter import DisplacementFieldToUSD
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
 print("Libraries imported successfully!")
 print(f"ITK version: {itk.Version.GetITKVersion()}")
 print(f"VTK version: {vtk.vtkVersion.GetVTKVersion()}")
@@ -149,8 +151,8 @@ def generate_sample_displacement_fields(
 
 # %%
 # Configuration
-output_dir = "./sample_displacement_fields"
-usd_output_path = "./displacement_field_animation.usd"
+output_dir = os.path.join(_HERE, "sample_displacement_fields")
+usd_output_path = os.path.join(_HERE, "displacement_field_animation.usd")
 n_timesteps = 10
 
 # Generate sample data

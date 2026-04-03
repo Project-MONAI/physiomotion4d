@@ -8,10 +8,12 @@ from physiomotion4d.register_images_ants import RegisterImagesANTs
 from physiomotion4d.segment_chest_total_segmentator import SegmentChestTotalSegmentator
 from physiomotion4d.transform_tools import TransformTools
 
-# %%
-data_dir = "../../data/Slicer-Heart-CT"
+_HERE = os.path.dirname(os.path.abspath(__file__))
 
-output_dir = os.path.join(".", "results")
+# %%
+data_dir = os.path.join(_HERE, "..", "..", "data", "Slicer-Heart-CT")
+
+output_dir = os.path.join(_HERE, "results")
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 

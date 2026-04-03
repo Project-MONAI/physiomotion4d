@@ -10,9 +10,11 @@ from physiomotion4d import ConvertVTKToUSD
 from physiomotion4d.segment_chest_total_segmentator import SegmentChestTotalSegmentator
 from physiomotion4d.usd_anatomy_tools import USDAnatomyTools
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
 # %%
-data_dir = "../../data"
-output_dir = "results"
+data_dir = os.path.join(_HERE, "..", "..", "data")
+output_dir = os.path.join(_HERE, "results")
 
 base_name = "slice_fixed"
 # base_name = "slice_max.reg_dynamic_anatomy"

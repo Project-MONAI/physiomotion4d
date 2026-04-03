@@ -20,9 +20,11 @@ from physiomotion4d.register_images_ants import RegisterImagesANTs
 from physiomotion4d.register_images_greedy import RegisterImagesGreedy
 from physiomotion4d.register_images_icon import RegisterImagesICON
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
 # %%
-data_dir = "../../data/Slicer-Heart-CT"
-output_dir = "./results"
+data_dir = os.path.join(_HERE, "..", "..", "data", "Slicer-Heart-CT")
+output_dir = os.path.join(_HERE, "results")
 os.makedirs(output_dir, exist_ok=True)
 
 # Fixed = reference time point; moving = time point to align to fixed

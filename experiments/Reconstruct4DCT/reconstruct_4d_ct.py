@@ -7,8 +7,10 @@ import numpy as np
 
 from physiomotion4d import RegisterImagesANTs, TransformTools
 
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
 # %%
-data_dir = os.path.join("..", "..", "data", "Slicer-Heart-CT")
+data_dir = os.path.join(_HERE, "..", "..", "data", "Slicer-Heart-CT")
 files = [
     os.path.join(data_dir, f)
     for f in sorted(os.listdir(data_dir))
@@ -45,14 +47,15 @@ reference_image_file = os.path.join(
 reference_image_reg_use_identity = True
 
 fixed_image = itk.imread(reference_image_file, pixel_type=itk.F)
-out_file = os.path.join("results", "slice_fixed.mha")
+_RESULTS_DIR = os.path.join(_HERE, "results")
+os.makedirs(_RESULTS_DIR, exist_ok=True)
+out_file = os.path.join(_RESULTS_DIR, "slice_fixed.mha")
 itk.imwrite(fixed_image, out_file)
 
 images = []
 for file in files:
     img = itk.imread(file, pixel_type=itk.F)
     images.append(img)
-os.makedirs("results", exist_ok=True)
 
 
 # %%
@@ -123,12 +126,13 @@ def register_slices(
 
     if debug_mode:
         out_file = os.path.join(
-            "results", f"slice_{reg_tool_name}_forward_{reference_image_indx:03d}.mha"
+            _RESULTS_DIR,
+            f"slice_{reg_tool_name}_forward_{reference_image_indx:03d}.mha",
         )
         itk.imwrite(reg_image, out_file, compression=True)
 
         out_file = os.path.join(
-            "results",
+            _RESULTS_DIR,
             f"slice_fixed_{reg_tool_name}_inverse_{reference_image_indx:03d}.mha",
         )
         itk.imwrite(reg_image_inv, out_file, compression=True)
@@ -136,7 +140,7 @@ def register_slices(
         itk.transformwrite(
             forward_transform,
             os.path.join(
-                "results",
+                _RESULTS_DIR,
                 f"slice_{reg_tool_name}_forward_{reference_image_indx:03d}.hdf",
             ),
             compression=True,
@@ -144,7 +148,7 @@ def register_slices(
         itk.transformwrite(
             inverse_transform,
             os.path.join(
-                "results",
+                _RESULTS_DIR,
                 f"slice_{reg_tool_name}_inverse_{reference_image_indx:03d}.hdf",
             ),
             compression=True,
@@ -227,7 +231,8 @@ def register_slices(
                     img, forward_transform, fixed_image
                 )
                 out_file = os.path.join(
-                    "results", f"slice_{reg_tool_name}_forward_{img_file_indx:03d}.mha"
+                    _RESULTS_DIR,
+                    f"slice_{reg_tool_name}_forward_{img_file_indx:03d}.mha",
                 )
                 itk.imwrite(reg_image, out_file, compression=True)
 
@@ -235,7 +240,7 @@ def register_slices(
                     fixed_image, inverse_transform, img
                 )
                 out_file = os.path.join(
-                    "results",
+                    _RESULTS_DIR,
                     f"slice_fixed_{reg_tool_name}_inverse_{img_file_indx:03d}.mha",
                 )
                 itk.imwrite(reg_image, out_file, compression=True)
@@ -243,7 +248,7 @@ def register_slices(
                 itk.transformwrite(
                     forward_transform,
                     os.path.join(
-                        "results",
+                        _RESULTS_DIR,
                         f"slice_{reg_tool_name}_forward_{img_file_indx:03d}.hdf",
                     ),
                     compression=True,
@@ -251,7 +256,7 @@ def register_slices(
                 itk.transformwrite(
                     inverse_transform,
                     os.path.join(
-                        "results",
+                        _RESULTS_DIR,
                         f"slice_{reg_tool_name}_inverse_{img_file_indx:03d}.hdf",
                     ),
                     compression=True,
@@ -288,18 +293,17 @@ tfm_tool = TransformTools()
 load_data = True
 
 if load_data:
-    data_dir = os.path.join(".", "results")
     files = []
     files_indx = []
-    for f in sorted(os.listdir(data_dir)):
+    for f in sorted(os.listdir(_RESULTS_DIR)):
         if f.endswith(".hdf") and f.startswith("slice_ANTs_forward_"):
-            files.append(os.path.join(data_dir, f))
+            files.append(os.path.join(_RESULTS_DIR, f))
             files_indx.append(int(f.split("_")[3].split(".")[0]))
 
     num_files = len(files)
 
     fixed_image = itk.imread(
-        os.path.join("results", "slice_fixed.mha"), pixel_type=itk.F
+        os.path.join(_RESULTS_DIR, "slice_fixed.mha"), pixel_type=itk.F
     )
 
 grid_image = tfm_tool.generate_grid_image(fixed_image, 30, 1)
@@ -307,7 +311,7 @@ grid_image = tfm_tool.generate_grid_image(fixed_image, 30, 1)
 for i in range(num_files):
     print(files_indx[i])
     inverse_transform = itk.transformread(
-        os.path.join("results", f"slice_ANTs_inverse_{files_indx[i]:03d}.hdf")
+        os.path.join(_RESULTS_DIR, f"slice_ANTs_inverse_{files_indx[i]:03d}.hdf")
     )[0]
 
     inverse_image = tfm_tool.convert_transform_to_displacement_field(
@@ -317,7 +321,7 @@ for i in range(num_files):
     )
     itk.imwrite(
         inverse_image,
-        os.path.join("results", f"slice_ANTs_inverse_{files_indx[i]:03d}_hdf.mha"),
+        os.path.join(_RESULTS_DIR, f"slice_ANTs_inverse_{files_indx[i]:03d}_hdf.mha"),
         compression=True,
     )
 
@@ -329,7 +333,7 @@ for i in range(num_files):
     itk.imwrite(
         inverse_grid_image,
         os.path.join(
-            "results", f"slice_fixed_ANTs_inverse_grid_{files_indx[i]:03d}.mha"
+            _RESULTS_DIR, f"slice_fixed_ANTs_inverse_grid_{files_indx[i]:03d}.mha"
         ),
         compression=True,
     )
