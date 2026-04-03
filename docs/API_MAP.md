@@ -48,6 +48,10 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def get_case_names(self)` (line 30): Get the case names
   - `def fix_image(self, input_image)` (line 34): Fix DirLab_4DCT intensities to conform to HU
 
+## experiments/Reconstruct4DCT/reconstruct_4d_ct.py
+
+- `def register_slices(reg_tool, reg_tool_name, fixed_image, images, files_indx, reference_image_num, reference_image_reg_use_identity, portion_of_prior_to_use=0.0)` (line 59)
+
 ## src/physiomotion4d/cli/convert_ct_to_vtk.py
 
 - `def main()` (line 18): CLI entry point for CT to VTK conversion.
