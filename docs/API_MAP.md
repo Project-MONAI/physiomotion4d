@@ -52,6 +52,17 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def get_case_names(self)` (line 30): Get the case names
   - `def fix_image(self, input_image)` (line 34): Fix DirLab_4DCT intensities to conform to HU
 
+## experiments/Lung-VesselsAirways/0-GenData.py
+
+- `def add_tube_to_patch(patch, patch_size, tube_i_range, tube_r_range)` (line 21)
+- `def add_noise_to_patch(patch, patch_size, noise_point_mean, noise_point_stddev, noise_edge_intensity_range, noise_edge_spread_range, noise_slope_intensity_range)` (line 80)
+- `def gen_training_patch(p_size, p_depth)` (line 154)
+- `def get_training_data(patch_size, patch_depth)` (line 219)
+- **class TubeDataset** (line 252)
+  - `def __init__(self, patch_size, patch_depth)` (line 253)
+- `def extract_patch(image, x, r, t, patch_size=16, patch_depth=7)` (line 309)
+- `def step(image, model, x, r, t)` (line 347)
+
 ## experiments/Reconstruct4DCT/reconstruct_4d_ct.py
 
 - `def register_slices(reg_tool, reg_tool_name, fixed_image, images, files_indx, reference_image_num, reference_image_reg_use_identity, portion_of_prior_to_use=0.0)` (line 59)
