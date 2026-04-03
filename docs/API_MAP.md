@@ -28,8 +28,8 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## experiments/Heart-GatedCT_To_USD/3-transform_dynamic_and_static_contours.py
 
-- `def transform_contours(contours, transform_filenames, base_name, output_dir)` (line 27)
-- `def convert_contours(base_name, output_dir, project_name, compute_normals=False)` (line 43)
+- `def transform_contours(contours, transform_filenames, frame_indices, base_name, output_dir)` (line 31)
+- `def convert_contours(base_name, output_dir, project_name, compute_normals=False)` (line 49)
 
 ## experiments/Heart-GatedCT_To_USD/test_vista3d_inMem.py
 
@@ -871,14 +871,6 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - `def find_python_files(root)` (line 234): Return sorted .py files under *root*, skipping non-source directories.
 - `def render_markdown(modules)` (line 250): Render *modules* to a Markdown string.
 - `def main()` (line 295)
-
-## utils/prepare_notebooks_for_commit.py
-
-- `def clear_cell_outputs(cell)` (line 22): Clear outputs and execution state for a single cell.
-- `def strip_widget_state(nb)` (line 32): Remove Jupyter widget state from notebook metadata (ipywidgets, PyVista, etc.).
-- `def clear_notebook(path)` (line 44): Clear all cell outputs and strip widget state in a notebook file in place.
-- `def find_notebooks(root)` (line 98): Return all .ipynb files under root, excluding hidden and common ignore dirs.
-- `def main()` (line 111)
 
 ## utils/setup_feature_worktree.py
 

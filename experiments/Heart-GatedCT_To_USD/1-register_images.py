@@ -11,6 +11,12 @@ from physiomotion4d.transform_tools import TransformTools
 _HERE = os.path.dirname(os.path.abspath(__file__))
 
 # %%
+# Number of cardiac frames and step size; downstream scripts must use the same values.
+N_FRAMES = 21
+FRAME_STEP = (
+    4  # Set to 1 to process all frames; 4 to process every 4th (faster testing)
+)
+
 data_dir = os.path.join(_HERE, "..", "..", "data", "Slicer-Heart-CT")
 
 output_dir = os.path.join(_HERE, "results")
@@ -69,7 +75,7 @@ reg.set_mask_dilation(5)
 reg.set_number_of_iterations([10, 5, 2])
 
 # %%
-for i in range(0, 21, 4):  # Process every 4th slice to save time testing
+for i in range(0, N_FRAMES, FRAME_STEP):
     print(f"Processing slice {i:03d}")
     moving_image = itk.imread(os.path.join(data_dir, f"slice_{i:03d}.mha"))
     result = seg.segment(moving_image, contrast_enhanced_study=True)

@@ -192,7 +192,7 @@ num_patches = 20
 for i in range(num_patches):
     data = gen_training_patch(patch_size, patch_depth)
     for s in range(patch_depth):
-        plt.subplot(num_patches, patch_size, i * patch_size + s + 1)
+        plt.subplot(num_patches, patch_depth, i * patch_depth + s + 1)
         tmp = data[0][s, :, :]
         tmp[0, 0] = 0
         tmp[1, 1] = 1
@@ -298,11 +298,11 @@ if True:
             running_loss += loss.item()
         print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {running_loss / len(dataloader)}")
     date = datetime.now().strftime("%Y.%m.%d")
-    torch.save(model, f"vessel_seg_resnet18_{date}.pth")
+    model_path = f"vessel_seg_resnet18_{date}.pth"
+    torch.save(model, model_path)
 
 # %%
-date = datetime.now().strftime("%Y.%m.%d")
-model = torch.load(f"vessel_seg_resnet18_{date}.pth", weights_only=False)
+model = torch.load(model_path, weights_only=False)
 
 
 # %%

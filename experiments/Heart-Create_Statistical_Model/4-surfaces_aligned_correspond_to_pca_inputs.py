@@ -86,10 +86,10 @@ for case_id in example_ids:
 
     # Left: Before correspondence (original surface)
     plotter.subplot(0, 0)
-    plotter.add_mesh(before_mesh, color="lightblue", opacity=0.5, label="Template")
     plotter.add_mesh(
-        template_mesh, color="red", opacity=1.0, label=f"Case {case_id} (Original)"
+        before_mesh, color="lightblue", opacity=0.5, label=f"Case {case_id} (Original)"
     )
+    plotter.add_mesh(template_mesh, color="red", opacity=1.0, label="Template")
     plotter.add_text(
         f"Before Correspondence\nCase {case_id}", position="upper_left", font_size=10
     )
