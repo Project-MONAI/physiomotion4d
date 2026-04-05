@@ -138,6 +138,7 @@ nim = [
 
 dev = [
     "bumpver>=2023.0.0",
+    "jupytext>=1.16.0",
     "pre-commit>=3.0.0",
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
@@ -172,8 +173,6 @@ test = [
     "pytest-xdist>=3.0.0",
     "pytest-timeout>=2.0.0",
     "coverage[toml]>=7.0.0",
-    "nbformat>=5.0.0",
-    "nbconvert>=7.0.0",
 ]
 
 [project.urls]
@@ -264,7 +263,7 @@ markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "requires_gpu: marks tests that require GPU/CUDA support",
     "requires_data: marks tests that require external data download",
-    "experiment: marks tests that run experiment notebooks (extremely slow, manual only)",
+    "experiment: marks tests that run experiment scripts (extremely slow, manual only)",
     "xdist_group: marks tests to run in the same pytest-xdist worker (prevents parallel conflicts)"
 ]
 timeout = 900
@@ -355,7 +354,7 @@ ignore = [
 "__init__.py" = ["F401", "F403"]
 "test_*.py" = ["S101", "PLR2004", "ARG001", "ARG002"]
 "tests/*.py" = ["S101", "PLR2004", "ARG001", "ARG002"]
-"experiments/*.py" = ["T201", "S101"]
+"experiments/**/*.py" = ["T201", "S101"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["physiomotion4d"]

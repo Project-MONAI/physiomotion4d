@@ -9,12 +9,63 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - `def autodoc_skip_member(app, what, name, obj, skip, options)` (line 215): Custom function to skip certain members during autodoc processing.
 - `def setup(app)` (line 223): Custom setup function for Sphinx.
 
+## experiments/Colormap-VTK_To_USD/colormap_vtk_to_usd.py
+
+- `def create_example_mesh_with_data(time_step)` (line 49): Create a sphere mesh with synthetic data for demonstration.
+
+## experiments/Convert_VTK_To_USD/convert_vtk_to_usd_using_class.py
+
+- `def create_deformed_mesh(base_mesh_data, time_step, num_steps=10)` (line 276): Create a deformed version of the mesh for animation.
+- `def verify_usd_file(usd_path)` (line 391): Verify USD file integrity.
+
+## experiments/DisplacementField_To_USD/displacement_field_to_usd.py
+
+- `def generate_sample_displacement_fields(output_dir, n_timesteps=10, size=(32, 32, 32))` (line 81): Generate synthetic time-varying displacement fields for demonstration.
+
+## experiments/Heart-Create_Statistical_Model/5-compute_pca_model.py
+
+- `def generate_pc_variation(pc_index, std_dev_multiplier=3.0)` (line 155): Generate shape variations along a principal component.
+
+## experiments/Heart-GatedCT_To_USD/3-transform_dynamic_and_static_contours.py
+
+- `def transform_contours(contours, transform_filenames, frame_indices, base_name, output_dir)` (line 31)
+- `def convert_contours(base_name, output_dir, project_name, compute_normals=False)` (line 49)
+
+## experiments/Heart-GatedCT_To_USD/test_vista3d_inMem.py
+
+- `def vista3d_inference_from_itk(itk_image, label_prompt=None, points=None, point_labels=None, device=None, bundle_path=None, model_cache_dir=None)` (line 8)
+
+## experiments/Lung-GatedCT_To_USD/0-register_dirlab_4dct.py
+
+- `def dilate_mask(mask, dilation)` (line 30)
+- `def register_image(fixed_image, fixed_mask, moving_image, moving_mask, case_name, image_num, mask_name, output_dir)` (line 39): Register a moving image to a fixed image using a mask.
+
+## experiments/Lung-GatedCT_To_USD/1-make_dirlab_models.py
+
+- `def transform_contours_list(contours, case_name, mask_name, output_dir)` (line 22): Transform a list of contours to a list of transformed contours.
+- `def make_dirlab_models(output_dir, label, case_name, base_timepoint, all_labelmap_arr, all_mask_ids, con_tools)` (line 42): Make DirLab models for a list of cases.
+
 ## experiments/Lung-GatedCT_To_USD/data_dirlab_4d_ct.py
 
 - **class DataDirLab4DCT** (line 10): This class is used to store the data for the DirLab 4DCT dataset.
   - `def __init__(self)` (line 15): Define the variables specific to DirLab data
   - `def get_case_names(self)` (line 30): Get the case names
   - `def fix_image(self, input_image)` (line 34): Fix DirLab_4DCT intensities to conform to HU
+
+## experiments/Lung-VesselsAirways/0-GenData.py
+
+- `def add_tube_to_patch(patch, patch_size, tube_i_range, tube_r_range)` (line 21)
+- `def add_noise_to_patch(patch, patch_size, noise_point_mean, noise_point_stddev, noise_edge_intensity_range, noise_edge_spread_range, noise_slope_intensity_range)` (line 80)
+- `def gen_training_patch(p_size, p_depth)` (line 154)
+- `def get_training_data(patch_size, patch_depth)` (line 219)
+- **class TubeDataset** (line 252)
+  - `def __init__(self, patch_size, patch_depth)` (line 253)
+- `def extract_patch(image, x, r, t, patch_size=16, patch_depth=7)` (line 309)
+- `def step(image, model, x, r, t)` (line 347)
+
+## experiments/Reconstruct4DCT/reconstruct_4d_ct.py
+
+- `def register_slices(reg_tool, reg_tool_name, fixed_image, images, files_indx, reference_image_num, reference_image_reg_use_identity, portion_of_prior_to_use=0.0)` (line 62)
 
 ## src/physiomotion4d/cli/convert_ct_to_vtk.py
 
@@ -567,20 +618,19 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## tests/test_experiments.py
 
-- `def get_notebooks_in_subdir(subdir_name)` (line 53): Get all Jupyter notebooks in a subdirectory, sorted alphanumerically.
-- `def clear_notebook_outputs(notebook_path)` (line 71): Clear all cell outputs from a Jupyter notebook.
-- `def execute_notebook(notebook_path, timeout=3600)` (line 113): Execute a Jupyter notebook using nbconvert.
-- `def run_experiment_notebooks(subdir_name, timeout_per_notebook=3600)` (line 236): Run all notebooks in an experiment subdirectory in alphanumeric order.
-- `def test_experiment_colormap_vtk_to_usd()` (line 358): Test Colormap-VTK_To_USD experiment notebooks.
-- `def test_experiment_reconstruct_4dct()` (line 392): Test Reconstruct4DCT experiment notebooks.
-- `def test_experiment_heart_vtk_series_to_usd()` (line 411): Test Heart-VTKSeries_To_USD experiment notebooks.
-- `def test_experiment_heart_gated_ct_to_usd()` (line 432): Test Heart-GatedCT_To_USD experiment notebooks.
-- `def test_experiment_convert_vtk_to_usd()` (line 458): Test Convert_VTK_To_USD experiment notebooks.
-- `def test_experiment_create_statistical_model()` (line 478): Test Heart-Create_Statistical_Model experiment notebooks.
-- `def test_experiment_heart_statistical_model_to_patient()` (line 505): Test Heart-Statistical_Model_To_Patient experiment notebooks.
-- `def test_experiment_lung_gated_ct_to_usd()` (line 540): Test Lung-GatedCT_To_USD experiment notebooks.
-- `def test_experiment_structure()` (line 585): Validate the structure of the experiments directory.
-- `def test_list_notebooks_in_subdir(subdir_name)` (line 639): List all notebooks in each experiment subdirectory.
+- `def get_scripts_in_subdir(subdir_name)` (line 55): Get all Python scripts in a subdirectory, sorted alphanumerically.
+- `def execute_script(script_path, timeout=3600)` (line 73): Execute a Python experiment script.
+- `def run_experiment_scripts(subdir_name, timeout_per_script=3600)` (line 175): Run all Python scripts in an experiment subdirectory in alphanumeric order.
+- `def test_experiment_colormap_vtk_to_usd()` (line 297): Test Colormap-VTK_To_USD experiment scripts.
+- `def test_experiment_reconstruct_4dct()` (line 331): Test Reconstruct4DCT experiment scripts.
+- `def test_experiment_heart_vtk_series_to_usd()` (line 350): Test Heart-VTKSeries_To_USD experiment scripts.
+- `def test_experiment_heart_gated_ct_to_usd()` (line 371): Test Heart-GatedCT_To_USD experiment scripts.
+- `def test_experiment_convert_vtk_to_usd()` (line 397): Test Convert_VTK_To_USD experiment scripts.
+- `def test_experiment_create_statistical_model()` (line 417): Test Heart-Create_Statistical_Model experiment scripts.
+- `def test_experiment_heart_statistical_model_to_patient()` (line 442): Test Heart-Statistical_Model_To_Patient experiment scripts.
+- `def test_experiment_lung_gated_ct_to_usd()` (line 477): Test Lung-GatedCT_To_USD experiment scripts.
+- `def test_experiment_structure()` (line 522): Validate the structure of the experiments directory.
+- `def test_list_scripts_in_subdir(subdir_name)` (line 576): List all scripts in each experiment subdirectory.
 
 ## tests/test_image_tools.py
 
@@ -821,14 +871,6 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - `def find_python_files(root)` (line 234): Return sorted .py files under *root*, skipping non-source directories.
 - `def render_markdown(modules)` (line 250): Render *modules* to a Markdown string.
 - `def main()` (line 295)
-
-## utils/prepare_notebooks_for_commit.py
-
-- `def clear_cell_outputs(cell)` (line 22): Clear outputs and execution state for a single cell.
-- `def strip_widget_state(nb)` (line 32): Remove Jupyter widget state from notebook metadata (ipywidgets, PyVista, etc.).
-- `def clear_notebook(path)` (line 44): Clear all cell outputs and strip widget state in a notebook file in place.
-- `def find_notebooks(root)` (line 98): Return all .ipynb files under root, excluding hidden and common ignore dirs.
-- `def main()` (line 111)
 
 ## utils/setup_feature_worktree.py
 
