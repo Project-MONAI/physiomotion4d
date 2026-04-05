@@ -52,6 +52,12 @@ print(f"  Bounds: {template_mesh.bounds}")
 input_meshes_dir = _HERE / "kcl-heart-model/surfaces"
 mesh_files = sorted([f for f in input_meshes_dir.glob("??.vtp")])
 
+if not mesh_files:
+    raise FileNotFoundError(
+        f"No mesh files matching '??.vtp' found in {input_meshes_dir}. "
+        "Ensure the kcl-heart-model/surfaces/ directory contains the input meshes."
+    )
+
 print(f"Found {len(mesh_files)} individual mesh files:")
 for mesh_file in mesh_files:
     print(f"  {mesh_file.name}")
@@ -90,9 +96,9 @@ for mesh_file in mesh_files:
 
     registrar = RegisterModelsICP(fixed_model=template_mesh)
 
-    # Perform rigid ICP registration
+    # Perform rigid ICP registration (Rigid preserves shape for statistical modeling)
     result = registrar.register(
-        moving_model=moving_mesh, transform_type="Affine", max_iterations=2000
+        moving_model=moving_mesh, transform_type="Rigid", max_iterations=2000
     )
 
     # Store results
