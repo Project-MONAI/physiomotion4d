@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # %% [markdown]
-# # ICP Rigid Registration: Align Heart Models to Average
+# # ICP Affine Registration: Align Heart Models to Average
 #
-# This notebook performs ICP (Iterative Closest Point) rigid registration to align each individual heart model to the average model.
+# This script performs ICP (Iterative Closest Point) affine registration to align each individual heart model to the average model.
 #
 # **Workflow:**
 # 1. Load the average mesh (`input_meshes/average.vtk`)
 # 2. Load each individual mesh (`input_meshes/01.vtk` through `20.vtk`)
-# 3. Use ICP rigid registration to align each mesh to the average
+# 3. Use ICP affine registration to align each mesh to the average
 # 4. Save the aligned meshes to `icp_aligned_meshes/`
 # 5. Visualize the results
 #
@@ -96,9 +96,9 @@ for mesh_file in mesh_files:
 
     registrar = RegisterModelsICP(fixed_model=template_mesh)
 
-    # Perform rigid ICP registration (Rigid preserves shape for statistical modeling)
+    # Perform affine ICP registration to align each mesh to the template
     result = registrar.register(
-        moving_model=moving_mesh, transform_type="Rigid", max_iterations=2000
+        moving_model=moving_mesh, transform_type="Affine", max_iterations=2000
     )
 
     # Store results
