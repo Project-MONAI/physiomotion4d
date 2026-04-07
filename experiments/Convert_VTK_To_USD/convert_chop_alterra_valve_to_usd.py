@@ -26,29 +26,26 @@
 # Control which time series conversions to compute.
 
 # %%
-from pathlib import Path
 import re
-import time as time_module
+from pathlib import Path
 
 import numpy as np
 
+# Use as a test
+from physiomotion4d.notebook_utils import running_as_test
+
+# Import USDTools for post-processing colormap
+from physiomotion4d.usd_tools import USDTools
 
 # Import the vtk_to_usd library
 from physiomotion4d.vtk_to_usd import (
-    VTKToUSDConverter,
     ConversionSettings,
     MaterialData,
+    VTKToUSDConverter,
     cell_type_name_for_vertex_count,
     read_vtk_file,
     validate_time_series_topology,
 )
-
-# Import USDTools for post-processing colormap
-from physiomotion4d.usd_tools import USDTools
-from physiomotion4d.usd_anatomy_tools import USDAnatomyTools
-
-# Use as a test
-from physiomotion4d.notebook_utils import running_as_test
 
 # %% [markdown]
 # ## 1. Discover and Organize Time-Series Files
@@ -171,8 +168,6 @@ print(f"\nConverting to: {output_usd}")
 print(f"Number of time steps: {len(alterra_times)}")
 print("\nThis may take several minutes...\n")
 
-start_time = time_module.time()
-
 # Read MeshData
 mesh_data_sequence = [read_vtk_file(f, extract_surface=True) for f in alterra_files]
 
@@ -200,7 +195,6 @@ stage = converter.convert_mesh_data_sequence(
 
 # %%
 usd_tools = USDTools()
-usd_anatomy_tools = USDAnatomyTools(stage)
 if conversion_settings.separate_objects_by_connectivity is True:
     vessel_path = "/World/Meshes/AlterraValve_object3"
 elif conversion_settings.separate_objects_by_cell_type is True:

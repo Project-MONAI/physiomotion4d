@@ -113,7 +113,7 @@ converter.set_colormap(
 
 # Convert to USD
 output_file = output_dir / "example1_plasma_auto.usd"
-stage = converter.convert(str(output_file))
+converter.convert(str(output_file))
 print(f"\n✓ Created: {output_file}")
 
 # %% [markdown]
