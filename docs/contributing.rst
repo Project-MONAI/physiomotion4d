@@ -98,14 +98,15 @@ This configuration:
 * Shows a ruler at 88 characters (line length limit)
 * Enables basic type checking with Pylance
 
-Jupyter Notebooks
------------------
+Experiment Scripts
+------------------
 
-For working with notebooks in the `experiments/` and `data/` directories:
+Experiments in the ``experiments/`` directory are ``# %%`` percent-format Python
+scripts (Jupytext style). They run interactively via the VS Code Python extension's
+"Run Cell" feature — no Jupyter extension required.
 
-* Install `ms-toolsai.jupyter <https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter>`_ extension
-* Ruff will automatically format notebook cells
-* Type checking is less strict in notebooks (expected for exploratory work)
+* Ruff formats these cell-separated scripts automatically
+* Type checking is less strict in experiment scripts (expected for exploratory work)
 
 First-Time Setup Checklist
 ---------------------------
