@@ -294,7 +294,7 @@ def download_truncal_valve_data(test_directories):
     try:
         urllib.request.urlretrieve(input_image_url, str(input_image_filename))
         print(f"Downloaded to {input_image_filename}")
-    except urllib.error.HTTPError as e:
+    except urllib.error.URLError as e:
         msg = (
             f"Could not download test data: {e}. "
             f"Please manually place TruncalValve_4DCT.seq.nrrd in {data_dir}"

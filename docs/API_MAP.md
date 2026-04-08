@@ -332,22 +332,6 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def __init__(self, log_level=logging.INFO)` (line 57): Initialize the TotalSegmentator-based chest segmentation.
   - `def segmentation_method(self, preprocessed_image)` (line 199): Run TotalSegmentator on the preprocessed image and return result.
 
-## src/physiomotion4d/segment_chest_vista_3d.py
-
-- **class SegmentChestVista3D** (line 32): Chest CT segmentation using NVIDIA VISTA-3D foundational model.
-  - `def __init__(self, log_level=logging.INFO)` (line 68): Initialize the VISTA-3D based chest segmentation.
-  - `def set_label_prompt(self, label_prompt)` (line 232): Set specific anatomical structure labels to segment.
-  - `def set_whole_image_segmentation(self)` (line 253): Configure for automatic whole-image segmentation.
-  - `def segment_soft_tissue(self, preprocessed_image, labelmap_image)` (line 269): Add soft tissue segmentation to fill gaps in VISTA-3D output.
-  - `def preprocess_input(self, input_image)` (line 302): Preprocess the input image for VISTA-3D segmentation.
-  - `def segmentation_method(self, preprocessed_image)` (line 329): Run VISTA-3D segmentation on the preprocessed image.
-
-## src/physiomotion4d/segment_chest_vista_3d_nim.py
-
-- **class SegmentChestVista3DNIM** (line 25): A class that inherits from physioSegmentChest and implements the
-  - `def __init__(self, log_level=logging.INFO)` (line 31): Initialize the vista3d class.
-  - `def segmentation_method(self, preprocessed_image)` (line 45): Run VISTA3D on the preprocessed image using the NIM and return result.
-
 ## src/physiomotion4d/segment_heart_simpleware.py
 
 - **class SegmentHeartSimpleware** (line 23): Heart CT segmentation using Simpleware Medical's ASCardio module.
