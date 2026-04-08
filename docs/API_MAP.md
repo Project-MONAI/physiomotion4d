@@ -551,27 +551,27 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## tests/conftest.py
 
-- `def pytest_addoption(parser)` (line 36): Add custom command-line options for pytest.
-- `def pytest_configure(config)` (line 52): Configure pytest with custom markers and settings.
-- `def pytest_collection_modifyitems(config, items)` (line 75): Automatically skip experiment tests unless --run-experiments is passed.
-- `def pytest_runtest_logreport(report)` (line 95): Collect test timing information after each test completes.
-- `def pytest_terminal_summary(terminalreporter, exitstatus, config)` (line 119): Print comprehensive test timing report after all tests complete.
-- `def test_directories()` (line 253): Set up test directories for data and results.
-- `def download_truncal_valve_data(test_directories)` (line 268): Download TruncalValve 4D CT data.
-- `def converted_3d_images(download_truncal_valve_data, test_directories)` (line 310): Convert 4D NRRD to 3D time series and return slice files.
-- `def test_images(converted_3d_images)` (line 338): Load time points from the converted 3D data for testing.
-- `def segmenter_total_segmentator()` (line 379): Create a SegmentChestTotalSegmentator instance.
-- `def segmenter_vista_3d()` (line 385): Create a SegmentChestVista3D instance.
-- `def segmenter_simpleware()` (line 391): Create a SegmentHeartSimpleware instance.
-- `def heart_simpleware_image_path()` (line 397): Path to cardiac CT image used by experiments/Heart-Simpleware_Segmentation notebook.
-- `def heart_simpleware_image(heart_simpleware_image_path)` (line 416): Load cardiac CT image for SegmentHeartSimpleware tests (same as notebook).
-- `def segmentation_results(segmenter_total_segmentator, test_images, test_directories)` (line 422): Get or create segmentation results using TotalSegmentator.
-- `def contour_tools()` (line 483): Create a ContourTools instance.
-- `def registrar_ants()` (line 494): Create a RegisterImagesANTs instance.
-- `def registrar_greedy()` (line 500): Create a RegisterImagesGreedy instance.
-- `def registrar_icon()` (line 506): Create a RegisterImagesICON instance.
-- `def ants_registration_results(registrar_ants, test_images, test_directories)` (line 512): Perform ANTs registration and return results.
-- `def transform_tools()` (line 565): Create a TransformTools instance.
+- `def pytest_addoption(parser)` (line 37): Add custom command-line options for pytest.
+- `def pytest_configure(config)` (line 53): Configure pytest with custom markers and settings.
+- `def pytest_collection_modifyitems(config, items)` (line 76): Automatically skip experiment tests unless --run-experiments is passed.
+- `def pytest_runtest_logreport(report)` (line 96): Collect test timing information after each test completes.
+- `def pytest_terminal_summary(terminalreporter, exitstatus, config)` (line 120): Print comprehensive test timing report after all tests complete.
+- `def test_directories()` (line 254): Set up test directories for data and results.
+- `def download_truncal_valve_data(test_directories)` (line 269): Download TruncalValve 4D CT data.
+- `def converted_3d_images(download_truncal_valve_data, test_directories)` (line 316): Convert 4D NRRD to 3D time series and return slice files.
+- `def test_images(converted_3d_images)` (line 344): Load time points from the converted 3D data for testing.
+- `def segmenter_total_segmentator()` (line 385): Create a SegmentChestTotalSegmentator instance.
+- `def segmenter_vista_3d()` (line 391): Create a SegmentChestVista3D instance.
+- `def segmenter_simpleware()` (line 397): Create a SegmentHeartSimpleware instance.
+- `def heart_simpleware_image_path()` (line 403): Path to cardiac CT image used by experiments/Heart-Simpleware_Segmentation notebook.
+- `def heart_simpleware_image(heart_simpleware_image_path)` (line 422): Load cardiac CT image for SegmentHeartSimpleware tests (same as notebook).
+- `def segmentation_results(segmenter_total_segmentator, test_images, test_directories)` (line 428): Get or create segmentation results using TotalSegmentator.
+- `def contour_tools()` (line 489): Create a ContourTools instance.
+- `def registrar_ants()` (line 500): Create a RegisterImagesANTs instance.
+- `def registrar_greedy()` (line 506): Create a RegisterImagesGreedy instance.
+- `def registrar_icon()` (line 512): Create a RegisterImagesICON instance.
+- `def ants_registration_results(registrar_ants, test_images, test_directories)` (line 518): Perform ANTs registration and return results.
+- `def transform_tools()` (line 571): Create a TransformTools instance.
 
 ## tests/test_contour_tools.py
 

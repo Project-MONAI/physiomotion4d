@@ -6,6 +6,7 @@ This file defines fixtures that are available to all test modules
 in the tests directory via pytest's automatic fixture discovery.
 """
 
+import os
 import shutil
 import urllib.request
 from datetime import datetime, timedelta
@@ -287,16 +288,21 @@ def download_truncal_valve_data(test_directories):
         return input_image_filename
 
     # Try to download if not found locally
-    input_image_url = "https://github.com/Slicer-Heart-CT/Slicer-Heart-CT/releases/download/TestingData/TruncalValve_4DCT.seq.nrrd"
+    input_image_url = "https://github.com/SlicerHeart/SlicerHeart/releases/download/TestingData/TruncalValve_4DCT.seq.nrrd"
     print(f"\nDownloading TruncalValve 4D CT data from {input_image_url}...")
 
     try:
         urllib.request.urlretrieve(input_image_url, str(input_image_filename))
         print(f"Downloaded to {input_image_filename}")
     except urllib.error.HTTPError as e:
-        pytest.skip(
-            f"Could not download test data: {e}. Please manually place TruncalValve_4DCT.seq.nrrd in {data_dir}"
+        msg = (
+            f"Could not download test data: {e}. "
+            f"Please manually place TruncalValve_4DCT.seq.nrrd in {data_dir}"
         )
+        if os.environ.get("CI"):
+            pytest.fail(msg)
+        else:
+            pytest.skip(msg)
 
     return input_image_filename
 
