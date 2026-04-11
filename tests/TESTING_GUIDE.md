@@ -334,7 +334,7 @@ pytest tests/test_usd_merge.py::TestUSDMerge::test_specific_test -v
 Place `TruncalValve_4DCT.seq.nrrd` in `data/Slicer-Heart-CT/` or `tests/data/Slicer-Heart-CT/` before running tests. The test will automatically detect and use it.
 
 **Q: Can I use different test data?**
-Yes! Modify the `download_truncal_valve_data` fixture in `tests/conftest.py` to point to your data file. You may need to adjust expected results.
+Yes! Modify the `download_test_data` fixture in `tests/conftest.py` to point to your data file. You may need to adjust expected results.
 
 **Q: Why do some tests take so long?**
 - Registration (ANTs/ICON): 5-10 minutes each (deformable registration is computationally intensive)

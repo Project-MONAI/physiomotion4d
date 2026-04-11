@@ -14,7 +14,7 @@ uv pip install -e .
 ruff check . --fix && ruff format .
 
 # Type checking
-mypy src/
+mypy src/ tests/
 
 # All pre-commit hooks
 pre-commit run --all-files

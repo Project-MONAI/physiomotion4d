@@ -91,41 +91,6 @@ Uses the TotalSegmentator model for comprehensive anatomical segmentation.
    * Liver, kidneys, spleen
    * And many more...
 
-Ensemble Segmentation
----------------------
-
-Combines multiple segmentation methods for improved accuracy.
-
-.. autoclass:: physiomotion4d.SegmentChestEnsemble
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-**Features**:
-   * Combines multiple segmentation methods
-   * Voting or averaging strategies
-   * Improved robustness
-   * Better boundary delineation
-
-**Example Usage**:
-
-.. code-block:: python
-
-   from physiomotion4d import SegmentChestEnsemble
-
-   # Initialize ensemble
-   segmentator = SegmentChestEnsemble(
-       methods=['totalsegmentator'],
-       fusion_strategy='voting',  # or 'averaging'
-       verbose=True
-   )
-   
-   # Segment with ensemble
-   labelmap = segmentator.segment(image_path="ct_scan.nrrd")
-   
-   # Get confidence maps
-   confidence = segmentator.get_confidence_map()
-
 Common Usage Patterns
 =====================
 

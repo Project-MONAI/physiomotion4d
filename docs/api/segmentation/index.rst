@@ -13,7 +13,6 @@ PhysioMotion4D supports multiple segmentation approaches:
 
 * **TotalSegmentator**: Whole-body CT segmentation (100+ structures)
 * **Simpleware**: Cardiac-focused segmentation (requires Simpleware Medical)
-* **Ensemble**: Combines TotalSegmentator for improved robustness
 
 All segmentation classes inherit from :class:`SegmentAnatomyBase` and provide consistent interfaces.
 
@@ -23,7 +22,6 @@ Quick Links
 **Segmentation Classes**:
    * :doc:`base` - Base class for all segmentation methods
    * :doc:`totalsegmentator` - TotalSegmentator implementation
-   * :doc:`ensemble` - Ensemble segmentation
 
 Choosing a Method
 =================
@@ -34,8 +32,6 @@ Choosing a Method
 | TotalSegmentator | Fast (~30s)      | Good             | General purpose  |
 +------------------+------------------+------------------+------------------+
 | Simpleware       | Medium           | Excellent        | Cardiac imaging  |
-+------------------+------------------+------------------+------------------+
-| Ensemble         | Slow (~90s)      | Best             | Research/QC      |
 +------------------+------------------+------------------+------------------+
 
 Quick Start
@@ -52,17 +48,6 @@ Basic Segmentation
    result = segmenter.segment(ct_image, contrast_enhanced_study=False)
    labelmap = result['labelmap']
 
-Ensemble Approach
------------------
-
-.. code-block:: python
-
-   from physiomotion4d import SegmentChestEnsemble
-
-   segmenter = SegmentChestEnsemble()
-   result = segmenter.segment(ct_image, contrast_enhanced_study=False)
-   labelmap = result['labelmap']
-
 Module Documentation
 ====================
 
@@ -71,7 +56,6 @@ Module Documentation
 
    base
    totalsegmentator
-   ensemble
 
 Common Operations
 =================

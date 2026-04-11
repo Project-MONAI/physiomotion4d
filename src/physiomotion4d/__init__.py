@@ -62,7 +62,6 @@ from .register_time_series_images import RegisterTimeSeriesImages
 
 # Segmentation classes
 from .segment_anatomy_base import SegmentAnatomyBase
-from .segment_chest_ensemble import SegmentChestEnsemble
 from .segment_chest_total_segmentator import SegmentChestTotalSegmentator
 from .segment_heart_simpleware import SegmentHeartSimpleware
 from .transform_tools import TransformTools
@@ -89,7 +88,6 @@ __all__ = [
     "WorkflowFitStatisticalModelToPatient",
     # Segmentation classes
     "SegmentAnatomyBase",
-    "SegmentChestEnsemble",
     "SegmentChestTotalSegmentator",
     "SegmentHeartSimpleware",
     # Registration classes

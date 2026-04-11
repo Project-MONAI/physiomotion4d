@@ -93,24 +93,6 @@ Quick segmentation with TotalSegmentator:
    itk.imwrite(heart, "heart_mask.nrrd")
    itk.imwrite(lungs, "lungs_mask.nrrd")
 
-Ensemble Segmentation
----------------------
-
-Combine multiple methods for best results:
-
-.. code-block:: python
-
-   from physiomotion4d import SegmentChestEnsemble
-   import itk
-
-   segmenter = SegmentChestEnsemble(
-       methods=['totalsegmentator'],
-       fusion_strategy='voting'
-   )
-
-   image = itk.imread("chest_ct.nrrd")
-   masks = segmenter.segment(image, contrast_enhanced_study=True)
-
 Registration Examples
 =====================
 

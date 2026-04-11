@@ -238,6 +238,10 @@ disable_error_code = ["import-not-found", "import-untyped"]
 module = ["physiomotion4d", "physiomotion4d.*"]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = ["tests", "tests.*", "conftest"]
+ignore_missing_imports = true
+
 [tool.pyright]
 # Third-party packages (e.g. pyvista) are in dependencies but may have no stubs;
 # do not report import-not-found so analysis matches mypy overrides above.

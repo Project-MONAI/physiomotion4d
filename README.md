@@ -106,7 +106,6 @@ print(f"PhysioMotion4D version: {physiomotion4d.__version__}")
   - `WorkflowFitStatisticalModelToPatient`: Model-to-patient registration workflow
 - **Segmentation Classes**: Multiple AI-based chest segmentation implementations
   - `SegmentChestTotalSegmentator`: TotalSegmentator-based segmentation
-  - `SegmentChestEnsemble`: Ensemble segmentation combining multiple methods
   - `SegmentAnatomyBase`: Base class for custom segmentation methods
 - **Registration Classes**: Multiple registration methods for different use cases
   - Image-to-Image Registration:
@@ -633,7 +632,7 @@ Use `/plan` to get an inspection of the affected classes, a numbered implementat
 plan, and a list of open questions — without touching any files.
 
 ```text
-/plan add a confidence-weighted voting mode to SegmentChestEnsemble
+/plan add a new segmentation method to SegmentChestTotalSegmentator
 ```
 
 Claude will read the relevant source, summarize current behavior, list files that

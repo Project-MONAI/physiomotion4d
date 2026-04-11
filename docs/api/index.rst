@@ -20,7 +20,6 @@ This section provides detailed documentation for all PhysioMotion4D classes, fun
    segmentation/index
    segmentation/base
    segmentation/totalsegmentator
-   segmentation/ensemble
 
 .. toctree::
    :maxdepth: 2
@@ -81,7 +80,6 @@ By Category
    * :class:`~physiomotion4d.SegmentAnatomyBase` - Base segmentation class
    * :class:`~physiomotion4d.SegmentChestTotalSegmentator` - TotalSegmentator
    * :class:`~physiomotion4d.SegmentHeartSimpleware` - Simpleware cardiac segmentation
-   * :class:`~physiomotion4d.SegmentChestEnsemble` - Ensemble segmentation
 
 **Image Registration**
    * :class:`~physiomotion4d.RegisterImagesBase` - Base registration class

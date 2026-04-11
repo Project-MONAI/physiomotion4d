@@ -279,7 +279,6 @@ Common Issues
 
 **Segmentation quality issues**
 
-* Try ensemble method: Use ``SegmentChestEnsemble``
 * Adjust contrast parameters
 * Preprocess images (denoising, normalization)
 

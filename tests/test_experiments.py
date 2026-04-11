@@ -30,6 +30,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -70,7 +71,7 @@ def get_scripts_in_subdir(subdir_name: str) -> list[Path]:
     return scripts
 
 
-def execute_script(script_path: Path, timeout: int = 3600) -> dict:
+def execute_script(script_path: Path, timeout: int = 3600) -> dict[str, Any]:
     """
     Execute a Python experiment script.
 
@@ -172,7 +173,7 @@ def _heart_statistical_model_pca_prerequisites_met() -> tuple[bool, str]:
     return (True, "")
 
 
-def run_experiment_scripts(subdir_name: str, timeout_per_script: int = 3600):
+def run_experiment_scripts(subdir_name: str, timeout_per_script: int = 3600) -> None:
     """
     Run all Python scripts in an experiment subdirectory in alphanumeric order.
 
@@ -203,8 +204,8 @@ def run_experiment_scripts(subdir_name: str, timeout_per_script: int = 3600):
     print("# Sequential execution enforced (scripts run in order)")
     print(f"{'#' * 80}\n")
 
-    failed_scripts = []
-    successful_scripts = []
+    failed_scripts: list[dict[str, Any]] = []
+    successful_scripts: list[str] = []
 
     for i, script in enumerate(scripts, 1):
         print(f"\n--- Script {i}/{len(scripts)} ---")
@@ -294,7 +295,7 @@ def run_experiment_scripts(subdir_name: str, timeout_per_script: int = 3600):
 @pytest.mark.xdist_group(
     name="experiment_colormap"
 )  # Prevent parallel execution within group
-def test_experiment_colormap_vtk_to_usd():
+def test_experiment_colormap_vtk_to_usd() -> None:
     """
     Test Colormap-VTK_To_USD experiment scripts.
 
@@ -328,7 +329,7 @@ def test_experiment_colormap_vtk_to_usd():
 @pytest.mark.requires_gpu
 @pytest.mark.timeout(14400)  # 4 hours total timeout
 @pytest.mark.xdist_group(name="experiment_reconstruct4dct")
-def test_experiment_reconstruct_4dct():
+def test_experiment_reconstruct_4dct() -> None:
     """
     Test Reconstruct4DCT experiment scripts.
 
@@ -347,7 +348,7 @@ def test_experiment_reconstruct_4dct():
 @pytest.mark.requires_data
 @pytest.mark.timeout(10800)  # 3 hours total timeout
 @pytest.mark.xdist_group(name="experiment_heart_vtk")
-def test_experiment_heart_vtk_series_to_usd():
+def test_experiment_heart_vtk_series_to_usd() -> None:
     """
     Test Heart-VTKSeries_To_USD experiment scripts.
 
@@ -368,7 +369,7 @@ def test_experiment_heart_vtk_series_to_usd():
 @pytest.mark.requires_data
 @pytest.mark.timeout(21600)  # 6 hours total timeout
 @pytest.mark.xdist_group(name="experiment_heart_gated_ct")
-def test_experiment_heart_gated_ct_to_usd():
+def test_experiment_heart_gated_ct_to_usd() -> None:
     """
     Test Heart-GatedCT_To_USD experiment scripts.
 
@@ -392,7 +393,7 @@ def test_experiment_heart_gated_ct_to_usd():
 @pytest.mark.requires_data
 @pytest.mark.timeout(7200)  # 2 hours total timeout
 @pytest.mark.xdist_group(name="experiment_convert_vtk_to_usd")
-def test_experiment_convert_vtk_to_usd():
+def test_experiment_convert_vtk_to_usd() -> None:
     """
     Test Convert_VTK_To_USD experiment scripts.
 
@@ -412,7 +413,7 @@ def test_experiment_convert_vtk_to_usd():
 @pytest.mark.requires_data
 @pytest.mark.timeout(10800)  # 3 hours total timeout
 @pytest.mark.xdist_group(name="experiment_create_statistical_model")
-def test_experiment_create_statistical_model():
+def test_experiment_create_statistical_model() -> None:
     """
     Test Heart-Create_Statistical_Model experiment scripts.
 
@@ -437,7 +438,7 @@ def test_experiment_create_statistical_model():
 @pytest.mark.requires_data
 @pytest.mark.timeout(14400)  # 4 hours total timeout
 @pytest.mark.xdist_group(name="experiment_heart_statistical_model")
-def test_experiment_heart_statistical_model_to_patient():
+def test_experiment_heart_statistical_model_to_patient() -> None:
     """
     Test Heart-Statistical_Model_To_Patient experiment scripts.
 
@@ -472,7 +473,7 @@ def test_experiment_heart_statistical_model_to_patient():
 @pytest.mark.requires_data
 @pytest.mark.timeout(21600)  # 6 hours total timeout
 @pytest.mark.xdist_group(name="experiment_lung_gated_ct")
-def test_experiment_lung_gated_ct_to_usd():
+def test_experiment_lung_gated_ct_to_usd() -> None:
     """
     Test Lung-GatedCT_To_USD experiment scripts.
 
@@ -517,7 +518,7 @@ def test_experiment_lung_gated_ct_to_usd():
 
 
 @pytest.mark.experiment
-def test_experiment_structure():
+def test_experiment_structure() -> None:
     """
     Validate the structure of the experiments directory.
 
@@ -571,7 +572,7 @@ def test_experiment_structure():
 
 @pytest.mark.experiment
 @pytest.mark.parametrize("subdir_name", EXPERIMENT_SUBDIRS)
-def test_list_scripts_in_subdir(subdir_name):
+def test_list_scripts_in_subdir(subdir_name: str) -> None:
     """
     List all scripts in each experiment subdirectory.
 

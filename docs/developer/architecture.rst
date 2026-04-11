@@ -50,8 +50,7 @@ The package is organized into functional modules:
    │
    ├── Segmentation
    │   ├── segment_anatomy_base.py                Base segmentation
-   │   ├── segment_chest_total_segmentator.py     TotalSegmentator
-   │   └── segment_chest_ensemble.py              Ensemble methods
+   │   └── segment_chest_total_segmentator.py     TotalSegmentator
    │
    ├── Registration
    │   ├── Image Registration
@@ -97,8 +96,7 @@ Most PhysioMotion4D classes inherit from :class:`PhysioMotion4DBase`:
    │   └── WorkflowFitStatisticalModelToPatient
    ├── Segmentation Classes
    │   ├── SegmentAnatomyBase
-   │   │   ├── SegmentChestTotalSegmentator
-   │   │   └── SegmentChestEnsemble
+   │   │   └── SegmentChestTotalSegmentator
    ├── Registration Classes
    │   ├── RegisterImagesBase
    │   │   ├── RegisterImagesANTs

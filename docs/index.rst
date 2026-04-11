@@ -36,7 +36,7 @@ PhysioMotion4D is a comprehensive medical imaging package that converts 3D and 4
 ===============
 
 * **Complete 4D Medical Imaging Pipeline**: End-to-end processing from 4D CT/MR data to animated USD models
-* **Multiple AI Segmentation Methods**: TotalSegmentator, VISTA-3D, and ensemble approaches
+* **Multiple AI Segmentation Methods**: TotalSegmentator and Simpleware cardiac segmentation
 * **Deep Learning Registration**: GPU-accelerated image registration using Icon algorithm
 * **NVIDIA Omniverse Integration**: Direct USD file export for medical visualization
 * **Physiological Motion Analysis**: Capture and visualize cardiac and respiratory motion
