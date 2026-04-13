@@ -473,23 +473,23 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## tests/conftest.py
 
-- `def pytest_addoption(parser)` (line 35): Add custom command-line options for pytest.
-- `def pytest_configure(config)` (line 51): Configure pytest with custom markers and settings.
-- `def pytest_collection_modifyitems(config, items)` (line 74): Automatically skip experiment tests unless --run-experiments is passed.
-- `def pytest_runtest_logreport(report)` (line 96): Collect test timing information after each test completes.
-- `def pytest_terminal_summary(terminalreporter, exitstatus, config)` (line 120): Print comprehensive test timing report after all tests complete.
-- `def test_directories()` (line 258): Set up test directories for data and results.
-- `def download_test_data(test_directories)` (line 273): Download TruncalValve 4D CT data.
-- `def test_images(download_test_data, test_directories)` (line 309): Convert and resample 4D NRRD data; return pre-resampled time points.
-- `def test_labelmaps(segmenter_total_segmentator, test_images, test_directories)` (line 361): Segment each time point with TotalSegmentator and return result dicts.
-- `def test_transforms(registrar_ants, test_images, test_directories)` (line 402): Perform ANTs registration and return results.
-- `def segmenter_total_segmentator()` (line 458): Create a SegmentChestTotalSegmentator instance.
-- `def segmenter_simpleware()` (line 464): Create a SegmentHeartSimpleware instance.
-- `def contour_tools()` (line 470): Create a ContourTools instance.
-- `def registrar_ants()` (line 476): Create a RegisterImagesANTs instance.
-- `def registrar_greedy()` (line 482): Create a RegisterImagesGreedy instance.
-- `def registrar_icon()` (line 488): Create a RegisterImagesICON instance.
-- `def transform_tools()` (line 494): Create a TransformTools instance.
+- `def pytest_addoption(parser)` (line 36): Add custom command-line options for pytest.
+- `def pytest_configure(config)` (line 52): Configure pytest with custom markers and settings.
+- `def pytest_collection_modifyitems(config, items)` (line 75): Automatically skip experiment tests unless --run-experiments is passed.
+- `def pytest_runtest_logreport(report)` (line 97): Collect test timing information after each test completes.
+- `def pytest_terminal_summary(terminalreporter, exitstatus, config)` (line 121): Print comprehensive test timing report after all tests complete.
+- `def test_directories()` (line 259): Set up test directories for data and results.
+- `def download_test_data(test_directories)` (line 274): Download TruncalValve 4D CT data.
+- `def test_images(download_test_data, test_directories)` (line 310): Convert and resample 4D NRRD data; return pre-resampled time points.
+- `def test_labelmaps(segmenter_total_segmentator, test_images, test_directories)` (line 362): Segment each time point with TotalSegmentator and return result dicts.
+- `def test_transforms(registrar_ants, test_images, test_directories)` (line 403): Perform ANTs registration and return results.
+- `def segmenter_total_segmentator()` (line 459): Create a SegmentChestTotalSegmentator instance.
+- `def segmenter_simpleware()` (line 465): Create a SegmentHeartSimpleware instance.
+- `def contour_tools()` (line 471): Create a ContourTools instance.
+- `def registrar_ants()` (line 477): Create a RegisterImagesANTs instance.
+- `def registrar_greedy()` (line 483): Create a RegisterImagesGreedy instance.
+- `def registrar_icon()` (line 489): Create a RegisterImagesICON instance.
+- `def transform_tools()` (line 495): Create a TransformTools instance.
 
 ## tests/test_contour_tools.py
 

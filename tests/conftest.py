@@ -7,6 +7,7 @@ in the tests directory via pytest's automatic fixture discovery.
 """
 
 import os
+import urllib.error
 import urllib.request
 from datetime import datetime, timedelta
 from pathlib import Path

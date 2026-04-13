@@ -17,7 +17,7 @@ Overview
 PhysioMotion4D supports multiple segmentation approaches:
 
 * **TotalSegmentator**: Whole-body CT segmentation (100+ structures)
-* **Ensemble**: Combine multiple methods for improved accuracy
+* **Simpleware**: High-quality cardiac segmentation via Synopsys Simpleware Medical
 
 All segmentation classes inherit from :class:`SegmentAnatomyBase` and provide consistent interfaces.
 
