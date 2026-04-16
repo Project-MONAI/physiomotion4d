@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 """
-Tests for the vtk_to_usd library module.
+Tests for VTK-to-USD conversion via ConvertVTKToUSD.
 
-This test suite validates the new modular vtk_to_usd library including:
-- VTK file reading (VTP, VTK, VTU formats)
-- Data structure conversions
-- USD conversion
-- Material handling
-- Time-series support
+Covers:
+- VTK file reading (VTP, VTK, VTU formats) via internal vtk_to_usd helpers
+- ConvertVTKToUSD.from_files() — single file, time series, settings
+- Material and primvar preservation
+- Data structure validation (GenericArray, MeshData, etc.)
 
-Note: These tests require manually downloaded data:
-- KCL-Heart-Model: Must be manually downloaded and placed in data/KCL-Heart-Model/
-- CHOP-Valve4D: Must be manually downloaded and placed in data/CHOP-Valve4D/
+Note: Tests marked requires_data need manually downloaded data:
+- KCL-Heart-Model: data/KCL-Heart-Model/
+- CHOP-Valve4D: data/CHOP-Valve4D/
 """
 
 from pathlib import Path
@@ -21,12 +20,10 @@ import pytest
 import pyvista as pv
 from pxr import UsdGeom, UsdShade
 
+from physiomotion4d import ConvertVTKToUSD
 from physiomotion4d.vtk_to_usd import (
-    ConversionSettings,
     DataType,
     GenericArray,
-    MaterialData,
-    VTKToUSDConverter,
     read_vtk_file,
 )
 
@@ -294,32 +291,22 @@ class TestVTKToUSDConversion:
         output_dir = test_directories["output"] / "vtk_to_usd_library"
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Get test data
         vtp_file = kcl_average_surface
-
-        # Single mesh (no split) so path is /World/Meshes/HeartSurface
-        settings = ConversionSettings(
-            separate_objects_by_connectivity=False,
-            separate_objects_by_cell_type=False,
-        )
         output_usd = output_dir / "heart_surface.usd"
-        converter = VTKToUSDConverter(settings)
-        stage = converter.convert_file(
-            vtp_file,
-            output_usd,
-            mesh_name="HeartSurface",
-        )
 
-        # Verify USD file
+        stage = ConvertVTKToUSD.from_files(
+            data_basename="HeartSurface",
+            vtk_files=[vtp_file],
+        ).convert(str(output_usd))
+
         assert output_usd.exists()
         assert stage is not None
 
-        # Check mesh exists in stage
-        mesh_prim = stage.GetPrimAtPath("/World/Meshes/HeartSurface")
+        # No split: mesh lives at /World/HeartSurface/Mesh
+        mesh_prim = stage.GetPrimAtPath("/World/HeartSurface/Mesh")
         assert mesh_prim.IsValid()
         assert mesh_prim.IsA(UsdGeom.Mesh)
 
-        # Check mesh has geometry
         mesh = UsdGeom.Mesh(mesh_prim)
         points = mesh.GetPointsAttr().Get()
         assert len(points) > 0
@@ -332,84 +319,55 @@ class TestVTKToUSDConversion:
     def test_conversion_with_material(
         self, test_directories: dict[str, Path], kcl_average_surface: Path
     ) -> None:
-        """Test conversion with custom material."""
+        """Test conversion with a custom solid color material."""
         output_dir = test_directories["output"] / "vtk_to_usd_library"
         output_dir.mkdir(parents=True, exist_ok=True)
 
         vtp_file = kcl_average_surface
-
-        # Create custom material
-        material = MaterialData(
-            name="heart_tissue",
-            diffuse_color=(0.9, 0.3, 0.3),
-            roughness=0.4,
-            metallic=0.0,
-        )
-
-        # Single mesh so path is /World/Meshes/HeartSurface
-        settings = ConversionSettings(
-            separate_objects_by_connectivity=False,
-            separate_objects_by_cell_type=False,
-        )
         output_usd = output_dir / "heart_with_material.usd"
-        converter = VTKToUSDConverter(settings)
-        stage = converter.convert_file(
-            vtp_file,
-            output_usd,
-            mesh_name="HeartSurface",
-            material=material,
-        )
 
-        # Verify material exists
-        material_path = f"/World/Looks/{material.name}"
-        material_prim = stage.GetPrimAtPath(material_path)
+        stage = ConvertVTKToUSD.from_files(
+            data_basename="HeartSurface",
+            vtk_files=[vtp_file],
+            solid_color=(0.9, 0.3, 0.3),
+        ).convert(str(output_usd))
+
+        # Material for the no-split case is named "Mesh_material"
+        material_prim = stage.GetPrimAtPath("/World/Looks/Mesh_material")
         assert material_prim.IsValid()
         assert material_prim.IsA(UsdShade.Material)
 
-        # Verify material is bound to mesh
-        mesh_prim = stage.GetPrimAtPath("/World/Meshes/HeartSurface")
+        # Verify material is bound to the mesh prim
+        mesh_prim = stage.GetPrimAtPath("/World/HeartSurface/Mesh")
         binding_api = UsdShade.MaterialBindingAPI(mesh_prim)
         bound_material = binding_api.ComputeBoundMaterial()[0]
         assert bound_material.GetPrim().IsValid()
 
-        print("\nConverted with custom material")
-        print(f"  Material: {material.name}")
-        print(f"  Color: {material.diffuse_color}")
+        print("\nConverted with custom solid color material")
+        print(f"  Material path: /World/Looks/Mesh_material")
 
     def test_conversion_settings(
         self, test_directories: dict[str, Path], kcl_average_surface: Path
     ) -> None:
-        """Test conversion with custom settings."""
+        """Test that ConvertVTKToUSD applies correct default stage metadata."""
         output_dir = test_directories["output"] / "vtk_to_usd_library"
         output_dir.mkdir(parents=True, exist_ok=True)
 
         vtp_file = kcl_average_surface
-
-        # Create custom settings (single mesh for predictable path)
-        settings = ConversionSettings(
-            triangulate_meshes=True,
-            compute_normals=True,
-            preserve_point_arrays=True,
-            preserve_cell_arrays=True,
-            separate_objects_by_connectivity=False,
-            separate_objects_by_cell_type=False,
-            meters_per_unit=0.001,  # mm to meters
-            up_axis="Y",
-        )
-
-        # Convert with settings
         output_usd = output_dir / "heart_custom_settings.usd"
-        converter = VTKToUSDConverter(settings)
-        stage = converter.convert_file(vtp_file, output_usd, mesh_name="Mesh")
 
-        # Verify stage metadata
-        assert UsdGeom.GetStageMetersPerUnit(stage) == 0.001
+        stage = ConvertVTKToUSD.from_files(
+            data_basename="Mesh",
+            vtk_files=[vtp_file],
+        ).convert(str(output_usd))
+
+        # ConvertVTKToUSD always uses meters_per_unit=1.0 and Y-up
+        assert UsdGeom.GetStageMetersPerUnit(stage) == 1.0
         assert UsdGeom.GetStageUpAxis(stage) == UsdGeom.Tokens.y
 
-        print("\nConverted with custom settings")
-        print(f"  Meters per unit: {settings.meters_per_unit}")
-        print(f"  Up axis: {settings.up_axis}")
-        print(f"  Compute normals: {settings.compute_normals}")
+        print("\nVerified stage metadata defaults")
+        print(f"  Meters per unit: {UsdGeom.GetStageMetersPerUnit(stage)}")
+        print(f"  Up axis: {UsdGeom.GetStageUpAxis(stage)}")
 
     def test_primvar_preservation(
         self, test_directories: dict[str, Path], kcl_average_surface: Path
@@ -420,33 +378,29 @@ class TestVTKToUSDConversion:
 
         vtp_file = kcl_average_surface
 
-        # Read to check arrays
+        # Read source to count arrays
         mesh_data = read_vtk_file(vtp_file)
         array_names = [arr.name for arr in mesh_data.generic_arrays]
 
-        # Single mesh so path is /World/Meshes/Mesh
-        settings = ConversionSettings(
-            separate_objects_by_connectivity=False,
-            separate_objects_by_cell_type=False,
-        )
         output_usd = output_dir / "heart_with_primvars.usd"
-        converter = VTKToUSDConverter(settings)
-        stage = converter.convert_file(vtp_file, output_usd, mesh_name="Mesh")
 
-        # Check primvars exist
-        mesh_prim = stage.GetPrimAtPath("/World/Meshes/Mesh")
+        stage = ConvertVTKToUSD.from_files(
+            data_basename="Mesh",
+            vtk_files=[vtp_file],
+        ).convert(str(output_usd))
+
+        # No split: mesh at /World/Mesh/Mesh
+        mesh_prim = stage.GetPrimAtPath("/World/Mesh/Mesh")
         primvars_api = UsdGeom.PrimvarsAPI(mesh_prim)
         primvars = primvars_api.GetPrimvars()
 
         primvar_names = [pv.GetPrimvarName() for pv in primvars]
-
-        # Verify at least some arrays were converted to primvars
         assert len(primvar_names) > 0
 
         print("\nPrimvars preserved:")
         print(f"  Source arrays: {len(array_names)}")
         print(f"  USD primvars: {len(primvar_names)}")
-        for name in primvar_names[:5]:  # Show first 5
+        for name in primvar_names[:5]:
             print(f"    - {name}")
 
 
@@ -457,41 +411,31 @@ class TestTimeSeriesConversion:
     def test_time_series_conversion(
         self, test_directories: dict[str, Path], kcl_average_surface: Path
     ) -> None:
-        """Test converting multiple VTK files as time series."""
+        """Test converting multiple VTK files as a time series."""
         output_dir = test_directories["output"] / "vtk_to_usd_library"
         output_dir.mkdir(parents=True, exist_ok=True)
 
         vtp_file = kcl_average_surface
 
-        # Use same file multiple times to simulate time series
+        # Use the same file three times to simulate a time series
         vtk_files = [vtp_file] * 3
         time_codes = [0.0, 1.0, 2.0]
 
-        # Single mesh so path is /World/Meshes/Mesh
-        settings = ConversionSettings(
-            separate_objects_by_connectivity=False,
-            separate_objects_by_cell_type=False,
-        )
         output_usd = output_dir / "heart_time_series.usd"
-        converter = VTKToUSDConverter(settings)
-        stage = converter.convert_sequence(
-            vtk_files=vtk_files,
-            output_usd=output_usd,
-            time_codes=time_codes,
-            mesh_name="Mesh",
-        )
 
-        # Verify time range
+        stage = ConvertVTKToUSD.from_files(
+            data_basename="Mesh",
+            vtk_files=vtk_files,
+            time_codes=time_codes,
+        ).convert(str(output_usd))
+
         assert stage.GetStartTimeCode() == 0.0
         assert stage.GetEndTimeCode() == 2.0
 
-        # Verify mesh has time samples
-        mesh_prim = stage.GetPrimAtPath("/World/Meshes/Mesh")
+        # No split: mesh at /World/Mesh/Mesh
+        mesh_prim = stage.GetPrimAtPath("/World/Mesh/Mesh")
         mesh = UsdGeom.Mesh(mesh_prim)
-        points_attr = mesh.GetPointsAttr()
-
-        # Check time samples exist
-        time_samples = points_attr.GetTimeSamples()
+        time_samples = mesh.GetPointsAttr().GetTimeSamples()
         assert len(time_samples) == 3
         assert time_samples == time_codes
 
@@ -515,53 +459,30 @@ class TestIntegration:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         vtp_file = kcl_average_surface
-
-        # Configure everything (single mesh for predictable path)
-        settings = ConversionSettings(
-            triangulate_meshes=True,
-            compute_normals=True,
-            preserve_point_arrays=True,
-            separate_objects_by_connectivity=False,
-            separate_objects_by_cell_type=False,
-            meters_per_unit=0.001,
-            times_per_second=24.0,
-        )
-
-        material = MaterialData(
-            name="cardiac_muscle",
-            diffuse_color=(0.85, 0.2, 0.2),
-            roughness=0.5,
-            metallic=0.0,
-        )
-
-        # Convert
         output_usd = output_dir / "heart_complete.usd"
-        converter = VTKToUSDConverter(settings)
-        stage = converter.convert_file(
-            vtp_file,
-            output_usd,
-            mesh_name="CardiacModel",
-            material=material,
-        )
 
-        # Comprehensive verification
+        stage = ConvertVTKToUSD.from_files(
+            data_basename="CardiacModel",
+            vtk_files=[vtp_file],
+            solid_color=(0.85, 0.2, 0.2),
+            times_per_second=24.0,
+        ).convert(str(output_usd))
+
         assert output_usd.exists()
         assert stage is not None
 
-        # Check structure
-        mesh_prim = stage.GetPrimAtPath("/World/Meshes/CardiacModel")
+        # No split: mesh at /World/CardiacModel/Mesh
+        mesh_prim = stage.GetPrimAtPath("/World/CardiacModel/Mesh")
         assert mesh_prim.IsValid()
 
-        # Check geometry
         mesh = UsdGeom.Mesh(mesh_prim)
         points = mesh.GetPointsAttr().Get()
         assert len(points) > 0
 
-        # Check material
-        material_prim = stage.GetPrimAtPath(f"/World/Looks/{material.name}")
+        # Material is auto-named "Mesh_material"
+        material_prim = stage.GetPrimAtPath("/World/Looks/Mesh_material")
         assert material_prim.IsValid()
 
-        # Check primvars
         primvars_api = UsdGeom.PrimvarsAPI(mesh_prim)
         primvars = primvars_api.GetPrimvars()
         assert len(primvars) > 0
