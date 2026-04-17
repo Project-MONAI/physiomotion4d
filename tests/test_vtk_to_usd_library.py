@@ -343,8 +343,16 @@ class TestVTKToUSDConversion:
         bound_material = binding_api.ComputeBoundMaterial()[0]
         assert bound_material.GetPrim().IsValid()
 
+        # Verify the shader's diffuseColor input carries the requested solid color
+        shader_prim = stage.GetPrimAtPath("/World/Looks/Mesh_material/PreviewSurface")
+        assert shader_prim.IsValid()
+        shader = UsdShade.Shader(shader_prim)
+        diffuse_value = shader.GetInput("diffuseColor").Get()
+        assert diffuse_value is not None
+        assert tuple(diffuse_value) == pytest.approx((0.9, 0.3, 0.3), abs=1e-5)
+
         print("\nConverted with custom solid color material")
-        print(f"  Material path: /World/Looks/Mesh_material")
+        print("  Material path: /World/Looks/Mesh_material")
 
     def test_conversion_settings(
         self, test_directories: dict[str, Path], kcl_average_surface: Path

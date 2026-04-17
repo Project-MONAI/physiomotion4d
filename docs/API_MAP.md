@@ -118,10 +118,10 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - **class ConvertVTKToUSD** (line 38): Advanced VTK to USD converter with colormap and anatomical labeling support.
   - `def __init__(self, data_basename, input_polydata, mask_ids=None, compute_normals=False, convert_to_surface=True, times_per_second=24.0, separate_by='none', solid_color=(0.8, 0.8, 0.8), log_level=logging.INFO)` (line 68): Initialize converter.
   - `def from_files(cls, data_basename, vtk_files, *, extract_surface=True, separate_by='none', times_per_second=24.0, solid_color=(0.8, 0.8, 0.8), time_codes=None, static_merge=False, mask_ids=None, log_level=logging.INFO)` (line 135): Create a converter by loading VTK files from disk.
-  - `def supports_mesh_type(self, mesh)` (line 217): Check if mesh type is supported for conversion.
-  - `def list_available_arrays(self)` (line 245): List all point data arrays available across all time steps.
-  - `def set_colormap(self, color_by_array=None, colormap='plasma', intensity_range=None)` (line 291): Configure colormap for visualization.
-  - `def convert(self, output_usd_file, convert_to_surface=None, compute_normals=None)` (line 325): Convert VTK meshes to USD.
+  - `def supports_mesh_type(self, mesh)` (line 232): Check if mesh type is supported for conversion.
+  - `def list_available_arrays(self)` (line 260): List all point data arrays available across all time steps.
+  - `def set_colormap(self, color_by_array=None, colormap='plasma', intensity_range=None)` (line 306): Configure colormap for visualization.
+  - `def convert(self, output_usd_file, convert_to_surface=None, compute_normals=None)` (line 340): Convert VTK meshes to USD.
 
 ## src/physiomotion4d/image_tools.py
 
@@ -418,9 +418,9 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 ## src/physiomotion4d/workflow_convert_vtk_to_usd.py
 
 - **class WorkflowConvertVTKToUSD** (line 23): Workflow to convert one or more VTK files to USD with configurable
-  - `def __init__(self, vtk_files, output_usd, *, separate_by_connectivity=True, separate_by_cell_type=False, mesh_name='Mesh', times_per_second=60.0, up_axis='Y', triangulate=True, extract_surface=True, time_series_pattern='\\.t(\\d+)\\.(vtk|vtp|vtu)$', appearance='solid', solid_color=(0.8, 0.8, 0.8), anatomy_type='heart', colormap_primvar=None, colormap_name='viridis', colormap_intensity_range=None, log_level=logging.INFO)` (line 29): Initialize the VTK-to-USD workflow.
-  - `def discover_time_series(self, paths, pattern='\\.t(\\d+)\\.(vtk|vtp|vtu)$')` (line 99): Discover and sort time-series VTK files by extracted time index.
-  - `def run(self)` (line 135): Run the full workflow: convert VTK to USD, then apply the chosen appearance.
+  - `def __init__(self, vtk_files, output_usd, *, separate_by_connectivity=True, separate_by_cell_type=False, mesh_name='Mesh', times_per_second=60.0, extract_surface=True, time_series_pattern='\\.t(\\d+)\\.(vtk|vtp|vtu)$', appearance='solid', solid_color=(0.8, 0.8, 0.8), anatomy_type='heart', colormap_primvar=None, colormap_name='viridis', colormap_intensity_range=None, log_level=logging.INFO)` (line 29): Initialize the VTK-to-USD workflow.
+  - `def discover_time_series(self, paths, pattern='\\.t(\\d+)\\.(vtk|vtp|vtu)$')` (line 93): Discover and sort time-series VTK files by extracted time index.
+  - `def run(self)` (line 129): Run the full workflow: convert VTK to USD, then apply the chosen appearance.
 
 ## src/physiomotion4d/workflow_create_statistical_model.py
 
@@ -721,12 +721,12 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - **class TestVTKToUSDConversion** (line 284): Test VTK to USD conversion capabilities.
   - `def test_single_file_conversion(self, test_directories, kcl_average_surface)` (line 287): Test converting a single VTK file to USD.
   - `def test_conversion_with_material(self, test_directories, kcl_average_surface)` (line 319): Test conversion with a custom solid color material.
-  - `def test_conversion_settings(self, test_directories, kcl_average_surface)` (line 349): Test that ConvertVTKToUSD applies correct default stage metadata.
-  - `def test_primvar_preservation(self, test_directories, kcl_average_surface)` (line 372): Test that VTK data arrays are preserved as USD primvars.
-- **class TestTimeSeriesConversion** (line 408): Test time-series conversion capabilities.
-  - `def test_time_series_conversion(self, test_directories, kcl_average_surface)` (line 411): Test converting multiple VTK files as a time series.
-- **class TestIntegration** (line 451): Integration tests combining multiple features.
-  - `def test_end_to_end_conversion(self, test_directories, kcl_average_surface)` (line 454): Test complete conversion workflow with all features.
+  - `def test_conversion_settings(self, test_directories, kcl_average_surface)` (line 357): Test that ConvertVTKToUSD applies correct default stage metadata.
+  - `def test_primvar_preservation(self, test_directories, kcl_average_surface)` (line 380): Test that VTK data arrays are preserved as USD primvars.
+- **class TestTimeSeriesConversion** (line 416): Test time-series conversion capabilities.
+  - `def test_time_series_conversion(self, test_directories, kcl_average_surface)` (line 419): Test converting multiple VTK files as a time series.
+- **class TestIntegration** (line 459): Integration tests combining multiple features.
+  - `def test_end_to_end_conversion(self, test_directories, kcl_average_surface)` (line 462): Test complete conversion workflow with all features.
 
 ## utils/claude_github_reviews.py
 

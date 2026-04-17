@@ -159,11 +159,19 @@ stage = ConvertVTKToUSD.from_files(
 
 # %%
 usd_tools = USDTools()
-# ConvertVTKToUSD places prims at /World/{basename}/{part_name}
+# ConvertVTKToUSD places prims at /World/{basename}/{part_name}.
+# Discover the target prim dynamically so the path stays valid regardless
+# of how many connected components or cell types the VTK file produces.
 if separate_by == "connectivity":
-    vessel_path = "/World/TPV25Valve/TPV25Valve_object4"
+    mesh_paths = usd_tools.list_mesh_paths_under(stage, parent_path="/World/TPV25Valve")
+    candidates = [
+        p for p in mesh_paths if p.split("/")[-1].startswith("TPV25Valve_object")
+    ]
+    vessel_path = candidates[-1] if candidates else "/World/TPV25Valve/Mesh"
 elif separate_by == "cell_type":
-    vessel_path = "/World/TPV25Valve/TPV25Valve_Triangle"
+    mesh_paths = usd_tools.list_mesh_paths_under(stage, parent_path="/World/TPV25Valve")
+    triangle_paths = [p for p in mesh_paths if p.split("/")[-1].endswith("_Triangle")]
+    vessel_path = triangle_paths[0] if triangle_paths else "/World/TPV25Valve/Mesh"
 else:
     vessel_path = "/World/TPV25Valve/Mesh"
 

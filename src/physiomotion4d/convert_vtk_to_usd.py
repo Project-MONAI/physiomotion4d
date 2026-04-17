@@ -173,6 +173,20 @@ class ConvertVTKToUSD(PhysioMotion4DBase):
         if not file_list:
             raise ValueError("vtk_files must not be empty")
 
+        if time_codes is not None and len(time_codes) != len(file_list):
+            raise ValueError(
+                f"time_codes length ({len(time_codes)}) must match "
+                f"vtk_files length ({len(file_list)})"
+            )
+        if time_codes is not None and len(time_codes) > 1:
+            if any(
+                time_codes[i] > time_codes[i + 1] for i in range(len(time_codes) - 1)
+            ):
+                raise ValueError(
+                    "time_codes must be in non-decreasing order; "
+                    "got values that decrease between consecutive frames"
+                )
+
         meshes: list[pv.DataSet | vtk.vtkDataSet] = []
         for path in file_list:
             mesh = pv.read(str(path))
@@ -191,6 +205,7 @@ class ConvertVTKToUSD(PhysioMotion4DBase):
             input_polydata=meshes,
             mask_ids=mask_ids,
             separate_by=separate_by,
+            convert_to_surface=extract_surface,
             times_per_second=times_per_second,
             solid_color=solid_color,
             log_level=log_level,
@@ -481,7 +496,7 @@ class ConvertVTKToUSD(PhysioMotion4DBase):
         )
         for i, vtk_mesh in enumerate(self.input_polydata):
             mesh_data = self._vtk_to_mesh_data(vtk_mesh, i)
-            frame_name = f"Mesh_{i}"
+            frame_name = f"{self.data_basename}_{i}"
 
             if self.separate_by == "none":
                 parts = [(mesh_data, frame_name)]
@@ -525,13 +540,16 @@ class ConvertVTKToUSD(PhysioMotion4DBase):
         for label_name in sorted(all_labels):
             self.logger.debug(f"Processing label: {label_name}")
 
-            # Collect mesh data for this label across time
+            # Collect mesh data for this label across time, tracking which
+            # original frame indices contribute so time codes stay aligned.
             label_mesh_sequence = []
-            for labeled_meshes in labeled_meshes_by_time:
+            label_frame_indices: list[int] = []
+            for time_idx, labeled_meshes in enumerate(labeled_meshes_by_time):
                 if label_name in labeled_meshes:
                     label_mesh_sequence.append(labeled_meshes[label_name])
+                    label_frame_indices.append(time_idx)
                 else:
-                    # Label not present in this time step - use empty mesh or skip
+                    # Label not present in this time step - skip
                     self.logger.warning(f"Label '{label_name}' missing in time step")
 
             if not label_mesh_sequence:
@@ -549,9 +567,12 @@ class ConvertVTKToUSD(PhysioMotion4DBase):
                     label_mesh_sequence[0], mesh_path, bind_material=True
                 )
             else:
-                label_time_codes = self._time_codes or [
-                    float(i) for i in range(len(label_mesh_sequence))
-                ]
+                if self._time_codes is not None:
+                    label_time_codes = [
+                        self._time_codes[i] for i in label_frame_indices
+                    ]
+                else:
+                    label_time_codes = [float(i) for i in label_frame_indices]
                 for md in label_mesh_sequence:
                     md.material_id = material.name
                 material_mgr.get_or_create_material(material)

@@ -35,8 +35,6 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
         separate_by_cell_type: bool = False,
         mesh_name: str = "Mesh",
         times_per_second: float = 60.0,
-        up_axis: str = "Y",
-        triangulate: bool = True,
         extract_surface: bool = True,
         time_series_pattern: str = r"\.t(\d+)\.(vtk|vtp|vtu)$",
         appearance: AppearanceKind = "solid",
@@ -59,8 +57,6 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
                 Cannot be True when separate_by_connectivity is True.
             mesh_name: Base name for the mesh (or first mesh when not splitting).
             times_per_second: FPS for time-varying data.
-            up_axis: "Y" or "Z".
-            triangulate: Triangulate meshes.
             extract_surface: For .vtu, extract surface before conversion.
             time_series_pattern: Regex to extract time index from filenames (one group).
             appearance: "solid" | "anatomy" | "colormap".
@@ -80,8 +76,6 @@ class WorkflowConvertVTKToUSD(PhysioMotion4DBase):
         self.separate_by_cell_type = separate_by_cell_type
         self.mesh_name = mesh_name
         self.times_per_second = times_per_second
-        self.up_axis = up_axis
-        self.triangulate = triangulate
         self.extract_surface = extract_surface
         self.time_series_pattern = time_series_pattern
         self.appearance = appearance
