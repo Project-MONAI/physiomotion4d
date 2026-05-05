@@ -274,7 +274,7 @@ class USDTools(PhysioMotion4DBase):
 
         Note:
             The merged file stores coordinates in meters (metersPerUnit=1.0)
-            with Y-up axis orientation, which are standard for Omniverse.
+            with upAxis="Y", which are standard for Omniverse.
             Time-varying data (animations) are preserved across all time samples.
 
         Example:
