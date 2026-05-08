@@ -208,14 +208,14 @@ print("\n✓ Applied ICP transform to full model mesh")
 ## Initialize PCA Registration
 print("=" * 70)
 
-# Use the ICP-aligned mesh as the starting point for PCA registration
+# Use the mean PCA template and apply the ICP alignment after PCA deformation.
 with open(pca_json_path, encoding="utf-8") as f:
     pca_model = json.load(f)
 pca_registrar = RegisterModelsPCA.from_pca_model(
     pca_template_model=template_model_surface,
     pca_model=pca_model,
     pca_number_of_modes=10,
-    pre_pca_transform=icp_forward_point_transform,
+    post_pca_transform=icp_forward_point_transform,
     fixed_model=patient_surface,
     reference_image=patient_image,
 )
@@ -223,7 +223,7 @@ pca_registrar = RegisterModelsPCA.from_pca_model(
 itk.imwrite(pca_registrar.fixed_distance_map, str(output_dir / "distance_map.mha"))
 
 print("✓ PCA registrar initialized")
-print("  Using ICP-aligned mesh as starting point")
+print("  Applying ICP alignment as the post-PCA transform")
 print(f"  Number of points: {len(pca_registrar.pca_template_model.points)}")
 print(f"  Number of PCA modes: {pca_registrar.pca_number_of_modes}")
 
@@ -237,7 +237,7 @@ print("\n" + "=" * 70)
 print("PCA-BASED SHAPE OPTIMIZATION")
 print("=" * 70)
 print("\nRunning complete PCA registration pipeline...")
-print("  (Starting from ICP-aligned mesh)")
+print("  (Applying PCA deformation, then ICP alignment)")
 
 result = pca_registrar.register(
     pca_number_of_modes=10,  # Use first 10 PCA modes

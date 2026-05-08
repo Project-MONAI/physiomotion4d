@@ -4,6 +4,30 @@
 
 PhysioMotion4D is a comprehensive medical imaging package that converts 4D CT scans (particularly heart and lung gated CT data) into dynamic 3D models for visualization in NVIDIA Omniverse. The package provides state-of-the-art deep learning-based image processing, segmentation, registration, and USD file generation capabilities.
 
+## Documentation
+
+Start with the hosted documentation:
+
+**https://project-monai.github.io/physiomotion4d/**
+
+The documentation is the primary entry point for users and contributors. It
+includes:
+
+- **Tutorials**: runnable end-to-end workflows and their required datasets.
+- **Getting Started**: installation, quickstart, examples, and architecture.
+- **CLI & Scripts Guide**: command-line tools for common conversion,
+  segmentation, registration, and USD workflows.
+- **API Reference**: public workflow classes, registration classes,
+  segmentation classes, USD tools, and utilities.
+- **Developer Guides**: architecture, extension points, workflow design, and
+  implementation conventions.
+- **Contributing, Testing, and Troubleshooting**: project practices, validation
+  commands, and common setup issues.
+
+> **Not validated for clinical use.** PhysioMotion4D is a 2026.05.07 beta
+> research and visualization toolkit. It is not a medical device and must not
+> be used for diagnosis, treatment planning, or clinical decision-making.
+
 ## 🚀 Key Features
 
 - **Complete 4D Medical Imaging Pipeline**: End-to-end processing from 4D CT data to animated USD models
@@ -45,17 +69,12 @@ The `[cuda13]` extra installs CuPy. In uv-managed source environments, PyTorch,
 torchvision, and torchaudio resolve from the CUDA 13.0 PyTorch wheel index.
 There is no need to install PyTorch separately.
 
-For development with NVIDIA NIM cloud services:
-```bash
-pip install physiomotion4d[nim]
-```
-
 ### Installation from Source
 
 1. **Clone the repository** (Git LFS is required for tests; install it first from [git-lfs.github.com](https://git-lfs.github.com)):
    ```bash
-   git clone <repository-url>
-   cd PhysioMotion4D
+   git clone https://github.com/Project-MONAI/physiomotion4d.git
+   cd physiomotion4d
    git lfs install   # if not already done
    git lfs pull     # fetch .hdf and .mha baselines in tests/baselines/
    ```
@@ -84,9 +103,10 @@ pip install physiomotion4d[nim]
 
 ```python
 import physiomotion4d
-from physiomotion4d import ProcessHeartGatedCT
+from physiomotion4d import WorkflowConvertHeartGatedCTToUSD
 
 print(f"PhysioMotion4D version: {physiomotion4d.__version__}")
+print(WorkflowConvertHeartGatedCTToUSD.__name__)
 ```
 
 ## 🏗️ Package Architecture
@@ -143,8 +163,8 @@ major workflow. They are the recommended starting point for new users.
 |---|--------|----------|---------|
 | 1 | `tutorials/tutorial_01_heart_gated_ct_to_usd.py` | Heart-gated CT to animated USD | Slicer-Heart-CT (prepare first) |
 | 2 | `tutorials/tutorial_02_ct_to_vtk.py` | CT to VTK surfaces | Slicer-Heart-CT (prepare first) |
-| 3 | `tutorials/tutorial_03_fit_statistical_model_to_patient.py` | Fit statistical model to patient | KCL-Heart-Model (manual) |
-| 4 | `tutorials/tutorial_04_create_statistical_model.py` | Build PCA shape model | KCL-Heart-Model (manual) |
+| 3 | `tutorials/tutorial_03_create_statistical_model.py` | Build PCA shape model | KCL-Heart-Model (manual) |
+| 4 | `tutorials/tutorial_04_fit_statistical_model_to_patient.py` | Fit statistical model to patient | KCL-Heart-Model plus Tutorial 3 output |
 | 5 | `tutorials/tutorial_05_vtk_to_usd.py` | VTK surfaces to animated USD | output of tutorial 2 |
 | 6 | `tutorials/tutorial_06_reconstruct_highres_4d_ct.py` | Reconstruct high-res 4D CT | DirLab-4DCT (manual) |
 
@@ -161,7 +181,21 @@ python tutorials/tutorial_02_ct_to_vtk.py \
 ```
 
 See `tutorials/README.md` for the full tutorial index, dataset preparation
-instructions, recommended run order, and experiment-test instructions.
+instructions, recommended run order, and tutorial-test instructions.
+
+### Minimal Slicer-Heart Quickstart
+
+This quickstart uses the public Slicer-Heart 4D CT sample. Data downloading and
+a CUDA-capable GPU are required for practical runtime.
+
+```bash
+python -c "import pathlib, urllib.request; pathlib.Path('data/test').mkdir(parents=True, exist_ok=True); urllib.request.urlretrieve('https://github.com/SlicerHeart/SlicerHeart/releases/download/TestingData/TruncalValve_4DCT.seq.nrrd', 'data/test/TruncalValve_4DCT.seq.nrrd')"
+
+physiomotion4d-heart-gated-ct data/test/TruncalValve_4DCT.seq.nrrd \
+    --registration-method ants \
+    --output-dir output/quickstart \
+    --project-name slicer_heart_quickstart
+```
 
 ## 🎯 Quick Start
 
@@ -269,13 +303,14 @@ reference_image = itk.imread("patient_ct.nii.gz")
 
 # Initialize and run workflow
 workflow = WorkflowFitStatisticalModelToPatient(
-    moving_mesh=model_mesh,
-    fixed_meshes=patient_surfaces,
-    fixed_image=reference_image
+    template_model=model_mesh,
+    patient_models=patient_surfaces,
+    patient_image=reference_image,
 )
 
-# Run complete three-stage registration
-registered_mesh = workflow.run_workflow()
+# Run the registration pipeline
+result = workflow.run_workflow()
+registered_mesh = result["registered_template_model_surface"]
 ```
 
 ### Custom Segmentation
@@ -291,9 +326,11 @@ segmenter = SegmentChestTotalSegmentator()
 image = itk.imread("chest_ct.nrrd")
 masks = segmenter.segment(image, contrast_enhanced_study=True)
 
-# Extract individual anatomy masks
-heart_mask, vessels_mask, lungs_mask, bones_mask, soft_tissue_mask, \
-contrast_mask, all_mask, dynamic_mask = masks
+# Extract individual anatomy masks by key
+heart_mask = masks["heart"]
+vessels_mask = masks["major_vessels"]
+lungs_mask = masks["lung"]
+labelmap = masks["labelmap"]
 ```
 
 ### Image Registration
@@ -450,10 +487,9 @@ Respiratory motion analysis using DirLab 4D-CT benchmark data:
 - **`1-make_dirlab_models.ipynb`**: 3D model generation from lung segmentation
 - **`2-paint_dirlab_models.ipynb`**: USD material and visualization enhancement
 
-**Sample Data**: Uses the standard DirLab 4D-CT benchmark datasets. The notebooks include automatic download scripts for:
-- Case 1-10 respiratory 4D-CT data
-- Landmark point validation data
-- Pre-processed segmentation masks
+**Sample Data**: Uses the standard DirLab 4D-CT benchmark datasets. DirLab data
+must be downloaded manually and placed under `data/DirLab-4DCT/`; see
+`data/README.md` for the expected layout.
 
 ### 🎨 Colormap Visualization (`experiments/Colormap-VTK_To_USD/`)
 
@@ -526,21 +562,22 @@ Convert image registration displacement fields to USD for advanced visualization
 
 ### Lung Data
 - **DirLab 4D-CT**: Public benchmark for respiratory motion
-  - Automatic download via: `DirLab4DCT.download_case(case_number)`
+  - Manual download required; see `data/README.md`
   - 10 cases with respiratory motion and landmark validation
 
-### Download Scripts
+### Download Example
 
-Each experiment directory contains data download utilities:
+The Slicer-Heart sample can be downloaded directly from its public GitHub
+release:
 
 ```python
-# Download DirLab case
-from physiomotion4d import DirLab4DCT
-downloader = DirLab4DCT()
-downloader.download_case(1)  # Downloads Case 1 to ./data/
+from pathlib import Path
+from urllib.request import urlretrieve
 
-# Download Slicer-Heart-CT cardiac data
-# See experiments/Heart-GatedCT_To_USD/0-download_and_convert_4d_to_3d.ipynb
+data_dir = Path("data/Slicer-Heart-CT")
+data_dir.mkdir(parents=True, exist_ok=True)
+url = "https://github.com/SlicerHeart/SlicerHeart/releases/download/TestingData/TruncalValve_4DCT.seq.nrrd"
+urlretrieve(url, data_dir / "TruncalValve_4DCT.seq.nrrd")
 ```
 
 ## 🔧 Development
@@ -620,29 +657,30 @@ Tests automatically run on pull requests via GitHub Actions. See `tests/README.m
 
 | Tool | Required for | Install |
 |------|-------------|---------|
-| [Claude Code](https://claude.ai/code) | All `/plan`, `/impl`, `/test-feature`, `/doc-feature` skills and `claude_github_reviews.py` | `winget install Anthropic.ClaudeCode` |
-| [gh CLI](https://cli.github.com) | `claude_github_reviews.py` | `winget install GitHub.cli`, then `gh auth login` |
+| Codex CLI | Default agent for `.agents/` skills and `ai_agent_github_reviews.py` | Install from the current Codex CLI distribution |
+| [Claude Code](https://claude.ai/code) | Optional agent for `.agents/` skills and `ai_agent_github_reviews.py --agent claude` | `winget install Anthropic.ClaudeCode` |
+| [gh CLI](https://cli.github.com) | `ai_agent_github_reviews.py` | `winget install GitHub.cli`, then `gh auth login` |
 
-### AI-Assisted Development (Claude Code)
+### AI-Assisted Development
 
-The repository includes a complete [Claude Code](https://claude.ai/code) configuration
-for contributors. It provides always-on project guidance, four specialized subagents,
-and four slash-command skills tailored to this codebase.
+The repository includes a shared `.agents/` configuration for Codex, Claude Code,
+and other AI coding agents. It provides always-on project guidance, four
+specialized subagents, and slash-command skills tailored to this codebase.
 
 #### Configuration files
 
 | Path | Purpose |
 |------|---------|
-| `CLAUDE.md` | Always-on guidance: commands, architecture, code style, working process |
-| `AGENTS.md` | Role-based rules for implementation, testing, docs, and architecture work |
-| `.claude/agents/implementation.md` | Subagent: reads source, plans, implements in small diffs |
-| `.claude/agents/testing.md` | Subagent: writes synthetic-data pytest tests |
-| `.claude/agents/docs.md` | Subagent: updates docstrings and regenerates `docs/API_MAP.md` |
-| `.claude/agents/architecture.md` | Subagent: design plans and trade-off analysis (no code written) |
-| `.claude/skills/plan/SKILL.md` | `/plan` — inspect and plan before coding |
-| `.claude/skills/impl/SKILL.md` | `/impl` — implement a feature or fix |
-| `.claude/skills/test-feature/SKILL.md` | `/test-feature` — write tests for a module |
-| `.claude/skills/doc-feature/SKILL.md` | `/doc-feature` — update docstrings and API map |
+| `AGENTS.md` | Shared rules for implementation, testing, docs, and architecture work |
+| `CLAUDE.md` | Claude-specific always-on guidance and slash-command usage |
+| `.agents/agents/implementation.md` | Subagent: reads source, plans, implements in small diffs |
+| `.agents/agents/testing.md` | Subagent: writes synthetic-data pytest tests |
+| `.agents/agents/docs.md` | Subagent: updates docstrings and regenerates `docs/API_MAP.md` |
+| `.agents/agents/architecture.md` | Subagent: design plans and trade-off analysis (no code written) |
+| `.agents/skills/plan/SKILL.md` | `/plan` — inspect and plan before coding |
+| `.agents/skills/impl/SKILL.md` | `/impl` — implement a feature or fix |
+| `.agents/skills/test-feature/SKILL.md` | `/test-feature` — write tests for a module |
+| `.agents/skills/doc-feature/SKILL.md` | `/doc-feature` — update docstrings and API map |
 
 #### Common contributor workflows
 
@@ -655,7 +693,7 @@ plan, and a list of open questions — without touching any files.
 /plan add a new segmentation method to SegmentChestTotalSegmentator
 ```
 
-Claude will read the relevant source, summarize current behavior, list files that
+The agent will read the relevant source, summarize current behavior, list files that
 will change, and flag any coordinate-system or shape implications.
 
 ---
@@ -672,7 +710,7 @@ Use `/impl` for end-to-end implementation: read → summarize → plan → diff 
 /impl fix the RAS-to-Y-up transform being applied twice in vtk_to_usd/usd_utils.py
 ```
 
-Claude will read the affected module, propose a numbered plan, implement in the
+The agent will read the affected module, propose a numbered plan, implement in the
 smallest reviewable diff, update docstrings, run `ruff`, and call out breaking changes.
 
 ---
@@ -690,7 +728,7 @@ Use `/test-feature` to get a test plan and a complete pytest file using syntheti
 /test-feature RegisterImagesANTs with a pair of small synthetic ITK images
 ```
 
-Claude will state image shapes and axis orders in every test docstring, mark
+The agent will state image shapes and axis orders in every test docstring, mark
 any real-data dependency with `@pytest.mark.requires_data`, and show the exact
 run command.
 
@@ -705,27 +743,28 @@ the API map.
 /doc-feature update docstrings for RegisterImagesANTs after adding set_regularization_weight
 ```
 
-Claude will update affected docstrings in NumPy style, add shape/axis annotations
+The agent will update affected docstrings in NumPy style, add shape/axis annotations
 where arrays are involved, and run `py utils/generate_api_map.py`.
 
 ---
 
 **Applying PR review suggestions (CodeRabbit / Copilot)**
 
-Use `claude_github_reviews.py` to fetch all review comments for a PR, have Claude
-screen each one against `CLAUDE.md`, apply accepted edits as pending changes, and
-write a Markdown summary to the repo root:
+Use `ai_agent_github_reviews.py` to fetch all review comments for a PR, have
+Codex by default screen each one against `AGENTS.md`, apply accepted edits as
+pending changes, and write a Markdown summary to the repo root:
 
 ```bash
-py utils/claude_github_reviews.py --pr 42
-py utils/claude_github_reviews.py --pr 42 --dry-run   # preview prompt only
-py utils/claude_github_reviews.py --pr 42 --since-last-push --dry-run
+py utils/ai_agent_github_reviews.py --pr 42
+py utils/ai_agent_github_reviews.py --pr 42 --agent claude
+py utils/ai_agent_github_reviews.py --pr 42 --dry-run   # preview prompt only
+py utils/ai_agent_github_reviews.py --pr 42 --since-last-push --dry-run
 ```
 
 When executing these from the repo root (including in automation), use the project
 interpreter: `venv/Scripts/python` on Windows instead of `py`.
 
-Claude decides APPLY / REVISE / REJECT for each suggestion, with reasoning.
+The selected agent decides APPLY / REVISE / REJECT for each suggestion, with reasoning.
 No changes are committed — review with `git diff`, then `git add -p`.
 
 ---
@@ -748,7 +787,7 @@ This creates a `feature/my-feature` branch, a sibling worktree directory, instal
 **Architectural planning before a structural change**
 
 For larger changes, describe the goal to the architecture subagent and ask for a
-design plan. Claude will produce the six-section format (current state → proposed
+design plan. The agent will produce the six-section format (current state → proposed
 change → affected files → trade-offs → open questions → recommended next action)
 without writing any code.
 
@@ -758,9 +797,13 @@ without writing any code.
 
 ## 📖 Documentation
 
-- **API Documentation**: Comprehensive docstrings for all classes and methods
-- **Tutorial Notebooks**: Step-by-step examples in `experiments/`
-- **CLAUDE.md / AGENTS.md**: Development guidelines, architecture overview, and Claude Code configuration
+The canonical documentation is published at
+https://project-monai.github.io/physiomotion4d/.
+
+Use it for tutorials, getting started, CLI usage, API reference, developer
+guides, contributing, testing, and troubleshooting. The `experiments/`
+directory records prior and ongoing experiments used to shape the toolkit; it
+is not the user-facing examples collection.
 
 ## 🤝 Contributing
 

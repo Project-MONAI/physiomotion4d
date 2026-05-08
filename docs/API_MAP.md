@@ -6,8 +6,8 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 ## docs/conf.py
 
 - **class Mock** (line 20)
-- `def autodoc_skip_member(app, what, name, obj, skip, options)` (line 216): Custom function to skip certain members during autodoc processing.
-- `def setup(app)` (line 224): Custom setup function for Sphinx.
+- `def autodoc_skip_member(app, what, name, obj, skip, options)` (line 222): Custom function to skip certain members during autodoc processing.
+- `def setup(app)` (line 230): Custom setup function for Sphinx.
 
 ## experiments/Colormap-VTK_To_USD/colormap_vtk_to_usd.py
 
@@ -65,43 +65,43 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## src/physiomotion4d/cli/convert_ct_to_vtk.py
 
-- `def main()` (line 18): CLI entry point for CT to VTK conversion.
+- `def main()` (line 26): CLI entry point for CT to VTK conversion.
 
 ## src/physiomotion4d/cli/convert_heart_gated_ct_to_usd.py
 
-- `def main()` (line 16): Command-line interface for Heart-gated CT processing.
+- `def main()` (line 14): Command-line interface for Heart-gated CT processing.
 
 ## src/physiomotion4d/cli/convert_vtk_to_usd.py
 
-- `def main()` (line 30): Command-line interface for VTK to USD conversion.
+- `def main()` (line 28): Command-line interface for VTK to USD conversion.
 
 ## src/physiomotion4d/cli/create_statistical_model.py
 
-- `def main()` (line 23): Command-line interface for create statistical model workflow.
+- `def main()` (line 19): Command-line interface for create statistical model workflow.
 
 ## src/physiomotion4d/cli/fit_statistical_model_to_patient.py
 
-- `def main()` (line 22): Command-line interface for heart model to patient registration.
+- `def main()` (line 17): Command-line interface for heart model to patient registration.
 
 ## src/physiomotion4d/cli/reconstruct_highres_4d_ct.py
 
-- `def main()` (line 21): Command-line interface for high-resolution 4D CT reconstruction.
+- `def main()` (line 17): Command-line interface for high-resolution 4D CT reconstruction.
 
 ## src/physiomotion4d/cli/visualize_pca_modes.py
 
-- `def main()` (line 92): Command-line interface for visualizing PCA modes.
+- `def main()` (line 103): Command-line interface for visualizing PCA modes.
 
 ## src/physiomotion4d/contour_tools.py
 
-- **class ContourTools** (line 18): Tools for creating and manipulating contours.
-  - `def __init__(self, log_level=logging.INFO)` (line 23): Initialize ContourTools.
-  - `def extract_contours(self, mask_image)` (line 31): Make contours from a mask image.
-  - `def transform_contours(self, contours, tfm, with_deformation_magnitude=False)` (line 73): Transform contours using a given transform.
-  - `def merge_meshes(self, meshes)` (line 94): Merge multiple fixed meshes into a single mesh.
-  - `def create_reference_image(self, mesh, spatial_resolution=0.5, buffer_factor=0.25, ptype=itk.F)` (line 137): Create a reference image from a mesh.
-  - `def create_mask_from_mesh(self, mesh, reference_image)` (line 166)
-  - `def create_distance_map(self, mesh, reference_image, squared_distance=False, negative_inside=True, zero_inside=False, norm_to_max_distance=0.0)` (line 255)
-  - `def create_deformation_field(self, points, point_displacements, reference_image, blur_sigma=2.5, ptype=itk.D)` (line 322): Create a displacement map from model points and displacements.
+- **class ContourTools** (line 20): Tools for creating and manipulating contours.
+  - `def __init__(self, log_level=logging.INFO)` (line 25): Initialize ContourTools.
+  - `def extract_contours(self, mask_image)` (line 33): Make contours from a mask image.
+  - `def transform_contours(self, contours, tfm, with_deformation_magnitude=False)` (line 75): Transform contours using a given transform.
+  - `def merge_meshes(self, meshes)` (line 96): Merge multiple fixed meshes into a single mesh.
+  - `def create_reference_image(self, mesh, spatial_resolution=0.5, buffer_factor=0.25, ptype=itk.F)` (line 139): Create a reference image from a mesh.
+  - `def create_mask_from_mesh(self, mesh, reference_image)` (line 168)
+  - `def create_distance_map(self, mesh, reference_image, squared_distance=False, negative_inside=True, zero_inside=False, norm_to_max_distance=0.0)` (line 257)
+  - `def create_deformation_field(self, points, point_displacements, reference_image, blur_sigma=2.5, ptype=itk.D)` (line 324): Create a displacement map from model points and displacements.
 
 ## src/physiomotion4d/convert_nrrd_4d_to_3d.py
 
@@ -115,14 +115,14 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## src/physiomotion4d/convert_vtk_to_usd.py
 
-- **class ConvertVTKToUSD** (line 41): Advanced VTK to USD converter with colormap and anatomical labeling support.
-  - `def __init__(self, data_basename, input_polydata, mask_ids=None, compute_normals=False, convert_to_surface=True, times_per_second=24.0, separate_by='none', solid_color=(0.8, 0.8, 0.8), log_level=logging.INFO)` (line 71): Initialize converter.
-  - `def from_files(cls, data_basename, vtk_files, *, extract_surface=True, separate_by='none', times_per_second=24.0, solid_color=(0.8, 0.8, 0.8), time_codes=None, static_merge=False, mask_ids=None, log_level=logging.INFO)` (line 142): Create a converter by loading VTK files from disk.
-  - `def supports_mesh_type(self, mesh)` (line 240): Check if mesh type is supported for conversion.
-  - `def inspect_file(cls, vtk_file, *, extract_surface=True)` (line 269): Summarize a VTK file using the same low-level reader as conversion.
-  - `def list_available_arrays(self)` (line 341): List all point data arrays available across all time steps.
-  - `def set_colormap(self, color_by_array=None, colormap='plasma', intensity_range=None)` (line 387): Configure colormap for visualization.
-  - `def convert(self, output_usd_file, convert_to_surface=None, compute_normals=None)` (line 421): Convert VTK meshes to USD.
+- **class ConvertVTKToUSD** (line 43): Advanced VTK to USD converter with colormap and anatomical labeling support.
+  - `def __init__(self, data_basename, input_polydata, mask_ids=None, compute_normals=False, convert_to_surface=True, times_per_second=24.0, separate_by='none', solid_color=(0.8, 0.8, 0.8), log_level=logging.INFO)` (line 73): Initialize converter.
+  - `def from_files(cls, data_basename, vtk_files, *, extract_surface=True, separate_by='none', times_per_second=24.0, solid_color=(0.8, 0.8, 0.8), time_codes=None, static_merge=False, mask_ids=None, log_level=logging.INFO)` (line 144): Create a converter by loading VTK files from disk.
+  - `def supports_mesh_type(self, mesh)` (line 242): Check if mesh type is supported for conversion.
+  - `def inspect_file(cls, vtk_file, *, extract_surface=True)` (line 271): Summarize a VTK file using the same low-level reader as conversion.
+  - `def list_available_arrays(self)` (line 343): List all point data arrays available across all time steps.
+  - `def set_colormap(self, color_by_array=None, colormap='plasma', intensity_range=None)` (line 389): Configure colormap for visualization.
+  - `def convert(self, output_usd_file, convert_to_surface=None, compute_normals=None)` (line 423): Convert VTK meshes to USD.
 
 ## src/physiomotion4d/image_tools.py
 
@@ -225,17 +225,17 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## src/physiomotion4d/register_models_pca.py
 
-- **class RegisterModelsPCA** (line 17): Register PCA-based shape models to medical images using mean distance optimization.
-  - `def __init__(self, pca_template_model, pca_eigenvectors, pca_std_deviations, pca_number_of_modes=0, pca_template_model_point_subsample=4, pre_pca_transform=None, fixed_distance_map=None, fixed_model=None, reference_image=None, log_level=logging.INFO)` (line 75): Initialize the PCA-based model-to-image registration.
-  - `def from_json(cls, pca_template_model, pca_json_filename, pca_number_of_modes=0, pca_template_model_point_subsample=4, pre_pca_transform=None, fixed_distance_map=None, fixed_model=None, reference_image=None, log_level=logging.INFO)` (line 181): Create RegisterModelsPCA from PCA model JSON file.
-  - `def from_pca_model(cls, pca_template_model, pca_model, pca_number_of_modes=0, pca_template_model_point_subsample=4, pre_pca_transform=None, fixed_distance_map=None, fixed_model=None, reference_image=None, log_level=logging.INFO)` (line 288): Create RegisterModelsPCA from a PCA model dictionary.
-  - `def set_fixed_model(self, fixed_model, reference_image)` (line 369): Set the fixed model for registration.
-  - `def set_fixed_distance_map(self, fixed_distance_map)` (line 390): Set the reference image for registration.
-  - `def set_pca_template_model(self, pca_template_model)` (line 401): Set the average model for registration.
-  - `def transform_template_model(self)` (line 632): Create the final registered model by applying PCA deformation.
-  - `def transform_point(self, point, include_pre_pca_transform=True)` (line 695): Transform an arbitrary point using nearest neighbor interpolation.
-  - `def compute_pca_transforms(self, reference_image)` (line 729): Compute PCA transforms.
-  - `def register(self, pca_number_of_modes=0, pca_coefficient_bounds=3.5, method='L-BFGS-B', max_iterations=100)` (line 766): Optimize PCA coefficients to deform the model to better match
+- **class RegisterModelsPCA** (line 19): Register PCA-based shape models to medical images using mean distance optimization.
+  - `def __init__(self, pca_template_model, pca_eigenvectors, pca_std_deviations, pca_number_of_modes=0, pca_template_model_point_subsample=4, post_pca_transform=None, fixed_distance_map=None, fixed_model=None, reference_image=None, log_level=logging.INFO)` (line 77): Initialize the PCA-based model-to-image registration.
+  - `def from_json(cls, pca_template_model, pca_json_filename, pca_number_of_modes=0, pca_template_model_point_subsample=4, post_pca_transform=None, fixed_distance_map=None, fixed_model=None, reference_image=None, log_level=logging.INFO)` (line 183): Create RegisterModelsPCA from PCA model JSON file.
+  - `def from_pca_model(cls, pca_template_model, pca_model, pca_number_of_modes=0, pca_template_model_point_subsample=4, post_pca_transform=None, fixed_distance_map=None, fixed_model=None, reference_image=None, log_level=logging.INFO)` (line 290): Create RegisterModelsPCA from a PCA model dictionary.
+  - `def set_fixed_model(self, fixed_model, reference_image)` (line 371): Set the fixed model for registration.
+  - `def set_fixed_distance_map(self, fixed_distance_map)` (line 397): Set the reference image for registration.
+  - `def set_pca_template_model(self, pca_template_model)` (line 408): Set the average model for registration.
+  - `def transform_template_model(self)` (line 639): Create the final registered model by applying PCA deformation.
+  - `def transform_point(self, point, include_post_pca_transform=True)` (line 702): Transform an arbitrary point using nearest neighbor interpolation.
+  - `def compute_pca_transforms(self, reference_image)` (line 739): Compute PCA transforms.
+  - `def register(self, pca_number_of_modes=0, pca_coefficient_bounds=3.5, method='L-BFGS-B', max_iterations=100)` (line 776): Optimize PCA coefficients to deform the model to better match
 
 ## src/physiomotion4d/register_time_series_images.py
 
@@ -310,16 +310,17 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def convert_transform_to_displacement_field_transform(self, tfm, reference_image)` (line 252): Convert an ITK transform to a displacement field transform.
   - `def invert_displacement_field_transform(self, tfm)` (line 269): Invert a displacement field transform.
   - `def transform_pvcontour(self, contour, tfm, with_deformation_magnitude=False)` (line 291): Transform PyVista contour meshes using an ITK transform.
-  - `def transform_image(self, img, tfm, reference_image, interpolation_method='linear')` (line 359): Transform an ITK image using a specified transform and interpolation.
-  - `def convert_vtk_matrix_to_itk_transform(self, vtk_mat)` (line 436): Convert a VTK matrix to an ITK transform.
-  - `def smooth_transform(self, tfm, sigma, reference_image)` (line 471): Smooth a transform using Gaussian filtering to reduce noise.
-  - `def combine_transforms_with_masks(self, transform1, transform2, mask1, mask2, reference_image, max_iter=10, jacobian_threshold=0.1)` (line 530): Combine two transforms using spatial masks with folding correction.
-  - `def compute_jacobian_determinant_from_field(self, field)` (line 620): Compute Jacobian determinant of a displacement field.
-  - `def detect_folding_in_field(self, jacobian_det, threshold=0.1)` (line 649): Detect spatial folding in a transform.
-  - `def reduce_folding_in_field(self, field, jacobian_det, reduction_factor=0.8, threshold=0.1)` (line 673): Reduce folding by scaling displacement field in problematic regions.
-  - `def generate_grid_image(self, reference_image, grid_size=60, line_width=3)` (line 719): Generate a grid image.
-  - `def convert_field_to_grid_visualization(self, tfm, reference_image, grid_size=60, line_width=3)` (line 752): Generate a visual deformation grid for transform visualization.
-  - `def convert_itk_transform_to_usd_visualization(self, tfm, reference_image, output_filename, visualization_type='arrows', subsample_factor=4, arrow_scale=1.0, magnitude_threshold=0.0)` (line 788): Convert an ITK transform to a USD visualization for NVIDIA Omniverse.
+  - `def transform_dataset(self, mesh, tfm, with_deformation_magnitude=False)` (line 335): Transform a PyVista dataset while preserving mesh topology and data arrays.
+  - `def transform_image(self, img, tfm, reference_image, interpolation_method='linear')` (line 382): Transform an ITK image using a specified transform and interpolation.
+  - `def convert_vtk_matrix_to_itk_transform(self, vtk_mat)` (line 459): Convert a VTK matrix to an ITK transform.
+  - `def smooth_transform(self, tfm, sigma, reference_image)` (line 494): Smooth a transform using Gaussian filtering to reduce noise.
+  - `def combine_transforms_with_masks(self, transform1, transform2, mask1, mask2, reference_image, max_iter=10, jacobian_threshold=0.1)` (line 553): Combine two transforms using spatial masks with folding correction.
+  - `def compute_jacobian_determinant_from_field(self, field)` (line 643): Compute Jacobian determinant of a displacement field.
+  - `def detect_folding_in_field(self, jacobian_det, threshold=0.1)` (line 672): Detect spatial folding in a transform.
+  - `def reduce_folding_in_field(self, field, jacobian_det, reduction_factor=0.8, threshold=0.1)` (line 696): Reduce folding by scaling displacement field in problematic regions.
+  - `def generate_grid_image(self, reference_image, grid_size=60, line_width=3)` (line 742): Generate a grid image.
+  - `def convert_field_to_grid_visualization(self, tfm, reference_image, grid_size=60, line_width=3)` (line 775): Generate a visual deformation grid for transform visualization.
+  - `def convert_itk_transform_to_usd_visualization(self, tfm, reference_image, output_filename, visualization_type='arrows', subsample_factor=4, arrow_scale=1.0, magnitude_threshold=0.0)` (line 811): Convert an ITK transform to a USD visualization for NVIDIA Omniverse.
 
 ## src/physiomotion4d/usd_anatomy_tools.py
 
@@ -333,18 +334,18 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## src/physiomotion4d/usd_tools.py
 
-- **class USDTools** (line 23): Utilities for manipulating Universal Scene Description (USD) files.
-  - `def __init__(self, log_level=logging.INFO)` (line 59): Initialize the USDTools class.
-  - `def get_subtree_bounding_box(self, prim)` (line 67): Compute the axis-aligned bounding box of a USD primitive subtree.
-  - `def save_usd_file_arrangement(self, new_stage_name, usd_file_names)` (line 127): Create a spatial grid arrangement of objects from multiple USD files.
-  - `def merge_usd_files(self, output_filename, input_filenames_list)` (line 250): Merge multiple USD files into a single comprehensive USD file.
-  - `def merge_usd_files_flattened(self, output_filename, input_filenames_list)` (line 441): Merge multiple USD files using references and flattening.
-  - `def list_mesh_primvars(self, stage_or_path, mesh_path, time_code=None)` (line 566): List all primvars on a USD mesh with metadata.
-  - `def pick_color_primvar(self, primvar_infos, keywords=('strain', 'stress'))` (line 661): Select a primvar for coloring based on keywords and preferences.
-  - `def apply_colormap_from_primvar(self, stage_or_path, mesh_path, source_primvar, *, cmap='viridis', time_codes=None, intensity_range=None, use_sigmoid_scale=False, write_default_at_t0=True, bind_vertex_color_material=True)` (line 715): Apply colormap visualization by converting a primvar to displayColor.
-  - `def set_solid_display_color(self, stage_or_path, mesh_path, color, *, time_codes=None, bind_vertex_color_material=True)` (line 1010): Set a constant (solid) displayColor for a mesh.
-  - `def list_mesh_paths_under(self, stage_or_path, parent_path='/World/Meshes')` (line 1103): List paths of all mesh prims under a parent path.
-  - `def repair_mesh_primvar_element_sizes(self, stage_or_path, mesh_path, *, time_code=None, save=True)` (line 1130): Repair missing/incorrect primvar elementSize metadata for a mesh.
+- **class USDTools** (line 25): Utilities for manipulating Universal Scene Description (USD) files.
+  - `def __init__(self, log_level=logging.INFO)` (line 61): Initialize the USDTools class.
+  - `def get_subtree_bounding_box(self, prim)` (line 69): Compute the axis-aligned bounding box of a USD primitive subtree.
+  - `def save_usd_file_arrangement(self, new_stage_name, usd_file_names)` (line 129): Create a spatial grid arrangement of objects from multiple USD files.
+  - `def merge_usd_files(self, output_filename, input_filenames_list)` (line 252): Merge multiple USD files into a single comprehensive USD file.
+  - `def merge_usd_files_flattened(self, output_filename, input_filenames_list)` (line 443): Merge multiple USD files using references and flattening.
+  - `def list_mesh_primvars(self, stage_or_path, mesh_path, time_code=None)` (line 568): List all primvars on a USD mesh with metadata.
+  - `def pick_color_primvar(self, primvar_infos, keywords=('strain', 'stress'))` (line 663): Select a primvar for coloring based on keywords and preferences.
+  - `def apply_colormap_from_primvar(self, stage_or_path, mesh_path, source_primvar, *, cmap='viridis', time_codes=None, intensity_range=None, use_sigmoid_scale=False, write_default_at_t0=True, bind_vertex_color_material=True)` (line 717): Apply colormap visualization by converting a primvar to displayColor.
+  - `def set_solid_display_color(self, stage_or_path, mesh_path, color, *, time_codes=None, bind_vertex_color_material=True)` (line 1013): Set a constant (solid) displayColor for a mesh.
+  - `def list_mesh_paths_under(self, stage_or_path, parent_path='/World/Meshes')` (line 1106): List paths of all mesh prims under a parent path.
+  - `def repair_mesh_primvar_element_sizes(self, stage_or_path, mesh_path, *, time_code=None, save=True)` (line 1133): Repair missing/incorrect primvar elementSize metadata for a mesh.
 
 ## src/physiomotion4d/vtk_to_usd/converter.py
 
@@ -384,27 +385,27 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## src/physiomotion4d/vtk_to_usd/usd_utils.py
 
-- `def ras_to_usd(point)` (line 18): Convert RAS (Right-Anterior-Superior) coordinates to USD's right-handed Y-up system.
-- `def ras_points_to_usd(points)` (line 53): Convert array of RAS points (mm) to USD coordinates (m).
-- `def ras_normals_to_usd(normals)` (line 76): Convert array of RAS normals to USD Y-up coordinates.
-- `def numpy_to_vt_array(array, data_type)` (line 99): Convert numpy array to appropriate VtArray type.
-- `def get_sdf_value_type(data_type, num_components)` (line 171): Get appropriate SDF value type for primvar creation.
-- `def sanitize_primvar_name(name)` (line 218): Sanitize a name to be USD-compliant.
-- `def create_primvar(geom, array, array_name_prefix='', time_code=None)` (line 253): Create a USD primvar from a GenericArray.
-- `def triangulate_face(face_counts, face_indices)` (line 367): Triangulate polygonal faces.
-- `def compute_mesh_extent(points)` (line 407): Compute bounding box extent for a mesh.
+- `def ras_to_usd(point)` (line 20): Convert RAS (Right-Anterior-Superior) coordinates to USD's right-handed Y-up system.
+- `def ras_points_to_usd(points)` (line 55): Convert array of RAS points (mm) to USD coordinates (m).
+- `def ras_normals_to_usd(normals)` (line 78): Convert array of RAS normals to USD Y-up coordinates.
+- `def numpy_to_vt_array(array, data_type)` (line 101): Convert numpy array to appropriate VtArray type.
+- `def get_sdf_value_type(data_type, num_components)` (line 173): Get appropriate SDF value type for primvar creation.
+- `def sanitize_primvar_name(name)` (line 220): Sanitize a name to be USD-compliant.
+- `def create_primvar(geom, array, array_name_prefix='', time_code=None)` (line 255): Create a USD primvar from a GenericArray.
+- `def triangulate_face(face_counts, face_indices)` (line 369): Triangulate polygonal faces.
+- `def compute_mesh_extent(points)` (line 409): Compute bounding box extent for a mesh.
 
 ## src/physiomotion4d/vtk_to_usd/vtk_reader.py
 
 - **class VTKReader** (line 20): Base class for VTK file readers.
-- **class PolyDataReader** (line 234): Reader for VTK PolyData files (.vtp).
-  - `def read(filename)` (line 238): Read a VTP file and return MeshData.
-- **class LegacyVTKReader** (line 294): Reader for legacy VTK files (.vtk).
-  - `def read(filename, extract_surface=True)` (line 306): Read a legacy VTK file and return MeshData.
-- **class UnstructuredGridReader** (line 467): Reader for VTK UnstructuredGrid files (.vtu).
-  - `def read(filename, extract_surface=True)` (line 471): Read a VTU file and return MeshData.
-- `def read_vtk_file(filename, extract_surface=True)` (line 580): Auto-detect VTK file format and read appropriately.
-- `def validate_time_series_topology(mesh_data_sequence, filenames=None)` (line 608): Validate topology consistency across a time series of meshes.
+- **class PolyDataReader** (line 235): Reader for VTK PolyData files (.vtp).
+  - `def read(filename)` (line 239): Read a VTP file and return MeshData.
+- **class LegacyVTKReader** (line 295): Reader for legacy VTK files (.vtk).
+  - `def read(filename, extract_surface=True)` (line 307): Read a legacy VTK file and return MeshData.
+- **class UnstructuredGridReader** (line 468): Reader for VTK UnstructuredGrid files (.vtu).
+  - `def read(filename, extract_surface=True)` (line 472): Read a VTU file and return MeshData.
+- `def read_vtk_file(filename, extract_surface=True)` (line 581): Auto-detect VTK file format and read appropriately.
+- `def validate_time_series_topology(mesh_data_sequence, filenames=None)` (line 609): Validate topology consistency across a time series of meshes.
 
 ## src/physiomotion4d/workflow_convert_ct_to_vtk.py
 
@@ -432,25 +433,25 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 ## src/physiomotion4d/workflow_create_statistical_model.py
 
 - **class WorkflowCreateStatisticalModel** (line 35): Create a PCA statistical shape model from a sample of meshes aligned to a reference.
-  - `def __init__(self, sample_meshes, reference_mesh, pca_number_of_components=15, reference_spatial_resolution=1.0, reference_buffer_factor=0.25, solve_for_surface_pca=True, log_level=logging.INFO)` (line 56): Initialize the create-statistical-model workflow.
-  - `def set_pca_number_of_components(self, n)` (line 102): Set number of PCA components to retain.
-  - `def run_workflow(self)` (line 314): Run the full pipeline and return a dictionary of results (no file I/O).
+  - `def __init__(self, sample_meshes, reference_mesh, pca_number_of_components=15, reference_spatial_resolution=1.0, reference_buffer_factor=0.25, solve_for_surface_pca=True, log_level=logging.INFO)` (line 57): Initialize the create-statistical-model workflow.
+  - `def set_pca_number_of_components(self, n)` (line 103): Set number of PCA components to retain.
+  - `def run_workflow(self)` (line 313): Run the full pipeline and return a dictionary of results (no file I/O).
 
 ## src/physiomotion4d/workflow_fit_statistical_model_to_patient.py
 
-- **class WorkflowFitStatisticalModelToPatient** (line 44): Register anatomical models using multi-stage ICP, mask-based, and image-based
-  - `def __init__(self, template_model, patient_models=None, patient_image=None, segmentation_method='simpleware_heart', log_level=logging.INFO)` (line 123): Initialize the model-to-image-and-model registration pipeline.
-  - `def set_mask_dilation_mm(self, mask_dilation_mm)` (line 337): Set mask dilation amount for auto-generated masks.
-  - `def set_roi_dilation_mm(self, roi_dilation_mm)` (line 346): Set ROI mask dilation amount.
-  - `def set_use_pca_registration(self, use_pca_registration, pca_model=None, pca_number_of_modes=0, pca_uses_surface=True)` (line 355): Set whether to use PCA-based registration and provide the PCA model.
-  - `def set_use_mask_to_mask_registration(self, use_mask_to_mask_registration)` (line 390): Set whether to use mask-to-mask registration.
-  - `def set_use_mask_to_image_registration(self, use_mask_to_image_registration, template_labelmap=None, template_labelmap_organ_mesh_ids=None, template_labelmap_organ_extra_ids=None, template_labelmap_background_ids=None)` (line 401): Set whether to use mask-to-image registration.
-  - `def register_model_to_model_icp(self)` (line 455): Perform ICP alignment of template model to patient model.
-  - `def register_model_to_model_pca(self)` (line 515): Perform PCA-based registration after ICP alignment.
-  - `def register_mask_to_mask(self, use_icon_refinement=False)` (line 639): Perform mask-based deformable registration of model to patient model.
-  - `def register_labelmap_to_image(self, use_icon_refinement=False)` (line 707): Perform labelmap-to-image refinement.
-  - `def transform_model(self, base_model=None)` (line 826): Apply registration transforms to the model.
-  - `def run_workflow(self, use_icon_registration_refinement=False)` (line 901): Execute the complete multi-stage registration workflow.
+- **class WorkflowFitStatisticalModelToPatient** (line 56): Register anatomical models using multi-stage ICP, mask-based, and image-based
+  - `def __init__(self, template_model, patient_models=None, patient_image=None, segmentation_method='simpleware_heart', log_level=logging.INFO)` (line 135): Initialize the model-to-image-and-model registration pipeline.
+  - `def set_mask_dilation_mm(self, mask_dilation_mm)` (line 356): Set mask dilation amount for auto-generated masks.
+  - `def set_roi_dilation_mm(self, roi_dilation_mm)` (line 365): Set ROI mask dilation amount.
+  - `def set_use_pca_registration(self, use_pca_registration, pca_model=None, pca_number_of_modes=0, pca_uses_surface=True)` (line 374): Set whether to use PCA-based registration and provide the PCA model.
+  - `def set_use_mask_to_mask_registration(self, use_mask_to_mask_registration)` (line 409): Set whether to use mask-to-mask registration.
+  - `def set_use_mask_to_image_registration(self, use_mask_to_image_registration, template_labelmap=None, template_labelmap_organ_mesh_ids=None, template_labelmap_organ_extra_ids=None, template_labelmap_background_ids=None)` (line 420): Set whether to use mask-to-image registration.
+  - `def register_model_to_model_icp(self)` (line 494): Perform ICP alignment of template model to patient model.
+  - `def register_model_to_model_pca(self)` (line 552): Perform PCA-based registration after ICP alignment.
+  - `def register_mask_to_mask(self, use_icon_refinement=False)` (line 678): Perform mask-based deformable registration of model to patient model.
+  - `def register_labelmap_to_image(self, use_icon_refinement=False)` (line 746): Perform labelmap-to-image refinement.
+  - `def transform_model(self, base_model=None)` (line 866): Apply registration transforms to the model.
+  - `def run_workflow(self, use_icon_registration_refinement=False)` (line 931): Execute the complete multi-stage registration workflow.
 
 ## src/physiomotion4d/workflow_reconstruct_highres_4d_ct.py
 
@@ -470,22 +471,26 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 ## tests/conftest.py
 
 - `def pytest_addoption(parser)` (line 36): Add custom command-line options for pytest.
-- `def pytest_configure(config)` (line 52): Configure pytest with custom markers and settings.
-- `def pytest_collection_modifyitems(config, items)` (line 75): Automatically skip experiment tests unless --run-experiments is passed.
-- `def pytest_runtest_logreport(report)` (line 97): Collect test timing information after each test completes.
-- `def pytest_terminal_summary(terminalreporter, exitstatus, config)` (line 121): Print comprehensive test timing report after all tests complete.
-- `def test_directories()` (line 259): Set up test directories for data and results.
-- `def download_test_data(test_directories)` (line 274): Download TruncalValve 4D CT data.
-- `def test_images(download_test_data, test_directories)` (line 310): Convert and resample 4D NRRD data; return pre-resampled time points.
-- `def test_labelmaps(segmenter_total_segmentator, test_images, test_directories)` (line 362): Segment each time point with TotalSegmentator and return result dicts.
-- `def test_transforms(registrar_ants, test_images, test_directories)` (line 403): Perform ANTs registration and return results.
-- `def segmenter_total_segmentator()` (line 459): Create a SegmentChestTotalSegmentator instance.
-- `def segmenter_simpleware()` (line 465): Create a SegmentHeartSimpleware instance.
-- `def contour_tools()` (line 471): Create a ContourTools instance.
-- `def registrar_ants()` (line 477): Create a RegisterImagesANTs instance.
-- `def registrar_greedy()` (line 483): Create a RegisterImagesGreedy instance.
-- `def registrar_icon()` (line 489): Create a RegisterImagesICON instance.
-- `def transform_tools()` (line 495): Create a TransformTools instance.
+- `def pytest_configure(config)` (line 58): Configure pytest with custom markers and settings.
+- `def pytest_collection_modifyitems(config, items)` (line 85): Automatically skip experiment and tutorial tests unless their opt-in flags
+- `def pytest_runtest_logreport(report)` (line 110): Collect test timing information after each test completes.
+- `def pytest_terminal_summary(terminalreporter, exitstatus, config)` (line 135): Print comprehensive test timing report after all tests complete.
+- `def test_directories()` (line 297): Set up test directories for data and results.
+- `def download_test_data(test_directories)` (line 312): Download TruncalValve 4D CT data.
+- `def test_images(download_test_data, test_directories)` (line 348): Convert and resample 4D NRRD data; return pre-resampled time points.
+- `def test_labelmaps(segmenter_total_segmentator, test_images, test_directories)` (line 400): Segment each time point with TotalSegmentator and return result dicts.
+- `def test_transforms(registrar_ants, test_images, test_directories)` (line 441): Perform ANTs registration and return results.
+- `def segmenter_total_segmentator()` (line 497): Create a SegmentChestTotalSegmentator instance.
+- `def segmenter_simpleware()` (line 503): Create a SegmentHeartSimpleware instance.
+- `def contour_tools()` (line 509): Create a ContourTools instance.
+- `def registrar_ants()` (line 515): Create a RegisterImagesANTs instance.
+- `def registrar_greedy()` (line 521): Create a RegisterImagesGreedy instance.
+- `def registrar_icon()` (line 527): Create a RegisterImagesICON instance.
+- `def transform_tools()` (line 533): Create a TransformTools instance.
+
+## tests/test_cli_smoke.py
+
+- `def test_cli_help(module_name, monkeypatch, capsys)` (line 23): Each CLI module exits successfully for --help.
 
 ## tests/test_contour_tools.py
 
@@ -526,8 +531,9 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def test_single_frame_prim_has_time_sample(self, tmp_path)` (line 438): Single-frame _convert_unified() must author one time sample, not a static prim.
   - `def test_static_merge_prim_names_use_data_basename(self, tmp_path)` (line 454): Static-merge prims must be named {data_basename}_{i}, not Mesh_{i}.
   - `def test_mask_ids_basic_produces_per_label_prims(self, tmp_path)` (line 486): mask_ids must produce one USD prim per label; no unified /Mesh prim.
-  - `def test_mask_ids_missing_label_filters_time_codes(self, tmp_path)` (line 506): Time codes for a label must be filtered to frames where it actually appears.
-  - `def test_mask_ids_missing_boundary_labels_falls_back(self, tmp_path)` (line 541): Mesh without boundary_labels array falls back to a 'default' prim.
+  - `def test_structured_grid_extracts_surface(self, tmp_path)` (line 508): StructuredGrid input is surface-extracted when convert_to_surface is true.
+  - `def test_mask_ids_missing_label_filters_time_codes(self, tmp_path)` (line 524): Time codes for a label must be filtered to frames where it actually appears.
+  - `def test_mask_ids_missing_boundary_labels_falls_back(self, tmp_path)` (line 559): Mesh without boundary_labels array falls back to a 'default' prim.
 
 ## tests/test_download_heart_data.py
 
@@ -572,6 +578,10 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def test_mask_flipped_in_lockstep_with_image(self, image_tools)` (line 401): When a mask is provided, it is flipped with the same axes as the image.
   - `def test_flip_and_make_identity_sets_direction_to_identity(self, image_tools)` (line 422): flip_and_make_identity flips as needed and sets direction matrix to identity.
   - `def test_flip_and_make_identity_with_mask_sets_both_directions_to_identity(self, image_tools)` (line 438): With mask and flip_and_make_identity, both image and mask get identity direction.
+
+## tests/test_import_public_api.py
+
+- `def test_public_api_exports_are_importable()` (line 9): Every name in physiomotion4d.__all__ resolves from the package.
 
 ## tests/test_register_images_ants.py
 
@@ -621,6 +631,12 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def test_registration_with_initial_transform(self, registrar_icon, test_images, test_directories)` (line 363): Test ICON registration with initial transform.
   - `def test_transform_types(self, registrar_icon, test_images)` (line 399): Test that ICON transforms are correct ITK types.
   - `def test_different_iteration_counts(self, registrar_icon, test_images)` (line 440): Test ICON with different iteration counts.
+
+## tests/test_register_models_pca.py
+
+- `def test_itk_template_points_are_distinct_objects()` (line 39): Cached ITK points are distinct per template vertex.
+- `def test_set_fixed_model_requires_reference_image()` (line 53): set_fixed_model fails clearly when reference_image is None.
+- `def test_transform_template_model_applies_post_pca_transform_after_deformation()` (line 63): Post-PCA transform is applied after PCA deformation.
 
 ## tests/test_register_time_series_images.py
 
@@ -675,16 +691,17 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def test_transform_image_invalid_method(self, transform_tools, test_transforms, test_images)` (line 149): Test that invalid interpolation method raises error.
   - `def test_transform_pvcontour_without_deformation(self, transform_tools, test_contour, test_transforms)` (line 172): Test transforming PyVista contour without deformation magnitude.
   - `def test_transform_pvcontour_with_deformation(self, transform_tools, test_contour, test_transforms, test_directories)` (line 207): Test transforming PyVista contour with deformation magnitude.
-  - `def test_convert_transform_to_displacement_field(self, transform_tools, test_transforms, test_images, test_directories)` (line 250): Test converting transform to deformation field image.
-  - `def test_convert_vtk_matrix_to_itk_transform(self, transform_tools)` (line 291): Test converting VTK matrix to ITK transform.
-  - `def test_compute_jacobian_determinant_from_field(self, transform_tools, test_transforms, test_images, test_directories)` (line 323): Test computing Jacobian determinant from deformation field.
-  - `def test_detect_folding_in_field(self, transform_tools, test_transforms, test_images)` (line 374): Test detecting spatial folding in deformation field.
-  - `def test_interpolate_transforms(self, transform_tools, test_transforms, test_images)` (line 404): Test temporal interpolation between transforms.
-  - `def test_combine_displacement_field_transforms(self, transform_tools, test_transforms, test_images)` (line 441): Test composing two transforms with various weights.
-  - `def test_smooth_transform(self, transform_tools, test_transforms, test_images)` (line 555): Test smoothing a transform.
-  - `def test_combine_transforms_with_masks(self, transform_tools, test_transforms, test_images)` (line 581): Test combining transforms with spatial masks.
-  - `def test_multiple_transform_applications(self, transform_tools, test_transforms, test_images)` (line 628): Test applying multiple transforms in sequence.
-  - `def test_identity_transform(self, transform_tools, test_images)` (line 656): Test that identity transform doesn't change the image.
+  - `def test_transform_dataset_preserves_unstructured_grid_topology(self, transform_tools)` (line 250): Transform UnstructuredGrid points with image shape (Z, Y, X) = (3, 3, 3).
+  - `def test_convert_transform_to_displacement_field(self, transform_tools, test_transforms, test_images, test_directories)` (line 287): Test converting transform to deformation field image.
+  - `def test_convert_vtk_matrix_to_itk_transform(self, transform_tools)` (line 328): Test converting VTK matrix to ITK transform.
+  - `def test_compute_jacobian_determinant_from_field(self, transform_tools, test_transforms, test_images, test_directories)` (line 360): Test computing Jacobian determinant from deformation field.
+  - `def test_detect_folding_in_field(self, transform_tools, test_transforms, test_images)` (line 411): Test detecting spatial folding in deformation field.
+  - `def test_interpolate_transforms(self, transform_tools, test_transforms, test_images)` (line 441): Test temporal interpolation between transforms.
+  - `def test_combine_displacement_field_transforms(self, transform_tools, test_transforms, test_images)` (line 478): Test composing two transforms with various weights.
+  - `def test_smooth_transform(self, transform_tools, test_transforms, test_images)` (line 592): Test smoothing a transform.
+  - `def test_combine_transforms_with_masks(self, transform_tools, test_transforms, test_images)` (line 618): Test combining transforms with spatial masks.
+  - `def test_multiple_transform_applications(self, transform_tools, test_transforms, test_images)` (line 665): Test applying multiple transforms in sequence.
+  - `def test_identity_transform(self, transform_tools, test_images)` (line 693): Test that identity transform doesn't change the image.
 
 ## tests/test_tutorials.py
 
@@ -695,17 +712,17 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - `def test_tutorial_01_overlay_falls_back_to_fixed_image_mask(tmp_path)` (line 149): Read fixed_image_mask.mha before stale slice labelmap files.
 - **class TestTutorial01HeartGatedCTToUSD** (line 176): End-to-end test for tutorial_01_heart_gated_ct_to_usd.py.
   - `def test_run(self, test_directories)` (line 181)
-- `def test_tutorial_03_extract_surface_uses_dataset_surface()` (line 207): Use the robust dataset_surface algorithm for VTK surface extraction.
-- **class TestTutorial02CTToVTK** (line 227): End-to-end test for tutorial_02_ct_to_vtk.py.
-  - `def test_run(self, test_directories)` (line 232)
-- **class TestTutorial03FitStatisticalModelToPatient** (line 260): End-to-end test for tutorial_03_fit_statistical_model_to_patient.py.
-  - `def test_run(self, test_directories)` (line 265)
-- **class TestTutorial04CreateStatisticalModel** (line 298): End-to-end test for tutorial_04_create_statistical_model.py.
-  - `def test_run(self, test_directories)` (line 303)
-- **class TestTutorial05VTKToUSD** (line 339): End-to-end test for tutorial_05_vtk_to_usd.py.
-  - `def test_run(self, test_directories)` (line 344)
-- **class TestTutorial06ReconstructHighres4DCT** (line 389): End-to-end test for tutorial_06_reconstruct_highres_4d_ct.py.
-  - `def test_run(self, test_directories)` (line 394)
+- **class TestTutorial02CTToVTK** (line 210): End-to-end test for tutorial_02_ct_to_vtk.py.
+  - `def test_run(self, test_directories)` (line 215)
+- **class TestTutorial03CreateStatisticalModel** (line 243): End-to-end test for tutorial_03_create_statistical_model.py.
+  - `def test_run(self, test_directories)` (line 248)
+- `def test_tutorial_04_extract_surface_uses_dataset_surface()` (line 281): Use the robust dataset_surface algorithm for VTK surface extraction.
+- **class TestTutorial04FitStatisticalModelToPatient** (line 296): End-to-end test for tutorial_04_fit_statistical_model_to_patient.py.
+  - `def test_run(self, test_directories)` (line 301)
+- **class TestTutorial05VTKToUSD** (line 356): End-to-end test for tutorial_05_vtk_to_usd.py.
+  - `def test_run(self, test_directories)` (line 361)
+- **class TestTutorial06ReconstructHighres4DCT** (line 406): End-to-end test for tutorial_06_reconstruct_highres_4d_ct.py.
+  - `def test_run(self, test_directories)` (line 411)
 
 ## tests/test_usd_merge.py
 
@@ -761,21 +778,27 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def test_normals_remain_unit_length(self, tmp_path)` (line 342): Normal vectors must not be scaled.
   - `def test_stage_meters_per_unit(self, tmp_path)` (line 362): Stage metersPerUnit metadata must be 1.0.
 
+## tests/test_workflow_fit_statistical_model_to_patient.py
+
+- `def test_auto_generate_mask_accumulates_multilabel_models(monkeypatch)` (line 16): Multi-model masks accumulate label IDs instead of overwriting prior labels.
+- `def test_transform_model_applies_staged_transform()` (line 61): Transform helper updates mesh points with image shape (Z, Y, X) = (3, 3, 3).
+- `def test_transform_model_preserves_unstructured_grid_topology()` (line 93): Transform helper preserves cells with image shape (Z, Y, X) = (3, 3, 3).
+
 ## tutorials/tutorial_01_heart_gated_ct_to_usd.py
 
-- `def run_tutorial(data_dir, output_dir, *, registration_method='ants', log_level=logging.INFO)` (line 164): Run Tutorial 1: Heart-Gated CT to Animated USD.
+- `def run_tutorial(data_dir, output_dir, *, registration_method='ants', log_level=logging.INFO)` (line 176): Run Tutorial 1: Heart-Gated CT to Animated USD.
 
 ## tutorials/tutorial_02_ct_to_vtk.py
 
-- `def run_tutorial(data_dir, output_dir, *, log_level=logging.INFO)` (line 90): Run Tutorial 2: CT Segmentation to VTK Surfaces.
+- `def run_tutorial(data_dir, output_dir, *, log_level=logging.INFO)` (line 122): Run Tutorial 2: CT Segmentation to VTK Surfaces.
 
-## tutorials/tutorial_03_fit_statistical_model_to_patient.py
+## tutorials/tutorial_03_create_statistical_model.py
 
-- `def run_tutorial(data_dir, output_dir, *, log_level=logging.INFO)` (line 99): Run Tutorial 3: Fit Statistical Shape Model to Patient Data.
+- `def run_tutorial(data_dir, output_dir, *, pca_components=10, max_samples=20, log_level=logging.INFO)` (line 93): Run Tutorial 3: Create a PCA Statistical Shape Model.
 
-## tutorials/tutorial_04_create_statistical_model.py
+## tutorials/tutorial_04_fit_statistical_model_to_patient.py
 
-- `def run_tutorial(data_dir, output_dir, *, pca_components=10, max_samples=20, log_level=logging.INFO)` (line 93): Run Tutorial 4: Create a PCA Statistical Shape Model.
+- `def run_tutorial(data_dir, output_dir, *, pca_json=None, log_level=logging.INFO)` (line 101): Run Tutorial 4: Fit Statistical Shape Model to Patient Data.
 
 ## tutorials/tutorial_05_vtk_to_usd.py
 
@@ -785,22 +808,24 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 - `def run_tutorial(data_dir, output_dir, *, case=1, max_frames=4, registration_method='ants', log_level=logging.INFO)` (line 97): Run Tutorial 6: Reconstruct High-Resolution 4D CT.
 
-## utils/claude_github_reviews.py
+## utils/ai_agent_github_reviews.py
 
-- `def git_fetch(repo_root, remote, branch)` (line 67): Run ``git fetch <remote> <branch>``, printing progress.
-- `def get_repo_root()` (line 81)
-- `def get_repo_slug(repo_root)` (line 95): Derive owner/repo from the git remote URL (upstream, falling back to origin).
-- `def parse_github_datetime(iso_str)` (line 120): Parse GitHub API timestamps (may end with Z).
-- `def get_remote_reflog_cutoff(repo_root, remote, head_ref)` (line 136): Latest reflog time for refs/remotes/<remote>/<head_ref> (when the ref last
-- `def filter_since_cutoff(thread_comments, reviews, cutoff)` (line 176): Keep thread comments with created_at > cutoff and reviews with
-- `def fetch_review_threads(pr_number, repo)` (line 390): Return all review threads for a PR via GraphQL, paginating both the
-- `def fetch_pr_data(pr_number, repo)` (line 449)
-- `def fetch_reviews(pr_number, repo)` (line 455)
-- `def resolve_review_threads(thread_ids, repo)` (line 460): Mark each thread in *thread_ids* as resolved via the GitHub GraphQL API.
-- `def build_prompt(pr_number, pr_data, reviews, thread_comments, summary_filename)` (line 549)
-- `def invoke_claude(prompt, repo_root)` (line 666): Invoke Claude Code non-interactively via stdin.
-- `def parse_args()` (line 714)
-- `def main()` (line 779)
+- `def git_fetch(repo_root, remote, branch)` (line 71): Run ``git fetch <remote> <branch>``, printing progress.
+- `def get_repo_root()` (line 85)
+- `def get_repo_slug(repo_root)` (line 99): Derive owner/repo from the git remote URL (upstream, falling back to origin).
+- `def parse_github_datetime(iso_str)` (line 124): Parse GitHub API timestamps (may end with Z).
+- `def get_remote_reflog_cutoff(repo_root, remote, head_ref)` (line 140): Latest reflog time for refs/remotes/<remote>/<head_ref> (when the ref last
+- `def filter_since_cutoff(thread_comments, reviews, cutoff)` (line 180): Keep thread comments with created_at > cutoff and reviews with
+- `def fetch_review_threads(pr_number, repo)` (line 394): Return all review threads for a PR via GraphQL, paginating both the
+- `def fetch_pr_data(pr_number, repo)` (line 453)
+- `def fetch_reviews(pr_number, repo)` (line 459)
+- `def resolve_review_threads(thread_ids, repo)` (line 464): Mark each thread in *thread_ids* as resolved via the GitHub GraphQL API.
+- `def build_prompt(pr_number, pr_data, reviews, thread_comments, summary_filename, agent, repo_root)` (line 580)
+- `def invoke_ai_agent(prompt, repo_root, agent)` (line 708): Invoke the selected AI agent non-interactively.
+- `def invoke_claude(prompt, repo_root)` (line 718): Invoke Claude Code non-interactively via stdin.
+- `def invoke_codex(prompt, repo_root)` (line 750): Invoke Codex CLI non-interactively.
+- `def parse_args()` (line 823)
+- `def main()` (line 894)
 
 ## utils/generate_api_map.py
 

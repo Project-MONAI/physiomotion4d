@@ -24,14 +24,14 @@ Runs on every push and pull request to main branches. Includes:
   - **DISABLED BY DEFAULT** - Only runs when:
     - Manually triggered via workflow_dispatch, OR
     - PR has the `run-gpu-tests` label
-  - Requires self-hosted runner with `[self-hosted, linux, gpu]` labels
+  - Requires self-hosted runner with `[self-hosted, Windows, X64, gpu]` labels
   - Uses PyTorch with CUDA 13.0 support
   - Timeout: 30 minutes
 
 - **code-quality**: Static code analysis
   - Ruff formatting and linting checks
-  - mypy type checking (continue-on-error: true)
-  - Ruff checks will fail the build if code style issues are found
+  - mypy type checking
+  - Ruff and mypy checks fail the build if issues are found
 
 ### `test-slow.yml` - Long-Running Tests
 
@@ -61,6 +61,12 @@ Two-job workflow for building and deploying Sphinx documentation:
 
 This separation ensures PRs can build and validate docs without triggering environment protection rules.
 
+### `release.yml` - Build and Publish Distributions
+
+Builds the wheel and source distribution, validates them with Twine, and
+publishes to TestPyPI or PyPI using trusted publishing. It runs manually via
+`workflow_dispatch` or automatically when a GitHub release is published.
+
 ## Caching Strategy
 
 The workflows use multiple caching layers to speed up builds:
@@ -86,9 +92,9 @@ To run GPU tests, you must either:
 ### Self-Hosted Runners
 
 GPU tests require self-hosted runners with:
-- Linux OS
+- Windows OS
 - NVIDIA GPU with CUDA 13.0 support
-- Runner labels: `[self-hosted, linux, gpu]`
+- Runner labels: `[self-hosted, Windows, X64, gpu]`
 
 **Why are GPU tests disabled by default?**
 - GitHub Actions jobs wait indefinitely for a self-hosted runner if none are available
@@ -98,34 +104,28 @@ GPU tests require self-hosted runners with:
 ### Setting Up Self-Hosted GPU Runners
 
 1. **Install GitHub Actions Runner**:
-   ```bash
+   ```powershell
    # Download and configure runner from GitHub repository Settings > Actions > Runners
    ```
 
 2. **Install NVIDIA Drivers and CUDA**:
-   ```bash
-   # Install NVIDIA drivers
-   sudo apt-get install nvidia-driver-535
-   
-   # Install CUDA toolkit 13.0
-   # CUDA 13.0 requires Ubuntu 22.04 LTS or later. These cuda-keyring_1.1-1_all.deb
-   # and cuda-toolkit-13 commands fail on Ubuntu 20.04 runners.
-   wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
-   sudo dpkg -i cuda-keyring_1.1-1_all.deb
-   sudo apt-get update
-   sudo apt-get install cuda-toolkit-13
+   ```powershell
+   # Install or update the NVIDIA display driver and CUDA Toolkit 13.0
+   # using NVIDIA's Windows installers.
+   nvidia-smi
+   nvcc --version
    ```
 
-   Self-hosted GPU runners should be upgraded to Ubuntu 22.04 LTS or later
-   before installing CUDA 13.0.
+   Verify both commands are available in the runner service environment before
+   starting jobs.
 
 3. **Configure Runner Labels**:
-   - Add labels: `self-hosted`, `linux`, `gpu`
+   - Add labels: `self-hosted`, `Windows`, `X64`, `gpu`
    - Verify GPU is accessible: `nvidia-smi`
 
 4. **Start the Runner**:
-   ```bash
-   ./run.sh
+   ```powershell
+   .\run.cmd
    ```
 
 ### How to Run GPU Tests
@@ -241,7 +241,7 @@ Coverage reports are:
 GPU tests are disabled by default. If you want to run them:
 1. **Check if GPU tests should run**: They only run on manual trigger or with `run-gpu-tests` label
 2. **Verify self-hosted runner is online**: Settings > Actions > Runners
-3. **Check runner labels**: Runner must have `self-hosted`, `linux`, and `gpu` labels
+3. **Check runner labels**: Runner must have `self-hosted`, `Windows`, `X64`, and `gpu` labels
 4. **Verify GPU accessibility**: Run `nvidia-smi` on the runner machine
 5. **Check workflow logs**: Look for "Waiting for a runner" or "runner assignment" messages
 
