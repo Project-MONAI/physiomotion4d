@@ -226,16 +226,16 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 ## src/physiomotion4d/register_models_pca.py
 
 - **class RegisterModelsPCA** (line 19): Register PCA-based shape models to medical images using mean distance optimization.
-  - `def __init__(self, pca_template_model, pca_eigenvectors, pca_std_deviations, pca_number_of_modes=0, pca_template_model_point_subsample=4, pre_pca_transform=None, fixed_distance_map=None, fixed_model=None, reference_image=None, log_level=logging.INFO)` (line 77): Initialize the PCA-based model-to-image registration.
-  - `def from_json(cls, pca_template_model, pca_json_filename, pca_number_of_modes=0, pca_template_model_point_subsample=4, pre_pca_transform=None, fixed_distance_map=None, fixed_model=None, reference_image=None, log_level=logging.INFO)` (line 183): Create RegisterModelsPCA from PCA model JSON file.
-  - `def from_pca_model(cls, pca_template_model, pca_model, pca_number_of_modes=0, pca_template_model_point_subsample=4, pre_pca_transform=None, fixed_distance_map=None, fixed_model=None, reference_image=None, log_level=logging.INFO)` (line 290): Create RegisterModelsPCA from a PCA model dictionary.
+  - `def __init__(self, pca_template_model, pca_eigenvectors, pca_std_deviations, pca_number_of_modes=0, pca_template_model_point_subsample=4, post_pca_transform=None, fixed_distance_map=None, fixed_model=None, reference_image=None, log_level=logging.INFO)` (line 77): Initialize the PCA-based model-to-image registration.
+  - `def from_json(cls, pca_template_model, pca_json_filename, pca_number_of_modes=0, pca_template_model_point_subsample=4, post_pca_transform=None, fixed_distance_map=None, fixed_model=None, reference_image=None, log_level=logging.INFO)` (line 183): Create RegisterModelsPCA from PCA model JSON file.
+  - `def from_pca_model(cls, pca_template_model, pca_model, pca_number_of_modes=0, pca_template_model_point_subsample=4, post_pca_transform=None, fixed_distance_map=None, fixed_model=None, reference_image=None, log_level=logging.INFO)` (line 290): Create RegisterModelsPCA from a PCA model dictionary.
   - `def set_fixed_model(self, fixed_model, reference_image)` (line 371): Set the fixed model for registration.
   - `def set_fixed_distance_map(self, fixed_distance_map)` (line 397): Set the reference image for registration.
   - `def set_pca_template_model(self, pca_template_model)` (line 408): Set the average model for registration.
   - `def transform_template_model(self)` (line 639): Create the final registered model by applying PCA deformation.
-  - `def transform_point(self, point, include_pre_pca_transform=True)` (line 702): Transform an arbitrary point using nearest neighbor interpolation.
-  - `def compute_pca_transforms(self, reference_image)` (line 736): Compute PCA transforms.
-  - `def register(self, pca_number_of_modes=0, pca_coefficient_bounds=3.5, method='L-BFGS-B', max_iterations=100)` (line 773): Optimize PCA coefficients to deform the model to better match
+  - `def transform_point(self, point, include_post_pca_transform=True)` (line 702): Transform an arbitrary point using nearest neighbor interpolation.
+  - `def compute_pca_transforms(self, reference_image)` (line 739): Compute PCA transforms.
+  - `def register(self, pca_number_of_modes=0, pca_coefficient_bounds=3.5, method='L-BFGS-B', max_iterations=100)` (line 776): Optimize PCA coefficients to deform the model to better match
 
 ## src/physiomotion4d/register_time_series_images.py
 
@@ -310,16 +310,17 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def convert_transform_to_displacement_field_transform(self, tfm, reference_image)` (line 252): Convert an ITK transform to a displacement field transform.
   - `def invert_displacement_field_transform(self, tfm)` (line 269): Invert a displacement field transform.
   - `def transform_pvcontour(self, contour, tfm, with_deformation_magnitude=False)` (line 291): Transform PyVista contour meshes using an ITK transform.
-  - `def transform_image(self, img, tfm, reference_image, interpolation_method='linear')` (line 359): Transform an ITK image using a specified transform and interpolation.
-  - `def convert_vtk_matrix_to_itk_transform(self, vtk_mat)` (line 436): Convert a VTK matrix to an ITK transform.
-  - `def smooth_transform(self, tfm, sigma, reference_image)` (line 471): Smooth a transform using Gaussian filtering to reduce noise.
-  - `def combine_transforms_with_masks(self, transform1, transform2, mask1, mask2, reference_image, max_iter=10, jacobian_threshold=0.1)` (line 530): Combine two transforms using spatial masks with folding correction.
-  - `def compute_jacobian_determinant_from_field(self, field)` (line 620): Compute Jacobian determinant of a displacement field.
-  - `def detect_folding_in_field(self, jacobian_det, threshold=0.1)` (line 649): Detect spatial folding in a transform.
-  - `def reduce_folding_in_field(self, field, jacobian_det, reduction_factor=0.8, threshold=0.1)` (line 673): Reduce folding by scaling displacement field in problematic regions.
-  - `def generate_grid_image(self, reference_image, grid_size=60, line_width=3)` (line 719): Generate a grid image.
-  - `def convert_field_to_grid_visualization(self, tfm, reference_image, grid_size=60, line_width=3)` (line 752): Generate a visual deformation grid for transform visualization.
-  - `def convert_itk_transform_to_usd_visualization(self, tfm, reference_image, output_filename, visualization_type='arrows', subsample_factor=4, arrow_scale=1.0, magnitude_threshold=0.0)` (line 788): Convert an ITK transform to a USD visualization for NVIDIA Omniverse.
+  - `def transform_dataset(self, mesh, tfm, with_deformation_magnitude=False)` (line 335): Transform a PyVista dataset while preserving mesh topology and data arrays.
+  - `def transform_image(self, img, tfm, reference_image, interpolation_method='linear')` (line 382): Transform an ITK image using a specified transform and interpolation.
+  - `def convert_vtk_matrix_to_itk_transform(self, vtk_mat)` (line 459): Convert a VTK matrix to an ITK transform.
+  - `def smooth_transform(self, tfm, sigma, reference_image)` (line 494): Smooth a transform using Gaussian filtering to reduce noise.
+  - `def combine_transforms_with_masks(self, transform1, transform2, mask1, mask2, reference_image, max_iter=10, jacobian_threshold=0.1)` (line 553): Combine two transforms using spatial masks with folding correction.
+  - `def compute_jacobian_determinant_from_field(self, field)` (line 643): Compute Jacobian determinant of a displacement field.
+  - `def detect_folding_in_field(self, jacobian_det, threshold=0.1)` (line 672): Detect spatial folding in a transform.
+  - `def reduce_folding_in_field(self, field, jacobian_det, reduction_factor=0.8, threshold=0.1)` (line 696): Reduce folding by scaling displacement field in problematic regions.
+  - `def generate_grid_image(self, reference_image, grid_size=60, line_width=3)` (line 742): Generate a grid image.
+  - `def convert_field_to_grid_visualization(self, tfm, reference_image, grid_size=60, line_width=3)` (line 775): Generate a visual deformation grid for transform visualization.
+  - `def convert_itk_transform_to_usd_visualization(self, tfm, reference_image, output_filename, visualization_type='arrows', subsample_factor=4, arrow_scale=1.0, magnitude_threshold=0.0)` (line 811): Convert an ITK transform to a USD visualization for NVIDIA Omniverse.
 
 ## src/physiomotion4d/usd_anatomy_tools.py
 
@@ -438,19 +439,19 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## src/physiomotion4d/workflow_fit_statistical_model_to_patient.py
 
-- **class WorkflowFitStatisticalModelToPatient** (line 44): Register anatomical models using multi-stage ICP, mask-based, and image-based
-  - `def __init__(self, template_model, patient_models=None, patient_image=None, segmentation_method='simpleware_heart', log_level=logging.INFO)` (line 123): Initialize the model-to-image-and-model registration pipeline.
-  - `def set_mask_dilation_mm(self, mask_dilation_mm)` (line 340): Set mask dilation amount for auto-generated masks.
-  - `def set_roi_dilation_mm(self, roi_dilation_mm)` (line 349): Set ROI mask dilation amount.
-  - `def set_use_pca_registration(self, use_pca_registration, pca_model=None, pca_number_of_modes=0, pca_uses_surface=True)` (line 358): Set whether to use PCA-based registration and provide the PCA model.
-  - `def set_use_mask_to_mask_registration(self, use_mask_to_mask_registration)` (line 393): Set whether to use mask-to-mask registration.
-  - `def set_use_mask_to_image_registration(self, use_mask_to_image_registration, template_labelmap=None, template_labelmap_organ_mesh_ids=None, template_labelmap_organ_extra_ids=None, template_labelmap_background_ids=None)` (line 404): Set whether to use mask-to-image registration.
-  - `def register_model_to_model_icp(self)` (line 458): Perform ICP alignment of template model to patient model.
-  - `def register_model_to_model_pca(self)` (line 518): Perform PCA-based registration after ICP alignment.
-  - `def register_mask_to_mask(self, use_icon_refinement=False)` (line 645): Perform mask-based deformable registration of model to patient model.
-  - `def register_labelmap_to_image(self, use_icon_refinement=False)` (line 713): Perform labelmap-to-image refinement.
-  - `def transform_model(self, base_model=None)` (line 832): Apply registration transforms to the model.
-  - `def run_workflow(self, use_icon_registration_refinement=False)` (line 900): Execute the complete multi-stage registration workflow.
+- **class WorkflowFitStatisticalModelToPatient** (line 56): Register anatomical models using multi-stage ICP, mask-based, and image-based
+  - `def __init__(self, template_model, patient_models=None, patient_image=None, segmentation_method='simpleware_heart', log_level=logging.INFO)` (line 135): Initialize the model-to-image-and-model registration pipeline.
+  - `def set_mask_dilation_mm(self, mask_dilation_mm)` (line 356): Set mask dilation amount for auto-generated masks.
+  - `def set_roi_dilation_mm(self, roi_dilation_mm)` (line 365): Set ROI mask dilation amount.
+  - `def set_use_pca_registration(self, use_pca_registration, pca_model=None, pca_number_of_modes=0, pca_uses_surface=True)` (line 374): Set whether to use PCA-based registration and provide the PCA model.
+  - `def set_use_mask_to_mask_registration(self, use_mask_to_mask_registration)` (line 409): Set whether to use mask-to-mask registration.
+  - `def set_use_mask_to_image_registration(self, use_mask_to_image_registration, template_labelmap=None, template_labelmap_organ_mesh_ids=None, template_labelmap_organ_extra_ids=None, template_labelmap_background_ids=None)` (line 420): Set whether to use mask-to-image registration.
+  - `def register_model_to_model_icp(self)` (line 494): Perform ICP alignment of template model to patient model.
+  - `def register_model_to_model_pca(self)` (line 552): Perform PCA-based registration after ICP alignment.
+  - `def register_mask_to_mask(self, use_icon_refinement=False)` (line 678): Perform mask-based deformable registration of model to patient model.
+  - `def register_labelmap_to_image(self, use_icon_refinement=False)` (line 746): Perform labelmap-to-image refinement.
+  - `def transform_model(self, base_model=None)` (line 866): Apply registration transforms to the model.
+  - `def run_workflow(self, use_icon_registration_refinement=False)` (line 931): Execute the complete multi-stage registration workflow.
 
 ## src/physiomotion4d/workflow_reconstruct_highres_4d_ct.py
 
@@ -635,7 +636,7 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 - `def test_itk_template_points_are_distinct_objects()` (line 39): Cached ITK points are distinct per template vertex.
 - `def test_set_fixed_model_requires_reference_image()` (line 53): set_fixed_model fails clearly when reference_image is None.
-- `def test_transform_template_model_deforms_before_pre_pca_transform()` (line 61): PCA deformation is applied before the pre-PCA transform.
+- `def test_transform_template_model_applies_post_pca_transform_after_deformation()` (line 63): Post-PCA transform is applied after PCA deformation.
 
 ## tests/test_register_time_series_images.py
 
@@ -690,16 +691,17 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def test_transform_image_invalid_method(self, transform_tools, test_transforms, test_images)` (line 149): Test that invalid interpolation method raises error.
   - `def test_transform_pvcontour_without_deformation(self, transform_tools, test_contour, test_transforms)` (line 172): Test transforming PyVista contour without deformation magnitude.
   - `def test_transform_pvcontour_with_deformation(self, transform_tools, test_contour, test_transforms, test_directories)` (line 207): Test transforming PyVista contour with deformation magnitude.
-  - `def test_convert_transform_to_displacement_field(self, transform_tools, test_transforms, test_images, test_directories)` (line 250): Test converting transform to deformation field image.
-  - `def test_convert_vtk_matrix_to_itk_transform(self, transform_tools)` (line 291): Test converting VTK matrix to ITK transform.
-  - `def test_compute_jacobian_determinant_from_field(self, transform_tools, test_transforms, test_images, test_directories)` (line 323): Test computing Jacobian determinant from deformation field.
-  - `def test_detect_folding_in_field(self, transform_tools, test_transforms, test_images)` (line 374): Test detecting spatial folding in deformation field.
-  - `def test_interpolate_transforms(self, transform_tools, test_transforms, test_images)` (line 404): Test temporal interpolation between transforms.
-  - `def test_combine_displacement_field_transforms(self, transform_tools, test_transforms, test_images)` (line 441): Test composing two transforms with various weights.
-  - `def test_smooth_transform(self, transform_tools, test_transforms, test_images)` (line 555): Test smoothing a transform.
-  - `def test_combine_transforms_with_masks(self, transform_tools, test_transforms, test_images)` (line 581): Test combining transforms with spatial masks.
-  - `def test_multiple_transform_applications(self, transform_tools, test_transforms, test_images)` (line 628): Test applying multiple transforms in sequence.
-  - `def test_identity_transform(self, transform_tools, test_images)` (line 656): Test that identity transform doesn't change the image.
+  - `def test_transform_dataset_preserves_unstructured_grid_topology(self, transform_tools)` (line 250): Transform UnstructuredGrid points with image shape (Z, Y, X) = (3, 3, 3).
+  - `def test_convert_transform_to_displacement_field(self, transform_tools, test_transforms, test_images, test_directories)` (line 287): Test converting transform to deformation field image.
+  - `def test_convert_vtk_matrix_to_itk_transform(self, transform_tools)` (line 328): Test converting VTK matrix to ITK transform.
+  - `def test_compute_jacobian_determinant_from_field(self, transform_tools, test_transforms, test_images, test_directories)` (line 360): Test computing Jacobian determinant from deformation field.
+  - `def test_detect_folding_in_field(self, transform_tools, test_transforms, test_images)` (line 411): Test detecting spatial folding in deformation field.
+  - `def test_interpolate_transforms(self, transform_tools, test_transforms, test_images)` (line 441): Test temporal interpolation between transforms.
+  - `def test_combine_displacement_field_transforms(self, transform_tools, test_transforms, test_images)` (line 478): Test composing two transforms with various weights.
+  - `def test_smooth_transform(self, transform_tools, test_transforms, test_images)` (line 592): Test smoothing a transform.
+  - `def test_combine_transforms_with_masks(self, transform_tools, test_transforms, test_images)` (line 618): Test combining transforms with spatial masks.
+  - `def test_multiple_transform_applications(self, transform_tools, test_transforms, test_images)` (line 665): Test applying multiple transforms in sequence.
+  - `def test_identity_transform(self, transform_tools, test_images)` (line 693): Test that identity transform doesn't change the image.
 
 ## tests/test_tutorials.py
 
@@ -780,6 +782,7 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 - `def test_auto_generate_mask_accumulates_multilabel_models(monkeypatch)` (line 16): Multi-model masks accumulate label IDs instead of overwriting prior labels.
 - `def test_transform_model_applies_staged_transform()` (line 61): Transform helper updates mesh points with image shape (Z, Y, X) = (3, 3, 3).
+- `def test_transform_model_preserves_unstructured_grid_topology()` (line 93): Transform helper preserves cells with image shape (Z, Y, X) = (3, 3, 3).
 
 ## tutorials/tutorial_01_heart_gated_ct_to_usd.py
 
@@ -817,12 +820,12 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - `def fetch_pr_data(pr_number, repo)` (line 453)
 - `def fetch_reviews(pr_number, repo)` (line 459)
 - `def resolve_review_threads(thread_ids, repo)` (line 464): Mark each thread in *thread_ids* as resolved via the GitHub GraphQL API.
-- `def build_prompt(pr_number, pr_data, reviews, thread_comments, summary_filename)` (line 553)
-- `def invoke_ai_agent(prompt, repo_root, agent)` (line 671): Invoke the selected AI agent non-interactively.
-- `def invoke_claude(prompt, repo_root)` (line 681): Invoke Claude Code non-interactively via stdin.
-- `def invoke_codex(prompt, repo_root)` (line 713): Invoke Codex CLI non-interactively.
-- `def parse_args()` (line 786)
-- `def main()` (line 857)
+- `def build_prompt(pr_number, pr_data, reviews, thread_comments, summary_filename, agent, repo_root)` (line 580)
+- `def invoke_ai_agent(prompt, repo_root, agent)` (line 708): Invoke the selected AI agent non-interactively.
+- `def invoke_claude(prompt, repo_root)` (line 718): Invoke Claude Code non-interactively via stdin.
+- `def invoke_codex(prompt, repo_root)` (line 750): Invoke Codex CLI non-interactively.
+- `def parse_args()` (line 823)
+- `def main()` (line 894)
 
 ## utils/generate_api_map.py
 

@@ -71,6 +71,7 @@ dependencies = [
     "antspyx>=0.4.0",
     "icon-registration>=1.0.0",
     "picsl-greedy>=0.0.12",
+    "scipy>=1.10.0",
     "unigradicon>=1.0.0",
 
     # Visualization and USD
@@ -201,18 +202,43 @@ warn_no_return = true
 warn_unreachable = true
 strict_equality = true
 show_error_codes = true
-# Third-party libs (itk, pyvista, pxr, vtk, simpleware, etc.) have no stubs
-disable_error_code = ["import-not-found", "import-untyped"]
-ignore_missing_imports = true
 
-# When type-checking our package, ignore missing imports for third-party libs.
-# Override applies to the module being checked (physiomotion4d.*).
+# Third-party libraries used by runtime modules may be untyped or unavailable in
+# lean type-checking environments. Keep that suppression scoped to those imports
+# instead of applying it to first-party modules.
 [[tool.mypy.overrides]]
-module = ["physiomotion4d", "physiomotion4d.*"]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = ["tests", "tests.*", "conftest"]
+module = [
+    "ants",
+    "cupy",
+    "icon_registration",
+    "icon_registration.*",
+    "itk",
+    "itk.*",
+    "matplotlib",
+    "matplotlib.*",
+    "nibabel",
+    "nibabel.*",
+    "nrrd",
+    "numpy",
+    "numpy.*",
+    "picsl_greedy",
+    "pxr",
+    "pxr.*",
+    "pyvista",
+    "pyvista.*",
+    "simpleware",
+    "simpleware.*",
+    "SimpleITK",
+    "SimpleITK.*",
+    "sklearn.*",
+    "totalsegmentator.*",
+    "trimesh",
+    "trimesh.*",
+    "unigradicon",
+    "unigradicon.*",
+    "vtk",
+    "vtk.*",
+]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]

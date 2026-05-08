@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 import itk
 import numpy as np
@@ -55,11 +55,15 @@ def test_set_fixed_model_requires_reference_image() -> None:
     registrar = _make_registrar()
 
     with pytest.raises(ValueError, match="reference_image must not be None"):
-        registrar.set_fixed_model(registrar.pca_template_model, None)
+        registrar.set_fixed_model(
+            cast(pv.UnstructuredGrid, registrar.pca_template_model), None
+        )
 
 
-def test_transform_template_model_deforms_before_pre_pca_transform() -> None:
-    """PCA deformation is applied before the pre-PCA transform."""
+def test_transform_template_model_applies_post_pca_transform_after_deformation() -> (
+    None
+):
+    """Post-PCA transform is applied after PCA deformation."""
     registrar = _make_registrar()
     registrar.registered_model_pca_coefficients = np.array([1.0], dtype=np.float64)
     registrar.registered_model_pca_deformation = np.tile(
@@ -68,7 +72,7 @@ def test_transform_template_model_deforms_before_pre_pca_transform() -> None:
     )
     transform = itk.ScaleTransform[itk.D, 3].New()
     transform.SetScale([2.0, 2.0, 2.0])
-    registrar.pre_pca_transform = transform
+    registrar.post_pca_transform = transform
 
     registered_model: Any = registrar.transform_template_model()
 

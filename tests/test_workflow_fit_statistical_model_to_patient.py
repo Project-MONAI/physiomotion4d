@@ -88,3 +88,46 @@ def test_transform_model_applies_staged_transform() -> None:
 
     assert output is not None
     np.testing.assert_allclose(output.points, points + np.array([1.0, 2.0, 3.0]))
+
+
+def test_transform_model_preserves_unstructured_grid_topology() -> None:
+    """Transform helper preserves cells with image shape (Z, Y, X) = (3, 3, 3)."""
+    image = itk.image_from_array(np.zeros((3, 3, 3), dtype=np.float32))
+    points = np.array(
+        [
+            [0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0],
+            [0.0, 1.0, 0.0],
+            [0.0, 0.0, 1.0],
+        ],
+        dtype=np.float64,
+    )
+    cells = np.array([4, 0, 1, 2, 3])
+    celltypes = np.array([pv.CellType.TETRA])
+    model = pv.UnstructuredGrid(cells, celltypes, points)
+    model.cell_data["label"] = np.array([3], dtype=np.uint8)
+    model.point_data["weights"] = np.arange(model.n_points, dtype=np.float64)
+    workflow = WorkflowFitStatisticalModelToPatient(
+        template_model=model,
+        patient_models=[model],
+        patient_image=image,
+    )
+
+    transform = itk.AffineTransform[itk.D, 3].New()
+    transform.SetIdentity()
+    transform.SetTranslation((1.0, 2.0, 3.0))
+    workflow.icp_forward_point_transform = transform
+    workflow.pca_coefficients = None
+    workflow.use_m2m_registration = False
+    workflow.use_m2i_registration = False
+
+    output = workflow.transform_model()
+
+    assert isinstance(output, pv.UnstructuredGrid)
+    assert output.n_cells == model.n_cells
+    np.testing.assert_array_equal(output.celltypes, model.celltypes)
+    np.testing.assert_array_equal(output.cell_data["label"], model.cell_data["label"])
+    np.testing.assert_array_equal(
+        output.point_data["weights"], model.point_data["weights"]
+    )
+    np.testing.assert_allclose(output.points, points + np.array([1.0, 2.0, 3.0]))

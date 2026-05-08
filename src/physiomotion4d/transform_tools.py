@@ -13,7 +13,7 @@ are used to track anatomical motion over time.
 
 import logging
 from collections.abc import Sequence
-from typing import TypeAlias
+from typing import TypeAlias, cast
 
 try:
     import cupy as cp  # optional (GPU)
@@ -323,8 +323,31 @@ class TransformTools(PhysioMotion4DBase):
             >>> deformation = transformed_heart['DeformationMagnitude']
         """
 
-        new_contour = contour.copy(deep=True)
-        pnts = np.array(new_contour.points, dtype=float)
+        return cast(
+            pv.PolyData,
+            self.transform_dataset(
+                contour,
+                tfm,
+                with_deformation_magnitude=with_deformation_magnitude,
+            ),
+        )
+
+    def transform_dataset(
+        self,
+        mesh: pv.DataSet,
+        tfm: itk.Transform,
+        with_deformation_magnitude: bool = False,
+    ) -> pv.DataSet:
+        """Transform a PyVista dataset while preserving mesh topology and data arrays.
+
+        Applies an ITK point transform to every point in the input dataset and
+        returns a deep copy with the original cells, cell data, and point data
+        preserved. This is appropriate for non-contour datasets such as
+        UnstructuredGrid inputs where casting to PolyData would lose topology.
+        """
+
+        new_mesh = mesh.copy(deep=True)
+        pnts = np.array(new_mesh.points, dtype=float)
 
         # Handle case where tfm is a list (e.g., from itk.transformread)
         if isinstance(tfm, (list, tuple)):
@@ -340,21 +363,21 @@ class TransformTools(PhysioMotion4DBase):
             np.array(tfm.TransformPoint((float(p[0]), float(p[1]), float(p[2]))))
             for p in pnts
         ]
-        new_contour.points = np.asarray(new_pnts, dtype=float)
+        new_mesh.points = np.asarray(new_pnts, dtype=float)
 
         if with_deformation_magnitude:
             if cp is not None:
                 new_pnts_cp = cp.array(new_pnts)
                 pnts_cp = cp.array(pnts)
-                new_contour.point_data["DeformationMagnitude"] = cp.linalg.norm(
+                new_mesh.point_data["DeformationMagnitude"] = cp.linalg.norm(
                     new_pnts_cp - pnts_cp, axis=1
                 ).get()
             else:
-                new_contour.point_data["DeformationMagnitude"] = np.linalg.norm(
+                new_mesh.point_data["DeformationMagnitude"] = np.linalg.norm(
                     np.asarray(new_pnts) - np.asarray(pnts), axis=1
                 )
 
-        return new_contour
+        return new_mesh
 
     def transform_image(
         self,

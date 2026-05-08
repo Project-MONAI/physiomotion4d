@@ -205,18 +205,18 @@ tmp_p[1] = float(point[1])
 tmp_p[2] = float(point[2])
 
 start_time = time.time()
-# Don't save the results since ICP transform is applied as a post-PCA transform
-_ = registrar.icp_registrar.forward_point_transform.TransformPoint(tmp_p)
+# Timing only; the workflow stores the ICP-aligned model before PCA registration.
+icp_p = registrar.icp_registrar.forward_point_transform.TransformPoint(tmp_p)
 print(f"--- ICP forward transform time: {time.time() - start_time} seconds", flush=True)
 
 start_time = time.time()
-# Don't apply the pre PCA transform since this is just for setup
-_ = registrar.pca_registrar.transform_point(tmp_p)
+# Timing only; PCA registration operates in the ICP-aligned coordinate frame here.
+_ = registrar.pca_registrar.transform_point(icp_p)
 print(f"--- PCA setup time: {time.time() - start_time} seconds", flush=True)
 start_time = time.time()
-# Apply the pre PCA transform since this is the actual transform
-tmp_p = registrar.pca_registrar.transform_point(tmp_p)
-print(f"PCA + ICP transform time: {time.time() - start_time} seconds", flush=True)
+# Apply the PCA transform in the workflow's ICP-aligned coordinate frame.
+tmp_p = registrar.pca_registrar.transform_point(icp_p)
+print(f"PCA transform time: {time.time() - start_time} seconds", flush=True)
 
 start_time = time.time()
 tmp_p = registrar.m2m_inverse_transform.TransformPoint(tmp_p)

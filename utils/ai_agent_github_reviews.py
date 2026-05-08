@@ -550,16 +550,56 @@ def _format_inline_comments(comments: list[dict]) -> str:
     return "\n".join(parts)
 
 
+def _agent_specific_guidance_file(agent: str) -> str:
+    """Return the conventional guidance filename for the selected AI agent."""
+    if agent == "claude":
+        return "CLAUDE.md"
+    if agent == "codex":
+        return "CODEX.md"
+    raise ValueError(f"Unsupported AI agent: {agent}")
+
+
+def _agent_guidance_files(agent: str, repo_root: Path) -> list[str]:
+    """Return existing repo guidance files relevant to the selected AI agent."""
+    files = ["AGENTS.md"]
+    agent_file = _agent_specific_guidance_file(agent)
+    if (repo_root / agent_file).exists():
+        files.append(agent_file)
+    return files
+
+
+def _agent_scoped_guidance_files(agent: str, repo_root: Path) -> list[str]:
+    """Return existing scoped guidance files relevant to the selected AI agent."""
+    agent_file = _agent_specific_guidance_file(agent)
+    scoped_file = Path("src") / "physiomotion4d" / "vtk_to_usd" / agent_file
+    if (repo_root / scoped_file).exists():
+        return [scoped_file.as_posix()]
+    return []
+
+
 def build_prompt(
     pr_number: int,
     pr_data: dict,
     reviews: list[dict],
     thread_comments: list[dict],
     summary_filename: str,
+    agent: str,
+    repo_root: Path,
 ) -> str:
     title = pr_data.get("title", f"PR #{pr_number}")
     branch = pr_data.get("head", {}).get("ref", "unknown")
     base = pr_data.get("base", {}).get("ref", "unknown")
+    guidance_files = _agent_guidance_files(agent, repo_root)
+    scoped_guidance_files = _agent_scoped_guidance_files(agent, repo_root)
+    guidance_list = "\n".join(f"- `{path}`" for path in guidance_files)
+    guidance_names = " / ".join(guidance_files)
+    scoped_guidance_list = "\n".join(f"  - `{path}`" for path in scoped_guidance_files)
+    scoped_guidance_section = (
+        f"\n- If any comment touches `vtk_to_usd/`, also read:\n{scoped_guidance_list}"
+        if scoped_guidance_files
+        else ""
+    )
+    guidance_block = f"{guidance_list}{scoped_guidance_section}"
 
     review_bodies = [
         r
@@ -578,7 +618,7 @@ def build_prompt(
         )
     )
 
-    return textwrap.dedent(f"""\
+    prompt = textwrap.dedent(f"""\
         You are screening GitHub PR #{pr_number}: "{title}"
         Branch: `{branch}` -> `{base}`
         Total comments to assess: {total}
@@ -586,11 +626,7 @@ def build_prompt(
         ## Step 1 — Read project standards
 
         Before assessing any comment, read these files:
-        - `AGENTS.md` — shared coding standards, architecture, working process,
-          and role expectations for this codebase
-        - `CLAUDE.md` — Claude-specific guidance when running under Claude Code
-        - If any comment touches `vtk_to_usd/`:
-          `src/physiomotion4d/vtk_to_usd/CLAUDE.md`
+        __GUIDANCE_BLOCK__
 
         ## Step 2 — Assess each comment
 
@@ -609,7 +645,7 @@ def build_prompt(
            Do NOT run git add, git commit, or any git staging commands.
            Leave all edits as pending working-tree modifications only.
 
-        Rejection triggers (from AGENTS.md / CLAUDE.md — treat these as hard rules):
+        Rejection triggers (from {guidance_names} — treat these as hard rules):
         - Introduces `X | None` instead of `Optional[X]` (ruff UP007 is suppressed)
         - Adds backward-compat shims, re-exports, or removed-symbol stubs
         - Adds error handling for internal states that cannot happen
@@ -660,7 +696,8 @@ def build_prompt(
         ---
 
         {comments_block}
-    """)
+        """)
+    return prompt.replace("__GUIDANCE_BLOCK__", guidance_block)
 
 
 # ---------------------------------------------------------------------------
@@ -949,6 +986,8 @@ def main() -> None:
         reviews=reviews,
         thread_comments=thread_comments,
         summary_filename=summary_filename,
+        agent=args.agent,
+        repo_root=repo_root,
     )
 
     if args.prompt_only:

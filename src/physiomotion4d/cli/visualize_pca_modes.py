@@ -17,7 +17,7 @@ import json
 import sys
 import traceback
 from pathlib import Path
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Any, cast
 
 if TYPE_CHECKING:
     import numpy as np
@@ -265,7 +265,7 @@ Examples:
     # Slider: 0 to 4 std dev (shows mean, +sigma, -sigma)
     plotter.subplot(0, 0)
     plotter.add_slider_widget(
-        _on_slider,
+        cast(Any, _on_slider),
         rng=(0.0, 4.0),
         value=initial_sigma,
         title="Std dev",

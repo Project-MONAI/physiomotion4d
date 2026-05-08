@@ -41,7 +41,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
         pca_number_of_modes (int): Number of PCA modes available
         pca_coefficients (np.ndarray): Optimized PCA coefficients
         registered_model (pv.DataSet): Final registered and deformed model
-        pre_pca_transform (itk.Transform): Transform to apply after PCA registration
+        post_pca_transform (itk.Transform): Transform to apply after PCA registration
         forward_point_transform (itk.DisplacementFieldTransform): Forward displacement field transform
             (Does not include the post-PCA transform)
         inverse_point_transform (itk.DisplacementFieldTransform): Inverse displacement field transform
@@ -81,7 +81,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
         pca_std_deviations: np.ndarray,
         pca_number_of_modes: int = 0,
         pca_template_model_point_subsample: int = 4,
-        pre_pca_transform: Optional[itk.Transform] = None,
+        post_pca_transform: Optional[itk.Transform] = None,
         fixed_distance_map: Optional[itk.Image] = None,
         fixed_model: Optional[pv.DataSet] = None,
         reference_image: Optional[itk.Image] = None,
@@ -98,7 +98,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
                 These are the square roots of pca_eigenvalues
             pca_number_of_modes: Number of PCA modes to use. Default: -1 (use all)
             pca_template_model_point_subsample: Step size for subsampling model points. Default: 4
-            pre_pca_transform: Optional ITK transform to apply before PCA registration.
+            post_pca_transform: Optional ITK transform to apply after PCA registration.
                 Default: None
             fixed_distance_map: ITK image providing the distance map.
                 Default: None
@@ -118,7 +118,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
         self.pca_eigenvectors: np.ndarray = pca_eigenvectors
         self.pca_std_deviations: np.ndarray = pca_std_deviations
 
-        self.pre_pca_transform = pre_pca_transform
+        self.post_pca_transform = post_pca_transform
 
         self._contour_tools = ContourTools()
 
@@ -186,7 +186,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
         pca_json_filename: str,
         pca_number_of_modes: int = 0,
         pca_template_model_point_subsample: int = 4,
-        pre_pca_transform: Optional[itk.Transform] = None,
+        post_pca_transform: Optional[itk.Transform] = None,
         fixed_distance_map: Optional[itk.Image] = None,
         fixed_model: Optional[pv.DataSet] = None,
         reference_image: Optional[itk.Image] = None,
@@ -206,7 +206,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
             pca_json_filename: Path to the PCA model JSON file
             pca_number_of_modes: Number of PCA modes to use. Default: 0 (use all)
             pca_template_model_point_subsample: Step size for subsampling model points. Default: 4
-            pre_pca_transform: Optional ITK transform to apply before PCA registration.
+            post_pca_transform: Optional ITK transform to apply after PCA registration.
                 Default: None
             fixed_distance_map: ITK image providing the distance values
                 for registration. If None, must be set later before registration.
@@ -279,7 +279,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
             pca_model=pca_data,
             pca_number_of_modes=pca_number_of_modes,
             pca_template_model_point_subsample=pca_template_model_point_subsample,
-            pre_pca_transform=pre_pca_transform,
+            post_pca_transform=post_pca_transform,
             fixed_distance_map=fixed_distance_map,
             fixed_model=fixed_model,
             reference_image=reference_image,
@@ -293,7 +293,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
         pca_model: dict,
         pca_number_of_modes: int = 0,
         pca_template_model_point_subsample: int = 4,
-        pre_pca_transform: Optional[itk.Transform] = None,
+        post_pca_transform: Optional[itk.Transform] = None,
         fixed_distance_map: Optional[itk.Image] = None,
         fixed_model: Optional[pv.DataSet] = None,
         reference_image: Optional[itk.Image] = None,
@@ -311,7 +311,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
                 'explained_variance_ratio')
             pca_number_of_modes: Number of PCA modes to use. Default: 0 (use all)
             pca_template_model_point_subsample: Step size for subsampling model points. Default: 4
-            pre_pca_transform: Optional ITK transform to apply before PCA registration.
+            post_pca_transform: Optional ITK transform to apply after PCA registration.
             fixed_distance_map: ITK image providing the distance values for registration.
             fixed_model: Target surface mesh to register to.
             reference_image: Reference image defining coordinate space.
@@ -341,7 +341,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
             pca_std_deviations=pca_std_deviations,
             pca_number_of_modes=pca_number_of_modes,
             pca_template_model_point_subsample=pca_template_model_point_subsample,
-            pre_pca_transform=pre_pca_transform,
+            post_pca_transform=post_pca_transform,
             fixed_distance_map=fixed_distance_map,
             fixed_model=fixed_model,
             reference_image=reference_image,
@@ -481,8 +481,8 @@ class RegisterModelsPCA(PhysioMotion4DBase):
             point[1] += pca_deformation[i, 1]
             point[2] += pca_deformation[i, 2]
 
-            if self.pre_pca_transform is not None:
-                point = self.pre_pca_transform.TransformPoint(point)
+            if self.post_pca_transform is not None:
+                point = self.post_pca_transform.TransformPoint(point)
 
             # Check if point is inside image bounds
 
@@ -681,8 +681,8 @@ class RegisterModelsPCA(PhysioMotion4DBase):
             point[1] += self.registered_model_pca_deformation[i, 1]
             point[2] += self.registered_model_pca_deformation[i, 2]
 
-            if self.pre_pca_transform is not None:
-                point = self.pre_pca_transform.TransformPoint(point)
+            if self.post_pca_transform is not None:
+                point = self.post_pca_transform.TransformPoint(point)
 
             # Store result
             final_points[i, 0] = point[0]
@@ -702,7 +702,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
     def transform_point(
         self,
         point: itk.Point,
-        include_pre_pca_transform: bool = True,
+        include_post_pca_transform: bool = True,
     ) -> itk.Point:
         """Transform an arbitrary point using nearest neighbor interpolation.
 
@@ -714,8 +714,9 @@ class RegisterModelsPCA(PhysioMotion4DBase):
 
         Notes:
             1) if the point is outside the image bounds, the point is not transformed.
-            2) if the pre_pca_transform is set and enabled, it is applied.
-            3) if the forward point transform is not set, no errors are raised.
+            2) if the forward point transform is set, it is applied.
+            3) if the post_pca_transform is set and enabled, it is applied.
+            4) if the forward point transform is not set, no errors are raised.
 
         Example:
             >>> p = itk.Point[itk.D, 3]()
@@ -723,13 +724,15 @@ class RegisterModelsPCA(PhysioMotion4DBase):
             >>> transformed_p = registrar.transform_point(p)
         """
 
-        if include_pre_pca_transform and self.pre_pca_transform is not None:
-            point = self.pre_pca_transform.TransformPoint(point)
-
         if self.forward_point_transform is not None:
             transformed_point = self.forward_point_transform.TransformPoint(point)
         else:
             transformed_point = point
+
+        if include_post_pca_transform and self.post_pca_transform is not None:
+            transformed_point = self.post_pca_transform.TransformPoint(
+                transformed_point
+            )
 
         return transformed_point
 

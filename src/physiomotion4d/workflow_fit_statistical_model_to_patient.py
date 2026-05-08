@@ -28,7 +28,6 @@ from typing import Any, Optional, cast
 import itk
 import numpy as np
 import pyvista as pv
-from itk import TubeTK as ttk
 
 from physiomotion4d.contour_tools import ContourTools
 from physiomotion4d.physiomotion4d_base import PhysioMotion4DBase
@@ -39,6 +38,19 @@ from physiomotion4d.register_models_icp import RegisterModelsICP
 from physiomotion4d.register_models_pca import RegisterModelsPCA
 from physiomotion4d.transform_tools import TransformTools
 from physiomotion4d.workflow_convert_ct_to_vtk import WorkflowConvertCTToVTK
+
+
+def _load_tubetk() -> Any:
+    """Load TubeTK lazily for operations that require its filters."""
+    from itk import TubeTK as ttk
+
+    return ttk
+
+
+def _image_has_isotropic_spacing(image: itk.Image) -> bool:
+    """Return whether all image spacing values match within numeric tolerance."""
+    spacing = np.asarray(image.GetSpacing(), dtype=np.float64)
+    return bool(np.allclose(spacing, spacing[0]))
 
 
 class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
@@ -183,10 +195,12 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
 
         if patient_image is not None:
             self.patient_image = patient_image
-            resampler = ttk.ResampleImage.New(Input=self.patient_image)
-            resampler.SetMakeHighResIso(True)
-            resampler.Update()
-            self.patient_image = resampler.GetOutput()
+            if not _image_has_isotropic_spacing(self.patient_image):
+                ttk = _load_tubetk()
+                resampler = ttk.ResampleImage.New(Input=self.patient_image)
+                resampler.SetMakeHighResIso(True)
+                resampler.Update()
+                self.patient_image = resampler.GetOutput()
         else:
             self.patient_image = self.contour_tools.create_reference_image(
                 mesh=self.patient_model_surface,
@@ -298,6 +312,7 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         if dilate_mm is None:
             dilate_mm = self.mask_dilation_mm
         if dilate_mm > 0:
+            ttk = _load_tubetk()
             imMath = ttk.ImageMath.New(mask)
             dilation_voxels = int(dilate_mm / self.patient_image.GetSpacing()[0])
             imMath.Dilate(dilation_voxels, 1, 0)
@@ -327,6 +342,7 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         # Generate model ROI mask
         roi = None
         if dilate_mm > 0:
+            ttk = _load_tubetk()
             imMath = ttk.ImageMath.New(mask)
             dilation_voxels = int(dilate_mm / mask.GetSpacing()[0])
             imMath.Dilate(dilation_voxels, 1, 0)
@@ -455,6 +471,26 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
             self.template_labelmap_background_ids = template_labelmap_background_ids
         self.use_m2i_registration = use_mask_to_image_registration
 
+    def _transform_model_dataset(
+        self,
+        model: pv.DataSet,
+        tfm: itk.Transform,
+        *,
+        with_deformation_magnitude: bool = False,
+    ) -> pv.DataSet:
+        """Transform a model with topology-preserving handling by PyVista type."""
+        if isinstance(model, pv.PolyData):
+            return self.transform_tools.transform_pvcontour(
+                model,
+                tfm,
+                with_deformation_magnitude=with_deformation_magnitude,
+            )
+        return self.transform_tools.transform_dataset(
+            model,
+            tfm,
+            with_deformation_magnitude=with_deformation_magnitude,
+        )
+
     def register_model_to_model_icp(self) -> dict:
         """Perform ICP alignment of template model to patient model.
 
@@ -484,11 +520,9 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         self.icp_inverse_point_transform = icp_result["inverse_point_transform"]
         self.icp_template_model_surface = icp_result["registered_model"]
 
-        self.icp_template_model = pv.UnstructuredGrid(
-            self.contour_tools.transform_contours(
-                cast(pv.PolyData, self.template_model),
-                self.icp_forward_point_transform,
-            )
+        self.icp_template_model = self._transform_model_dataset(
+            self.template_model,
+            self.icp_forward_point_transform,
         )
 
         if self.template_labelmap is not None:
@@ -605,11 +639,10 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
             itk.imwrite(tfm_z_img, "pca_forward_point_transform_z.nii.gz")
 
         if self.pca_uses_surface:
-            self.pca_template_model = pv.UnstructuredGrid(
-                self.contour_tools.transform_contours(
-                    cast(pv.PolyData, self.icp_template_model),
-                    self.pca_forward_point_transform,
-                )
+            assert self.icp_template_model is not None, "ICP template model must be set"
+            self.pca_template_model = self._transform_model_dataset(
+                self.icp_template_model,
+                self.pca_forward_point_transform,
             )
         else:
             self.pca_template_model = registered_model
@@ -801,12 +834,13 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         assert self.m2m_template_model_surface is not None, (
             "M2M template model surface must be set"
         )
-        self.m2i_template_model_surface = pv.PolyData(
-            self.transform_tools.transform_pvcontour(
+        self.m2i_template_model_surface = cast(
+            pv.PolyData,
+            self._transform_model_dataset(
                 self.m2m_template_model_surface,
                 self.m2i_inverse_transform,
                 with_deformation_magnitude=True,
-            )
+            ),
         )
 
         self.m2i_template_labelmap = self.transform_tools.transform_image(
@@ -859,16 +893,16 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
             transform_steps.append(("ICP", self.icp_forward_point_transform))
         if self.pca_coefficients is not None:
             assert self.pca_registrar is not None, "PCA registrar must be set"
-            if self.pca_registrar.pre_pca_transform is not None:
-                transform_steps.append(
-                    ("PCA pre-transform", self.pca_registrar.pre_pca_transform)
-                )
             pca_transform = (
                 self.pca_forward_point_transform
                 or self.pca_registrar.forward_point_transform
             )
             if pca_transform is not None:
                 transform_steps.append(("PCA", pca_transform))
+            if self.pca_registrar.post_pca_transform is not None:
+                transform_steps.append(
+                    ("PCA post-transform", self.pca_registrar.post_pca_transform)
+                )
         if self.use_m2m_registration and self.m2m_inverse_transform is not None:
             transform_steps.append(("Mask-to-mask", self.m2m_inverse_transform))
         if self.use_m2i_registration and self.m2i_inverse_transform is not None:
@@ -876,12 +910,9 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
 
         for i, (name, tfm) in enumerate(transform_steps, start=1):
             self.log_progress(i, len(transform_steps), prefix=f"Applying {name}")
-            transformed_model = cast(
-                pv.DataSet,
-                self.transform_tools.transform_pvcontour(
-                    cast(pv.PolyData, transformed_model),
-                    tfm,
-                ),
+            transformed_model = self._transform_model_dataset(
+                transformed_model,
+                tfm,
             )
 
         new_points = np.asarray(transformed_model.points, dtype=float)
