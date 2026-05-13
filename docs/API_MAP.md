@@ -306,7 +306,7 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def compare_result_to_baseline_image(self, filename, *, per_pixel_absolute_error_tol=0.0, max_number_of_pixels_above_tol=0, total_absolute_error_tol=0.0)` (line 281): Load a 3D result image and a 3D baseline image (.mha), compare the full
   - `def save_screenshot_mesh(self, mesh, filename, *, camera_position='iso', window_size=(800, 600), color='pink', opacity=0.9)` (line 388): Render a PyVista mesh off-screen and save a PNG.
   - `def save_screenshot_openusd(self, usd_file, filename, *, prim_path='/World', time_code=None)` (line 437): Render USD mesh geometry off-screen and save a PNG.
-  - `def save_screenshot_image_slice(self, image, filename, *, axis=0, slice_fraction=0.5, colormap='gray', vmin=None, vmax=None, overlay_mask=None, overlay_alpha=0.4)` (line 498): Extract one slice from an ITK image and save a PNG via matplotlib.
+  - `def save_screenshot_image_slice(self, image, filename, *, axis=0, slice_fraction=0.5, colormap='gray', vmin=None, vmax=None, overlay_mask=None, overlay_alpha=0.4)` (line 504): Extract one slice from an ITK image and save a PNG via matplotlib.
 
 ## src/physiomotion4d/transform_tools.py
 
