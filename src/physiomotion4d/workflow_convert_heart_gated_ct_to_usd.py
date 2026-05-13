@@ -208,9 +208,8 @@ class WorkflowConvertHeartGatedCTToUSD(PhysioMotion4DBase):
         if len(self.input_filenames) == 1:
             self.converter.load_nrrd_4d(self.input_filenames[0])
             self.converter.save_3d_images(
-                os.path.join(
-                    self.output_directory, os.path.basename(self.input_filenames[0])
-                )
+                self.output_directory,
+                os.path.basename(self.input_filenames[0]),
             )
         else:
             self.log_info("Loading %d 3D NRRD files", len(self.input_filenames))

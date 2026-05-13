@@ -32,7 +32,7 @@ class TestConvertNRRD4DTo3D:
         print("\nConverting 4D NRRD to 3D time series...")
         conv = ConvertNRRD4DTo3D()
         conv.load_nrrd_4d(str(input_4d_file))
-        conv.save_3d_images(str(output_dir / "slice"))
+        conv.save_3d_images(output_dir, "slice")
 
         # Verify that slice files were created
         slice_007 = output_dir / "slice_007.mha"
@@ -94,8 +94,7 @@ class TestConvertNRRD4DTo3D:
         num_time_points = conv.get_number_of_3d_images()
 
         # Save to a test subdirectory
-        test_output_prefix = output_dir / "test_slice"
-        conv.save_3d_images(str(test_output_prefix))
+        conv.save_3d_images(output_dir, "test_slice")
 
         # Verify files were created
         test_slice_files = list(output_dir.glob("test_slice_*.mha"))

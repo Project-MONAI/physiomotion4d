@@ -88,17 +88,17 @@ if __name__ == "__main__":
     # %%
     # Data directory specification
     REPO_ROOT = Path(__file__).resolve().parent.parent
+    TUTORIALS_DIR = Path(__file__).resolve().parent
     DATA_DIR = REPO_ROOT / "data"
     FULL_DATA_DIR = DATA_DIR / "Slicer-Heart-CT"
     TEST_DATA_DIR = DATA_DIR / "test" / "slicer_heart_small"
-    OUTPUT_DIR = REPO_ROOT / "tutorials" / "output" / "tutorial_01"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_01"
     REGISTRATION_METHOD = "ants"
     LOG_LEVEL = logging.INFO
 
     # %%
     # Data reading
     test_mode = TestTools.running_as_test()
-    test_mode = True
 
     data_dir = TEST_DATA_DIR if test_mode else FULL_DATA_DIR
     output_dir = OUTPUT_DIR

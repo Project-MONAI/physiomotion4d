@@ -11,13 +11,12 @@ from physiomotion4d.segment_chest_total_segmentator import SegmentChestTotalSegm
 from physiomotion4d.test_tools import TestTools
 from physiomotion4d.usd_anatomy_tools import USDAnatomyTools
 
-test_mode = TestTools.running_as_test()
-
 # Defensive: this script only reads `seg.all_mask_ids` today, but if anyone
 # ever adds a `seg.segment(...)` call it would trigger the nnUNet
 # multiprocessing.Pool which re-imports the script on Windows (spawn start
 # method) and crashes with a spawn-cascade RuntimeError. Guard pre-emptively.
 if __name__ == "__main__":
+    test_mode = TestTools.running_as_test()
     _HERE = os.path.dirname(os.path.abspath(__file__))
 
     # Must match N_FRAMES / FRAME_STEP in 1-register_images.py

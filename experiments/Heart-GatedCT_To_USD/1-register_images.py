@@ -81,7 +81,7 @@ if __name__ == "__main__":
     reg.set_number_of_iterations([10, 5, 2])
 
     # %%
-    for i in range(17, 18, FRAME_STEP):
+    for i in range(0, N_FRAMES, FRAME_STEP):
         print(f"Processing slice {i:03d}")
         moving_image = itk.imread(str(data_dir / f"slice_{i:03d}.mha"))
         result = seg.segment(moving_image, contrast_enhanced_study=True)

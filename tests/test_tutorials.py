@@ -107,7 +107,7 @@ class TestTutorial02CTToVTK:
     _class_name = "tutorial_02_ct_to_vtk"
 
     def test_run(self, test_directories: dict[str, Path]) -> None:
-        out_dir = _REPO_ROOT / "output" / "tutorial_02"
+        out_dir = _REPO_ROOT / "tutorials" / "output" / "tutorial_02"
         results = _run_tutorial_script("tutorial_02_ct_to_vtk.py")
         assert results["surface_file"].exists(), "Combined VTP surface should exist"
         assert results["mesh_file"].exists(), "Combined VTU mesh should exist"
@@ -141,7 +141,7 @@ class TestTutorial03CreateStatisticalModel:
                 "KCL-Heart-Model not downloaded. See data/README.md for instructions."
             )
 
-        out_dir = _REPO_ROOT / "output" / "tutorial_03"
+        out_dir = _REPO_ROOT / "tutorials" / "output" / "tutorial_03"
         results = _run_tutorial_script("tutorial_03_create_statistical_model.py")
         assert results["model_file"].exists(), "pca_model.json should exist"
         assert results["mean_surface_file"].exists(), "Mean surface VTP should exist"
@@ -170,7 +170,9 @@ class TestTutorial04FitStatisticalModelToPatient:
                 "KCL-Heart-Model not downloaded. See data/README.md for instructions."
             )
 
-        pca_json = _REPO_ROOT / "output" / "tutorial_03" / "pca_model.json"
+        pca_json = (
+            _REPO_ROOT / "tutorials" / "output" / "tutorial_03" / "pca_model.json"
+        )
         if not pca_json.exists():
             _run_tutorial_script("tutorial_03_create_statistical_model.py")
             assert pca_json.exists(), (
@@ -178,7 +180,7 @@ class TestTutorial04FitStatisticalModelToPatient:
                 f"{pca_json}"
             )
 
-        out_dir = _REPO_ROOT / "output" / "tutorial_04"
+        out_dir = _REPO_ROOT / "tutorials" / "output" / "tutorial_04"
         results = _run_tutorial_script(
             "tutorial_04_fit_statistical_model_to_patient.py"
         )
@@ -208,7 +210,9 @@ class TestTutorial05VTKToUSD:
 
     def test_run(self, test_directories: dict[str, Path]) -> None:
         # Prefer Tutorial 2 output; fall back to any .vtp in data
-        tutorial2_vtp = _REPO_ROOT / "output" / "tutorial_02" / "patient_surfaces.vtp"
+        tutorial2_vtp = (
+            _REPO_ROOT / "tutorials" / "output" / "tutorial_02" / "patient_surfaces.vtp"
+        )
         vtk_file = tutorial2_vtp if tutorial2_vtp.exists() else None
         if vtk_file is None:
             found = list(test_directories["data"].rglob("*.vtp"))
@@ -219,7 +223,7 @@ class TestTutorial05VTKToUSD:
                 )
             vtk_file = found[0]
 
-        out_dir = _REPO_ROOT / "output" / "tutorial_05"
+        out_dir = _REPO_ROOT / "tutorials" / "output" / "tutorial_05"
         results = _run_tutorial_script("tutorial_05_vtk_to_usd.py")
         assert results["usd_file"], "USD file path should not be empty"
         assert Path(results["usd_file"]).exists(), "USD file should exist"
@@ -253,7 +257,7 @@ class TestTutorial06ReconstructHighres4DCT:
                 "DirLab-4DCT Case1 not downloaded. See data/README.md for instructions."
             )
 
-        out_dir = _REPO_ROOT / "output" / "tutorial_06"
+        out_dir = _REPO_ROOT / "tutorials" / "output" / "tutorial_06"
         results = _run_tutorial_script("tutorial_06_reconstruct_highres_4d_ct.py")
         assert results["reconstructed_files"], (
             "At least one reconstructed frame expected"

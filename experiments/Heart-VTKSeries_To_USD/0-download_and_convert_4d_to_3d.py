@@ -23,4 +23,4 @@ input_image_filename = DataDownloadTools.DownloadSlicerHeartCTData(data_dir)
 if not os.path.exists(f"{data_dir}/slice_000.mha"):
     conv = ConvertNRRD4DTo3D()
     conv.load_nrrd_4d(str(input_image_filename))
-    conv.save_3d_images(f"{data_dir}/slice")
+    conv.save_3d_images(data_dir, "slice")

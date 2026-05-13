@@ -20,7 +20,7 @@ from pxr import Gf, Usd, UsdGeom, UsdShade
 
 from physiomotion4d import ConvertVTKToUSD
 from physiomotion4d.test_tools import TestTools
-from physiomotion4d.usd_tools import load_openusd_as_vtk
+from physiomotion4d.usd_tools import USDTools
 
 
 def get_data_dir() -> Path:
@@ -142,7 +142,7 @@ class TestFromFilesValidation:
         mesh.CreateFaceVertexIndicesAttr([0, 1, 2])
         stage.Save()
 
-        loaded = load_openusd_as_vtk(usd_path)
+        loaded = USDTools().load_usd_as_vtk(usd_path)
         assert loaded.n_points == 3
         assert "openusd_rgb" in loaded.point_data
         assert np.all(loaded.point_data["openusd_rgb"] == np.array([255, 0, 0]))

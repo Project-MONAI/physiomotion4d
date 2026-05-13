@@ -37,10 +37,11 @@ from physiomotion4d.workflow_fit_statistical_model_to_patient import (
 if __name__ == "__main__":
     # %%
     REPO_ROOT = Path(__file__).resolve().parent.parent
+    TUTORIALS_DIR = Path(__file__).resolve().parent
     DATA_DIR = REPO_ROOT / "data"
     FULL_DATA_DIR = DATA_DIR
     TEST_DATA_DIR = DATA_DIR / "test"
-    OUTPUT_DIR = REPO_ROOT / "output" / "tutorial_07_dirlab_pca_model"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_07_dirlab_pca_model"
     PCA_COMPONENTS = 5
     LOG_LEVEL = logging.INFO
 

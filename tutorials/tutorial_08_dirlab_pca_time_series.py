@@ -38,11 +38,12 @@ from physiomotion4d.transform_tools import TransformTools
 if __name__ == "__main__":
     # %%
     REPO_ROOT = Path(__file__).resolve().parent.parent
+    TUTORIALS_DIR = Path(__file__).resolve().parent
     DATA_DIR = REPO_ROOT / "data"
     FULL_DATA_DIR = DATA_DIR
     TEST_DATA_DIR = DATA_DIR / "test"
-    OUTPUT_DIR = REPO_ROOT / "output" / "tutorial_08_dirlab_pca_time_series"
-    TUTORIAL_07_OUTPUT_DIR = REPO_ROOT / "output" / "tutorial_07_dirlab_pca_model"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_08_dirlab_pca_time_series"
+    TUTORIAL_07_OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_07_dirlab_pca_model"
     CASE: Optional[int] = None
     LOG_LEVEL = logging.INFO
 
@@ -134,10 +135,22 @@ if __name__ == "__main__":
             case_transform_files: list[Path] = []
             case_mesh_files: list[Path] = []
 
+            forward_transforms = registration_result["forward_transforms"]
+            inverse_transforms = registration_result["inverse_transforms"]
+            if not (
+                len(phase_files) == len(forward_transforms) == len(inverse_transforms)
+            ):
+                raise ValueError(
+                    f"{case_prefix}: length mismatch between phase_files "
+                    f"({len(phase_files)}), forward_transforms "
+                    f"({len(forward_transforms)}), and inverse_transforms "
+                    f"({len(inverse_transforms)})."
+                )
+
             for phase_file, phase_to_reference, reference_to_phase in zip(
                 phase_files,
-                registration_result["forward_transforms"],
-                registration_result["inverse_transforms"],
+                forward_transforms,
+                inverse_transforms,
             ):
                 phase_name = phase_file.stem
                 phase_to_reference_file = transforms_dir / (

@@ -314,10 +314,6 @@ When contributing new workflows or examples:
 * Helps others understand adaptation possibilities for new domains
 * Should reference corresponding production implementation in CLI commands or ``src/physiomotion4d/cli/``
 
-**Key Principle:** If users might copy your code for production use, it should use the CLI commands
-or extend the implementations in ``src/physiomotion4d/cli/``.
-If it's a proof-of-concept demonstrating what's possible, it belongs in ``experiments/``.
-
 Docstring Format
 ----------------
 

@@ -7,7 +7,7 @@ CLI Entry-Point API
 
 The ``physiomotion4d.cli`` subpackage contains the entry-point scripts that
 back the installed ``physiomotion4d-*`` console commands. Each module exposes
-an ``main()`` function that parses ``argparse`` arguments and dispatches into
+a ``main()`` function that parses ``argparse`` arguments and dispatches into
 the corresponding workflow class.
 
 User-facing documentation for the command-line tools (flags, examples, recipes)

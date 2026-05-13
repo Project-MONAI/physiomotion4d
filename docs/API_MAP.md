@@ -104,13 +104,13 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## src/physiomotion4d/convert_nrrd_4d_to_3d.py
 
-- **class ConvertNRRD4DTo3D** (line 11)
-  - `def __init__(self, log_level=logging.INFO)` (line 12): Initialize the NRRD 4D to 3D converter.
-  - `def load_nrrd_3d(self, filenames)` (line 22)
-  - `def load_nrrd_4d(self, filename)` (line 28)
-  - `def get_3d_image(self, index)` (line 62)
-  - `def get_number_of_3d_images(self)` (line 65)
-  - `def save_3d_images(self, basename)` (line 68)
+- **class ConvertNRRD4DTo3D** (line 13)
+  - `def __init__(self, log_level=logging.INFO)` (line 14): Initialize the NRRD 4D to 3D converter.
+  - `def load_nrrd_3d(self, filenames)` (line 24)
+  - `def load_nrrd_4d(self, filename)` (line 30)
+  - `def get_3d_image(self, index)` (line 64)
+  - `def get_number_of_3d_images(self)` (line 67)
+  - `def save_3d_images(self, directory, basename)` (line 70)
 
 ## src/physiomotion4d/convert_vtk_to_usd.py
 
@@ -129,11 +129,9 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - **class DataDownloadTools** (line 16): Download and verify optional PhysioMotion4D example datasets.
   - `def DownloadSlicerHeartCTData(dirname)` (line 26): Download the Slicer-Heart-CT 4-D CT sample into ``dirname``.
   - `def VerifySlicerHeartCTData(dirname)` (line 49): Return True when Slicer-Heart-CT has the expected 4-D CT file.
-  - `def VeritySlicerHeartCTData(dirname)` (line 54): Return True when Slicer-Heart-CT has the expected 4-D CT file.
-  - `def VerifyCHOPValve4DData(dirname)` (line 59): Return True when CHOP-Valve4D files referenced by the repo exist.
-  - `def VerifyDirLab4DCTData(dirname)` (line 81): Return True when a supported DirLab-4DCT case layout exists.
-  - `def VerifyKCLHeartModelData(dirname)` (line 96): Return True when KCL-Heart-Model has its expected mesh inputs.
-  - `def VerityKCLHeartModelData(dirname)` (line 105): Return True when KCL-Heart-Model has its expected mesh inputs.
+  - `def VerifyCHOPValve4DData(dirname)` (line 54): Return True when CHOP-Valve4D files referenced by the repo exist.
+  - `def VerifyDirLab4DCTData(dirname)` (line 76): Return True when a supported DirLab-4DCT case layout exists.
+  - `def VerifyKCLHeartModelData(dirname)` (line 91): Return True when KCL-Heart-Model has its expected mesh inputs.
 
 ## src/physiomotion4d/image_tools.py
 
@@ -307,8 +305,8 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def compare_result_to_baseline_transform(self, filename, *, per_value_absolute_error_tol=0.0, max_number_of_values_above_tol=0, total_absolute_error_tol=0.0)` (line 203): Compare the transform to the baseline transform.
   - `def compare_result_to_baseline_image(self, filename, *, per_pixel_absolute_error_tol=0.0, max_number_of_pixels_above_tol=0, total_absolute_error_tol=0.0)` (line 281): Load a 3D result image and a 3D baseline image (.mha), compare the full
   - `def save_screenshot_mesh(self, mesh, filename, *, camera_position='iso', window_size=(800, 600), color='pink', opacity=0.9)` (line 388): Render a PyVista mesh off-screen and save a PNG.
-  - `def save_screenshot_openusd(self, usd_file, filename, *, prim_path='/World', time_code=None)` (line 437): Render OpenUSD mesh geometry off-screen and save a PNG.
-  - `def save_screenshot_image_slice(self, image, filename, *, axis=0, slice_fraction=0.5, colormap='gray', vmin=None, vmax=None, overlay_mask=None, overlay_alpha=0.4)` (line 496): Extract one slice from an ITK image and save a PNG via matplotlib.
+  - `def save_screenshot_openusd(self, usd_file, filename, *, prim_path='/World', time_code=None)` (line 437): Render USD mesh geometry off-screen and save a PNG.
+  - `def save_screenshot_image_slice(self, image, filename, *, axis=0, slice_fraction=0.5, colormap='gray', vmin=None, vmax=None, overlay_mask=None, overlay_alpha=0.4)` (line 498): Extract one slice from an ITK image and save a PNG via matplotlib.
 
 ## src/physiomotion4d/transform_tools.py
 
@@ -343,19 +341,19 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## src/physiomotion4d/usd_tools.py
 
-- `def load_openusd_as_vtk(usd_file, prim_path='/World', time_code=None)` (line 28): Load OpenUSD mesh geometry as a PyVista ``PolyData``.
-- **class USDTools** (line 165): Utilities for manipulating Universal Scene Description (USD) files.
-  - `def __init__(self, log_level=logging.INFO)` (line 201): Initialize the USDTools class.
-  - `def get_subtree_bounding_box(self, prim)` (line 209): Compute the axis-aligned bounding box of a USD primitive subtree.
-  - `def save_usd_file_arrangement(self, new_stage_name, usd_file_names)` (line 269): Create a spatial grid arrangement of objects from multiple USD files.
-  - `def merge_usd_files(self, output_filename, input_filenames_list)` (line 395): Merge multiple USD files into a single comprehensive USD file.
-  - `def merge_usd_files_flattened(self, output_filename, input_filenames_list)` (line 600): Merge multiple USD files using references and flattening.
-  - `def list_mesh_primvars(self, stage_or_path, mesh_path, time_code=None)` (line 728): List all primvars on a USD mesh with metadata.
-  - `def pick_color_primvar(self, primvar_infos, keywords=('strain', 'stress'))` (line 823): Select a primvar for coloring based on keywords and preferences.
-  - `def apply_colormap_from_primvar(self, stage_or_path, mesh_path, source_primvar, *, cmap='viridis', time_codes=None, intensity_range=None, use_sigmoid_scale=False, write_default_at_t0=True, bind_vertex_color_material=True)` (line 877): Apply colormap visualization by converting a primvar to displayColor.
-  - `def set_solid_display_color(self, stage_or_path, mesh_path, color, *, time_codes=None, bind_vertex_color_material=True)` (line 1173): Set a constant (solid) displayColor for a mesh.
-  - `def list_mesh_paths_under(self, stage_or_path, parent_path='/World/Meshes')` (line 1266): List paths of all mesh prims under a parent path.
-  - `def repair_mesh_primvar_element_sizes(self, stage_or_path, mesh_path, *, time_code=None, save=True)` (line 1293): Repair missing/incorrect primvar elementSize metadata for a mesh.
+- **class USDTools** (line 28): Utilities for manipulating Universal Scene Description (USD) files.
+  - `def __init__(self, log_level=logging.INFO)` (line 64): Initialize the USDTools class.
+  - `def load_usd_as_vtk(self, usd_file, prim_path='/World', time_code=None)` (line 72): Load USD mesh geometry as a PyVista ``PolyData``.
+  - `def get_subtree_bounding_box(self, prim)` (line 214): Compute the axis-aligned bounding box of a USD primitive subtree.
+  - `def save_usd_file_arrangement(self, new_stage_name, usd_file_names)` (line 274): Create a spatial grid arrangement of objects from multiple USD files.
+  - `def merge_usd_files(self, output_filename, input_filenames_list)` (line 400): Merge multiple USD files into a single comprehensive USD file.
+  - `def merge_usd_files_flattened(self, output_filename, input_filenames_list)` (line 605): Merge multiple USD files using references and flattening.
+  - `def list_mesh_primvars(self, stage_or_path, mesh_path, time_code=None)` (line 733): List all primvars on a USD mesh with metadata.
+  - `def pick_color_primvar(self, primvar_infos, keywords=('strain', 'stress'))` (line 828): Select a primvar for coloring based on keywords and preferences.
+  - `def apply_colormap_from_primvar(self, stage_or_path, mesh_path, source_primvar, *, cmap='viridis', time_codes=None, intensity_range=None, use_sigmoid_scale=False, write_default_at_t0=True, bind_vertex_color_material=True)` (line 882): Apply colormap visualization by converting a primvar to displayColor.
+  - `def set_solid_display_color(self, stage_or_path, mesh_path, color, *, time_codes=None, bind_vertex_color_material=True)` (line 1178): Set a constant (solid) displayColor for a mesh.
+  - `def list_mesh_paths_under(self, stage_or_path, parent_path='/World/Meshes')` (line 1271): List paths of all mesh prims under a parent path.
+  - `def repair_mesh_primvar_element_sizes(self, stage_or_path, mesh_path, *, time_code=None, save=True)` (line 1298): Repair missing/incorrect primvar elementSize metadata for a mesh.
 
 ## src/physiomotion4d/vtk_to_usd/converter.py
 
@@ -751,10 +749,10 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def test_run(self, test_directories)` (line 137)
 - **class TestTutorial04FitStatisticalModelToPatient** (line 161): End-to-end test for tutorial_04_fit_statistical_model_to_patient.py.
   - `def test_run(self, test_directories)` (line 166)
-- **class TestTutorial05VTKToUSD** (line 204): End-to-end test for tutorial_05_vtk_to_usd.py.
-  - `def test_run(self, test_directories)` (line 209)
-- **class TestTutorial06ReconstructHighres4DCT** (line 244): End-to-end test for tutorial_06_reconstruct_highres_4d_ct.py.
-  - `def test_run(self, test_directories)` (line 249)
+- **class TestTutorial05VTKToUSD** (line 206): End-to-end test for tutorial_05_vtk_to_usd.py.
+  - `def test_run(self, test_directories)` (line 211)
+- **class TestTutorial06ReconstructHighres4DCT** (line 248): End-to-end test for tutorial_06_reconstruct_highres_4d_ct.py.
+  - `def test_run(self, test_directories)` (line 253)
 
 ## tests/test_usd_merge.py
 

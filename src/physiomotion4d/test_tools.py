@@ -442,14 +442,14 @@ class TestTools(PhysioMotion4DBase):
         prim_path: str = "/World",
         time_code: Optional[float] = None,
     ) -> Path:
-        """Render OpenUSD mesh geometry off-screen and save a PNG.
+        """Render USD mesh geometry off-screen and save a PNG.
 
-        The scene is loaded through ``USDTools.load_openusd_as_vtk`` into a
+        The scene is loaded through :meth:`USDTools.load_usd_as_vtk` into a
         PyVista mesh, rendered with a fixed isometric camera and fixed
         ``800 x 600`` window, and centered automatically by PyVista.
 
         Args:
-            usd_file: OpenUSD file to render.
+            usd_file: USD file to render.
             filename: Output PNG filename, relative to the result artifact dir.
             prim_path: USD prim path to render. Defaults to ``/World``.
             time_code: Optional animation time code. ``None`` renders default
@@ -460,7 +460,7 @@ class TestTools(PhysioMotion4DBase):
         """
         import pyvista as pv
 
-        from physiomotion4d.usd_tools import load_openusd_as_vtk
+        from physiomotion4d.usd_tools import USDTools
 
         xvfb_started = False
         try:
@@ -470,7 +470,9 @@ class TestTools(PhysioMotion4DBase):
             pass
 
         output_path = self._results_dir / filename
-        mesh = load_openusd_as_vtk(usd_file, prim_path=prim_path, time_code=time_code)
+        mesh = USDTools().load_usd_as_vtk(
+            usd_file, prim_path=prim_path, time_code=time_code
+        )
         plotter = pv.Plotter(off_screen=True, window_size=[800, 600])
         try:
             if "openusd_rgb" in mesh.point_data:

@@ -51,11 +51,6 @@ class DataDownloadTools:
         return (Path(dirname) / DataDownloadTools.SLICER_HEART_CT_FILENAME).is_file()
 
     @staticmethod
-    def VeritySlicerHeartCTData(dirname: Union[str, Path]) -> bool:  # noqa: N802
-        """Return True when Slicer-Heart-CT has the expected 4-D CT file."""
-        return DataDownloadTools.VerifySlicerHeartCTData(dirname)
-
-    @staticmethod
     def VerifyCHOPValve4DData(dirname: Union[str, Path]) -> bool:  # noqa: N802
         """Return True when CHOP-Valve4D files referenced by the repo exist.
 
@@ -100,8 +95,3 @@ class DataDownloadTools:
         return (data_dir / "average_mesh.vtk").is_file() and any(
             input_meshes_dir.glob("*.vtk")
         )
-
-    @staticmethod
-    def VerityKCLHeartModelData(dirname: Union[str, Path]) -> bool:  # noqa: N802
-        """Return True when KCL-Heart-Model has its expected mesh inputs."""
-        return DataDownloadTools.VerifyKCLHeartModelData(dirname)

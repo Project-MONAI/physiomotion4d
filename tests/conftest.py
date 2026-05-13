@@ -360,7 +360,7 @@ def test_images(
         print("\nConverting 4D NRRD to 3D time series...")
         conv = ConvertNRRD4DTo3D()
         conv.load_nrrd_4d(str(download_test_data))
-        conv.save_3d_images(str(data_dir / "slice"))
+        conv.save_3d_images(data_dir, "slice")
     else:
         print("\n3D slice files already exist")
 

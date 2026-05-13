@@ -495,11 +495,19 @@ def add_framing_camera(
     camera_path = f"{parent_path.rstrip('/')}/{name}"
     camera = UsdGeom.Camera.Define(stage, camera_path)
 
-    # Position along +Z above the center; USD cameras look down -Z by default,
-    # so a pure translate makes the camera look toward the bbox center.
+    # USD cameras look down -Z by default, so a pure translate along an axis
+    # perpendicular to the stage up axis makes the camera look toward the bbox
+    # center. For Z-up stages, offset along +Y; otherwise offset along +Z.
     # Idempotent: if a translate op already exists (e.g. carried in from a
     # merged source USD that already had a /World/Camera), reuse it instead
     # of appending a duplicate, which AddTranslateOp would do.
+    up_axis = UsdGeom.GetStageUpAxis(stage)
+    if up_axis == UsdGeom.Tokens.z:
+        offset = np.array([0.0, distance, 0.0])
+    else:
+        offset = np.array([0.0, 0.0, distance])
+    camera_position = center + offset
+
     xformable = UsdGeom.Xformable(camera.GetPrim())
     translate_op = next(
         (
@@ -512,7 +520,11 @@ def add_framing_camera(
     if translate_op is None:
         translate_op = camera.AddTranslateOp()
     translate_op.Set(
-        Gf.Vec3d(float(center[0]), float(center[1]), float(center[2] + distance))
+        Gf.Vec3d(
+            float(camera_position[0]),
+            float(camera_position[1]),
+            float(camera_position[2]),
+        )
     )
 
     near = max(diagonal * 0.001, 1e-6)
