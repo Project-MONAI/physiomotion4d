@@ -274,15 +274,13 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
             )
             final_arr = np.where(mask, soft_tissue_id, labelmap_arr1)
 
-            mask3 = labelmap_arr3 == 1
-            mask3_img = itk.image_from_array(mask3.astype(np.uint8))
-            mask3_img.CopyInformation(preprocessed_image)
-            mask3 = itk.array_from_image(mask3_img)
-            final_arr = np.where(mask3 == 1, 120, final_arr)  # lung arteries
-            final_arr = np.where(mask3 == 2, 121, final_arr)  # lung veins
-            final_arr = np.where(mask3 == 3, 122, final_arr)  # lung airways
-            final_arr = np.where(mask3 == 4, 123, final_arr)  # lung airways wall
-
+            # labelmap_arr3 contains: 1=arteries, 2=veins, 3=airways, 4=airways_wall
+            final_arr = np.where(labelmap_arr3 == 1, 120, final_arr)  # lung arteries
+            final_arr = np.where(labelmap_arr3 == 2, 121, final_arr)  # lung veins
+            final_arr = np.where(labelmap_arr3 == 3, 122, final_arr)  # lung airways
+            final_arr = np.where(
+                labelmap_arr3 == 4, 123, final_arr
+            )  # lung airways wall
             # To create an ITK image, we save the result and read it back with
             # ITK. This correctly handles the coordinate system and data
             # layout conversions.

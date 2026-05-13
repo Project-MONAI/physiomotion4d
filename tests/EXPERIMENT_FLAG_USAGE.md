@@ -4,7 +4,7 @@ This document explains how the `--run-experiments` flag works and why it exists.
 
 ## Purpose
 
-The `--run-experiments` flag provides protection against accidentally running extremely long-running experiment notebook tests. These tests can take 20+ hours to complete and are resource-intensive.
+The `--run-experiments` flag provides protection against accidentally running extremely long-running experiment script tests. These tests can take 20+ hours to complete and are resource-intensive.
 
 ## How It Works
 
@@ -153,10 +153,10 @@ When experiment tests run (with `--run-experiments`), the test runner also sets 
 
 ## Summary
 
-- ✅ Experiment tests are **opt-in only**
-- ✅ Requires explicit `--run-experiments` flag
-- ✅ Automatically skipped without the flag
-- ✅ Protected from accidental CI/CD execution
-- ✅ Clear, self-documenting behavior
+- Experiment tests are **opt-in only**
+- Requires explicit `--run-experiments` flag
+- Automatically skipped without the flag
+- Protected from accidental CI/CD execution
+- Clear, self-documenting behavior
 
 **Remember:** If you see experiment tests being skipped and want to run them, add `--run-experiments` to your pytest command!

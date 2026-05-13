@@ -416,9 +416,9 @@ Batch process multiple datasets:
 
        try:
            final_usd = workflow.process()
-           print(f"  ✓ Complete: {final_usd}")
+           print(f"  Complete: {final_usd}")
        except Exception as e:
-           print(f"  ✗ Failed: {e}")
+           print(f"  Failed: {e}")
 
 Parallel Segmentation
 ---------------------

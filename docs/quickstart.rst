@@ -17,8 +17,8 @@ Tutorials
 
 The ``tutorials/`` directory contains nine end-to-end scripts, one per major
 workflow. Each script is a ``# %%`` percent-cell Python script that exercises
-the workflow classes directly and can be run cell-by-cell in VS Code or Cursor
-without Jupyter packages.
+the workflow classes directly. Run as a regular file
+(``python tutorials/tutorial_01_...py``) or cell-by-cell in VS Code or Cursor.
 
 See :doc:`tutorials` for the NVIDIA-styled tutorial card index, dataset
 requirements, script paths, and workflow details.

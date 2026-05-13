@@ -28,7 +28,7 @@ includes:
 > research and visualization toolkit. It is not a medical device and must not
 > be used for diagnosis, treatment planning, or clinical decision-making.
 
-## 🚀 Key Features
+## Key Features
 
 - **Complete 4D Medical Imaging Pipeline**: End-to-end processing from 4D CT data to animated USD models
 - **Multiple AI Segmentation Methods**: TotalSegmentator and Simpleware cardiac segmentation
@@ -37,7 +37,7 @@ includes:
 - **Physiological Motion Analysis**: Capture and visualize cardiac and respiratory motion
 - **Flexible Workflow Control**: Step-based processing with checkpoint management
 
-## 📋 Supported Applications
+## Supported Applications
 
 - **Cardiac Imaging**: Heart-gated CT processing with cardiac motion analysis
 - **Pulmonary Imaging**: Lung 4D-CT processing with respiratory motion tracking
@@ -45,7 +45,7 @@ includes:
 - **Research Visualization**: Advanced medical imaging research in Omniverse
 - **Clinical Planning**: Dynamic anatomical models for treatment planning
 
-## 🛠️ Installation
+## Installation
 
 ### Prerequisites
 
@@ -109,7 +109,7 @@ print(f"PhysioMotion4D version: {physiomotion4d.__version__}")
 print(WorkflowConvertHeartGatedCTToUSD.__name__)
 ```
 
-## 🏗️ Package Architecture
+## Package Architecture
 
 ### Core Components
 
@@ -201,7 +201,7 @@ physiomotion4d-heart-gated-ct data/test/TruncalValve_4DCT.seq.nrrd \
     --project-name slicer_heart_quickstart
 ```
 
-## 🎯 Quick Start
+## Quick Start
 
 ### Command-Line Interface
 
@@ -475,16 +475,16 @@ Classes that inherit from `PhysioMotion4DBase` provide:
 - Class-based log filtering
 - Unified logging interface across the package
 
-## 📊 Experiments and Examples
+## Experiments and Examples
 
 The `experiments/` directory contains research scripts that shaped the
 toolkit. They are `# %%` percent-cell Python scripts that can be run
 top-to-bottom (`python <script>.py`) or stepped through cell-by-cell in VS
-Code, Cursor, or any other editor with notebook-cell support. For the
+Code, Cursor, or any other editor with `# %%` cell-aware support. For the
 curated, supported user-facing entry points see `tutorials/` and
 `docs/tutorials.rst`.
 
-### 🫀 Heart-Gated CT (`experiments/Heart-GatedCT_To_USD/`)
+### Heart-Gated CT (`experiments/Heart-GatedCT_To_USD/`)
 
 Complete cardiac imaging workflow with step-by-step scripts:
 
@@ -496,7 +496,7 @@ Complete cardiac imaging workflow with step-by-step scripts:
 
 **Sample Data**: The scripts include instructions for downloading cardiac CT datasets from Slicer-Heart-CT.
 
-### 🫁 Lung-Gated CT (`experiments/Lung-GatedCT_To_USD/`)
+### Lung-Gated CT (`experiments/Lung-GatedCT_To_USD/`)
 
 Respiratory motion analysis using DirLab 4D-CT benchmark data:
 
@@ -508,21 +508,21 @@ Respiratory motion analysis using DirLab 4D-CT benchmark data:
 must be downloaded manually and placed under `data/DirLab-4DCT/`; see
 `data/README.md` for the expected layout.
 
-### 🎨 Colormap Visualization (`experiments/Colormap-VTK_To_USD/`)
+### Colormap Visualization (`experiments/Colormap-VTK_To_USD/`)
 
 Time-varying colormap rendering for scalar data visualization in Omniverse:
 
 - **`colormap_vtk_to_usd.py`**: Convert VTK meshes with scalar data to USD with colormaps
 - Demonstrates plasma, viridis, rainbow, heat, coolwarm, grayscale, and custom colormaps
 
-### 🫀 Heart VTK Series (`experiments/Heart-VTKSeries_To_USD/`)
+### Heart VTK Series (`experiments/Heart-VTKSeries_To_USD/`)
 
 Direct VTK time series to USD conversion for cardiac data:
 
 - **`0-download_and_convert_4d_to_3d.py`**: Data preparation
 - **`1-heart_vtkseries_to_usd.py`**: VTK series to USD conversion
 
-### 🧠 Heart Create Statistical Model (`experiments/Heart-Create_Statistical_Model/`)
+### Heart Create Statistical Model (`experiments/Heart-Create_Statistical_Model/`)
 
 Create PCA statistical shape models from population meshes using the KCL Heart Model dataset:
 
@@ -532,9 +532,9 @@ Create PCA statistical shape models from population meshes using the KCL Heart M
 - **`4-surfaces_aligned_correspond_to_pca_inputs.py`**: Prepare PCA inputs
 - **`5-compute_pca_model.py`**: Compute PCA model using sklearn
 
-**⚠️ Complete this experiment FIRST** before attempting `Heart-Statistical_Model_To_Patient`.
+**Complete this experiment FIRST** before attempting `Heart-Statistical_Model_To_Patient`.
 
-### 🧠 Heart Statistical Model to Patient (`experiments/Heart-Statistical_Model_To_Patient/`)
+### Heart Statistical Model to Patient (`experiments/Heart-Statistical_Model_To_Patient/`)
 
 Advanced registration between generic anatomical models and patient-specific data using PCA:
 
@@ -547,14 +547,14 @@ Uses the `WorkflowFitStatisticalModelToPatient` class for three-stage registrati
 2. Mask-to-mask deformable registration
 3. Optional PCA-constrained shape fitting
 
-### 🔬 4D CT Reconstruction (`experiments/Reconstruct4DCT/`)
+### 4D CT Reconstruction (`experiments/Reconstruct4DCT/`)
 
 Reconstruct 4D CT from sparse time samples using deformable registration:
 
 - **`reconstruct_4d_ct.py`**: Temporal interpolation and 4D reconstruction
 - **`reconstruct_4d_ct_class.py`**: Class-based reconstruction approach
 
-### 🫁 Vessel and Airway Segmentation (`experiments/Lung-VesselsAirways/`)
+### Vessel and Airway Segmentation (`experiments/Lung-VesselsAirways/`)
 
 Specialized deep learning for pulmonary vessel and airway segmentation:
 
@@ -562,7 +562,7 @@ Specialized deep learning for pulmonary vessel and airway segmentation:
 - Includes trained ResNet18 models for vessel segmentation
 - Supporting branch structure test data
 
-### 🌊 Displacement Field Visualization (`experiments/DisplacementField_To_USD/`)
+### Displacement Field Visualization (`experiments/DisplacementField_To_USD/`)
 
 Convert image registration displacement fields to USD for advanced visualization:
 
@@ -571,7 +571,7 @@ Convert image registration displacement fields to USD for advanced visualization
 - Integration with PhysicsNeMo for flow visualization in Omniverse
 - Supports streamlines, vector glyphs, and particle advection
 
-## 📥 Sample Data Sources
+## Sample Data Sources
 
 ### Cardiac Data
 - **Slicer-Heart-CT**: Cardiac gating examples from 3D Slicer
@@ -594,7 +594,7 @@ data_file = DataDownloadTools.DownloadSlicerHeartCTData("data/Slicer-Heart-CT")
 assert DataDownloadTools.VerifySlicerHeartCTData("data/Slicer-Heart-CT")
 ```
 
-## 🔧 Development
+## Development
 
 ### Code Quality Tools
 
@@ -809,7 +809,7 @@ without writing any code.
 /plan redesign the segmentation return type to use a dataclass instead of a tuple
 ```
 
-## 📖 Documentation
+## Documentation
 
 The canonical documentation is published at
 https://project-monai.github.io/physiomotion4d/.
@@ -819,7 +819,7 @@ guides, contributing, testing, and troubleshooting. The `experiments/`
 directory records prior and ongoing experiments used to shape the toolkit; it
 is not the user-facing examples collection.
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -830,11 +830,11 @@ is not the user-facing examples collection.
 
 See `docs/contributing.rst` for detailed contribution guidelines and IDE setup.
 
-## 📄 License
+## License
 
 This project is licensed under the Apache 2.0 License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **NVIDIA Omniverse** team for USD format and visualization platform
 - **MONAI** community for medical imaging AI tools
@@ -842,13 +842,13 @@ This project is licensed under the Apache 2.0 License - see the LICENSE file for
 - **TotalSegmentator** team for segmentation models
 - **Icon Registration** team for deep learning registration methods
 
-## 📞 Support
+## Support
 
 - **Issues**: Report bugs and feature requests via GitHub Issues
 - **Discussions**: Join community discussions in GitHub Discussions
-- **Documentation**: Refer to docstrings and tutorial notebooks
+- **Documentation**: Refer to docstrings and tutorial scripts under `tutorials/`
 - **Examples**: Explore comprehensive examples in `experiments/` directory
 
 ---
 
-**Get started with the tutorial notebooks in `experiments/` to see PhysioMotion4D in action! 🚀**
+**Get started with the tutorial scripts under `tutorials/` to see PhysioMotion4D in action.**

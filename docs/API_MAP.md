@@ -267,10 +267,10 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def postprocess_labelmap(self, labelmap_image, input_image)` (line 242): Resample the labelmap to match the input image spacing.
   - `def segment_connected_component(self, preprocessed_image, labelmap_image, lower_threshold, upper_threshold, labelmap_ids=None, mask_id=0, use_mid_slice=True, hole_fill=2)` (line 338): Segment connected components based on intensity thresholding.
   - `def segment_contrast_agent(self, preprocessed_image, labelmap_image)` (line 445): Include contrast-enhanced blood in the labelmap.
-  - `def create_anatomy_group_masks(self, labelmap_image)` (line 488): Create binary masks for different anatomical groups from the labelmap.
-  - `def segmentation_method(self, preprocessed_image)` (line 534): Abstract method for image segmentation - must be implemented by subclasses.
-  - `def dilate_mask(self, mask, dilation)` (line 556): Dilate a binary mask using morphological operations.
-  - `def segment(self, input_image, contrast_enhanced_study=False)` (line 579): Perform complete chest CT segmentation.
+  - `def create_anatomy_group_masks(self, labelmap_image)` (line 492): Create binary masks for different anatomical groups from the labelmap.
+  - `def segmentation_method(self, preprocessed_image)` (line 538): Abstract method for image segmentation - must be implemented by subclasses.
+  - `def dilate_mask(self, mask, dilation)` (line 560): Dilate a binary mask using morphological operations.
+  - `def segment(self, input_image, contrast_enhanced_study=False)` (line 583): Perform complete chest CT segmentation.
 
 ## src/physiomotion4d/segment_chest_total_segmentator.py
 
@@ -538,7 +538,7 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 ## tests/test_convert_nrrd_4d_to_3d.py
 
 - **class TestConvertNRRD4DTo3D** (line 17): Test suite for converting 4D NRRD to 3D time series.
-  - `def test_convert_4d_to_3d(self, download_test_data, test_directories)` (line 20): Test conversion of 4D NRRD to 3D time series (replicates notebook cell 3).
+  - `def test_convert_4d_to_3d(self, download_test_data, test_directories)` (line 20): Test conversion of 4D NRRD to 3D time series.
   - `def test_slice_files_created(self, download_test_data, test_directories)` (line 46): Test that all expected slice files are present after conversion.
   - `def test_load_nrrd_4d(self, download_test_data)` (line 67): Test loading 4D NRRD file.
   - `def test_save_3d_images(self, download_test_data, test_directories)` (line 80): Test saving 3D images from 4D NRRD.

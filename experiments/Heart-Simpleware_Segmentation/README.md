@@ -137,7 +137,7 @@ Times depend on image size, system performance, and Simpleware configuration.
 **Solution**:
 - Verify Simpleware installation
 - Ensure you're using `ConsoleSimplewareMedical.exe` (not `SimplewareMedical.exe`)
-- Update `custom_simpleware_path` in the notebook
+- Update `custom_simpleware_path` in the script
 - Check default path: `C:\Program Files\Synopsys\Simpleware Medical\X-2025.06\ConsoleSimplewareMedical.exe`; use `set_simpleware_executable_path()` if installed elsewhere
 
 ---

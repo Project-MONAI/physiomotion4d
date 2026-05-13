@@ -2,7 +2,7 @@
 
 This experiment demonstrates how to create a Principal Component Analysis (PCA) statistical shape model of a heart from a population of meshes using the KCL Heart Model dataset.
 
-**⚠️ IMPORTANT:** Users should complete this experiment BEFORE attempting the `Heart-Statistical_Model_To_Patient` experiment, as it generates the PCA model data required for patient-specific registration.
+**IMPORTANT:** Users should complete this experiment BEFORE attempting the `Heart-Statistical_Model_To_Patient` experiment, as it generates the PCA model data required for patient-specific registration.
 
 ## Overview
 
@@ -17,11 +17,11 @@ This experiment uses the **King's College London (KCL) four-chamber heart model 
 
 The experiment requires the **KCL-Heart-Model** dataset located in `data/KCL-Heart-Model/`.
 
-### ⚠️ Manual Download Required
+### Manual Download Required
 
 The KCL dataset is NOT automatically downloaded. You must manually download it from:
 
-**🔗 [Virtual cohort of adult healthy four-chamber heart meshes from CT images](https://zenodo.org/records/4590294)**
+**[Virtual cohort of adult healthy four-chamber heart meshes from CT images](https://zenodo.org/records/4590294)**
 
 See `data/KCL-Heart-Model/README.md` for complete download and setup instructions.
 
@@ -135,7 +135,7 @@ After completing this experiment, you will have generated files in `kcl-heart-mo
 - **`pca_inputs/`** - Point coordinate matrices ready for PCA computation
 
 ### Visualizations
-- Various visualization plots generated within notebooks showing:
+- Various visualization plots generated within the scripts showing:
   - Alignment quality
   - Deformation magnitude maps
   - PCA mode variations
@@ -164,7 +164,8 @@ registered_mesh = workflow.run_workflow()
 
 ### Software
 - Python 3.11+ with PhysioMotion4D installed
-- Jupyter Lab or Jupyter Notebook
+- VS Code or Cursor with the Python extension for cell-by-cell execution
+  (optional; scripts also run end-to-end as plain Python)
 - ITK, VTK, PyVista (included with PhysioMotion4D)
 - ANTs (Advanced Normalization Tools) - installed automatically with PhysioMotion4D
 - scikit-learn for PCA computation

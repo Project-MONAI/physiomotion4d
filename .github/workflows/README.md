@@ -83,7 +83,7 @@ The workflows use multiple caching layers to speed up builds:
 
 ### Important: GPU Tests Are Disabled by Default
 
-⚠️ **GPU tests do NOT run automatically** to prevent jobs from waiting indefinitely in the queue when no runner is available.
+**GPU tests do NOT run automatically** to prevent jobs from waiting indefinitely in the queue when no runner is available.
 
 To run GPU tests, you must either:
 1. **Manually trigger the workflow**: Go to Actions > CI > Run workflow

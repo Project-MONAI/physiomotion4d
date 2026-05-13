@@ -472,6 +472,10 @@ class SegmentAnatomyBase(PhysioMotion4DBase):
             + [0]
         )
         contrast_ids = list(self.taxonomy.labels_in_group("contrast").keys())
+        if len(contrast_ids) == 0:
+            self.log_warning("No contrast-enhanced regions found in the labelmap")
+            return labelmap_image
+
         results_image = self.segment_connected_component(
             preprocessed_image,
             labelmap_image,

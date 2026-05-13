@@ -22,7 +22,7 @@ class TestConvertNRRD4DTo3D:
         download_test_data: Path,
         test_directories: dict[str, Path],
     ) -> None:
-        """Test conversion of 4D NRRD to 3D time series (replicates notebook cell 3)."""
+        """Test conversion of 4D NRRD to 3D time series."""
         output_dir = test_directories["output"] / "convert_nrrd_4d_to_3d"
         output_dir.mkdir(parents=True, exist_ok=True)
 
