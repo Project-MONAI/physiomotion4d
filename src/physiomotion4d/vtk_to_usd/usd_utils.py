@@ -495,37 +495,34 @@ def add_framing_camera(
     camera_path = f"{parent_path.rstrip('/')}/{name}"
     camera = UsdGeom.Camera.Define(stage, camera_path)
 
-    # USD cameras look down -Z by default, so a pure translate along an axis
-    # perpendicular to the stage up axis makes the camera look toward the bbox
-    # center. For Z-up stages, offset along +Y; otherwise offset along +Z.
-    # Idempotent: if a translate op already exists (e.g. carried in from a
-    # merged source USD that already had a /World/Camera), reuse it instead
-    # of appending a duplicate, which AddTranslateOp would do.
+    # Compute an eye point offset along an axis perpendicular to the stage up
+    # axis, then build a full look-at transform so the camera both moves and
+    # rotates to point at the bbox center. A pure translation only frames the
+    # geometry on a Y-up stage (where the default -Z look direction lines up);
+    # on a Z-up stage it would leave the camera staring horizontally past the
+    # geometry, so we author orientation as well via a single TransformOp.
     up_axis = UsdGeom.GetStageUpAxis(stage)
     if up_axis == UsdGeom.Tokens.z:
-        offset = np.array([0.0, distance, 0.0])
+        eye = center + np.array([0.0, -distance, 0.0])
+        up_world = Gf.Vec3d(0.0, 0.0, 1.0)
     else:
-        offset = np.array([0.0, 0.0, distance])
-    camera_position = center + offset
+        eye = center + np.array([0.0, 0.0, distance])
+        up_world = Gf.Vec3d(0.0, 1.0, 0.0)
 
+    view = Gf.Matrix4d()
+    view.SetLookAt(
+        Gf.Vec3d(float(eye[0]), float(eye[1]), float(eye[2])),
+        Gf.Vec3d(float(center[0]), float(center[1]), float(center[2])),
+        up_world,
+    )
+    camera_to_world = view.GetInverse()
+
+    # Idempotent: clear any prior xformOpOrder (e.g. a translate op carried in
+    # from a merged source USD that already had a /World/Camera) and author a
+    # single transform op describing the look-at placement.
     xformable = UsdGeom.Xformable(camera.GetPrim())
-    translate_op = next(
-        (
-            op
-            for op in xformable.GetOrderedXformOps()
-            if op.GetOpType() == UsdGeom.XformOp.TypeTranslate
-        ),
-        None,
-    )
-    if translate_op is None:
-        translate_op = camera.AddTranslateOp()
-    translate_op.Set(
-        Gf.Vec3d(
-            float(camera_position[0]),
-            float(camera_position[1]),
-            float(camera_position[2]),
-        )
-    )
+    xformable.ClearXformOpOrder()
+    camera.AddTransformOp().Set(camera_to_world)
 
     near = max(diagonal * 0.001, 1e-6)
     far = max(diagonal * 1000.0, distance * 10.0)
