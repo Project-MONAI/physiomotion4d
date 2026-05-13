@@ -11,6 +11,7 @@ Note: Tests marked requires_data need manually downloaded data:
 - CHOP-Valve4D: data/CHOP-Valve4D/
 """
 
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -146,6 +147,17 @@ class TestFromFilesValidation:
         assert loaded.n_points == 3
         assert "openusd_rgb" in loaded.point_data
         assert np.all(loaded.point_data["openusd_rgb"] == np.array([255, 0, 0]))
+
+        # GitHub's hosted windows-latest runners lack a real OpenGL stack,
+        # so VTK's render path access-violates inside Plotter.screenshot
+        # with no Mesa software-render fallback available. Linux runners
+        # render off-screen successfully via xvfb + libosmesa6. Skip only
+        # on Windows; the load_usd_as_vtk assertions above still run.
+        if sys.platform == "win32":
+            pytest.skip(
+                "Skipping VTK render on Windows hosted runners: no usable "
+                "OpenGL context"
+            )
 
         tt = TestTools(class_name="openusd", results_dir=tmp_path)
         screenshot = tt.save_screenshot_openusd(usd_path, "triangle.png")

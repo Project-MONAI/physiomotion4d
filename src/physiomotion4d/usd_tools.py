@@ -1446,7 +1446,8 @@ class USDTools(PhysioMotion4DBase):
 
         # Average
         vertex_scalar = acc / np.maximum(cnt, 1)
-        return vertex_scalar.astype(np.float32)
+        result: np.ndarray = vertex_scalar.astype(np.float32)
+        return result
 
     def _ensure_vertex_color_material(
         self, stage: Usd.Stage, mesh_prim: Usd.Prim

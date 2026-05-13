@@ -530,7 +530,10 @@ class ConvertVTKToUSD(PhysioMotion4DBase):
         sym_zx = 0.5 * (sxz + szx)
         deviatoric = 0.5 * ((sxx - syy) ** 2 + (syy - szz) ** 2 + (szz - sxx) ** 2)
         shear = 3.0 * (sym_xy**2 + sym_yz**2 + sym_zx**2)
-        return np.sqrt(np.maximum(deviatoric + shear, 0.0)).astype(np.float32)
+        result: np.ndarray = np.sqrt(np.maximum(deviatoric + shear, 0.0)).astype(
+            np.float32
+        )
+        return result
 
     def convert(
         self,

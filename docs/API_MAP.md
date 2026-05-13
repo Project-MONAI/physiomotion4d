@@ -122,7 +122,7 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def list_available_arrays(self)` (line 357): List all point data arrays available across all time steps.
   - `def set_colormap(self, color_by_array=None, colormap='plasma', intensity_range=None)` (line 403): Configure colormap for visualization.
   - `def compute_von_mises_stress(self, stress_array_name='stress', output_name='von_mises_stress')` (line 437): Add a scalar von Mises stress array derived from a 9-component
-  - `def convert(self, output_usd_file, convert_to_surface=None, compute_normals=None)` (line 535): Convert VTK meshes to USD.
+  - `def convert(self, output_usd_file, convert_to_surface=None, compute_normals=None)` (line 538): Convert VTK meshes to USD.
 
 ## src/physiomotion4d/data_download_tools.py
 
@@ -387,8 +387,8 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 ## src/physiomotion4d/vtk_to_usd/primvar_derivations.py
 
 - `def compute_von_mises_stress(stress_tensor)` (line 49): Compute scalar von Mises stress from a row-major 9-component tensor.
-- `def derive_von_mises_from_stress(array)` (line 106): Derive a scalar VonMises primvar from any 9-component stress tensor.
-- `def derive_primvars(arrays)` (line 146): Apply every registered derivation to every array in ``arrays``.
+- `def derive_von_mises_from_stress(array)` (line 107): Derive a scalar VonMises primvar from any 9-component stress tensor.
+- `def derive_primvars(arrays)` (line 147): Apply every registered derivation to every array in ``arrays``.
 
 ## src/physiomotion4d/vtk_to_usd/usd_mesh_converter.py
 
@@ -782,32 +782,32 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 ## tests/test_vtk_to_usd_library.py
 
-- `def get_data_dir()` (line 26): Get the data directory path.
-- `def check_kcl_heart_data()` (line 33): Check if KCL Heart Model data is available.
-- `def get_or_create_average_surface(test_directories)` (line 40): Get or create average_surface.vtp from average_mesh.vtk.
-- `def kcl_average_surface(test_directories)` (line 67): Fixture providing the KCL average heart surface.
-- **class TestFromFilesValidation** (line 80): Synthetic tests for ConvertVTKToUSD.from_files().
-  - `def test_time_codes_length_mismatch_raises(self, tmp_path)` (line 83): from_files() must reject time_codes whose length != len(vtk_files).
-  - `def test_time_codes_non_monotone_raises(self, tmp_path)` (line 93): from_files() must reject time_codes that decrease between frames.
-  - `def test_time_codes_equal_consecutive_is_valid(self, tmp_path)` (line 103): Equal consecutive time codes are non-decreasing and must not raise.
-  - `def test_from_files_single_file_writes_static_mesh(self, tmp_path)` (line 115): A single-file converter writes a static mesh with no time range.
-  - `def test_openusd_screenshot_uses_vtk_loader(self, tmp_path)` (line 127): Render a tiny OpenUSD mesh through TestTools without USD imaging plugins.
-  - `def test_from_files_static_merge_writes_separate_meshes(self, tmp_path)` (line 156): static_merge=True treats files as static objects, not time samples.
-- **class TestSyntheticConversion** (line 175): Synthetic ConvertVTKToUSD tests that do not require downloaded data.
-  - `def test_inspect_file_reports_public_summary(self, tmp_path)` (line 178): inspect_file() reports geometry, bounds, arrays, and cell types.
-  - `def test_inspect_file_reports_empty_mesh(self, tmp_path)` (line 198): inspect_file() reports empty meshes without raising.
-  - `def test_file_primvar_preservation(self, tmp_path)` (line 214): Point arrays in a VTP file are preserved as USD primvars.
-  - `def test_time_series_conversion(self, tmp_path)` (line 233): Multiple VTP files write point time samples and stage time metadata.
-- **class TestVTKToUSDConversion** (line 257): Test ConvertVTKToUSD on optional real VTK data.
-  - `def test_single_file_conversion(self, test_directories, kcl_average_surface)` (line 260): Test converting a single VTK file to USD.
-  - `def test_conversion_with_material(self, test_directories, kcl_average_surface)` (line 279): Test conversion with a custom solid color material.
-  - `def test_conversion_settings(self, test_directories, kcl_average_surface)` (line 307): Test that ConvertVTKToUSD applies correct default stage metadata.
-- **class TestIntegration** (line 324): Integration tests combining multiple features.
-  - `def test_end_to_end_conversion(self, test_directories, kcl_average_surface)` (line 327): Test complete conversion workflow with all features.
-- **class TestUnitScaling** (line 350): Verify that VTK mm coordinates are converted to USD meter coordinates.
-  - `def test_mm_to_m_point_scaling(self, tmp_path)` (line 353): Points written to USD must be 0.001x their original mm values.
-  - `def test_normals_remain_unit_length(self, tmp_path)` (line 373): Normal vectors must not be scaled.
-  - `def test_stage_meters_per_unit(self, tmp_path)` (line 393): Stage metersPerUnit metadata must be 1.0.
+- `def get_data_dir()` (line 27): Get the data directory path.
+- `def check_kcl_heart_data()` (line 34): Check if KCL Heart Model data is available.
+- `def get_or_create_average_surface(test_directories)` (line 41): Get or create average_surface.vtp from average_mesh.vtk.
+- `def kcl_average_surface(test_directories)` (line 68): Fixture providing the KCL average heart surface.
+- **class TestFromFilesValidation** (line 81): Synthetic tests for ConvertVTKToUSD.from_files().
+  - `def test_time_codes_length_mismatch_raises(self, tmp_path)` (line 84): from_files() must reject time_codes whose length != len(vtk_files).
+  - `def test_time_codes_non_monotone_raises(self, tmp_path)` (line 94): from_files() must reject time_codes that decrease between frames.
+  - `def test_time_codes_equal_consecutive_is_valid(self, tmp_path)` (line 104): Equal consecutive time codes are non-decreasing and must not raise.
+  - `def test_from_files_single_file_writes_static_mesh(self, tmp_path)` (line 116): A single-file converter writes a static mesh with no time range.
+  - `def test_openusd_screenshot_uses_vtk_loader(self, tmp_path)` (line 128): Render a tiny OpenUSD mesh through TestTools without USD imaging plugins.
+  - `def test_from_files_static_merge_writes_separate_meshes(self, tmp_path)` (line 168): static_merge=True treats files as static objects, not time samples.
+- **class TestSyntheticConversion** (line 187): Synthetic ConvertVTKToUSD tests that do not require downloaded data.
+  - `def test_inspect_file_reports_public_summary(self, tmp_path)` (line 190): inspect_file() reports geometry, bounds, arrays, and cell types.
+  - `def test_inspect_file_reports_empty_mesh(self, tmp_path)` (line 210): inspect_file() reports empty meshes without raising.
+  - `def test_file_primvar_preservation(self, tmp_path)` (line 226): Point arrays in a VTP file are preserved as USD primvars.
+  - `def test_time_series_conversion(self, tmp_path)` (line 245): Multiple VTP files write point time samples and stage time metadata.
+- **class TestVTKToUSDConversion** (line 269): Test ConvertVTKToUSD on optional real VTK data.
+  - `def test_single_file_conversion(self, test_directories, kcl_average_surface)` (line 272): Test converting a single VTK file to USD.
+  - `def test_conversion_with_material(self, test_directories, kcl_average_surface)` (line 291): Test conversion with a custom solid color material.
+  - `def test_conversion_settings(self, test_directories, kcl_average_surface)` (line 319): Test that ConvertVTKToUSD applies correct default stage metadata.
+- **class TestIntegration** (line 336): Integration tests combining multiple features.
+  - `def test_end_to_end_conversion(self, test_directories, kcl_average_surface)` (line 339): Test complete conversion workflow with all features.
+- **class TestUnitScaling** (line 362): Verify that VTK mm coordinates are converted to USD meter coordinates.
+  - `def test_mm_to_m_point_scaling(self, tmp_path)` (line 365): Points written to USD must be 0.001x their original mm values.
+  - `def test_normals_remain_unit_length(self, tmp_path)` (line 385): Normal vectors must not be scaled.
+  - `def test_stage_meters_per_unit(self, tmp_path)` (line 405): Stage metersPerUnit metadata must be 1.0.
 
 ## tests/test_workflow_fit_statistical_model_to_patient.py
 
