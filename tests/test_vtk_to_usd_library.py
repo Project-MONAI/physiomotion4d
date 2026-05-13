@@ -16,9 +16,11 @@ from pathlib import Path
 import numpy as np
 import pytest
 import pyvista as pv
-from pxr import UsdGeom, UsdShade
+from pxr import Gf, Usd, UsdGeom, UsdShade
 
 from physiomotion4d import ConvertVTKToUSD
+from physiomotion4d.test_tools import TestTools
+from physiomotion4d.usd_tools import load_openusd_as_vtk
 
 
 def get_data_dir() -> Path:
@@ -121,6 +123,35 @@ class TestFromFilesValidation:
         mesh = UsdGeom.Mesh(stage.GetPrimAtPath("/World/P/Mesh"))
         assert len(mesh.GetPointsAttr().Get()) == plane.n_points
         assert not stage.HasAuthoredTimeCodeRange()
+
+    def test_openusd_screenshot_uses_vtk_loader(self, tmp_path: Path) -> None:
+        """Render a tiny OpenUSD mesh through TestTools without USD imaging plugins."""
+        usd_path = tmp_path / "triangle.usd"
+        stage = Usd.Stage.CreateNew(str(usd_path))
+        world = stage.DefinePrim("/World", "Xform")
+        stage.SetDefaultPrim(world)
+        mesh = UsdGeom.Mesh.Define(stage, "/World/Triangle")
+        mesh.CreatePointsAttr(
+            [
+                Gf.Vec3f(0.0, 0.0, 0.0),
+                Gf.Vec3f(1.0, 0.0, 0.0),
+                Gf.Vec3f(0.0, 1.0, 0.0),
+            ]
+        )
+        mesh.CreateFaceVertexCountsAttr([3])
+        mesh.CreateFaceVertexIndicesAttr([0, 1, 2])
+        stage.Save()
+
+        loaded = load_openusd_as_vtk(usd_path)
+        assert loaded.n_points == 3
+        assert "openusd_rgb" in loaded.point_data
+        assert np.all(loaded.point_data["openusd_rgb"] == np.array([255, 0, 0]))
+
+        tt = TestTools(class_name="openusd", results_dir=tmp_path)
+        screenshot = tt.save_screenshot_openusd(usd_path, "triangle.png")
+
+        assert screenshot.exists()
+        assert screenshot.stat().st_size > 0
 
     def test_from_files_static_merge_writes_separate_meshes(
         self, tmp_path: Path

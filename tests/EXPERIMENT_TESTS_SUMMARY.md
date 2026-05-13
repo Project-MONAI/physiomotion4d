@@ -223,7 +223,7 @@ All GitHub Actions workflows explicitly exclude them:
 - Matches dependency order in experiments
 - Intuitive and predictable
 
-**Implementation:** `sorted(subdir.glob('*.ipynb'))`
+**Implementation:** `sorted(subdir.glob('*.py'))`
 
 ### 5. Long Timeouts
 

@@ -37,6 +37,14 @@ Getting Started
 
       pip install -e ".[dev]"
 
+   To install the full developer environment with CUDA 13, documentation, test,
+   and development dependencies, use either of these equivalent uv forms:
+
+   .. code-block:: bash
+
+      uv pip install -e ".[cuda13,docs,test,dev]"
+      uv pip install -e . --all-extras
+
 5. **Install pre-commit hooks**:
 
    .. code-block:: bash
@@ -114,7 +122,10 @@ First-Time Setup Checklist
 After cloning the repository:
 
 1. ✅ Install Python 3.10+ and create virtual environment
-2. ✅ Install development dependencies: ``pip install -e ".[dev]"``
+2. ✅ Install development dependencies: ``pip install -e ".[dev]"``,
+   or install all extras with
+   ``uv pip install -e ".[cuda13,docs,test,dev]"`` or
+   ``uv pip install -e . --all-extras``
 3. ✅ Install pre-commit hooks: ``pre-commit install``
 4. ✅ Install Ruff extension in VS Code/Cursor
 5. ✅ Remove old formatter extensions (black, isort, flake8, pylint)

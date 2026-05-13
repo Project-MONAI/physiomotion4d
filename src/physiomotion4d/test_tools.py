@@ -9,9 +9,10 @@ passed as itk.Image at the API level.
 from __future__ import annotations
 
 import logging
+import os
 import shutil
 from pathlib import Path
-from typing import Any, Literal, Optional
+from typing import Any, Literal, Optional, cast
 
 import itk
 import numpy as np
@@ -43,9 +44,9 @@ class TestTools(PhysioMotion4DBase):
 
     def __init__(
         self,
-        results_dir: Path,
-        baselines_dir: Path,
         class_name: str,
+        results_dir: Optional[Path] = None,
+        baselines_dir: Optional[Path] = None,
         *,
         results_output_dir: Optional[Path] = None,
         log_level: int = logging.INFO,
@@ -53,25 +54,30 @@ class TestTools(PhysioMotion4DBase):
         """Initialize test helpers.
 
         Args:
+            class_name: Subdirectory name for baselines and default results.
             results_dir: Root directory for result artifacts.
             baselines_dir: Root directory for baseline artifacts.
-            class_name: Subdirectory name for baselines and, by default, results.
-            results_output_dir: Optional exact directory for result artifacts.
-                When set, results are read and written there instead of
-                ``results_dir / class_name`` while baselines still use
-                ``baselines_dir / class_name``.
+            results_output_dir: Optional exact directory for written result
+                artifacts. Useful when tutorial outputs should live beside
+                tutorial files while baselines remain under ``baselines_dir``.
             log_level: Logging level.
         """
         super().__init__(class_name=class_name, log_level=log_level)
 
-        self._results_dir = (
-            results_output_dir
-            if results_output_dir is not None
-            else results_dir / class_name
-        )
+        self._tests_dir = _REPO_ROOT / "tests"
+        if results_output_dir is not None:
+            self._results_dir = results_output_dir
+        elif results_dir is not None:
+            self._results_dir = results_dir
+        else:
+            self._results_dir = self._tests_dir / "results" / class_name
         self._results_dir.mkdir(parents=True, exist_ok=True)
 
-        self._baselines_dir = baselines_dir / class_name
+        if not baselines_dir:
+            baselines_dir = self._tests_dir / "baselines" / class_name
+        else:
+            baselines_dir = baselines_dir / class_name
+        self._baselines_dir = baselines_dir
         self._baselines_dir.mkdir(parents=True, exist_ok=True)
 
         self._last_image_per_pixel_absolute_error_tol: float | None = None
@@ -90,6 +96,25 @@ class TestTools(PhysioMotion4DBase):
         self._last_transform_total_absolute_error_tol: float | None = None
         self._last_transform_difference_transform: Any = (
             None  # itk.Transform (type depends on template)
+        )
+
+    @staticmethod
+    def running_as_test() -> bool:
+        """
+        True when the script is run as a test (e.g. by pytest experiment tests).
+
+        Use this to choose fast/small parameters (fewer iterations, fewer files, etc.)
+        so test runs complete in reasonable time. When False, use full parameters
+        for interactive or production runs.
+
+        Returns:
+            True if PHYSIOMOTION_RUNNING_AS_TEST is set to a truthy value
+            (1, true, yes, case-insensitive); False otherwise.
+        """
+        return os.environ.get("PHYSIOMOTION_RUNNING_AS_TEST", "").lower() in (
+            "1",
+            "true",
+            "yes",
         )
 
     def image_pass_fail_and_pixels_above_tolerance(self) -> tuple[bool, int]:
@@ -407,6 +432,65 @@ class TestTools(PhysioMotion4DBase):
             if xvfb_started and hasattr(pv, "stop_xvfb"):
                 pv.stop_xvfb()
         self.log_info("Screenshot saved: %s", output_path)
+        return output_path
+
+    def save_screenshot_openusd(
+        self,
+        usd_file: str | Path,
+        filename: str,
+        *,
+        prim_path: str = "/World",
+        time_code: Optional[float] = None,
+    ) -> Path:
+        """Render OpenUSD mesh geometry off-screen and save a PNG.
+
+        The scene is loaded through ``USDTools.load_openusd_as_vtk`` into a
+        PyVista mesh, rendered with a fixed isometric camera and fixed
+        ``800 x 600`` window, and centered automatically by PyVista.
+
+        Args:
+            usd_file: OpenUSD file to render.
+            filename: Output PNG filename, relative to the result artifact dir.
+            prim_path: USD prim path to render. Defaults to ``/World``.
+            time_code: Optional animation time code. ``None`` renders default
+                values and falls back to the first authored mesh point sample.
+
+        Returns:
+            Absolute path to the saved PNG.
+        """
+        import pyvista as pv
+
+        from physiomotion4d.usd_tools import load_openusd_as_vtk
+
+        xvfb_started = False
+        try:
+            pv.start_xvfb()
+            xvfb_started = True
+        except Exception:
+            pass
+
+        output_path = self._results_dir / filename
+        mesh = load_openusd_as_vtk(usd_file, prim_path=prim_path, time_code=time_code)
+        plotter = pv.Plotter(off_screen=True, window_size=[800, 600])
+        try:
+            if "openusd_rgb" in mesh.point_data:
+                plotter.add_mesh(mesh, scalars="openusd_rgb", rgb=True)
+            else:
+                plotter.add_mesh(mesh, color="red")
+            plotter.camera_position = "iso"
+            # pyvista wraps reset_camera in a descriptor that mypy can't
+            # resolve as a bound method (see pyvista issue with _Wrapped).
+            # Cast through Any to keep the call expression valid for mypy
+            # without resorting to a # type: ignore comment, which flips
+            # between "missing self" and "unused ignore" depending on
+            # check scope.
+            cast(Any, plotter).reset_camera()
+            plotter.screenshot(str(output_path))
+        finally:
+            plotter.close()
+            if xvfb_started and hasattr(pv, "stop_xvfb"):
+                pv.stop_xvfb()
+        self.log_info("OpenUSD screenshot saved: %s", output_path)
         return output_path
 
     def save_screenshot_image_slice(

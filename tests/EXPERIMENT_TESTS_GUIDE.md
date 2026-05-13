@@ -85,17 +85,19 @@ pytest tests/test_experiments.py::test_experiment_lung_gated_ct_to_usd -v -s --r
 | `test_experiment_lung_gated_ct_to_usd`               | `Lung-GatedCT_To_USD/`                | ~6 hours          | GPU + Data     | ✅ Active       |
 | ~~`test_experiment_lung_vessels_airways`~~           | ~~`Lung-VesselsAirways/`~~            | ~~~2 hours~~      | ~~GPU + Data~~ | 🚫 **Disabled** |
 
-**Note:** Disabled tests are commented out in the code and will not run. They can be re-enabled when the notebooks are ready.
+**Note:** Disabled tests are commented out in the code and will not run. They can be re-enabled when the scripts are ready.
 
 ### Execution Order
 
-Within each subdirectory, notebooks are executed in **alphanumeric order**:
-- `0-download_and_convert_4d_to_3d.ipynb` (runs first)
-- `1-register_images.ipynb` (runs second)
-- `2-generate_segmentation.ipynb` (runs third)
+Within each subdirectory, scripts are executed in **alphanumeric order**
+(the runner uses `sorted(subdir.glob("*.py"))`):
+
+- `0-download_and_convert_4d_to_3d.py` (runs first)
+- `1-register_images.py` (runs second)
+- `2-generate_segmentation.py` (runs third)
 - etc.
 
-This ensures that notebooks with dependencies run in the correct sequence.
+This ensures that scripts with dependencies run in the correct sequence.
 
 ## Requirements
 
@@ -157,11 +159,11 @@ running_as_test = os.environ.get("PHYSIOMOTION_RUNNING_AS_TEST", "").lower() in 
 **Option 2 – shared helper (recommended):**
 
 ```python
-from physiomotion4d.notebook_utils import running_as_test
+from physiomotion4d.test_tools import TestTools
 
-# Then use running_as_test() where you need it, e.g.:
-quick_run = running_as_test()
-max_iterations = 100 if running_as_test() else 2000
+# Then use TestTools.running_as_test() where you need it, e.g.:
+quick_run = TestTools.running_as_test()
+max_iterations = 100 if TestTools.running_as_test() else 2000
 ```
 
 ### Semantics
@@ -181,35 +183,37 @@ pytest tests/test_experiments.py::test_experiment_heart_gated_ct_to_usd -v -s
 ```
 
 The `-s` flag shows all stdout/stderr, including:
-- Notebook execution progress
-- Cell outputs
+- Script execution progress
+- Cell outputs (`# %%` percent-cell scripts are run as ordinary Python)
 - Error messages
 - Execution summaries
 
 ### Monitor Progress
 
-Each notebook execution prints:
+Each script execution prints:
 ```
 ================================================================================
-Executing notebook: 1-register_images.ipynb
-Path: experiments/Heart-GatedCT_To_USD/1-register_images.ipynb
+Executing script: 1-register_images.py
+Path: experiments/Heart-GatedCT_To_USD/1-register_images.py
 Timeout: 5400 seconds (90 minutes)
 ================================================================================
 
-... (notebook output) ...
+... (script output) ...
 
-✅ Successfully executed: 1-register_images.ipynb
+✅ Successfully executed: 1-register_images.py
 ```
 
 ### Handle Failures
 
-If a notebook fails:
+If a script fails:
 1. Check the error output in the pytest summary
-2. Open the notebook file to see execution results
+2. Open the script to inspect the failing cell
 3. Fix the issue (code, data, environment)
 4. Re-run the specific test
 
-The notebooks are executed **in place** (with `--inplace` flag), so execution results are saved in the notebook file.
+The scripts are executed as ordinary Python (`python <script>.py`); cell
+boundaries from `# %%` markers are only meaningful inside cell-aware editors
+and do not affect test execution.
 
 ### Skip Tests by Marker
 
@@ -368,9 +372,9 @@ pytest tests/test_experiments.py -v -n auto --run-experiments
 # Worker 1: test_experiment_colormap_vtk_to_usd
 # Worker 2: test_experiment_heart_vtk_series_to_usd
 
-# But within Worker 1's test, notebooks run in strict order:
-# 1. colormap_vtk_to_usd.ipynb (must complete first)
-# ... (any subsequent notebooks in that directory)
+# But within Worker 1's test, scripts run in strict order:
+# 1. colormap_vtk_to_usd.py (must complete first)
+# ... (any subsequent scripts in that directory)
 ```
 
 ## FAQ

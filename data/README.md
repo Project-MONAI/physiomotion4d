@@ -15,7 +15,7 @@ data/
 ## 📥 Data Download Methods
 
 ### Automatic Download (Only Slicer-Heart-CT)
-Only the **Slicer-Heart-CT** dataset can be automatically downloaded by running the appropriate notebook.
+Only the **Slicer-Heart-CT** dataset can be automatically downloaded by running the appropriate script.
 
 ### Manual Download (All Others)
 The following datasets must be **manually downloaded and preprocessed** by the user:
@@ -48,8 +48,10 @@ Data provided by Jolley Lab at CHOP (Children's Hospital of Philadelphia):
 
 **Automatic download** (recommended):
 ```python
-# The data will be automatically downloaded when running:
-# experiments/Heart-GatedCT_To_USD/0-download_and_convert_4d_to_3d.ipynb
+from physiomotion4d import DataDownloadTools
+
+DataDownloadTools.DownloadSlicerHeartCTData("data/Slicer-Heart-CT")
+assert DataDownloadTools.VerifySlicerHeartCTData("data/Slicer-Heart-CT")
 ```
 
 **Manual download** (alternative):
@@ -59,9 +61,24 @@ wget https://github.com/Slicer-Heart-CT/Slicer-Heart-CT/releases/download/Testin
 ```
 
 ### Usage
+- Primary dataset for tutorials
 - Primary dataset for `Heart-GatedCT_To_USD` experiments
 - Used in test suite (`tests/test_download_heart_data.py`)
 - Example data for cardiac motion visualization in Omniverse
+
+### Verification Helpers
+
+PhysioMotion4D exposes a small public utility for checking optional dataset
+layouts:
+
+```python
+from physiomotion4d import DataDownloadTools
+
+DataDownloadTools.VerifySlicerHeartCTData("data/Slicer-Heart-CT")
+DataDownloadTools.VerifyDirLab4DCTData("data/DirLab-4DCT")
+DataDownloadTools.VerifyKCLHeartModelData("data/KCL-Heart-Model")
+DataDownloadTools.VerifyCHOPValve4DData("data/CHOP-Valve4D")
+```
 
 ---
 
@@ -92,9 +109,9 @@ Users must manually download and preprocess this dataset. Follow these steps:
 
 **Step 1: Manual Download**
 ```python
-# Using provided utilities in experiments notebooks
-# See: experiments/Lung-GatedCT_To_USD/0-register_dirlab_4dct.ipynb
-# The notebook includes download utilities but requires manual execution
+# Using provided utilities in experiment scripts.
+# See: experiments/Lung-GatedCT_To_USD/0-register_dirlab_4dct.py
+# The script includes download utilities but requires manual execution.
 ```
 
 **Step 2: User Preprocessing**
@@ -223,7 +240,7 @@ Data provided by Jolley Lab at CHOP (Children's Hospital of Philadelphia):
 4. Organize by valve type in subdirectories (e.g., `Alterra/`, `TPV25/`)
 
 ### Usage
-- Time-series VTK to USD conversion (`experiments/convert_vtk_to_usd_lib/valve4d_time_series.ipynb`)
+- Time-series VTK to USD conversion (`experiments/Convert_VTK_To_USD/`)
 - 4D valve motion visualization in NVIDIA Omniverse
 - Temporal cardiac mechanics analysis
 - Valve dynamics studies and surgical planning

@@ -156,7 +156,7 @@ print(WorkflowConvertHeartGatedCTToUSD.__name__)
 
 ## Getting Started: Tutorials
 
-The `tutorials/` directory contains six end-to-end Python scripts, one for each
+The `tutorials/` directory contains nine end-to-end Python scripts, one for each
 major workflow. They are the recommended starting point for new users.
 
 | # | Script | Workflow | Dataset |
@@ -167,17 +167,21 @@ major workflow. They are the recommended starting point for new users.
 | 4 | `tutorials/tutorial_04_fit_statistical_model_to_patient.py` | Fit statistical model to patient | KCL-Heart-Model plus Tutorial 3 output |
 | 5 | `tutorials/tutorial_05_vtk_to_usd.py` | VTK surfaces to animated USD | output of tutorial 2 |
 | 6 | `tutorials/tutorial_06_reconstruct_highres_4d_ct.py` | Reconstruct high-res 4D CT | DirLab-4DCT (manual) |
+| 7 | `tutorials/tutorial_07_dirlab_pca_model.py` | Build a surface PCA lung-lobe model and fit all cases | DirLab-4DCT (manual) |
+| 8 | `tutorials/tutorial_08_dirlab_pca_time_series.py` | Propagate PCA-fitted lung-lobe meshes through DirLab time series | DirLab-4DCT plus Tutorial 7 output |
+| 9 | `tutorials/tutorial_09_physicsnemo_mesh_stage_model.py` | Train a PhysicsNeMo mesh stage model | Tutorial 8 output |
 
-Each script is runnable directly:
+Each tutorial is a `# %%` percent-cell Python script. Paths are defined near
+the top of the script; edit those constants for custom data/output locations,
+or use the installed `physiomotion4d-*` CLI commands when you want path
+arguments.
 
 ```bash
 # Tutorial 1 (CPU-safe ANTs registration; requires Slicer-Heart-CT data)
-python tutorials/tutorial_01_heart_gated_ct_to_usd.py \
-    --data-dir ./data --output-dir ./output/tutorial_01
+python tutorials/tutorial_01_heart_gated_ct_to_usd.py
 
 # Tutorial 2 (CT to VTK)
-python tutorials/tutorial_02_ct_to_vtk.py \
-    --data-dir ./data --output-dir ./output/tutorial_02
+python tutorials/tutorial_02_ct_to_vtk.py
 ```
 
 See `tutorials/README.md` for the full tutorial index, dataset preparation
@@ -189,7 +193,7 @@ This quickstart uses the public Slicer-Heart 4D CT sample. Data downloading and
 a CUDA-capable GPU are required for practical runtime.
 
 ```bash
-python -c "import pathlib, urllib.request; pathlib.Path('data/test').mkdir(parents=True, exist_ok=True); urllib.request.urlretrieve('https://github.com/SlicerHeart/SlicerHeart/releases/download/TestingData/TruncalValve_4DCT.seq.nrrd', 'data/test/TruncalValve_4DCT.seq.nrrd')"
+python -c "from physiomotion4d import DataDownloadTools; DataDownloadTools.DownloadSlicerHeartCTData('data/test')"
 
 physiomotion4d-heart-gated-ct data/test/TruncalValve_4DCT.seq.nrrd \
     --registration-method ants \
@@ -326,11 +330,14 @@ segmenter = SegmentChestTotalSegmentator()
 image = itk.imread("chest_ct.nrrd")
 masks = segmenter.segment(image, contrast_enhanced_study=True)
 
-# Extract individual anatomy masks by key
-heart_mask = masks["heart"]
-vessels_mask = masks["major_vessels"]
-lungs_mask = masks["lung"]
+# Result always contains "labelmap" plus one entry per anatomy group the
+# segmenter registered (heart, lung, bone, major_vessels, soft_tissue,
+# contrast, other for SegmentChestTotalSegmentator). The exact key set is
+# segmenter-specific; check membership when targeting multiple segmenters.
 labelmap = masks["labelmap"]
+heart_mask = masks["heart"]
+if "lung" in masks:
+    lungs_mask = masks["lung"]
 ```
 
 ### Image Registration
@@ -371,17 +378,22 @@ PhysioMotion4D provides two APIs for converting VTK data to USD for NVIDIA Omniv
 #### Option 1: High-Level ConvertVTKToUSD (for PyVista/VTK objects)
 
 ```python
-from physiomotion4d import ConvertVTKToUSD
+from physiomotion4d import ConvertVTKToUSD, SegmentChestTotalSegmentator
 import pyvista as pv
 
 # Load VTK data
 meshes = [pv.read(f"cardiac_frame_{i:03d}.vtp") for i in range(20)]
 
-# Convert to animated USD with anatomical labels
+# Convert to animated USD with anatomical labels. Pass `segmenter` so the
+# converter groups labeled prims by anatomy type:
+#   /World/CardiacModel/heart/<organ>, /World/CardiacModel/lung/<organ>, ...
+# Without `segmenter`, all labeled prims land under /World/CardiacModel/Anatomy.
+seg = SegmentChestTotalSegmentator()
 converter = ConvertVTKToUSD(
     data_basename='CardiacModel',
     input_polydata=meshes,
-    mask_ids={1: 'ventricle', 2: 'atrium', 3: 'vessels'},
+    mask_ids=seg.taxonomy.all_labels(),
+    segmenter=seg,
     compute_normals=True
 )
 
@@ -465,27 +477,32 @@ Classes that inherit from `PhysioMotion4DBase` provide:
 
 ## 📊 Experiments and Examples
 
-The `experiments/` directory contains comprehensive Jupyter notebooks demonstrating the complete PhysioMotion4D pipeline:
+The `experiments/` directory contains research scripts that shaped the
+toolkit. They are `# %%` percent-cell Python scripts that can be run
+top-to-bottom (`python <script>.py`) or stepped through cell-by-cell in VS
+Code, Cursor, or any other editor with notebook-cell support. For the
+curated, supported user-facing entry points see `tutorials/` and
+`docs/tutorials.rst`.
 
 ### 🫀 Heart-Gated CT (`experiments/Heart-GatedCT_To_USD/`)
 
-Complete cardiac imaging workflow with step-by-step tutorials:
+Complete cardiac imaging workflow with step-by-step scripts:
 
-- **`0-download_and_convert_4d_to_3d.ipynb`**: Data preparation and 4D to 3D conversion
-- **`1-register_images.ipynb`**: Image registration between cardiac phases
-- **`2-generate_segmentation.ipynb`**: AI-based cardiac segmentation
-- **`3-transform_dynamic_and_static_contours.ipynb`**: Dynamic contour transformation
-- **`4-merge_dynamic_and_static_usd.ipynb`**: Final USD model creation and merging
+- **`0-download_and_convert_4d_to_3d.py`**: Data preparation and 4D to 3D conversion
+- **`1-register_images.py`**: Image registration between cardiac phases
+- **`2-generate_segmentation.py`**: AI-based cardiac segmentation
+- **`3-transform_dynamic_and_static_contours.py`**: Dynamic contour transformation
+- **`4-merge_dynamic_and_static_usd.py`**: Final USD model creation and merging
 
-**Sample Data**: The notebooks include instructions for downloading cardiac CT datasets from Slicer-Heart-CT.
+**Sample Data**: The scripts include instructions for downloading cardiac CT datasets from Slicer-Heart-CT.
 
 ### 🫁 Lung-Gated CT (`experiments/Lung-GatedCT_To_USD/`)
 
 Respiratory motion analysis using DirLab 4D-CT benchmark data:
 
-- **`0-register_dirlab_4dct.ipynb`**: Registration of respiratory phases
-- **`1-make_dirlab_models.ipynb`**: 3D model generation from lung segmentation
-- **`2-paint_dirlab_models.ipynb`**: USD material and visualization enhancement
+- **`0-register_dirlab_4dct.py`**: Registration of respiratory phases
+- **`1-make_dirlab_models.py`**: 3D model generation from lung segmentation
+- **`2-paint_dirlab_models.py`**: USD material and visualization enhancement
 
 **Sample Data**: Uses the standard DirLab 4D-CT benchmark datasets. DirLab data
 must be downloaded manually and placed under `data/DirLab-4DCT/`; see
@@ -495,25 +512,25 @@ must be downloaded manually and placed under `data/DirLab-4DCT/`; see
 
 Time-varying colormap rendering for scalar data visualization in Omniverse:
 
-- **`colormap_vtk_to_usd.ipynb`**: Convert VTK meshes with scalar data to USD with colormaps
+- **`colormap_vtk_to_usd.py`**: Convert VTK meshes with scalar data to USD with colormaps
 - Demonstrates plasma, viridis, rainbow, heat, coolwarm, grayscale, and custom colormaps
 
 ### 🫀 Heart VTK Series (`experiments/Heart-VTKSeries_To_USD/`)
 
 Direct VTK time series to USD conversion for cardiac data:
 
-- **`0-download_and_convert_4d_to_3d.ipynb`**: Data preparation
-- **`1-heart_vtkseries_to_usd.ipynb`**: VTK series to USD conversion
+- **`0-download_and_convert_4d_to_3d.py`**: Data preparation
+- **`1-heart_vtkseries_to_usd.py`**: VTK series to USD conversion
 
 ### 🧠 Heart Create Statistical Model (`experiments/Heart-Create_Statistical_Model/`)
 
 Create PCA statistical shape models from population meshes using the KCL Heart Model dataset:
 
-- **`1-input_meshes_to_input_surfaces.ipynb`**: Convert meshes to surfaces
-- **`2-input_surfaces_to_surfaces_aligned.ipynb`**: Align population meshes
-- **`3-registration_based_correspondence.ipynb`**: Compute point correspondences
-- **`4-surfaces_aligned_correspond_to_pca_inputs.ipynb`**: Prepare PCA inputs
-- **`5-compute_pca_model.ipynb`**: Compute PCA model using sklearn
+- **`1-input_meshes_to_input_surfaces.py`**: Convert meshes to surfaces
+- **`2-input_surfaces_to_surfaces_aligned.py`**: Align population meshes
+- **`3-registration_based_correspondence.py`**: Compute point correspondences
+- **`4-surfaces_aligned_correspond_to_pca_inputs.py`**: Prepare PCA inputs
+- **`5-compute_pca_model.py`**: Compute PCA model using sklearn
 
 **⚠️ Complete this experiment FIRST** before attempting `Heart-Statistical_Model_To_Patient`.
 
@@ -521,9 +538,9 @@ Create PCA statistical shape models from population meshes using the KCL Heart M
 
 Advanced registration between generic anatomical models and patient-specific data using PCA:
 
-- **`heart_model_to_model_icp_itk.ipynb`**: ICP registration for initial alignment
-- **`heart_model_to_model_registration_pca.ipynb`**: PCA-based statistical shape model registration
-- **`heart_model_to_patient.ipynb`**: Complete model-to-patient registration workflow
+- **`heart_model_to_model_icp_itk.py`**: ICP registration for initial alignment
+- **`heart_model_to_model_registration_pca.py`**: PCA-based statistical shape model registration
+- **`heart_model_to_patient.py`**: Complete model-to-patient registration workflow
 
 Uses the `WorkflowFitStatisticalModelToPatient` class for three-stage registration:
 1. ICP-based rough alignment
@@ -534,14 +551,14 @@ Uses the `WorkflowFitStatisticalModelToPatient` class for three-stage registrati
 
 Reconstruct 4D CT from sparse time samples using deformable registration:
 
-- **`reconstruct_4d_ct.ipynb`**: Temporal interpolation and 4D reconstruction
-- **`reconstruct_4d_ct_class.ipynb`**: Class-based reconstruction approach
+- **`reconstruct_4d_ct.py`**: Temporal interpolation and 4D reconstruction
+- **`reconstruct_4d_ct_class.py`**: Class-based reconstruction approach
 
 ### 🫁 Vessel and Airway Segmentation (`experiments/Lung-VesselsAirways/`)
 
 Specialized deep learning for pulmonary vessel and airway segmentation:
 
-- **`0-GenData.ipynb`**: Training data generation for vessel segmentation models
+- **`0-GenData.py`**: Training data generation for vessel segmentation models
 - Includes trained ResNet18 models for vessel segmentation
 - Supporting branch structure test data
 
@@ -549,7 +566,7 @@ Specialized deep learning for pulmonary vessel and airway segmentation:
 
 Convert image registration displacement fields to USD for advanced visualization:
 
-- **`displacement_field_to_usd.ipynb`**: Convert displacement fields to time-varying USD
+- **`displacement_field_to_usd.py`**: Convert displacement fields to time-varying USD
 - **`displacement_field_converter.py`**: DisplacementFieldToUSD class implementation
 - Integration with PhysicsNeMo for flow visualization in Omniverse
 - Supports streamlines, vector glyphs, and particle advection
@@ -571,13 +588,10 @@ The Slicer-Heart sample can be downloaded directly from its public GitHub
 release:
 
 ```python
-from pathlib import Path
-from urllib.request import urlretrieve
+from physiomotion4d import DataDownloadTools
 
-data_dir = Path("data/Slicer-Heart-CT")
-data_dir.mkdir(parents=True, exist_ok=True)
-url = "https://github.com/SlicerHeart/SlicerHeart/releases/download/TestingData/TruncalValve_4DCT.seq.nrrd"
-urlretrieve(url, data_dir / "TruncalValve_4DCT.seq.nrrd")
+data_file = DataDownloadTools.DownloadSlicerHeartCTData("data/Slicer-Heart-CT")
+assert DataDownloadTools.VerifySlicerHeartCTData("data/Slicer-Heart-CT")
 ```
 
 ## 🔧 Development
