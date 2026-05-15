@@ -1,15 +1,16 @@
 ====================================
-NRRD Conversion
+4D Image Conversion
 ====================================
 
 .. currentmodule:: physiomotion4d
 
-Utilities for converting 4D NRRD files to 3D sequences.
+Utilities for converting 4D medical images (NRRD, NIfTI, MHA, …) into a 3D
+time-series sequence using ITK readers.
 
 Module Reference
 ================
 
-.. automodule:: physiomotion4d.convert_nrrd_4d_to_3d
+.. automodule:: physiomotion4d.convert_image_4d_to_3d
    :members:
    :undoc-members:
 

@@ -20,7 +20,7 @@ Data Flow
    4D CT / time-series CT
           |
           v
-   ConvertNRRD4DTo3D / ImageTools
+   ConvertImage4DTo3D / ImageTools
           |
           v
    RegisterTimeSeriesImages

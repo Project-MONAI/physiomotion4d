@@ -70,6 +70,10 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 - `def main()` (line 14): Command-line interface for Heart-gated CT processing.
 
+## src/physiomotion4d/cli/convert_image_4d_to_3d.py
+
+- `def main()` (line 16): CLI entry point for 4D-to-3D image conversion.
+
 ## src/physiomotion4d/cli/convert_vtk_to_usd.py
 
 - `def main()` (line 22): Command-line interface for VTK to USD conversion.
@@ -102,15 +106,14 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def create_distance_map(self, mesh, reference_image, squared_distance=False, negative_inside=True, zero_inside=False, norm_to_max_distance=0.0)` (line 257)
   - `def create_deformation_field(self, points, point_displacements, reference_image, blur_sigma=2.5, ptype=itk.D)` (line 324): Create a displacement map from model points and displacements.
 
-## src/physiomotion4d/convert_nrrd_4d_to_3d.py
+## src/physiomotion4d/convert_image_4d_to_3d.py
 
-- **class ConvertNRRD4DTo3D** (line 13)
-  - `def __init__(self, log_level=logging.INFO)` (line 14): Initialize the NRRD 4D to 3D converter.
-  - `def load_nrrd_3d(self, filenames)` (line 24)
-  - `def load_nrrd_4d(self, filename)` (line 30)
-  - `def get_3d_image(self, index)` (line 64)
-  - `def get_number_of_3d_images(self)` (line 67)
-  - `def save_3d_images(self, directory, basename)` (line 70)
+- **class ConvertImage4DTo3D** (line 26): Split a 4D ITK image (X, Y, Z, T) into a list of 3D ITK images.
+  - `def __init__(self, log_level=logging.INFO)` (line 29): Initialize the 4D-to-3D image converter.
+  - `def load_image_4d(self, filename)` (line 38): Load a 4D image and split it into a list of 3D ITK images.
+  - `def get_3d_image(self, index)` (line 97): Return the 3D ITK image at the given time index.
+  - `def get_number_of_3d_images(self)` (line 101): Return the number of 3D images currently held.
+  - `def save_3d_images(self, directory, basename, suffix='mha')` (line 105): Write each held 3D image to ``{directory}/{basename}_{i:03d}.{suffix}``.
 
 ## src/physiomotion4d/convert_vtk_to_usd.py
 
@@ -535,13 +538,13 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def test_transform_contours_with_deformation(self, contour_tools, test_labelmaps, test_directories)` (line 267): Test transforming contours with deformation magnitude calculation.
   - `def test_contours_from_both_time_points(self, contour_tools, test_labelmaps, test_directories)` (line 316): Test extracting contours from both time points.
 
-## tests/test_convert_nrrd_4d_to_3d.py
+## tests/test_convert_image_4d_to_3d.py
 
-- **class TestConvertNRRD4DTo3D** (line 17): Test suite for converting 4D NRRD to 3D time series.
-  - `def test_convert_4d_to_3d(self, download_test_data, test_directories)` (line 20): Test conversion of 4D NRRD to 3D time series.
-  - `def test_slice_files_created(self, download_test_data, test_directories)` (line 46): Test that all expected slice files are present after conversion.
-  - `def test_load_nrrd_4d(self, download_test_data)` (line 67): Test loading 4D NRRD file.
-  - `def test_save_3d_images(self, download_test_data, test_directories)` (line 80): Test saving 3D images from 4D NRRD.
+- **class TestConvertImage4DTo3D** (line 17): Test suite for converting a 4D image to a 3D time series.
+  - `def test_convert_4d_to_3d(self, download_test_data, test_directories)` (line 20): Test conversion of 4D image to 3D time series.
+  - `def test_slice_files_created(self, download_test_data, test_directories)` (line 43): Test that all expected slice files are present after conversion.
+  - `def test_load_image_4d(self, download_test_data)` (line 62): Test loading a 4D image.
+  - `def test_save_3d_images(self, download_test_data, test_directories)` (line 73): Test saving 3D images from a 4D source.
 
 ## tests/test_convert_vtk_to_usd.py
 

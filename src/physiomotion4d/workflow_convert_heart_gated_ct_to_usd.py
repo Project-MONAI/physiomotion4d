@@ -15,7 +15,7 @@ import pyvista as pv
 
 from physiomotion4d import ConvertVTKToUSD
 from physiomotion4d.contour_tools import ContourTools
-from physiomotion4d.convert_nrrd_4d_to_3d import ConvertNRRD4DTo3D
+from physiomotion4d.convert_image_4d_to_3d import ConvertImage4DTo3D
 from physiomotion4d.physiomotion4d_base import PhysioMotion4DBase
 from physiomotion4d.register_images_ants import RegisterImagesANTs
 from physiomotion4d.register_images_base import RegisterImagesBase
@@ -91,7 +91,7 @@ class WorkflowConvertHeartGatedCTToUSD(PhysioMotion4DBase):
         os.makedirs(output_directory, exist_ok=True)
 
         # Initialize processing components
-        self.converter = ConvertNRRD4DTo3D(log_level=log_level)
+        self.converter = ConvertImage4DTo3D(log_level=log_level)
         self.segmenter = SegmentChestTotalSegmentator(log_level=log_level)
         self.segmenter.contrast_threshold = 500
 
@@ -206,22 +206,23 @@ class WorkflowConvertHeartGatedCTToUSD(PhysioMotion4DBase):
         self.log_info("Loading time series data...")
 
         if len(self.input_filenames) == 1:
-            self.converter.load_nrrd_4d(self.input_filenames[0])
+            self.converter.load_image_4d(self.input_filenames[0])
             self.converter.save_3d_images(
                 self.output_directory,
                 os.path.basename(self.input_filenames[0]),
             )
+            self._num_time_points = self.converter.get_number_of_3d_images()
+            for i in range(self._num_time_points):
+                self._time_series_images.append(self.converter.get_3d_image(i))
         else:
-            self.log_info("Loading %d 3D NRRD files", len(self.input_filenames))
-            self.converter.load_nrrd_3d(self.input_filenames)
+            self.log_info("Loading %d 3D image files", len(self.input_filenames))
+            self._time_series_images = [
+                itk.imread(path) for path in self.input_filenames
+            ]
+            self._num_time_points = len(self._time_series_images)
 
-        self._num_time_points = self.converter.get_number_of_3d_images()
         if self._num_time_points <= 0:
             raise ValueError("No time-series images were produced from input data")
-
-        # Load all time series images into memory
-        for i in range(self._num_time_points):
-            self._time_series_images.append(self.converter.get_3d_image(i))
         if not self._time_series_images:
             raise ValueError("No time-series images were loaded from input data")
 
