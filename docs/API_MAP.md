@@ -111,9 +111,9 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - **class ConvertImage4DTo3D** (line 26): Split a 4D ITK image (X, Y, Z, T) into a list of 3D ITK images.
   - `def __init__(self, log_level=logging.INFO)` (line 29): Initialize the 4D-to-3D image converter.
   - `def load_image_4d(self, filename)` (line 38): Load a 4D image and split it into a list of 3D ITK images.
-  - `def get_3d_image(self, index)` (line 97): Return the 3D ITK image at the given time index.
-  - `def get_number_of_3d_images(self)` (line 101): Return the number of 3D images currently held.
-  - `def save_3d_images(self, directory, basename, suffix='mha')` (line 105): Write each held 3D image to ``{directory}/{basename}_{i:03d}.{suffix}``.
+  - `def get_3d_image(self, index)` (line 120): Return the 3D ITK image at the given time index.
+  - `def get_number_of_3d_images(self)` (line 124): Return the number of 3D images currently held.
+  - `def save_3d_images(self, directory, basename, suffix='mha')` (line 128): Write each held 3D image to ``{directory}/{basename}_{i:03d}.{suffix}``.
 
 ## src/physiomotion4d/convert_vtk_to_usd.py
 
@@ -543,8 +543,8 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 - **class TestConvertImage4DTo3D** (line 17): Test suite for converting a 4D image to a 3D time series.
   - `def test_convert_4d_to_3d(self, download_test_data, test_directories)` (line 20): Test conversion of 4D image to 3D time series.
   - `def test_slice_files_created(self, download_test_data, test_directories)` (line 43): Test that all expected slice files are present after conversion.
-  - `def test_load_image_4d(self, download_test_data)` (line 62): Test loading a 4D image.
-  - `def test_save_3d_images(self, download_test_data, test_directories)` (line 73): Test saving 3D images from a 4D source.
+  - `def test_load_image_4d(self, download_test_data)` (line 66): Test loading a 4D image.
+  - `def test_save_3d_images(self, download_test_data, test_directories)` (line 77): Test saving 3D images from a 4D source.
 
 ## tests/test_convert_vtk_to_usd.py
 

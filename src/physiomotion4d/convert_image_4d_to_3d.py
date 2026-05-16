@@ -14,7 +14,7 @@ Two reader paths are used:
 
 import logging
 from pathlib import Path
-from typing import Any, Union
+from typing import Union
 
 import itk
 import nrrd
@@ -33,9 +33,9 @@ class ConvertImage4DTo3D(PhysioMotion4DBase):
             log_level: Logging level (default: logging.INFO)
         """
         super().__init__(class_name=self.__class__.__name__, log_level=log_level)
-        self.img_3d: list[Any] = []
+        self.img_3d: list[itk.Image] = []
 
-    def load_image_4d(self, filename: str) -> None:
+    def load_image_4d(self, filename: Union[str, Path]) -> None:
         """Load a 4D image and split it into a list of 3D ITK images.
 
         ``.nrrd`` files (including Slicer ``.seq.nrrd`` heart sequences) are
@@ -50,6 +50,7 @@ class ConvertImage4DTo3D(PhysioMotion4DBase):
         Args:
             filename: Path to a 4D image file.
         """
+        filename = str(filename)
         if filename.lower().endswith(".nrrd"):
             data, header = nrrd.read(filename)
 
@@ -57,13 +58,35 @@ class ConvertImage4DTo3D(PhysioMotion4DBase):
             # ITK numpy views use (T, Z, Y, X) — transpose the spatial axes.
             arr_4d = np.ascontiguousarray(np.asarray(data).transpose(0, 3, 2, 1))
 
+            required_keys = ("space origin", "space directions", "measurement frame")
+            missing = [k for k in required_keys if k not in header]
+            if missing:
+                raise ValueError(
+                    f"{filename!r} is not a valid Slicer 4D .seq.nrrd: "
+                    f"missing NRRD header field(s) {missing}"
+                )
+            space_directions = np.asarray(header["space directions"])
+            measurement_frame = np.asarray(header["measurement frame"])
+            if space_directions.shape[0] < 4 or space_directions.shape[1] < 3:
+                raise ValueError(
+                    f"{filename!r} is not a valid Slicer 4D .seq.nrrd: "
+                    f"'space directions' has shape {space_directions.shape}, "
+                    "expected at least (4, 3)"
+                )
+            if measurement_frame.shape[0] < 3:
+                raise ValueError(
+                    f"{filename!r} is not a valid Slicer 4D .seq.nrrd: "
+                    f"'measurement frame' has shape {measurement_frame.shape}, "
+                    "expected at least 3 rows"
+                )
+
             origin_3d = np.asarray(header["space origin"], dtype=float)
             spacing_3d = np.array(
-                [abs(header["space directions"][x + 1][x]) for x in range(3)],
+                [abs(space_directions[x + 1][x]) for x in range(3)],
                 dtype=float,
             )
             direction_3d = np.array(
-                [header["measurement frame"][x] for x in range(3)], dtype=float
+                [measurement_frame[x] for x in range(3)], dtype=float
             )
             space = header.get("space", "")
             if "right" in space:
@@ -94,7 +117,7 @@ class ConvertImage4DTo3D(PhysioMotion4DBase):
             img3d.SetDirection(direction_matrix)
             self.img_3d.append(img3d)
 
-    def get_3d_image(self, index: int) -> Any:
+    def get_3d_image(self, index: int) -> itk.Image:
         """Return the 3D ITK image at the given time index."""
         return self.img_3d[index]
 

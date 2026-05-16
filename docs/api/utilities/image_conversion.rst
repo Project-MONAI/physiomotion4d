@@ -4,8 +4,11 @@
 
 .. currentmodule:: physiomotion4d
 
-Utilities for converting 4D medical images (NRRD, NIfTI, MHA, …) into a 3D
-time-series sequence using ITK readers.
+Utilities for converting 4D medical images into a 3D time-series sequence.
+``.nrrd`` inputs (including Slicer ``.seq.nrrd`` heart sequences, whose
+per-voxel vector dimension exceeds ITK Python's wrapped Vector sizes) are read
+with ``pynrrd``; all other formats (NIfTI ``.nii.gz``, MHA, …) are read with
+``itk.imread`` and must be true 4-dimensional images.
 
 Module Reference
 ================

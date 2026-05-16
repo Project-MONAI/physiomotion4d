@@ -49,6 +49,10 @@ class TestConvertImage4DTo3D:
         output_dir = test_directories["output"] / "convert_image_4d_to_3d"
         output_dir.mkdir(parents=True, exist_ok=True)
 
+        conv = ConvertImage4DTo3D()
+        conv.load_image_4d(str(download_test_data))
+        conv.save_3d_images(output_dir, "slice")
+
         slice_files = list(output_dir.glob("slice_*.mha"))
         assert len(slice_files) > 10, (
             f"Expected more than 10 slice files, found {len(slice_files)}"
