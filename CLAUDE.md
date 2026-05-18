@@ -16,7 +16,7 @@ We are developing open-source code for scientific AI libraries. Leverage GPU-acc
 5) testing
 
 ## Behavior Guidelines
-1) Don't assume.  Don't hide confuction. Surface tradeoffs.
+1) Don't assume.  Don't hide confusion. Surface tradeoffs.
 2) Minimum code that solves the problem.  Nothing speculative.
 3) Touch only what you must.  Clean up only your own mess.
 4) Define success criteria.  Loop until verified.
@@ -103,6 +103,7 @@ Before editing any code:
 8. Implement in small, reviewable diffs.
 9. Update docstrings and tests for every changed public method.
 10. Call out breaking changes explicitly.
+11. Do not commit changes or make pull requests unless specifically told to do so.
 
 Breaking changes are acceptable. Backward-compatibility shims are not.
 

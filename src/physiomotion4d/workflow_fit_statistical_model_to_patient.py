@@ -149,6 +149,11 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
             patient_image: Optional patient image providing the target coordinate frame.
                 If None, a reference image is created from the patient model surface
                 via create_reference_image (contour_tools).
+            segmentation_method: Segmentation backend used by
+                WorkflowConvertImageToVTK when patient_models is None and
+                patient_image is provided. One of ``'HeartSimpleware'`` (default)
+                or ``'ChestTotalSegmentator'``. Ignored when patient_models is
+                supplied.
             log_level: Logging level (logging.DEBUG, logging.INFO, logging.WARNING).
                 Default: logging.INFO
         """

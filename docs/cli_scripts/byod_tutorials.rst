@@ -34,7 +34,7 @@ Verify that both relevant CLI entry-points are available after installation:
 
 .. code-block:: bash
 
-   physiomotion4d-convert-heart-gated-ct-to-usd --help
+   physiomotion4d-convert-image-to-usd --help
    physiomotion4d-convert-vtk-to-usd --help
 
 See :doc:`/installation` for prerequisites, CUDA version requirements, and
@@ -56,7 +56,7 @@ Pass a single ``.nii.gz`` file to produce a static USD scene.
 
 .. code-block:: bash
 
-   physiomotion4d-convert-heart-gated-ct-to-usd \
+   physiomotion4d-convert-image-to-usd \
        patient_ct.nii.gz \
        --output patient_heart.usd
 
@@ -66,7 +66,7 @@ Pass a single ``.nii.gz`` file to produce a static USD scene.
 
    import physiomotion4d as pm4d
 
-   wf = pm4d.WorkflowConvertHeartGatedCTToUSD()
+   wf = pm4d.WorkflowConvertImageToUSD()
    wf.input_image = "patient_ct.nii.gz"
    wf.output_file = "patient_heart.usd"
    wf.run_workflow()
@@ -88,7 +88,7 @@ animated USD scene.  Use ``--fps`` to control playback rate and
 
 .. code-block:: bash
 
-   physiomotion4d-convert-heart-gated-ct-to-usd \
+   physiomotion4d-convert-image-to-usd \
        phase_*.nii.gz \
        --output heart_animated.usd \
        --fps 25 \
@@ -101,7 +101,7 @@ animated USD scene.  Use ``--fps`` to control playback rate and
    import glob
    import physiomotion4d as pm4d
 
-   wf = pm4d.WorkflowConvertHeartGatedCTToUSD()
+   wf = pm4d.WorkflowConvertImageToUSD()
    wf.input_images = sorted(glob.glob("phase_*.nii.gz"))
    wf.output_file  = "heart_animated.usd"
    wf.fps            = 25

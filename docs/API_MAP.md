@@ -210,7 +210,7 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def set_mass_preservation(self, enable)` (line 125): Enable or disable mass preservation constraint.
   - `def preprocess(self, image, modality='ct')` (line 142): Preprocess the image for ICON registration.
   - `def registration_method(self, moving_image, moving_mask=None, moving_labelmap=None, moving_image_pre=None, initial_forward_transform=None)` (line 162): Register moving image to fixed image using ICON registration algorithm.
-  - `def finetune(self, image_pairs, output_model_filename, mask_pairs=None, epochs=1, learning_rate=DEFAULT_FINETUNE_LEARNING_RATE)` (line 336): Fine-tune the ICON network on a cohort of image pairs.
+  - `def finetune(self, image_pairs, output_model_filename, mask_pairs=None, epochs=1, learning_rate=DEFAULT_FINETUNE_LEARNING_RATE)` (line 386): Fine-tune the ICON network on a cohort of image pairs.
 
 ## src/physiomotion4d/register_models_distance_maps.py
 
@@ -460,17 +460,17 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 - **class WorkflowFitStatisticalModelToPatient** (line 56): Register anatomical models using multi-stage ICP, mask-based, and image-based
   - `def __init__(self, template_model, patient_models=None, patient_image=None, segmentation_method='HeartSimpleware', log_level=logging.INFO)` (line 135): Initialize the model-to-image-and-model registration pipeline.
-  - `def set_mask_dilation_mm(self, mask_dilation_mm)` (line 356): Set mask dilation amount for auto-generated masks.
-  - `def set_roi_dilation_mm(self, roi_dilation_mm)` (line 365): Set ROI mask dilation amount.
-  - `def set_use_pca_registration(self, use_pca_registration, pca_model=None, pca_number_of_modes=0, pca_uses_surface=True)` (line 374): Set whether to use PCA-based registration and provide the PCA model.
-  - `def set_use_mask_to_mask_registration(self, use_mask_to_mask_registration)` (line 409): Set whether to use mask-to-mask registration.
-  - `def set_use_mask_to_image_registration(self, use_mask_to_image_registration, template_labelmap=None, template_labelmap_organ_mesh_ids=None, template_labelmap_organ_extra_ids=None, template_labelmap_background_ids=None)` (line 420): Set whether to use mask-to-image registration.
-  - `def register_model_to_model_icp(self)` (line 494): Perform ICP alignment of template model to patient model.
-  - `def register_model_to_model_pca(self)` (line 552): Perform PCA-based registration after ICP alignment.
-  - `def register_mask_to_mask(self, use_icon_refinement=False)` (line 678): Perform mask-based deformable registration of model to patient model.
-  - `def register_labelmap_to_image(self, use_icon_refinement=False)` (line 746): Perform labelmap-to-image refinement.
-  - `def transform_model(self, base_model=None)` (line 866): Apply registration transforms to the model.
-  - `def run_workflow(self, use_icon_registration_refinement=False)` (line 931): Execute the complete multi-stage registration workflow.
+  - `def set_mask_dilation_mm(self, mask_dilation_mm)` (line 361): Set mask dilation amount for auto-generated masks.
+  - `def set_roi_dilation_mm(self, roi_dilation_mm)` (line 370): Set ROI mask dilation amount.
+  - `def set_use_pca_registration(self, use_pca_registration, pca_model=None, pca_number_of_modes=0, pca_uses_surface=True)` (line 379): Set whether to use PCA-based registration and provide the PCA model.
+  - `def set_use_mask_to_mask_registration(self, use_mask_to_mask_registration)` (line 414): Set whether to use mask-to-mask registration.
+  - `def set_use_mask_to_image_registration(self, use_mask_to_image_registration, template_labelmap=None, template_labelmap_organ_mesh_ids=None, template_labelmap_organ_extra_ids=None, template_labelmap_background_ids=None)` (line 425): Set whether to use mask-to-image registration.
+  - `def register_model_to_model_icp(self)` (line 499): Perform ICP alignment of template model to patient model.
+  - `def register_model_to_model_pca(self)` (line 557): Perform PCA-based registration after ICP alignment.
+  - `def register_mask_to_mask(self, use_icon_refinement=False)` (line 683): Perform mask-based deformable registration of model to patient model.
+  - `def register_labelmap_to_image(self, use_icon_refinement=False)` (line 751): Perform labelmap-to-image refinement.
+  - `def transform_model(self, base_model=None)` (line 871): Apply registration transforms to the model.
+  - `def run_workflow(self, use_icon_registration_refinement=False)` (line 936): Execute the complete multi-stage registration workflow.
 
 ## src/physiomotion4d/workflow_reconstruct_highres_4d_ct.py
 
