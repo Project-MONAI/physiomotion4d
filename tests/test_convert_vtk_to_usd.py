@@ -32,7 +32,6 @@ def _make_poly(label_ids: list[int] | None = None) -> pv.PolyData:
     return mesh
 
 
-@pytest.mark.requires_data
 @pytest.mark.slow
 class TestConvertVTKToUSD:
     """Test suite for VTK to USD PolyMesh conversion."""

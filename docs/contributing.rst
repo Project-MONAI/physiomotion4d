@@ -261,8 +261,14 @@ Run Tests
    # Run with coverage
    pytest tests/ --cov=src/physiomotion4d --cov-report=html
 
-   # Skip slow tests
-   pytest tests/ -m "not slow and not requires_data"
+   # Default invocation auto-skips slow/GPU/Simpleware/experiment/tutorial
+   pytest tests/
+
+   # Opt into specific buckets
+   pytest tests/ --run-slow
+   pytest tests/ --run-gpu --run-slow   # typical local GPU profile
+   # Self-hosted CI GPU runner enables every bucket:
+   #   --run-gpu --run-slow --run-simpleware --run-experiments --run-tutorials
 
 Documentation
 =============

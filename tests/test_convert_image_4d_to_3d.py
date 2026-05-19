@@ -13,7 +13,6 @@ import pytest
 from physiomotion4d.convert_image_4d_to_3d import ConvertImage4DTo3D
 
 
-@pytest.mark.requires_data
 class TestConvertImage4DTo3D:
     """Test suite for converting a 4D image to a 3D time series."""
 

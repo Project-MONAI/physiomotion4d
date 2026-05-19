@@ -8,9 +8,13 @@ name: CI
 # - GPU tests: Self-hosted runners with CUDA support
 # - Code quality: Linting and formatting checks
 #
-# Test markers:
-# - requires_data: Tests that need external data downloads
-# - slow: Tests that are computationally intensive or require GPU
+# Test markers (gated by opt-in pytest flags; default = skip):
+# - slow            -> --run-slow
+# - requires_gpu    -> --run-gpu
+# - requires_simpleware -> --run-simpleware  (also implies GPU)
+# - experiment      -> --run-experiments
+# - tutorial        -> --run-tutorials
+# Tests that need external data download it automatically via fixtures.
 
 on:
   push:
@@ -101,16 +105,16 @@ jobs:
       run: |
         pip list
 
-    - name: Run unit tests (fast, no external data) - Ubuntu
+    - name: Run unit tests (fast, no GPU/slow/experiment) - Ubuntu
       if: matrix.os == 'ubuntu-latest'
       run: |
         xvfb-run -a --server-args="-screen 0 1024x768x24" \
-          pytest tests/ -v -m "not slow and not requires_data and not experiment" --cov=physiomotion4d --cov-report=xml --cov-report=term --cov-report=html
+          pytest tests/ -v --cov=physiomotion4d --cov-report=xml --cov-report=term --cov-report=html
 
-    - name: Run unit tests (fast, no external data) - Windows
+    - name: Run unit tests (fast, no GPU/slow/experiment) - Windows
       if: matrix.os == 'windows-latest'
       run: |
-        pytest tests/ -v -m "not slow and not requires_data and not experiment" --cov=physiomotion4d --cov-report=xml --cov-report=term --cov-report=html
+        pytest tests/ -v --cov=physiomotion4d --cov-report=xml --cov-report=term --cov-report=html
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
@@ -224,13 +228,13 @@ jobs:
 
     - name: Run contour tools tests
       run: |
-        pytest tests/test_contour_tools.py -v -m "not slow" --cov=physiomotion4d --cov-append --cov-report=xml
+        pytest tests/test_contour_tools.py -v --cov=physiomotion4d --cov-append --cov-report=xml
       continue-on-error: true
 
     - name: Run USD conversion tests
       run: |
         xvfb-run -a --server-args="-screen 0 1024x768x24" \
-          pytest tests/test_convert_vtk_to_usd_polymesh.py -v -m "not slow" --cov=physiomotion4d --cov-append --cov-report=xml
+          pytest tests/test_convert_vtk_to_usd_polymesh.py -v --cov=physiomotion4d --cov-append --cov-report=xml
       continue-on-error: true
 
     - name: Run USD utility tests
@@ -242,7 +246,7 @@ jobs:
     - name: Run all integration tests
       run: |
         xvfb-run -a --server-args="-screen 0 1024x768x24" \
-          pytest tests/ -v -m "not slow and not experiment and not requires_gpu"
+          pytest tests/ -v
       continue-on-error: true
 
     - name: Upload coverage to Codecov
@@ -325,8 +329,12 @@ jobs:
         pip list
 
     - name: Run GPU tests
+      # External self-hosted GPU runner: enable every opt-in bucket.
+      # Tests whose host requirements (e.g. a licensed Simpleware install)
+      # aren't met on the runner will runtime-skip cleanly via their
+      # internal availability guards.
       run: |
-        pytest tests/ -v -m "not slow and not experiment" --cov=physiomotion4d --cov-report=xml --cov-report=term --cov-report=html
+        pytest tests/ -v --run-gpu --run-slow --run-simpleware --run-experiments --run-tutorials --cov=physiomotion4d --cov-report=xml --cov-report=term --cov-report=html
       env:
         CUDA_VISIBLE_DEVICES: 0
 
@@ -404,11 +412,14 @@ jobs:
 #   They execute end-to-end workflows that may take multiple hours
 #
 # To run locally:
-#   pytest tests/ -v -m "slow"  # Run all slow tests
-#   pytest tests/test_register_images_ants.py -v
-#   pytest tests/test_register_images_icon.py -v
-#   pytest tests/test_segment_chest_total_segmentator.py -v
+#   pytest tests/ -v --run-slow                 # Run all slow tests
+#   pytest tests/ -v --run-gpu --run-slow       # GPU + slow (typical local dev profile)
+#   pytest tests/ -v --run-simpleware --run-gpu --run-slow  # Full Simpleware coverage
+#   pytest tests/test_register_images_ants.py -v --run-slow
+#
+# Self-hosted GPU runner enables ALL buckets:
+#   --run-gpu --run-slow --run-simpleware --run-experiments --run-tutorials
 #
 # To run experiment tests (manual only, extremely slow):
-#   pytest tests/test_experiments.py -v -m experiment
-#   pytest tests/test_experiments.py::test_experiment_heart_gated_ct_to_usd -v
+#   pytest tests/test_experiments.py -v --run-experiments
+#   pytest tests/test_experiments.py::test_experiment_heart_gated_ct_to_usd -v --run-experiments

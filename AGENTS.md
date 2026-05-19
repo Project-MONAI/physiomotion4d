@@ -29,7 +29,11 @@ Non-Python tools used by contributor workflows:
   `self.log_debug()` — never `print()`. Standalone scripts may use `print()`.
 - Single quotes for strings; double quotes for docstrings. 88-char line limit.
 - Full type hints (`mypy` strict). Use `Optional[X]` not `X | None`.
-- Run `py -m pytest tests/ -m "not slow and not requires_data" -v` to verify changes.
+- Run `py -m pytest tests/ -v` to verify changes. Slow / GPU / Simpleware /
+  experiment / tutorial tests are auto-skipped; opt in per bucket with
+  `--run-slow`, `--run-gpu`, `--run-simpleware`, `--run-experiments`,
+  `--run-tutorials`. The `requires_data` marker no longer exists — tests that
+  need external data download it automatically via the session fixtures.
 - Consult `docs/API_MAP.md` to locate classes and methods before searching manually.
 
 ## Implementation role
@@ -41,11 +45,27 @@ Non-Python tools used by contributor workflows:
 
 ## Testing role
 
-- Prefer synthetic `itk.Image` and small `pv.PolyData` surfaces — not real patient data.
-- State image shape and axis order in every test docstring: e.g. `shape (X, Y, Z, T)`.
-- Keep synthetic volumes ≤64 voxels per side for speed.
-- Mark tests that genuinely need real data with `@pytest.mark.requires_data`.
-- Use `test_tools.py` baseline utilities for surface and image regression checks.
+- **Strongly prefer real (downloaded) test data over synthetic data.** Request
+  the session fixtures (`test_directories`, `download_test_data`,
+  `test_images`) so the standard datasets are fetched automatically on first
+  use. Real data exercises preprocessing, resampling, dtype handling, and
+  world-frame metadata paths that synthetic toy volumes silently bypass.
+- Only fall back to synthetic `itk.Image` or `pv.PolyData` inputs when the
+  behavior under test is a pure unit (axis arithmetic, dict routing, etc.)
+  where real data adds no signal, or when real data would push the test into
+  a slow/GPU/Simpleware bucket that doesn't fit the test's purpose. Keep
+  synthetic volumes ≤64 voxels per side and say so in the docstring.
+- State image shape and axis order in every test docstring: e.g.
+  `shape (X, Y, Z, T) = (64, 64, 32, 1), LPS world frame`.
+- **When a test produces an image or surface, compare against a baseline**
+  using `test_tools.py` utilities (e.g. `TestTools`) and store baselines under
+  `tests/baselines/` (Git LFS-tracked). Run with `--create-baselines` to
+  materialize missing baselines on first use.
+- Mark tests that need a GPU, a slow runtime, or a licensed Simpleware
+  install with `@pytest.mark.requires_gpu`, `@pytest.mark.slow`, or
+  `@pytest.mark.requires_simpleware` so they fall into the right opt-in
+  bucket. Tests that just need downloadable data need no marker — the
+  fixture chain handles it.
 
 ## Documentation role
 

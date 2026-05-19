@@ -102,7 +102,9 @@ Development Notes
 * Document the key set the segmenter produces; downstream callers should
   check membership rather than assume a fixed schema.
 * Keep tests synthetic unless real model/data behavior is being validated.
-* Mark real-data tests with ``requires_data``.
+* Real-data tests use the session fixtures (data downloads automatically);
+  mark GPU- or Simpleware-bound tests with ``requires_gpu`` /
+  ``requires_simpleware`` so they fall into the right opt-in bucket.
 
 See Also
 ========

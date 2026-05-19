@@ -18,7 +18,7 @@ from physiomotion4d.register_images_icon import RegisterImagesICON
 from physiomotion4d.transform_tools import TransformTools
 
 
-@pytest.mark.requires_data
+@pytest.mark.requires_gpu
 @pytest.mark.slow
 class TestRegisterImagesICON:
     """Test suite for ICON-based image registration."""

@@ -20,7 +20,6 @@ from physiomotion4d import (
 )
 
 
-@pytest.mark.requires_data
 @pytest.mark.slow
 class TestRegisterTimeSeriesImages:
     """Test suite for time series image registration."""

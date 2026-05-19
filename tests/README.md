@@ -80,35 +80,61 @@ uv pip install -e ".[test]"
 ```
 
 ### Run Tests
+
+The fast path is the default. Heavy buckets (slow tests, GPU tests, Simpleware
+tests, experiment notebooks, tutorial scripts) are **auto-skipped** unless you
+pass their `--run-<bucket>` flag. Tests that need downloadable data fetch it
+through the session fixtures and run by default — there is no `requires_data`
+marker any more.
+
 ```bash
 # Fast tests only (recommended for development)
-pytest tests/ -m "not slow" -v
+pytest tests/ -v
 
 # Specific test module
 pytest tests/test_usd_merge.py -v
+```
 
-# All tests (including slow registration tests)
-# Note: Experiment tests are automatically skipped
-pytest tests/ -v
+### Opt-in Buckets (`--run-*` flags)
 
-# Run experiment tests (EXTREMELY SLOW - hours to complete)
-# NOTE: Requires --run-experiments flag!
+Each flag enables one marker family. Flags compose, so you can stack them.
+
+| Flag | Enables tests marked | Typical use |
+|---|---|---|
+| `--run-slow` | `slow` | Slow registration / segmentation tests (>30 s) |
+| `--run-gpu` | `requires_gpu` | CUDA-dependent tests (ICON, Simpleware, etc.) |
+| `--run-simpleware` | `requires_simpleware` | Need a licensed Synopsys Simpleware Medical install (also marked `requires_gpu`) |
+| `--run-experiments` | `experiment` | End-to-end experiment notebooks (hours to run) |
+| `--run-tutorials` | `tutorial` | Tutorial scripts run end-to-end |
+
+```bash
+# Slow tests
+pytest tests/ -v --run-slow
+
+# Typical local GPU profile. The self-hosted CI GPU runner enables every
+# bucket: --run-gpu --run-slow --run-simpleware --run-experiments --run-tutorials
+pytest tests/ -v --run-gpu --run-slow
+
+# Full Simpleware coverage (requires Simpleware Medical installed locally)
+pytest tests/ -v --run-simpleware --run-gpu --run-slow
+
+# Experiment tests (EXTREMELY SLOW — hours to complete)
 pytest tests/test_experiments.py -v --run-experiments
 
-# Run a specific experiment
+# A single experiment by name
 pytest tests/test_experiments.py::test_experiment_heart_gated_ct_to_usd -v -s --run-experiments
 ```
 
 ### Common Test Commands
 ```bash
-# Skip GPU-dependent tests
-pytest tests/ --ignore=tests/test_segment_chest_total_segmentator.py
-
 # Run with coverage
 pytest tests/ --cov=src/physiomotion4d --cov-report=html
 
-# Run specific test class or method
+# Run a specific test class or method
 pytest tests/test_usd_merge.py::TestUSDMerge::test_merge_usd_files_copy_method -v
+
+# Create missing regression baselines instead of failing
+pytest tests/ --create-baselines
 ```
 
 **For detailed instructions**, see [TESTING_GUIDE.md](TESTING_GUIDE.md)
@@ -124,12 +150,22 @@ All test runs automatically generate a comprehensive timing report at the end sh
 - **Data Management**: Automatic download with intelligent fallback
 - **Output Organization**: Results saved to `tests/results/` by module
 
-### Test Markers
-- `@pytest.mark.slow` - Tests taking >30 seconds (registration, segmentation)
-- `@pytest.mark.requires_data` - Tests requiring external data download
-- `@pytest.mark.integration` - Integration tests vs unit tests
-- `@pytest.mark.experiment` - **Experiment tests (EXTREMELY SLOW, manual only, NOT in CI/CD)**
-- `@pytest.mark.timeout(seconds)` - Per-test timeout override
+### Test Markers (all opt-in via a matching `--run-*` flag)
+- `@pytest.mark.slow` — Tests taking >30 seconds. Opt in: `--run-slow`.
+- `@pytest.mark.requires_gpu` — Tests needing CUDA. Opt in: `--run-gpu`.
+- `@pytest.mark.requires_simpleware` — Tests needing a licensed Synopsys
+  Simpleware Medical install. Opt in: `--run-simpleware`. (Combine with
+  `--run-gpu` and `--run-slow`.)
+- `@pytest.mark.experiment` — End-to-end experiment notebooks (EXTREMELY
+  SLOW, never in CI). Opt in: `--run-experiments`.
+- `@pytest.mark.tutorial` — Tutorial scripts run end-to-end. Opt in:
+  `--run-tutorials`.
+- `@pytest.mark.integration` — Integration tests vs unit tests (filter-only).
+- `@pytest.mark.timeout(seconds)` — Per-test timeout override.
+
+The previous `requires_data` marker has been retired: tests that need
+downloadable data request the session fixtures (`test_directories`,
+`download_test_data`, `test_images`) and the data is fetched on first use.
 
 ### Test Dependencies
 
@@ -196,7 +232,9 @@ Tests automatically run on pull requests via GitHub Actions. The CI workflow:
 When creating new tests:
 
 1. **Name properly**: Use `test_` prefix for files and methods
-2. **Add markers**: `@pytest.mark.slow`, `@pytest.mark.requires_data`, etc.
+2. **Add markers**: `@pytest.mark.slow`, `@pytest.mark.requires_gpu`,
+   `@pytest.mark.requires_simpleware`, etc. — each one places the test in
+   its corresponding `--run-*` opt-in bucket.
 3. **Use fixtures**: Define shared fixtures in `conftest.py`
 4. **Document well**: Clear docstrings explaining what's validated
 5. **Organize outputs**: Save results to `tests/results/<module_name>/`

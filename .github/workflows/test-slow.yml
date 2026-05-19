@@ -72,8 +72,12 @@ jobs:
         "
 
     - name: Run slow tests
+      # Self-hosted GPU runner: enable every opt-in bucket.
+      # Tests whose host requirements (e.g. a licensed Simpleware install)
+      # aren't met on the runner will runtime-skip cleanly via their
+      # internal availability guards.
       run: |
-        pytest tests/ -v -m "slow and not experiment" --cov=physiomotion4d --cov-report=xml --cov-report=term
+        pytest tests/ -v --run-slow --run-gpu --run-simpleware --run-experiments --run-tutorials --cov=physiomotion4d --cov-report=xml --cov-report=term
       env:
         CUDA_VISIBLE_DEVICES: 0
 
