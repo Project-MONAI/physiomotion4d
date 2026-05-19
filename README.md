@@ -632,27 +632,34 @@ See `docs/contributing.rst` for complete IDE setup instructions.
 PhysioMotion4D includes comprehensive tests covering the complete pipeline from data download to USD generation.
 
 ```bash
-# Run all tests
-pytest tests/
+# Fast tests (recommended for development).
+# slow / GPU / Simpleware / experiment / tutorial tests are auto-skipped
+# unless their opt-in flag is passed (see below). Tests that need
+# downloadable data fetch it automatically via the session fixtures.
+pytest tests/ -v
 
-# Run fast tests only (recommended for development)
-pytest tests/ -m "not slow and not requires_data" -v
+# Opt-in buckets (each flag enables one marker family)
+pytest tests/ -v --run-slow            # tests marked 'slow'
+pytest tests/ -v --run-gpu             # tests marked 'requires_gpu'
+pytest tests/ -v --run-simpleware      # tests marked 'requires_simpleware'
+pytest tests/ -v --run-experiments     # tests marked 'experiment'
+pytest tests/ -v --run-tutorials       # tests marked 'tutorial'
+
+# Typical local GPU profile. The self-hosted CI GPU runner enables every
+# bucket: --run-gpu --run-slow --run-simpleware --run-experiments --run-tutorials
+pytest tests/ -v --run-gpu --run-slow
 
 # Run specific test categories
 pytest tests/test_usd_merge.py -v                           # USD merge functionality
 pytest tests/test_usd_time_preservation.py -v               # Time-varying data preservation
-pytest tests/test_register_images_ants.py -v                # ANTs registration
-pytest tests/test_register_images_greedy.py -v             # Greedy registration
-pytest tests/test_register_images_icon.py -v                # Icon registration
-pytest tests/test_register_time_series_images.py -v         # Time series registration
-pytest tests/test_segment_chest_total_segmentator.py -v     # TotalSegmentator
+pytest tests/test_register_images_ants.py -v --run-slow     # ANTs registration
+pytest tests/test_register_images_greedy.py -v              # Greedy registration
+pytest tests/test_register_images_icon.py -v --run-gpu --run-slow      # Icon registration (GPU)
+pytest tests/test_register_time_series_images.py -v --run-slow         # Time series registration
+pytest tests/test_segment_chest_total_segmentator.py -v --run-slow     # TotalSegmentator
 pytest tests/test_contour_tools.py -v                       # Mesh and contour tools
 pytest tests/test_image_tools.py -v                         # Image processing utilities
-pytest tests/test_transform_tools.py -v                     # Transform operations
-
-# Skip GPU-dependent tests (segmentation and registration)
-pytest tests/ --ignore=tests/test_segment_chest_total_segmentator.py \
-              --ignore=tests/test_register_images_icon.py
+pytest tests/test_transform_tools.py -v --run-slow          # Transform operations
 
 # Run with coverage report
 pytest tests/ --cov=src/physiomotion4d --cov-report=html
@@ -742,9 +749,9 @@ Use `/test-feature` to get a test plan and a complete pytest file using syntheti
 /test-feature RegisterImagesANTs with a pair of small synthetic ITK images
 ```
 
-The agent will state image shapes and axis orders in every test docstring, mark
-any real-data dependency with `@pytest.mark.requires_data`, and show the exact
-run command.
+The agent will state image shapes and axis orders in every test docstring, wire
+real-data dependencies through the session fixtures (so the data is downloaded
+on first use), and show the exact run command.
 
 ---
 

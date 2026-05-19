@@ -60,7 +60,6 @@ class TestDataDownloadTools:
         assert DataDownloadTools.VerifyCHOPValve4DData(tmp_path)
 
 
-@pytest.mark.requires_data
 class TestDownloadHeartData:
     """Test suite for downloading and converting Slicer-Heart-CT data."""
 

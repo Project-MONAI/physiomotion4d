@@ -12,14 +12,18 @@ pytest tests that exercise the library's scientific pipelines.
 - `tests/conftest.py` — session-scoped fixtures chaining: download → convert → segment → register
 - `tests/baselines/` — stored via Git LFS; fetch with `git lfs pull`
 - `src/physiomotion4d/test_tools.py` — baseline comparison utilities
-- Markers: `slow`, `requires_gpu`, `requires_data`, `experiment`
+- Markers (all opt-in via `--run-<bucket>`): `slow`, `requires_gpu`,
+  `requires_simpleware`, `experiment`, `tutorial`. Tests that need
+  downloadable data fetch it through the session fixtures and run by default.
 
 ## Run commands (use `py`, not `python`)
 
 ```bash
-py -m pytest tests/ -m "not slow and not requires_data" -v   # fast, recommended
+py -m pytest tests/ -v                                        # fast, recommended (slow/GPU/etc auto-skipped)
 py -m pytest tests/test_contour_tools.py -v                   # single file
-py -m pytest tests/test_contour_tools.py::TestContourTools -v      # single class
+py -m pytest tests/test_contour_tools.py::TestContourTools -v # single class
+py -m pytest tests/ -v --run-slow                             # opt into slow tests
+py -m pytest tests/ -v --run-gpu --run-slow                   # typical local GPU profile (CI runner adds --run-simpleware --run-experiments --run-tutorials)
 py -m pytest tests/ --create-baselines                        # create missing baselines
 ```
 
@@ -28,7 +32,9 @@ py -m pytest tests/ --create-baselines                        # create missing b
 1. Read the implementation file first; understand the public interface.
 2. Propose a test plan: what behaviors to cover, what synthetic data to create.
 3. Build synthetic `itk.Image` objects or small `pv.PolyData` surfaces — 32–64 voxels/side.
-   Never depend on real data unless unavoidable; mark those `@pytest.mark.requires_data`.
+   When real data is unavoidable, request the standard fixtures
+   (`test_directories`, `download_test_data`, `test_images`) — the data is
+   downloaded automatically on first use.
 4. State image shape and axis order in the test docstring:
    e.g. `"""...image shape: (64, 64, 32), axes: X, Y, Z."""`
 5. Use `test_tools.py` baseline utilities for surface and image regression checks.

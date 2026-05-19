@@ -342,7 +342,6 @@ def test_experiment_reconstruct_4dct() -> None:
 
 @pytest.mark.experiment
 @pytest.mark.slow
-@pytest.mark.requires_data
 @pytest.mark.xdist_group(name="experiment_heart_vtk")
 def test_experiment_heart_vtk_series_to_usd() -> None:
     """
@@ -362,7 +361,6 @@ def test_experiment_heart_vtk_series_to_usd() -> None:
 @pytest.mark.experiment
 @pytest.mark.slow
 @pytest.mark.requires_gpu
-@pytest.mark.requires_data
 @pytest.mark.xdist_group(name="experiment_heart_gated_ct")
 def test_experiment_heart_gated_ct_to_usd() -> None:
     """
@@ -385,7 +383,6 @@ def test_experiment_heart_gated_ct_to_usd() -> None:
 
 @pytest.mark.experiment
 @pytest.mark.slow
-@pytest.mark.requires_data
 @pytest.mark.xdist_group(name="experiment_convert_vtk_to_usd")
 def test_experiment_convert_vtk_to_usd() -> None:
     """
@@ -404,7 +401,6 @@ def test_experiment_convert_vtk_to_usd() -> None:
 
 @pytest.mark.experiment
 @pytest.mark.slow
-@pytest.mark.requires_data
 @pytest.mark.xdist_group(name="experiment_create_statistical_model")
 def test_experiment_create_statistical_model() -> None:
     """
@@ -428,7 +424,6 @@ def test_experiment_create_statistical_model() -> None:
 @pytest.mark.experiment
 @pytest.mark.slow
 @pytest.mark.requires_gpu
-@pytest.mark.requires_data
 @pytest.mark.xdist_group(name="experiment_heart_statistical_model")
 def test_experiment_heart_statistical_model_to_patient() -> None:
     """
@@ -462,7 +457,6 @@ def test_experiment_heart_statistical_model_to_patient() -> None:
 @pytest.mark.experiment
 @pytest.mark.slow
 @pytest.mark.requires_gpu
-@pytest.mark.requires_data
 @pytest.mark.xdist_group(name="experiment_lung_gated_ct")
 def test_experiment_lung_gated_ct_to_usd() -> None:
     """

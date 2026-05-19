@@ -17,7 +17,6 @@ import pyvista as pv
 from physiomotion4d.contour_tools import ContourTools
 
 
-@pytest.mark.requires_data
 @pytest.mark.slow
 class TestContourTools:
     """Test suite for ContourTools functionality."""

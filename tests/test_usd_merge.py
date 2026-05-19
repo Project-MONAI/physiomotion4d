@@ -69,7 +69,6 @@ def analyze_usd_file(filepath: str) -> dict[str, Any]:
     }
 
 
-@pytest.mark.requires_data
 class TestUSDMerge:
     """Test suite for USD file merging."""
 

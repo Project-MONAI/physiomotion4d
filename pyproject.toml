@@ -279,9 +279,9 @@ pythonpath = ["."]
 markers = [
     "unit: marks tests as unit tests (fast, isolated)",
     "integration: marks tests as integration tests (slower, multiple components)",
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "requires_gpu: marks tests that require GPU/CUDA support",
-    "requires_data: marks tests that require external data download",
+    "slow: marks tests as slow (skipped by default; opt-in via --run-slow)",
+    "requires_gpu: marks tests that require GPU/CUDA support (opt-in via --run-gpu)",
+    "requires_simpleware: marks tests that require a local Synopsys Simpleware Medical installation (opt-in via --run-simpleware)",
     "experiment: marks tests that run experiment scripts (extremely slow, manual only)",
     "tutorial: marks tests that run tutorial scripts (data/GPU gated, manual only)",
     "xdist_group: marks tests to run in the same pytest-xdist worker (prevents parallel conflicts)"

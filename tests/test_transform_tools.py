@@ -19,7 +19,6 @@ from physiomotion4d.image_tools import ImageTools
 from physiomotion4d.transform_tools import TransformTools
 
 
-@pytest.mark.requires_data
 @pytest.mark.slow
 class TestTransformTools:
     """Test suite for TransformTools functionality."""

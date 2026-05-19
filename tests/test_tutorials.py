@@ -74,7 +74,6 @@ def _run_tutorial_script(script_name: str) -> dict[str, Any]:
 
 
 @pytest.mark.tutorial
-@pytest.mark.requires_data
 @pytest.mark.slow
 class TestTutorial01HeartGatedCTToUSD:
     """End-to-end test for tutorial_01_heart_gated_ct_to_usd.py."""
@@ -102,7 +101,6 @@ class TestTutorial01HeartGatedCTToUSD:
 
 
 @pytest.mark.tutorial
-@pytest.mark.requires_data
 @pytest.mark.slow
 class TestTutorial02CTToVTK:
     """End-to-end test for tutorial_02_ct_to_vtk.py."""
@@ -129,7 +127,6 @@ class TestTutorial02CTToVTK:
 
 
 @pytest.mark.tutorial
-@pytest.mark.requires_data
 @pytest.mark.slow
 class TestTutorial03CreateStatisticalModel:
     """End-to-end test for tutorial_03_create_statistical_model.py."""
@@ -157,7 +154,6 @@ class TestTutorial03CreateStatisticalModel:
 
 
 @pytest.mark.tutorial
-@pytest.mark.requires_data
 @pytest.mark.slow
 class TestTutorial04FitStatisticalModelToPatient:
     """End-to-end test for tutorial_04_fit_statistical_model_to_patient.py."""
@@ -201,7 +197,6 @@ class TestTutorial04FitStatisticalModelToPatient:
 
 
 @pytest.mark.tutorial
-@pytest.mark.requires_data
 @pytest.mark.slow
 class TestTutorial05VTKToUSD:
     """End-to-end test for tutorial_05_vtk_to_usd.py."""
@@ -242,7 +237,6 @@ class TestTutorial05VTKToUSD:
 
 
 @pytest.mark.tutorial
-@pytest.mark.requires_data
 @pytest.mark.slow
 class TestTutorial06ReconstructHighres4DCT:
     """End-to-end test for tutorial_06_reconstruct_highres_4d_ct.py."""

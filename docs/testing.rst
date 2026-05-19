@@ -2,28 +2,45 @@
 Testing
 =======
 
-Use the fast, no-real-data test subset during development:
+Run the fast test suite during development:
 
 .. code-block:: bash
 
-   pytest tests/ -m "not slow and not requires_data" -v
+   pytest tests/ -v
+
+Slow, GPU, Simpleware, experiment, and tutorial tests are auto-skipped unless
+their opt-in flag is passed. Tests that depend on downloadable data fetch it
+automatically via the session fixtures, so no marker filter is needed for them.
+
+Opt-in Buckets
+==============
+
+Each ``--run-<bucket>`` flag enables one marker family:
+
+.. code-block:: bash
+
+   pytest tests/ -v --run-slow         # tests marked 'slow'
+   pytest tests/ -v --run-gpu          # tests marked 'requires_gpu'
+   pytest tests/ -v --run-simpleware   # tests marked 'requires_simpleware'
+   pytest tests/ -v --run-experiments  # tests marked 'experiment'
+   pytest tests/ -v --run-tutorials    # tests marked 'tutorial'
+
+Flags compose. A typical local GPU profile is:
+
+.. code-block:: bash
+
+   pytest tests/ -v --run-gpu --run-slow
+
+The self-hosted CI GPU runner enables every bucket:
+
+.. code-block:: bash
+
+   pytest tests/ -v --run-gpu --run-slow --run-simpleware --run-experiments --run-tutorials
 
 Test Categories
 ===============
 
-PhysioMotion4D uses pytest markers and command-line flags to keep expensive
-work separate from normal development tests.
-
 .. code-block:: bash
-
-   # Fast development signal
-   pytest tests/ -m "not slow and not requires_data" -v
-
-   # Include tutorial execution tests
-   pytest tests/test_tutorials.py --run-tutorials -v
-
-   # Include experiment tests
-   pytest tests/ --run-experiments -v
 
    # CLI help smoke tests
    pytest tests/test_cli_smoke.py -v
@@ -45,15 +62,21 @@ Specific Areas
 Real Data and GPU Tests
 =======================
 
-Tests that require downloaded or manually prepared datasets are marked
-``requires_data``. Tutorial tests are opt-in through ``--run-tutorials`` and
-preserve tutorial dependencies, such as Tutorial 4 consuming Tutorial 3 output.
+Tests that need downloadable data request the session fixtures
+(``test_directories``, ``download_test_data``, ``test_images``); the data is
+downloaded on first use, so these tests run by default. GPU-bound tests are
+marked ``requires_gpu`` (opt-in via ``--run-gpu``); Simpleware-bound tests are
+marked ``requires_simpleware`` (opt-in via ``--run-simpleware`` and require a
+licensed Simpleware Medical installation locally).
 
 Continuous Integration
 ======================
 
-CI should run the fast subset by default and keep data-heavy tutorials and
-experiments behind explicit flags.
+CI runs the fast subset by default. The self-hosted GPU runner invokes pytest
+with every opt-in flag enabled
+(``--run-gpu --run-slow --run-simpleware --run-experiments --run-tutorials``);
+tests whose host requirements aren't met (e.g. a licensed Simpleware install
+on a runner without one) runtime-skip cleanly via their internal guards.
 
 See Also
 ========

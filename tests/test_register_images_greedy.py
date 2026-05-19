@@ -17,7 +17,6 @@ from physiomotion4d.register_images_greedy import RegisterImagesGreedy
 from physiomotion4d.transform_tools import TransformTools
 
 
-@pytest.mark.requires_data
 @pytest.mark.slow
 class TestRegisterImagesGreedy:
     """Test suite for Greedy-based image registration."""

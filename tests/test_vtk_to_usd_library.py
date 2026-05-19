@@ -265,7 +265,6 @@ class TestSyntheticConversion:
         assert mesh.GetPointsAttr().GetTimeSamples() == time_codes
 
 
-@pytest.mark.requires_data
 class TestVTKToUSDConversion:
     """Test ConvertVTKToUSD on optional real VTK data."""
 

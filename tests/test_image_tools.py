@@ -236,7 +236,6 @@ class TestImageTools:
 
         print("Roundtrip vector conversion successful")
 
-    @pytest.mark.requires_data
     @pytest.mark.slow
     def test_imwrite_imread_vd3(
         self,

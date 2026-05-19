@@ -99,7 +99,10 @@ New runtime segmentation classes should:
 5. Document the key set the segmenter produces; downstream callers should
    check membership rather than assume a fixed schema.
 
-Keep synthetic tests small and mark real-data tests with ``requires_data``.
+Keep synthetic tests small. Real-data tests pull data through the session
+fixtures (downloaded on first use); mark GPU- or Simpleware-bound tests with
+``requires_gpu`` / ``requires_simpleware`` so they fall into the right
+opt-in bucket.
 
 See Also
 ========

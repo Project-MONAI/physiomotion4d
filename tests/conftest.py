@@ -47,6 +47,27 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="Run tutorial tests (data/GPU gated tutorial scripts)",
     )
     parser.addoption(
+        "--run-simpleware",
+        action="store_true",
+        default=False,
+        help=(
+            "Run tests that require a local Synopsys Simpleware Medical "
+            "installation (ASCardio module)"
+        ),
+    )
+    parser.addoption(
+        "--run-slow",
+        action="store_true",
+        default=False,
+        help="Run tests marked 'slow' (skipped by default)",
+    )
+    parser.addoption(
+        "--run-gpu",
+        action="store_true",
+        default=False,
+        help="Run tests marked 'requires_gpu' (skipped by default)",
+    )
+    parser.addoption(
         "--create-baselines",
         action="store_true",
         default=False,
@@ -72,6 +93,11 @@ def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line(
         "markers",
         "tutorial: marks tests that run tutorial scripts (data/GPU gated, manual only)",
+    )
+    config.addinivalue_line(
+        "markers",
+        "requires_simpleware: marks tests that need a local Synopsys Simpleware "
+        "Medical installation (skipped unless --run-simpleware is passed)",
     )
     # Initialize test timing storage
     config._test_timings = {  # type: ignore[attr-defined]
@@ -102,6 +128,29 @@ def pytest_collection_modifyitems(
             item.add_marker(
                 pytest.mark.skip(
                     reason="Tutorial tests require --run-tutorials flag to run"
+                )
+            )
+        if "requires_simpleware" in item.keywords and not config.getoption(
+            "--run-simpleware"
+        ):
+            item.add_marker(
+                pytest.mark.skip(
+                    reason=(
+                        "Simpleware tests require --run-simpleware flag and a "
+                        "local Synopsys Simpleware Medical installation"
+                    )
+                )
+            )
+        if "slow" in item.keywords and not config.getoption("--run-slow"):
+            item.add_marker(
+                pytest.mark.skip(
+                    reason="Slow tests require --run-slow flag to run",
+                )
+            )
+        if "requires_gpu" in item.keywords and not config.getoption("--run-gpu"):
+            item.add_marker(
+                pytest.mark.skip(
+                    reason="GPU tests require --run-gpu flag to run",
                 )
             )
 

@@ -84,7 +84,6 @@ def get_mesh_time_samples(
     return None
 
 
-@pytest.mark.requires_data
 class TestUSDTimePreservation:
     """Test suite for USD time-varying data preservation."""
 

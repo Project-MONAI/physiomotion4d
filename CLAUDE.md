@@ -38,22 +38,27 @@ mypy src/ tests/
 # All pre-commit hooks
 pre-commit run --all-files
 
-# Fast tests (recommended for development)
-py -m pytest tests/ -m "not slow and not requires_data" -v
+# Fast tests (recommended for development — slow/GPU/Simpleware/experiment
+# /tutorial tests are auto-skipped unless their opt-in flag is passed)
+py -m pytest tests/ -v
 
 # Single test file or test by name
 py -m pytest tests/test_contour_tools.py -v
 py -m pytest tests/test_contour_tools.py::test_extract_surface -v
 
-# Skip GPU-dependent tests
-py -m pytest tests/ --ignore=tests/test_segment_chest_total_segmentator.py \
-              --ignore=tests/test_register_images_icon.py
+# Opt-in buckets (each flag enables one marker family)
+py -m pytest tests/ -v --run-slow         # tests marked 'slow'
+py -m pytest tests/ -v --run-gpu          # tests marked 'requires_gpu'
+py -m pytest tests/ -v --run-simpleware   # tests marked 'requires_simpleware'
+py -m pytest tests/ -v --run-experiments  # tests marked 'experiment'
+py -m pytest tests/ -v --run-tutorials    # tests marked 'tutorial'
+
+# Typical local GPU profile. The self-hosted CI GPU runner enables every
+# bucket: --run-gpu --run-slow --run-simpleware --run-experiments --run-tutorials
+py -m pytest tests/ -v --run-gpu --run-slow
 
 # With coverage
 py -m pytest tests/ --cov=src/physiomotion4d --cov-report=html
-
-# Experiment script tests (very slow, opt-in)
-py -m pytest tests/ --run-experiments
 
 # Create missing baselines
 py -m pytest tests/ --create-baselines
@@ -86,7 +91,9 @@ Regenerate it after any public API change: `py utils/generate_api_map.py`
 - Baselines in `tests/baselines/` via Git LFS — run `git lfs pull` after cloning
 - `tests/conftest.py`: session-scoped fixtures chaining download → convert → segment → register
 - `src/physiomotion4d/test_tools.py`: baseline comparison utilities (`TestTools`, etc.)
-- Markers: `slow`, `requires_gpu`, `requires_data`, `experiment`, `tutorial`
+- Markers (all opt-in via `--run-<bucket>`): `slow`, `requires_gpu`,
+  `requires_simpleware`, `experiment`, `tutorial`. Data-dependent tests no
+  longer use a marker — they pull data through fixtures and run by default.
 - Prefer images from `ROOT/data/test/slicer_heart_small` for tests
 - Prefer storing results in subdirs `./results/<test_name>`
 

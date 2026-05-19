@@ -20,7 +20,6 @@ from physiomotion4d.register_images_ants import RegisterImagesANTs
 from physiomotion4d.transform_tools import TransformTools
 
 
-@pytest.mark.requires_data
 @pytest.mark.slow
 class TestRegisterImagesANTs:
     """Test suite for ANTs-based image registration."""

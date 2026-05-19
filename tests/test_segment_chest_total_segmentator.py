@@ -16,7 +16,7 @@ import pytest
 from physiomotion4d.segment_chest_total_segmentator import SegmentChestTotalSegmentator
 
 
-@pytest.mark.requires_data
+@pytest.mark.requires_gpu
 @pytest.mark.slow
 class TestSegmentChestTotalSegmentator:
     """Test suite for TotalSegmentator chest CT segmentation."""

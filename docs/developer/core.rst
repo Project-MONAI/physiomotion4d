@@ -48,7 +48,12 @@ For most code changes, run:
 
 .. code-block:: bash
 
-   py -m pytest tests/ -m "not slow and not requires_data" -v
+   py -m pytest tests/ -v
+
+(Slow / GPU / Simpleware / experiment / tutorial tests are auto-skipped;
+opt in with ``--run-slow``, ``--run-gpu``, ``--run-simpleware``,
+``--run-experiments``, ``--run-tutorials``. Data-dependent tests download
+their data through the session fixtures and run by default.)
 
 After public API changes, regenerate the API map:
 

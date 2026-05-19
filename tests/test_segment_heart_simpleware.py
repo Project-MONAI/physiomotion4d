@@ -27,7 +27,8 @@ def _simpleware_available(segmenter: SegmentHeartSimpleware) -> bool:
     )
 
 
-@pytest.mark.requires_data
+@pytest.mark.requires_gpu
+@pytest.mark.requires_simpleware
 @pytest.mark.slow
 class TestSegmentHeartSimpleware:
     """Test suite for SegmentHeartSimpleware (Simpleware Medical ASCardio)."""
