@@ -177,9 +177,9 @@ where = ["src"]
 current_version = "2026.05.8"
 version_pattern = "YYYY.0M.PATCH[PYTAGNUM]"
 commit_message = "Bump version {old_version} -> {new_version}"
-commit = true
+commit = false
 tag_message = "{new_version}"
-tag = true
+tag = false
 push = false
 
 [tool.bumpver.file_patterns]
