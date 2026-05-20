@@ -2,80 +2,186 @@
 
 Role-based guidance for AI agents working in this repository.
 
-PhysioMotion4D converts 4D CT scans into animated USD models for NVIDIA Omniverse.
-It is an **early-alpha** scientific Python library. Clarity beats premature optimization.
-Breaking changes are acceptable. Backward compatibility is not a goal.
+PhysioMotion4D converts 4D CT scans into animated USD models for NVIDIA
+Omniverse. It is an **early-alpha** scientific Python library. Clarity beats
+premature optimization. Breaking changes are acceptable. Backward compatibility
+is not a goal.
 
-## Developer tool prerequisites
+## Role
+
+We are developing open-source code for scientific AI libraries. Leverage
+GPU-accelerated methods when appropriate.
+
+## Priorities
+
+1. Accuracy.
+2. Clarity, maintainability, and simplicity.
+3. Consistency with the rest of the platform and open-source standards.
+4. Documentation.
+5. Testing.
+
+## Behavior
+
+1. Do not assume. Do not hide confusion. Surface tradeoffs.
+2. Minimum code that solves the problem. Nothing speculative.
+3. Touch only what you must. Clean up only your own mess.
+4. Define success criteria. Loop until verified.
+
+## Developer Tool Prerequisites
 
 Non-Python tools used by contributor workflows:
 
-- **Codex CLI** (`codex`) — can run the `.agents/` slash skills and
-  is the default PR-review agent for `ai_agent_github_reviews.py`.
-- **Claude Code CLI** (`claude`) — can run the `.agents/` slash skills and
+- **Codex CLI** (`codex`) - can run the `.agents/` slash skills and is the
+  default PR-review agent for `ai_agent_github_reviews.py`.
+- **Claude Code CLI** (`claude`) - can run the `.agents/` slash skills and
   `ai_agent_github_reviews.py --agent claude`.
-  Install: `winget install Anthropic.ClaudeCode`
-- **gh CLI** (`gh`) — required by `ai_agent_github_reviews.py` to fetch PR review data.
-  Install: `winget install GitHub.cli` then `gh auth login`
-  Not installable via pip/uv — it is a compiled Go binary.
+  Install: `winget install Anthropic.ClaudeCode`.
+- **gh CLI** (`gh`) - required by `ai_agent_github_reviews.py` to fetch PR
+  review data. Install: `winget install GitHub.cli` then `gh auth login`.
+  Not installable via pip/uv; it is a compiled Go binary.
 
-## Universal rules
+## Common Commands
+
+Use `py` on this Windows system, not `python`.
+
+```bash
+# Install in editable mode
+uv pip install -e .
+
+# Lint and format
+ruff check . --fix && ruff format .
+
+# Type checking
+mypy src/ tests/
+
+# All pre-commit hooks
+pre-commit run --all-files
+
+# Fast tests
+py -m pytest tests/ -v
+
+# Single test file or test by name
+py -m pytest tests/test_contour_tools.py -v
+py -m pytest tests/test_contour_tools.py::test_extract_surface -v
+
+# Opt-in test buckets
+py -m pytest tests/ -v --run-slow
+py -m pytest tests/ -v --run-gpu
+py -m pytest tests/ -v --run-simpleware
+py -m pytest tests/ -v --run-experiments
+py -m pytest tests/ -v --run-tutorials
+
+# Typical local GPU profile
+py -m pytest tests/ -v --run-gpu --run-slow
+
+# Coverage
+py -m pytest tests/ --cov=src/physiomotion4d --cov-report=html
+
+# Create missing baselines
+py -m pytest tests/ --create-baselines
+```
+
+Version bumping: `bumpver update --patch`, `--minor`, or `--major`.
+
+## Universal Rules
 
 - Read the relevant source files before proposing changes.
-- Runtime classes (workflow, segmentation, registration, USD tools) inherit from
-  `PhysioMotion4DBase`; new runtime classes must too. Standalone utility scripts
-  and data/container/helper classes do not.
-- In classes that inherit from `PhysioMotion4DBase`, use `self.log_info()` /
-  `self.log_debug()` — never `print()`. Standalone scripts may use `print()`.
-- Single quotes for strings; double quotes for docstrings. 88-char line limit.
-- Full type hints (`mypy` strict). Use `Optional[X]` not `X | None`.
-- Run `py -m pytest tests/ -v` to verify changes. Slow / GPU / Simpleware /
-  experiment / tutorial tests are auto-skipped; opt in per bucket with
-  `--run-slow`, `--run-gpu`, `--run-simpleware`, `--run-experiments`,
-  `--run-tutorials`. The `requires_data` marker no longer exists — tests that
-  need external data download it automatically via the session fixtures.
-- Consult `docs/API_MAP.md` to locate classes and methods before searching manually.
+- Runtime classes for workflows, segmentation, registration, and USD tools
+  inherit from `PhysioMotion4DBase`; new runtime classes must too. Standalone
+  utility scripts and data/container/helper classes do not.
+- In classes that inherit from `PhysioMotion4DBase`, use `self.log_info()` and
+  `self.log_debug()`, never `print()`. Standalone scripts may use `print()`.
+- Single quotes for strings; double quotes for docstrings. Keep lines at or
+  below 88 characters.
+- Full type hints are required under strict mypy. Use `Optional[X]`, not
+  `X | None`.
+- Run `py -m pytest tests/ -v` to verify changes. Slow, GPU, Simpleware,
+  experiment, and tutorial tests are auto-skipped unless their opt-in flag is
+  passed.
+- The `requires_data` marker no longer exists. Tests that need external data
+  download it automatically via the session fixtures.
+- Consult `docs/API_MAP.md` to locate classes, methods, and signatures before
+  searching manually.
+- Do not commit changes or make pull requests unless specifically told to do so.
 
-## Implementation role
+## Data Conventions
 
-- Summarize current behavior → propose numbered plan → implement.
-- Keep diffs small and reviewable. Call out breaking changes explicitly.
+- Images are `itk.Image` objects with axes X, Y, Z [, T] in LPS world space.
+  `itk.imread` normalizes DICOM, NIfTI, MHA, and NRRD inputs to LPS. Persist
+  images with `itk.imwrite(..., compression=True)`.
+- 4D time series use shape `(X, Y, Z, T)`. Never silently squeeze or permute
+  axes.
+- Surfaces are `pv.PolyData` in LPS, inherited from the source `itk.Image` via
+  `itk.vtk_image_from_image`.
+- Convert surfaces to USD right-handed Y-up only at USD export by
+  `vtk_to_usd.lps_points_to_usd`:
+  USD `+X=Left`, `+Y=Superior`, `+Z=Anterior`.
+- Masks are ITK images with integer labels. Keep anatomy group IDs consistent
+  across segmenters.
+- Transforms are ITK composite transforms stored in compressed `.hdf` files.
+- State axis order and shape explicitly in every docstring and comment that
+  touches arrays.
+
+## Implementation Role
+
+- Summarize current behavior in 2-4 sentences before editing.
+- Identify success criteria or metrics.
+- Refer to `*_tools.py` files for commonly used routines.
+- Refer to `workspace/reference_code`, when available, for third-party library
+  usage.
+- Propose a numbered plan; confirm before implementing non-trivial structural
+  changes.
+- Keep diffs small and reviewable.
 - Prefer editing existing modules over creating new ones.
-- No backward-compat shims: just change the code.
+- Call out breaking changes explicitly.
+- No backward-compatibility shims: just change the code.
 
-## Testing role
+## Testing Role
 
-- **Strongly prefer real (downloaded) test data over synthetic data.** Request
-  the session fixtures (`test_directories`, `download_test_data`,
-  `test_images`) so the standard datasets are fetched automatically on first
-  use. Real data exercises preprocessing, resampling, dtype handling, and
+- Strongly prefer real downloaded test data over synthetic data. Request the
+  session fixtures `test_directories`, `download_test_data`, and `test_images`
+  so standard datasets are fetched automatically on first use.
+- Real data exercises preprocessing, resampling, dtype handling, and
   world-frame metadata paths that synthetic toy volumes silently bypass.
 - Only fall back to synthetic `itk.Image` or `pv.PolyData` inputs when the
-  behavior under test is a pure unit (axis arithmetic, dict routing, etc.)
-  where real data adds no signal, or when real data would push the test into
-  a slow/GPU/Simpleware bucket that doesn't fit the test's purpose. Keep
-  synthetic volumes ≤64 voxels per side and say so in the docstring.
-- State image shape and axis order in every test docstring: e.g.
+  behavior under test is a pure unit such as axis arithmetic or dict routing,
+  or when real data would push the test into a slow, GPU, or Simpleware bucket
+  that does not fit the test's purpose. Keep synthetic volumes at or below 64
+  voxels per side and say so in the docstring.
+- State image shape and axis order in every test docstring, for example:
   `shape (X, Y, Z, T) = (64, 64, 32, 1), LPS world frame`.
-- **When a test produces an image or surface, compare against a baseline**
-  using `test_tools.py` utilities (e.g. `TestTools`) and store baselines under
-  `tests/baselines/` (Git LFS-tracked). Run with `--create-baselines` to
-  materialize missing baselines on first use.
-- Mark tests that need a GPU, a slow runtime, or a licensed Simpleware
-  install with `@pytest.mark.requires_gpu`, `@pytest.mark.slow`, or
-  `@pytest.mark.requires_simpleware` so they fall into the right opt-in
-  bucket. Tests that just need downloadable data need no marker — the
-  fixture chain handles it.
+- When a test produces an image or surface, compare against a baseline using
+  `src/physiomotion4d/test_tools.py` utilities such as `TestTools`.
+- Store baselines under `tests/baselines/`, which is tracked by Git LFS. Run
+  `git lfs pull` after cloning.
+- Run with `--create-baselines` to materialize missing baselines on first use.
+- `tests/conftest.py` owns session-scoped fixtures that chain download,
+  convert, segment, and register.
+- Mark tests that need a GPU, a slow runtime, or a licensed Simpleware install
+  with `@pytest.mark.requires_gpu`, `@pytest.mark.slow`, or
+  `@pytest.mark.requires_simpleware`.
+- Mark experiment and tutorial tests with `@pytest.mark.experiment` or
+  `@pytest.mark.tutorial`.
+- Tests that just need downloadable data need no marker; the fixture chain
+  handles it.
+- Prefer images from `ROOT/data/test/slicer_heart_small` for tests.
+- Prefer storing test results in subdirectories under `./results/<test_name>`.
 
-## Documentation role
+## Documentation Role
 
 - Update docstrings for every changed public method. Keep claims factual.
+- Document with docstrings and inline comments.
 - Do not create new `.md` files unless explicitly requested.
 - Regenerate `docs/API_MAP.md` after any public API change:
-  `py utils/generate_api_map.py`
+  `py utils/generate_api_map.py`.
 
-## Architecture role
+## Architecture Role
 
-- Propose a numbered design plan with trade-offs before structural changes.
+- Propose a numbered design plan with tradeoffs before structural changes.
 - Identify every file that will change and how the class hierarchy is affected.
-- Flag changes at the ITK↔PyVista boundary or the RAS→Y-up coordinate transform as high-risk.
+- Flag changes at the ITK/PyVista boundary or the RAS to Y-up coordinate
+  transform as high-risk.
+
+## File Operations
+
+- Use `git mv` and `git rm`, not `mv` or `rm`, to preserve history.
