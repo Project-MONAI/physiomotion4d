@@ -144,12 +144,12 @@ GPU tests require self-hosted runners with:
 
 **Option 3: Run Locally**
 ```bash
-# Install with CUDA support
-uv pip install -e ".[test,cuda13]"
+# Install with CUDA + PhysicsNeMo (matches the self-hosted GPU runner)
+uv pip install -e ".[test,cuda13,physicsnemo]"
 
 # Run GPU tests
-pytest tests/ -v -m "not slow"
-pytest tests/ -v -m "slow"  # For long-running tests
+pytest tests/ -v --run-gpu
+pytest tests/ -v --run-all  # Match CI: enable every --run-* bucket
 ```
 
 ### GitHub-Hosted Runners
@@ -217,14 +217,15 @@ pytest tests/ -m "unit and not requires_gpu" --cov=physiomotion4d
 
 ### GPU Tests
 ```bash
-# Install with CUDA support
-uv pip install -e ".[test,cuda13]"
+# Install with CUDA + PhysicsNeMo (matches the self-hosted GPU runner)
+uv pip install -e ".[test,cuda13,physicsnemo]"
 
-# Run all tests (including GPU)
-pytest tests/ -m "not slow"
+# Run GPU tests
+pytest tests/ --run-gpu
 
-# Run slow tests
-pytest tests/ -m "slow"
+# Enable every --run-* bucket at once (slow, GPU, simpleware,
+# physicsnemo, experiments, tutorials)
+pytest tests/ --run-all
 ```
 
 ## Coverage Reports

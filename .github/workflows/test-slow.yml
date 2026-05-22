@@ -51,10 +51,12 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel uv
 
     - name: Install package with test dependencies
-      # uv respects [tool.uv.sources], routing torch to pytorch-cu130 for cuda13
+      # uv respects [tool.uv.sources], routing torch to pytorch-cu130 for cuda13.
+      # The [physicsnemo] extra is required for --run-physicsnemo (Tutorial 9
+      # and any tests marked requires_physicsnemo).
       # Invoke via python -m uv so uv targets the active venv interpreter.
       run: |
-        python -m uv pip install -e ".[test,cuda13]"
+        python -m uv pip install -e ".[test,cuda13,physicsnemo]"
 
     - name: Assert CUDA is accessible
       run: |
@@ -72,12 +74,12 @@ jobs:
         "
 
     - name: Run slow tests
-      # Self-hosted GPU runner: enable every opt-in bucket.
+      # Self-hosted GPU runner: enable every opt-in bucket via --run-all.
       # Tests whose host requirements (e.g. a licensed Simpleware install)
       # aren't met on the runner will runtime-skip cleanly via their
       # internal availability guards.
       run: |
-        pytest tests/ -v --run-slow --run-gpu --run-simpleware --run-experiments --run-tutorials --cov=physiomotion4d --cov-report=xml --cov-report=term
+        pytest tests/ -v --run-all --cov=physiomotion4d --cov-report=xml --cov-report=term
       env:
         CUDA_VISIBLE_DEVICES: 0
 

@@ -14,6 +14,9 @@ __pycache__
 _version.py
 htmlcov
 
+# AI files
+.claude
+
 # Documentation build files
 docs/_build/
 docs/_static/.buildinfo

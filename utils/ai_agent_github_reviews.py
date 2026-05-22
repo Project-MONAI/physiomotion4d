@@ -655,7 +655,11 @@ def build_prompt(
           from `PhysioMotion4DBase`; helper/data/container classes need not
         - Adds features or abstractions beyond what was requested
         - Calls `vtk_to_usd` internals from outside `convert_vtk_to_usd.py`
-        - Applies coordinate conversion (RAS->Y-up) more than once
+        - Applies coordinate conversion (LPS->USD Y-up) more than once, or
+          treats internal PyVista surfaces as RAS (they are LPS)
+        - Uses emojis in `.py` files
+        - Omits the Windows `if __name__ == "__main__":` guard in scripts that
+          instantiate `SegmentChestTotalSegmentator`
         - Exceeds 88-character line length
 
         ## Step 3 — Write summary
