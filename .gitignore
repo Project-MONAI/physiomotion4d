@@ -18,7 +18,7 @@ htmlcov
 .claude
 
 # Intermediate files produced by skills
-.github_reveiw_prompt.txt
+.github_review_prompt.txt
 pr*review_summary.md
 
 # Documentation build files
