@@ -204,7 +204,7 @@ autodoc_mock_imports = [
     "cupyx",
     "pxr",
     "matplotlib",
-    "ants",
+    "ANTS",
     "antspyx",
     "cv2",
     "skimage",
