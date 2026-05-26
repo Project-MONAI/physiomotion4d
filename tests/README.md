@@ -21,8 +21,8 @@ This directory contains comprehensive test suites for the PhysioMotion4D package
 - **`test_segment_chest_total_segmentator.py`** - TotalSegmentator chest CT segmentation
 
 ### Registration Tests (Slow ~5-10 min)
-- **`test_register_images_ANTS.py`** - ANTs deformable registration
-- **`test_register_images_ICON.py`** - ICON deep learning registration
+- **`test_register_images_ants.py`** - ANTs deformable registration
+- **`test_register_images_icon.py`** - ICON deep learning registration
 
 ### Geometry & Visualization Tests
 - **`test_contour_tools.py`** - PyVista mesh extraction and manipulation

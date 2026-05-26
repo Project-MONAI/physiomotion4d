@@ -178,6 +178,7 @@ workflow = WorkflowFineTuneICONRegistration(
     subject_mask_files=train_mask_files,
     mask_dilation_mm=mask_dilation_mm,
     unigradicon_src_path=unigradicon_src_path,
+    epochs=100,
 )
 
 weights_path = workflow.run_fine_tuning()

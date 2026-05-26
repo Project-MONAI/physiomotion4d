@@ -352,24 +352,18 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
                         mask_image.GetLargestPossibleRegion().GetSize()
                     )
                 )
-                print("Origin", origin, "Edge", edge)
+                self.log_debug(f"Origin {origin} Edge {edge}")
                 point = np.zeros(3)
                 for landmark_name, landmark_position in self.landmarks.items():
                     for i in range(3):
                         point[i] = landmark_position[i]
 
-                    print(landmark_name, point)
+                    self.log_debug(f"{landmark_name} {point}")
                     for i in range(3):
                         if in_direction[i, i] < 0:
-                            print(
-                                "   Flipping",
-                                i,
-                                "from",
-                                point[i],
-                                "with edge",
-                                edge[i],
-                                "and origin",
-                                origin[i],
+                            self.log_debug(
+                                f"   Flipping {i} from {point[i]} "
+                                f"with edge {edge[i]} and origin {origin[i]}"
                             )
                             if i < 2:
                                 point[i] = -origin[i] + (-origin[i] - point[i])
@@ -377,7 +371,7 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
                                 point[i] = edge[i] - (point[i] - origin[i])
                         elif i < 2:
                             point[i] = -point[i]
-                    print("   New point", point)
+                    self.log_debug(f"   New point {point}")
                     # convert ras to lps as used by this project
                     point[0] = -point[0]
                     point[1] = -point[1]

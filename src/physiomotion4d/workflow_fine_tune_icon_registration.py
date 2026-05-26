@@ -259,7 +259,7 @@ class WorkflowFineTuneICONRegistration(PhysioMotion4DBase):
         self.subject_mask_files = subject_mask_files
         self.subject_landmark_files = subject_landmark_files
 
-        self.output_dir = Path(output_dir)
+        self.output_dir = Path(output_dir).resolve()
         self.fine_tune_name = fine_tune_name
         self.experiment_dir = self.output_dir / fine_tune_name
         self.mask_dir: Optional[Path] = Path(mask_dir) if mask_dir is not None else None

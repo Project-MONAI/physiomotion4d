@@ -410,6 +410,27 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
 
 - `def register_slices(reg_tool, reg_tool_name, fixed_image, images, files_indx, reference_image_num, reference_image_reg_use_identity, portion_of_prior_to_use=0.0)` (line 62)
 
+## results/icon_finetuned/icon_finetuned_model/finetune.py
+
+- `def loss_to_dict(loss_object)` (line 33)
+- `def augment(batch)` (line 50): Apply random affine augmentation to all spatial data in a batch dict.
+- `def finetune_multi(config, data_loader, val_data_loaders_dict, data_fields)` (line 304): Unified finetuning loop.
+- `def main(argv=None)` (line 432)
+
+## results/results/icon_finetuned/icon_finetuned_model/finetune.py
+
+- `def loss_to_dict(loss_object)` (line 33)
+- `def augment(batch)` (line 50): Apply random affine augmentation to all spatial data in a batch dict.
+- `def finetune_multi(config, data_loader, val_data_loaders_dict, data_fields)` (line 304): Unified finetuning loop.
+- `def main(argv=None)` (line 432)
+
+## results/results/icon_finetuned/icon_finetuned_model-1/finetune.py
+
+- `def loss_to_dict(loss_object)` (line 33)
+- `def augment(batch)` (line 50): Apply random affine augmentation to all spatial data in a batch dict.
+- `def finetune_multi(config, data_loader, val_data_loaders_dict, data_fields)` (line 304): Unified finetuning loop.
+- `def main(argv=None)` (line 432)
+
 ## src/physiomotion4d/anatomy_taxonomy.py
 
 - **class AnatomyGroup** (line 26): One named anatomy group together with the organ labels it contains.
@@ -665,8 +686,8 @@ _Re-run `py utils/generate_api_map.py` whenever public APIs change._
   - `def set_trim_branches(self, trim_branches)` (line 118): Enable trimming of pulmonary and great-vessel branches.
   - `def set_simpleware_executable_path(self, path)` (line 133): Set the path to the Simpleware Medical console executable.
   - `def segmentation_method(self, preprocessed_image)` (line 146): Run Simpleware Medical ASCardio segmentation on the preprocessed image.
-  - `def get_landmarks(self)` (line 398): Get the landmarks.
-  - `def trim_branches(self, labelmap_image)` (line 402): Trim pulmonary and great-vessel branches back to the cardiac region.
+  - `def get_landmarks(self)` (line 392): Get the landmarks.
+  - `def trim_branches(self, labelmap_image)` (line 396): Trim pulmonary and great-vessel branches back to the cardiac region.
 
 ## src/physiomotion4d/test_tools.py
 

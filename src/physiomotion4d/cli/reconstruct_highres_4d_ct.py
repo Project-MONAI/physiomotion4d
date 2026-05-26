@@ -56,7 +56,7 @@ Examples:
   %(prog)s \\
     --time-series-images frame_*.mha \\
     --fixed-image highres.mha \\
-    --registration-method icon \\
+    --registration-method ICON \\
     --ICON-iterations 50 \\
     --output-dir ./results
         """,

@@ -663,9 +663,9 @@ pytest tests/ -v --run-gpu --run-slow
 # Run specific test categories
 pytest tests/test_usd_merge.py -v                           # USD merge functionality
 pytest tests/test_usd_time_preservation.py -v               # Time-varying data preservation
-pytest tests/test_register_images_ANTS.py -v --run-slow     # ANTs registration
+pytest tests/test_register_images_ants.py -v --run-slow     # ANTs registration
 pytest tests/test_register_images_greedy.py -v              # Greedy registration
-pytest tests/test_register_images_ICON.py -v --run-gpu --run-slow      # Icon registration (GPU)
+pytest tests/test_register_images_icon.py -v --run-gpu --run-slow      # Icon registration (GPU)
 pytest tests/test_register_time_series_images.py -v --run-slow         # Time series registration
 pytest tests/test_segment_chest_total_segmentator.py -v --run-slow     # TotalSegmentator
 pytest tests/test_contour_tools.py -v                       # Mesh and contour tools
