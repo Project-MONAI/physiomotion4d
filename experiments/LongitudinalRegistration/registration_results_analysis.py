@@ -145,6 +145,35 @@ def _aggregate(
     return table
 
 
+def _method_summary(
+    dice_table: pd.DataFrame,
+    landmark_table: pd.DataFrame,
+) -> pd.DataFrame:
+    """Collapse both summary tables to one row per ``(results_dir, method)``.
+
+    Extracts the ``"all"`` slice (pooled over every label / landmark) from
+    each table and concatenates the columns side-by-side.
+
+    Args:
+        dice_table: Output of :func:`_aggregate` for Dice scores.
+        landmark_table: Output of :func:`_aggregate` for landmark RMSE.
+
+    Returns:
+        Data frame indexed by ``(results_dir, method)`` with flat columns
+        ``dice_mean``, ``dice_std``, ``dice_p95``, ``landmark_mean``,
+        ``landmark_std``, ``landmark_p95``.
+    """
+    parts: list[pd.DataFrame] = []
+    for table, prefix in ((dice_table, "dice"), (landmark_table, "landmark")):
+        if ALL_KEY in table.columns.get_level_values(0):
+            sub = table[ALL_KEY].copy()
+            sub.columns = [f"{prefix}_{c}" for c in sub.columns]
+            parts.append(sub)
+    if not parts:
+        return pd.DataFrame()
+    return pd.concat(parts, axis=1)
+
+
 def summarize(base_dir: Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Build the Dice and landmark RMSE summary tables for ``base_dir``.
 
@@ -219,7 +248,13 @@ def main(argv: Optional[list[str]] = None) -> None:
     args = parser.parse_args(argv)
 
     dice_table, landmark_table = summarize(args.base_dir)
+    methods_table = _method_summary(dice_table, landmark_table)
 
+    _print_table(
+        "Per-method summary (mean / std / 95th percentile across ALL labels "
+        "and ALL landmarks), grouped by results_dir + method",
+        methods_table,
+    )
     _print_table(
         "Dice score by label (mean / std / 95th percentile), grouped by "
         "results_dir + method, pooled over subjects and time points",
@@ -233,11 +268,13 @@ def main(argv: Optional[list[str]] = None) -> None:
 
     if args.out_dir is not None:
         args.out_dir.mkdir(parents=True, exist_ok=True)
+        methods_out = args.out_dir / "summary_methods.csv"
         dice_out = args.out_dir / "summary_dice.csv"
         landmark_out = args.out_dir / "summary_landmarks.csv"
+        methods_table.to_csv(methods_out)
         dice_table.to_csv(dice_out)
         landmark_table.to_csv(landmark_out)
-        print(f"\nWrote {dice_out}\nWrote {landmark_out}")
+        print(f"\nWrote {methods_out}\nWrote {dice_out}\nWrote {landmark_out}")
 
 
 if __name__ == "__main__":
