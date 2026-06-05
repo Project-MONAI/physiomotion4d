@@ -510,7 +510,7 @@ class RegisterImagesANTS(RegisterImagesBase):
         moving_image: itk.Image,
         moving_mask: Optional[itk.Image] = None,
         moving_labelmap: Optional[itk.Image] = None,
-        moving_image_pre: Optional[ants.ANTsImage] = None,
+        moving_image_pre: Optional[itk.Image] = None,
         initial_forward_transform: Optional[itk.Transform] = None,
     ) -> dict[str, Union[itk.Transform, float]]:
         """Register moving image to fixed image using ANTs registration algorithm.
@@ -523,8 +523,8 @@ class RegisterImagesANTS(RegisterImagesBase):
             moving_image (itk.image): The 3D image to be registered/aligned.
             moving_mask (itk.image, optional): Binary mask defining the
                 region of interest in the moving image
-            moving_image_pre (ants.core.ANTsImage, optional): Pre-processed moving image
-                in ANTs format. If None, preprocessing is performed automatically
+            moving_image_pre (itk.Image, optional): Pre-processed moving image.
+             If None, preprocessing is performed automatically
             initial_forward_transform (itk.Transform, optional): Initial
                 forward transform (same convention as the returned
                 forward_transform: used to warp the moving image onto the fixed
@@ -592,13 +592,6 @@ class RegisterImagesANTS(RegisterImagesBase):
         if self.fixed_image_pre is None:
             self.fixed_image_pre = self.preprocess(self.fixed_image, self.modality)
 
-        # Apply any initial transform by pre-warping the moving image onto the
-        # fixed grid (the same approach RegisterImagesICON uses), instead of
-        # passing it to ants.registration as an initial_transform. ANTS
-        # mishandles matrix (affine/translation) initial transforms, badly
-        # corrupting the result; pre-warping keeps the composition below
-        # self-consistent for any initial transform type. The registration then
-        # solves the residual and the composition recovers the full transform.
         if initial_forward_transform is not None:
             self.log_info("Pre-warping moving image with initial transform...")
             transform_tools = TransformTools()
@@ -608,7 +601,7 @@ class RegisterImagesANTS(RegisterImagesBase):
                 self.fixed_image,
             )
             if self.moving_mask is not None:
-                self.moving_mask_pre = transform_tools.transform_image(
+                self.moving_mask = transform_tools.transform_image(
                     self.moving_mask,
                     initial_forward_transform,
                     self.fixed_image,
