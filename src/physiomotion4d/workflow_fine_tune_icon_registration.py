@@ -79,7 +79,7 @@ class WorkflowFineTuneICONRegistration(PhysioMotion4DBase):
         subject_ids (Optional[list[str]]): One ID per subject (e.g. patient
             identifiers).  Written into the dataset JSON's ``subject_id``
             field; falls back to synthetic ``subject_NNNN`` when ``None``.
-        subject_segmentation_files (Optional[list[list[Optional[str]]]]):
+        subject_labelmap_files (Optional[list[list[Optional[str]]]]):
             Per-subject multi-label segmentation/labelmap paths aligned with
             ``subject_image_files``.  ``None`` (or per-image ``None``) means no
             segmentation for that image.  If supplied for at least one image,
@@ -88,7 +88,7 @@ class WorkflowFineTuneICONRegistration(PhysioMotion4DBase):
             Per-subject binary mask paths aligned with ``subject_image_files``.
             When supplied for a frame these masks are used directly for
             loss-function masking; otherwise masks are derived from
-            ``subject_segmentation_files``.
+            ``subject_labelmap_files``.
         subject_landmark_files (Optional[list[list[Optional[str]]]]):
             Per-subject landmark CSV paths (``Name,X,Y,Z`` format) aligned with
             ``subject_image_files``.  Recorded in the dataset JSON for
@@ -115,7 +115,7 @@ class WorkflowFineTuneICONRegistration(PhysioMotion4DBase):
         ...     ],
         ...     output_dir=Path('d:/PhysioMotion4D/icon_finetuned'),
         ...     fine_tune_name='duke_4d_gated_icon_ft',
-        ...     subject_segmentation_files=[
+        ...     subject_labelmap_files=[
         ...         ['pm0001/g000_labelmap.nii.gz', 'pm0001/g050_labelmap.nii.gz'],
         ...         ['pm0002/g000_labelmap.nii.gz', 'pm0002/g050_labelmap.nii.gz'],
         ...     ],
@@ -140,7 +140,7 @@ class WorkflowFineTuneICONRegistration(PhysioMotion4DBase):
         output_dir: Path,
         fine_tune_name: str,
         subject_ids: Optional[list[str]] = None,
-        subject_segmentation_files: Optional[list[list[Optional[str]]]] = None,
+        subject_labelmap_files: Optional[list[list[Optional[str]]]] = None,
         subject_mask_files: Optional[list[list[Optional[str]]]] = None,
         subject_landmark_files: Optional[list[list[Optional[str]]]] = None,
         epochs: int = 2000,
@@ -177,7 +177,7 @@ class WorkflowFineTuneICONRegistration(PhysioMotion4DBase):
                 JSON's ``subject_id`` field so paired training groups frames
                 that share an ID.  ``None`` falls back to synthetic IDs of the
                 form ``subject_0000``, ``subject_0001``, ...  Must be unique.
-            subject_segmentation_files: Per-subject multi-label segmentation
+            subject_labelmap_files: Per-subject multi-label segmentation
                 (labelmap) paths matching ``subject_image_files``.  ``None``
                 disables paired-with-seg training.
                 Individual ``None`` entries inside the inner lists skip just
@@ -185,7 +185,7 @@ class WorkflowFineTuneICONRegistration(PhysioMotion4DBase):
             subject_mask_files: Per-subject binary mask paths matching
                 ``subject_image_files``.  When supplied these are used directly
                 for ICON loss-function masking; otherwise masks are derived
-                from ``subject_segmentation_files`` via a >0 threshold and
+                from ``subject_labelmap_files`` via a >0 threshold and
                 dilation by ``mask_dilation_mm``.  Per-image ``None``
                 entries fall back to the derived mask for that frame (or skip
                 it if no segmentation is available either).
@@ -223,7 +223,7 @@ class WorkflowFineTuneICONRegistration(PhysioMotion4DBase):
 
         Raises:
             ValueError: If ``subject_image_files`` is empty.
-            ValueError: If ``subject_segmentation_files``,
+            ValueError: If ``subject_labelmap_files``,
                 ``subject_mask_files``, or ``subject_landmark_files`` is
                 provided with a shape that does not match
                 ``subject_image_files``.
@@ -246,8 +246,8 @@ class WorkflowFineTuneICONRegistration(PhysioMotion4DBase):
 
         self._validate_companion_shape(
             subject_image_files,
-            subject_segmentation_files,
-            "subject_segmentation_files",
+            subject_labelmap_files,
+            "subject_labelmap_files",
         )
         self._validate_companion_shape(
             subject_image_files, subject_mask_files, "subject_mask_files"
@@ -258,13 +258,13 @@ class WorkflowFineTuneICONRegistration(PhysioMotion4DBase):
 
         self.subject_image_files = subject_image_files
         self.subject_ids = subject_ids
-        self.subject_segmentation_files = subject_segmentation_files
+        self.subject_labelmap_files = subject_labelmap_files
         self.subject_mask_files = subject_mask_files
         self.subject_landmark_files = subject_landmark_files
 
-        self.use_segmentations: bool = subject_segmentation_files is not None
+        self.use_segmentations: bool = subject_labelmap_files is not None
         self.use_masks: bool = (
-            subject_mask_files is not None or subject_segmentation_files is not None
+            subject_mask_files is not None or subject_labelmap_files is not None
         )
 
         self.output_dir = Path(output_dir).resolve()
@@ -384,7 +384,7 @@ class WorkflowFineTuneICONRegistration(PhysioMotion4DBase):
         ``subject_id`` derived from the inner-list index.
 
         Masks are taken from ``subject_mask_files`` when supplied for a frame;
-        otherwise they are derived from ``subject_segmentation_files`` via a
+        otherwise they are derived from ``subject_labelmap_files`` via a
         >0 threshold and ``mask_dilation_mm`` mm dilation.  Frames are
         skipped (with a log warning) when a required companion (segmentation
         for paired-with-seg training, or mask for loss-function masking) is
@@ -419,8 +419,8 @@ class WorkflowFineTuneICONRegistration(PhysioMotion4DBase):
                 seg_list = [None] * len(image_files)
             else:
                 seg_list = (
-                    self.subject_segmentation_files[subject_index]
-                    if self.subject_segmentation_files is not None
+                    self.subject_labelmap_files[subject_index]
+                    if self.subject_labelmap_files is not None
                     else [None] * len(image_files)
                 )
             mask_list: list[Optional[str]]
