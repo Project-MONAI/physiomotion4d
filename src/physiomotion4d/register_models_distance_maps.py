@@ -322,7 +322,7 @@ class RegisterModelsDistanceMaps(PhysioMotion4DBase):
                 self.moving_mask_roi_image,
                 forward_transform_Greedy,
                 self.reference_image,
-                interpolation_method="nearest_neighbor",
+                interpolation_method="nearest",
             )
 
             # Configure and run ICON
