@@ -16,13 +16,6 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import TypeAlias, cast
 
-try:
-    import cupy as cp  # optional (GPU)
-except (ImportError, OSError):
-    # ImportError: cupy not installed or CUDA libraries missing/mismatched.
-    # OSError: driver/library load failure on some platforms.
-    # In all cases fall back to CPU (NumPy) paths.
-    cp = None
 import itk
 import numpy as np
 import pyvista as pv
@@ -369,13 +362,15 @@ class TransformTools(PhysioMotion4DBase):
         new_mesh.points = np.asarray(new_pnts, dtype=float).reshape(-1, 3)
 
         if with_deformation_magnitude:
-            if cp is not None:
+            try:
+                import cupy as cp  # noqa: PLC0415
+
                 new_pnts_cp = cp.array(new_pnts)
                 pnts_cp = cp.array(pnts)
                 new_mesh.point_data["DeformationMagnitude"] = cp.linalg.norm(
                     new_pnts_cp - pnts_cp, axis=1
                 ).get()
-            else:
+            except (ImportError, OSError):
                 new_mesh.point_data["DeformationMagnitude"] = np.linalg.norm(
                     np.asarray(new_pnts) - np.asarray(pnts), axis=1
                 )

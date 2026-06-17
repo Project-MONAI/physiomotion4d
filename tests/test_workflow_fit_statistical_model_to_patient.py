@@ -16,10 +16,10 @@ from physiomotion4d.workflow_fit_statistical_model_to_patient import (
 )
 
 
-def test_auto_generate_mask_accumulates_multilabel_models(
+def test_auto_generate_labelmap_accumulates_multilabel_models(
     monkeypatch: Any,
 ) -> None:
-    """Multi-model masks accumulate label IDs instead of overwriting prior labels."""
+    """Multi-model labelmaps accumulate label IDs instead of overwriting prior labels."""
     image = itk.image_from_array(np.zeros((3, 3, 3), dtype=np.float32))
     model = pv.PolyData(
         np.array(
@@ -53,7 +53,7 @@ def test_auto_generate_mask_accumulates_multilabel_models(
         fake_create_mask_from_mesh,
     )
 
-    output = workflow._auto_generate_mask([model, model], dilate_mm=0.0)
+    output = workflow._auto_generate_labelmap([model, model], dilate_mm=0.0)
     output_arr = itk.GetArrayFromImage(output)
 
     assert output_arr[0, 0, 0] == 1
