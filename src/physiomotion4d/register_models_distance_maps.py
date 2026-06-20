@@ -214,9 +214,6 @@ class RegisterModelsDistanceMaps(PhysioMotion4DBase):
             norm_to_max_distance=50.0,
         )
 
-        itk.imwrite(self.fixed_distance_map_image, "l2l_fixed_distance_map.mha")
-        itk.imwrite(self.moving_distance_map_image, "l2l_moving_distance_map.mha")
-
         # Emulate CT intensity range by multiplying by 1000
         tmp_arr = itk.GetArrayViewFromImage(self.fixed_distance_map_image)
         tmp_arr *= 1000

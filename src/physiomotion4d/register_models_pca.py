@@ -158,8 +158,6 @@ class RegisterModelsPCA(PhysioMotion4DBase):
                 "Fixed model and reference image must be provided if no distance map is provided."
             )
 
-        itk.imwrite(self.fixed_distance_map, "pca_fixed_distance_map.mha")
-
         self.pca_number_of_modes: int = pca_number_of_modes
         if self.pca_number_of_modes <= 0:
             self.pca_number_of_modes = len(pca_std_deviations)
