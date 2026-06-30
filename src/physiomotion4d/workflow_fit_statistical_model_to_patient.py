@@ -340,8 +340,9 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
 
         Args:
             use_labelmap_to_image_registration: Whether to use labelmap-to-image registration.
-            template_labelmap: Required when use is True. Template labelmap in template
-                model space (same geometry as template_model).
+            template_labelmap: Template labelmap in template model space (same geometry
+                as template_model). Required when use is True unless one was already
+                supplied to the constructor, in which case that value is used.
             template_labelmap_organ_mesh_ids: Required when use is True. Label IDs for
                 organ mesh in the template labelmap.
             template_labelmap_organ_extra_ids: Required when use is True. Label IDs for
@@ -354,6 +355,8 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
                 is None or missing.
         """
         if use_labelmap_to_image_registration:
+            if template_labelmap is None:
+                template_labelmap = self.template_labelmap
             if template_labelmap is None:
                 raise ValueError(
                     "When enabling labelmap-to-image registration, template_labelmap must be provided."
@@ -715,7 +718,7 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         )
         template_labelmap_arr = np.where(
             np.isin(template_labelmap_arr, self.template_labelmap_organ_mesh_ids),
-            0,
+            1,
             template_labelmap_arr,
         )
         template_labelmap_arr = np.where(
@@ -726,12 +729,9 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
         template_labelmap = itk.GetImageFromArray(template_labelmap_arr)
         template_labelmap.CopyInformation(propagated_labelmap)
 
-        if self.template_mask is not None:
-            template_mask = self.template_mask
-        else:
-            template_mask = self.labelmap_tools.convert_labelmap_to_mask(
-                template_labelmap, dilation_in_mm=self.mask_dilation_mm
-            )
+        template_mask = self.labelmap_tools.convert_labelmap_to_mask(
+            template_labelmap, dilation_in_mm=self.mask_dilation_mm
+        )
 
         patient_mask = self.contour_tools.create_mask_from_mesh(
             self.patient_model_surface,

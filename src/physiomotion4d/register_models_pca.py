@@ -392,7 +392,7 @@ class RegisterModelsPCA(PhysioMotion4DBase):
         self.fixed_distance_map = self._contour_tools.create_distance_map(
             fixed_model,
             reference_image,
-            squared_distance=True,
+            squared_distance=False,
             negative_inside=False,
             zero_inside=True,
             norm_to_max_distance=200.0,
@@ -515,7 +515,9 @@ class RegisterModelsPCA(PhysioMotion4DBase):
 
         if n_invalid_points >= 0.05 * n_valid_points:
             self.log_warning(
-                f"{n_invalid_points} of {n_valid_points + n_invalid_points} mapped outside of image. Rejecting."
+                "%d of %d mapped outside of image. Rejecting.",
+                n_invalid_points,
+                n_valid_points + n_invalid_points,
             )
             return self._fixed_distance_map_max_distance
 
