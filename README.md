@@ -178,9 +178,11 @@ major workflow. They are the recommended starting point for new users.
 | 4 | `tutorials/tutorial_04_fit_statistical_model_to_patient.py` | Fit statistical model to patient | KCL-Heart-Model plus Tutorial 3 output |
 | 5 | `tutorials/tutorial_05_vtk_to_usd.py` | VTK surfaces to animated USD | output of tutorial 2 |
 | 6 | `tutorials/tutorial_06_reconstruct_highres_4d_ct.py` | Reconstruct high-res 4D CT | DirLab-4DCT (manual) |
-| 7 | `tutorials/tutorial_07_dirlab_pca_model.py` | Build a surface PCA lung-lobe model and fit all cases | DirLab-4DCT (manual) |
-| 8 | `tutorials/tutorial_08_dirlab_pca_time_series.py` | Propagate PCA-fitted lung-lobe meshes through DirLab time series | DirLab-4DCT plus Tutorial 7 output |
-| 9 | `tutorials/tutorial_09_physicsnemo_mesh_stage_model.py` | Train a PhysicsNeMo mesh stage model (requires `[physicsnemo]` extra; Python >= 3.11) | Tutorial 8 output |
+| 8 | `tutorials/tutorial_08_cardiac_fit_model.py` | Fit the cardiac PCA model and propagate it through gated phases | Bring your own (`D:/PhysioMotion4D/`) |
+| 9a | `tutorials/tutorial_09a_cardiac_train_physicsnemo_mgn.py` | Train a PhysicsNeMo MeshGraphNet cardiac stage model (requires `[physicsnemo]` + `torch-geometric`; Python >= 3.11) | Tutorial 8 output |
+| 9b | `tutorials/tutorial_09b_cardiac_train_physicsnemo_mlp.py` | Train a PhysicsNeMo MLP cardiac stage model (requires `[physicsnemo]` extra; Python >= 3.11) | Tutorial 8 output |
+| 10a | `tutorials/tutorial_10a_cardiac_eval_physicsnemo_mgn.py` | Predict / score cardiac surfaces from a MeshGraphNet checkpoint | Tutorial 9a checkpoint |
+| 10b | `tutorials/tutorial_10b_cardiac_eval_physicsnemo_mlp.py` | Predict / score cardiac surfaces from an MLP checkpoint | Tutorial 9b checkpoint |
 
 Each tutorial is a `# %%` percent-cell Python script. Paths are defined near
 the top of the script; edit those constants for custom data/output locations,

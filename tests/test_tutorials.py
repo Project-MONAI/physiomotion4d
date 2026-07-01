@@ -21,7 +21,9 @@ Create baselines on first run::
 
 from __future__ import annotations
 
+import importlib.util
 import runpy
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -229,6 +231,131 @@ class TestTutorial05VTKToUSD:
             baselines_dir=test_directories["baselines"] / self._class_name,
         )
         _compare_screenshots(results["screenshots"], tt)
+
+
+# -----------------------------------------------------------------------------
+# Tutorials 8-10 - Cardiac mesh stage-prediction pipeline (bring-your-own-data)
+#
+# These tutorials use a local ``D:/PhysioMotion4D/`` cardiac dataset and (for
+# Tutorials 9 and 10) the optional PhysicsNeMo dependency, so they are skipped
+# automatically unless that data / those checkpoints are present. They produce
+# no screenshots; the tests assert the tutorial ran and populated
+# ``tutorial_results``.
+# -----------------------------------------------------------------------------
+
+_CARDIAC_DATA_ROOT = Path("D:/PhysioMotion4D")
+_CARDIAC_FITTED_MESHES_DIR = _CARDIAC_DATA_ROOT / "duke_data" / "fitted_kcl_meshes"
+_TUTORIALS_DIR = _REPO_ROOT / "tutorials"
+
+
+def _physicsnemo_available() -> bool:
+    """True if the optional PhysicsNeMo dependency is importable."""
+    return importlib.util.find_spec("physicsnemo") is not None
+
+
+def _torch_geometric_available() -> bool:
+    """True if the optional PyTorch Geometric dependency is importable."""
+    return importlib.util.find_spec("torch_geometric") is not None
+
+
+def _run_eval_tutorial(script_name: str) -> dict[str, Any]:
+    """Run a Tutorial 10 eval script through its no-argument ``run_tutorial`` path.
+
+    ``runpy`` does not reset ``sys.argv``, so without this the eval scripts would
+    see pytest's arguments and try to parse them as CLI options. Force a single
+    argv entry so the ``len(sys.argv) > 1`` dispatch selects ``run_tutorial``.
+    """
+    saved_argv = sys.argv
+    sys.argv = [script_name]
+    try:
+        return _run_tutorial_script(script_name)
+    finally:
+        sys.argv = saved_argv
+
+
+@pytest.mark.tutorial
+@pytest.mark.slow
+class TestTutorial08CardiacFitModel:
+    """End-to-end test for tutorial_08_cardiac_fit_model.py (bring-your-own-data)."""
+
+    def test_run(self) -> None:
+        if not (_CARDIAC_DATA_ROOT / "duke_data" / "gated_nii").exists():
+            pytest.skip(
+                "Cardiac dataset not present at D:/PhysioMotion4D/. Tutorial 8 is "
+                "bring-your-own-data; see tutorials/README.md."
+            )
+        results = _run_tutorial_script("tutorial_08_cardiac_fit_model.py")
+        assert "patients" in results, "Tutorial 8 should report processed patients"
+
+
+@pytest.mark.tutorial
+@pytest.mark.slow
+@pytest.mark.requires_gpu
+class TestTutorial09aCardiacTrainMGN:
+    """End-to-end test for tutorial_09a_cardiac_train_physicsnemo_mgn.py."""
+
+    def test_run(self) -> None:
+        if not _physicsnemo_available():
+            pytest.skip("PhysicsNeMo not installed (optional [physicsnemo] extra).")
+        if not _torch_geometric_available():
+            pytest.skip("torch-geometric not installed (required for MeshGraphNet).")
+        if not _CARDIAC_FITTED_MESHES_DIR.exists():
+            pytest.skip("Tutorial 8 cardiac output not present; run Tutorial 8 first.")
+        results = _run_tutorial_script("tutorial_09a_cardiac_train_physicsnemo_mgn.py")
+        assert isinstance(results, dict)
+
+
+@pytest.mark.tutorial
+@pytest.mark.slow
+@pytest.mark.requires_gpu
+class TestTutorial09bCardiacTrainMLP:
+    """End-to-end test for tutorial_09b_cardiac_train_physicsnemo_mlp.py."""
+
+    def test_run(self) -> None:
+        if not _physicsnemo_available():
+            pytest.skip("PhysicsNeMo not installed (optional [physicsnemo] extra).")
+        if not _CARDIAC_FITTED_MESHES_DIR.exists():
+            pytest.skip("Tutorial 8 cardiac output not present; run Tutorial 8 first.")
+        results = _run_tutorial_script("tutorial_09b_cardiac_train_physicsnemo_mlp.py")
+        assert isinstance(results, dict)
+
+
+@pytest.mark.tutorial
+@pytest.mark.slow
+class TestTutorial10aCardiacEvalMGN:
+    """End-to-end test for tutorial_10a_cardiac_eval_physicsnemo_mgn.py."""
+
+    def test_run(self) -> None:
+        if not _physicsnemo_available():
+            pytest.skip("PhysicsNeMo not installed (optional [physicsnemo] extra).")
+        if not _torch_geometric_available():
+            pytest.skip("torch-geometric not installed (required for MeshGraphNet).")
+        checkpoint = _TUTORIALS_DIR / "output_mgn" / "mgn_stage_model.pt"
+        if not checkpoint.exists() or not _CARDIAC_FITTED_MESHES_DIR.exists():
+            pytest.skip(
+                "Tutorial 9a checkpoint or cardiac data not present; "
+                "run Tutorials 8 and 9a first."
+            )
+        results = _run_eval_tutorial("tutorial_10a_cardiac_eval_physicsnemo_mgn.py")
+        assert "predicted_files" in results
+
+
+@pytest.mark.tutorial
+@pytest.mark.slow
+class TestTutorial10bCardiacEvalMLP:
+    """End-to-end test for tutorial_10b_cardiac_eval_physicsnemo_mlp.py."""
+
+    def test_run(self) -> None:
+        if not _physicsnemo_available():
+            pytest.skip("PhysicsNeMo not installed (optional [physicsnemo] extra).")
+        checkpoint = _TUTORIALS_DIR / "output" / "physicsnemo_stage_model.pt"
+        if not checkpoint.exists() or not _CARDIAC_FITTED_MESHES_DIR.exists():
+            pytest.skip(
+                "Tutorial 9b checkpoint or cardiac data not present; "
+                "run Tutorials 8 and 9b first."
+            )
+        results = _run_eval_tutorial("tutorial_10b_cardiac_eval_physicsnemo_mlp.py")
+        assert "predicted_files" in results
 
 
 # -----------------------------------------------------------------------------

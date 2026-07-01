@@ -160,7 +160,7 @@ class WorkflowReconstructHighres4DCT(PhysioMotion4DBase):
 
         # Set default number of iterations based on registration method
         self.number_of_iterations_Greedy: list[int] = [30, 15, 7, 3]
-        self.number_of_iterations_ICON: int = 20
+        self.number_of_iterations_ICON: Optional[int] = 20
 
         # Initialize registrar
         self.registrar = RegisterTimeSeriesImages(
@@ -184,11 +184,15 @@ class WorkflowReconstructHighres4DCT(PhysioMotion4DBase):
         """
         self.number_of_iterations_Greedy = number_of_iterations_Greedy
 
-    def set_number_of_iterations_ICON(self, number_of_iterations_ICON: int) -> None:
+    def set_number_of_iterations_ICON(
+        self, number_of_iterations_ICON: Optional[int]
+    ) -> None:
         """Set the number of iterations for ICON registration.
 
         Args:
-            number_of_iterations_ICON: Number of fine-tuning steps for ICON
+            number_of_iterations_ICON: Number of fine-tuning steps for ICON.
+                If None, ICON fine-tuning is disabled (the pretrained network
+                is used as-is).
         """
         self.number_of_iterations_ICON = number_of_iterations_ICON
 
