@@ -215,74 +215,93 @@ Outputs
    Registered respiratory phases, reconstructed high-resolution CT volumes,
    and preview screenshots.
 
-Tutorial 7: DirLab Lung-Lobe PCA Model
-======================================
+.. note::
+
+   Tutorials 8-10 form the cardiac mesh stage-prediction pipeline and are
+   **bring-your-own-data**: unlike Tutorials 1-6 they do not use the repository
+   ``data/`` directory or a downloadable sample. Their path constants point at a
+   local ``D:/PhysioMotion4D/`` cardiac layout (gated CT, labelmaps, the KCL
+   volume PCA model, and ICON weights); edit those constants to match your own
+   data. The former DirLab lung-lobe PCA tutorial (number 7) has been removed;
+   numbering continues at 8.
+
+Tutorial 8: Fit the Cardiac SSM and Propagate Through Gated Phases
+==================================================================
 
 Script
-   ``tutorials/tutorial_07_dirlab_pca_model.py``
+   ``tutorials/tutorial_08_cardiac_fit_model.py``
 
 Workflow
-   ``WorkflowConvertImageToVTK``, ``WorkflowCreateStatisticalModel``, and
-   ``WorkflowFitStatisticalModelToPatient``
+   ``WorkflowFitStatisticalModelToPatient`` (PCA registration) and
+   ``WorkflowReconstructHighres4DCT`` (ICON time-series registration)
 
 Dataset
-   DirLab-4DCT, downloaded manually.
+   Bring your own cardiac gated CT, labelmaps, KCL volume PCA model, and ICON
+   weights under ``D:/PhysioMotion4D/``.
 
 Run
    .. code-block:: bash
 
-      python tutorials/tutorial_07_dirlab_pca_model.py
+      python tutorials/tutorial_08_cardiac_fit_model.py
 
 Outputs
-   Five-lobe lung surface meshes, a surface PCA model, and PCA-fitted surfaces
-   for every available case.
+   Per-patient fitted SSM mesh/surface, PCA coefficients, and the SSM warped to
+   every gated phase, all written under ``OUTPUT_DIR``.
 
-Tutorial 8: DirLab PCA Time-Series Propagation
-==============================================
-
-Script
-   ``tutorials/tutorial_08_dirlab_pca_time_series.py``
-
-Workflow
-   ``RegisterTimeSeriesImages`` with ``registration_method='Greedy_ICON'`` and
-   ``TransformTools``
-
-Dataset
-   DirLab-4DCT plus Tutorial 7 fitted mesh outputs.
-
-Run
-   .. code-block:: bash
-
-      python tutorials/tutorial_08_dirlab_pca_time_series.py
-
-Outputs
-   Per-case ANTs+ICON transforms and one PCA-fitted lung-lobe surface for each
-   DirLab respiratory phase.
-
-Tutorial 9: PhysicsNeMo Mesh Stage Model
-========================================
+Tutorial 9a / 9b: Train a PhysicsNeMo Cardiac Stage Model
+=========================================================
 
 Script
-   ``tutorials/tutorial_09_physicsnemo_mesh_stage_model.py``
+   ``tutorials/tutorial_09a_cardiac_train_physicsnemo_mgn.py`` (MeshGraphNet) and
+   ``tutorials/tutorial_09b_cardiac_train_physicsnemo_mlp.py`` (MLP)
 
 Workflow
-   ``physicsnemo.models.mlp.FullyConnected`` trained on Tutorial 8 meshes.
+   ``physicsnemo.models.meshgraphnet.MeshGraphNet`` (9a) and
+   ``physicsnemo.models.mlp.FullyConnected`` (9b), trained on Tutorial 8 meshes.
 
 Dataset
-   Tutorial 8 propagated PCA mesh outputs.
+   Tutorial 8 fitted-mesh outputs.
 
 Extra install
    PhysicsNeMo is an optional dependency. Install with
-   ``pip install "physiomotion4d[physicsnemo]"`` (requires Python >= 3.11).
+   ``pip install "physiomotion4d[physicsnemo]"`` (requires Python >= 3.11). The
+   MeshGraphNet variant also requires ``torch-geometric``.
 
 Run
    .. code-block:: bash
 
-      python tutorials/tutorial_09_physicsnemo_mesh_stage_model.py
+      python tutorials/tutorial_09a_cardiac_train_physicsnemo_mgn.py
+      python tutorials/tutorial_09b_cardiac_train_physicsnemo_mlp.py
 
 Outputs
-   Per-case PhysicsNeMo checkpoints, training metadata, loss histories, and a
-   predicted PCA-fitted mesh at the requested normalized respiratory stage.
+   Shared PhysicsNeMo checkpoints, training metadata, loss / RMSE histories, and
+   held-out predictions written under each trainer's ``OUTPUT_DIR``.
+
+Tutorial 10a / 10b: Predict and Evaluate Cardiac Surfaces
+=========================================================
+
+Script
+   ``tutorials/tutorial_10a_cardiac_eval_physicsnemo_mgn.py`` (MeshGraphNet) and
+   ``tutorials/tutorial_10b_cardiac_eval_physicsnemo_mlp.py`` (MLP)
+
+Workflow
+   Load a Tutorial 9 checkpoint and predict cardiac surfaces for one subject at
+   each gated phase (with error statistics) or at caller-specified stages.
+
+Dataset
+   Tutorial 9a / 9b trained checkpoints plus the Tutorial 8 fitted meshes.
+
+Run
+   .. code-block:: bash
+
+      python tutorials/tutorial_10b_cardiac_eval_physicsnemo_mlp.py pm0002 --epoch 5000 --out results/pm0002
+
+   Run with no arguments to use the ``run_tutorial`` entry point and its
+   ``DEFAULT_SUBJECT`` / ``DEFAULT_EPOCH`` constants.
+
+Outputs
+   Predicted ``.vtp`` surfaces per phase (with per-point error arrays when
+   ground truth exists) and a ``statistics.csv`` error summary.
 
 Dataset Notes
 =============

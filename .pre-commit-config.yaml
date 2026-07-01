@@ -14,7 +14,7 @@ repos:
 
   # Type checking with mypy
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.19.1
+    rev: v2.1.0
     hooks:
       - id: mypy
         # With pass_filenames: false, we must provide an explicit target for mypy.

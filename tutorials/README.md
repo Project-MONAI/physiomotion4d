@@ -19,9 +19,18 @@ dataset licensing, and expected directory layout.
 | 4 | [tutorial_04_fit_statistical_model_to_patient.py](tutorial_04_fit_statistical_model_to_patient.py) | `WorkflowFitStatisticalModelToPatient` | KCL-Heart-Model plus Tutorial 3 output |
 | 5 | [tutorial_05_vtk_to_usd.py](tutorial_05_vtk_to_usd.py) | `WorkflowConvertVTKToUSD` | Output of tutorial 2 |
 | 6 | [tutorial_06_reconstruct_highres_4d_ct.py](tutorial_06_reconstruct_highres_4d_ct.py) | `WorkflowReconstructHighres4DCT` | DirLab-4DCT (manual) |
-| 7 | [tutorial_07_dirlab_pca_model.py](tutorial_07_dirlab_pca_model.py) | `WorkflowCreateStatisticalModel`, `WorkflowFitStatisticalModelToPatient` | DirLab-4DCT (manual) |
-| 8 | [tutorial_08_dirlab_pca_time_series.py](tutorial_08_dirlab_pca_time_series.py) | `RegisterTimeSeriesImages` | DirLab-4DCT plus Tutorial 7 output |
-| 9 | [tutorial_09_physicsnemo_mesh_stage_model.py](tutorial_09_physicsnemo_mesh_stage_model.py) | `physicsnemo.models.mlp.FullyConnected` (requires `[physicsnemo]` extra) | Tutorial 8 output |
+| 8 | [tutorial_08_cardiac_fit_model.py](tutorial_08_cardiac_fit_model.py) | `WorkflowFitStatisticalModelToPatient`, `WorkflowReconstructHighres4DCT` | Bring your own (cardiac gated CT, `D:/PhysioMotion4D/`) |
+| 9a | [tutorial_09a_cardiac_train_physicsnemo_mgn.py](tutorial_09a_cardiac_train_physicsnemo_mgn.py) | `physicsnemo.models.meshgraphnet.MeshGraphNet` (requires `[physicsnemo]` extra + `torch-geometric`) | Tutorial 8 output |
+| 9b | [tutorial_09b_cardiac_train_physicsnemo_mlp.py](tutorial_09b_cardiac_train_physicsnemo_mlp.py) | `physicsnemo.models.mlp.FullyConnected` (requires `[physicsnemo]` extra) | Tutorial 8 output |
+| 10a | [tutorial_10a_cardiac_eval_physicsnemo_mgn.py](tutorial_10a_cardiac_eval_physicsnemo_mgn.py) | `physicsnemo.models.meshgraphnet.MeshGraphNet` (requires `[physicsnemo]` extra + `torch-geometric`) | Tutorial 9a checkpoint |
+| 10b | [tutorial_10b_cardiac_eval_physicsnemo_mlp.py](tutorial_10b_cardiac_eval_physicsnemo_mlp.py) | `physicsnemo.models.mlp.FullyConnected` (requires `[physicsnemo]` extra) | Tutorial 9b checkpoint |
+
+> **Tutorials 8-10 are bring-your-own-data.** Unlike Tutorials 1-6, they do not
+> use the repository `data/` directory or a downloadable sample. Their path
+> constants point at a local `D:/PhysioMotion4D/` cardiac layout (gated CT,
+> labelmaps, the KCL volume PCA model, and ICON weights); edit those constants to
+> match your own data. (The former DirLab lung-lobe PCA tutorial, number 7, has
+> been removed; the numbering continues at 8.)
 
 ## Running a Tutorial
 
@@ -70,9 +79,13 @@ pytest tests/test_tutorials.py::TestTutorial01HeartGatedCTToUSD --run-tutorials 
 3. **Tutorial 3** creates the PCA statistical model from KCL-Heart-Model.
 4. **Tutorial 4** applies the statistical model, consuming Tutorial 3 output.
 5. **Tutorial 6** requires DirLab-4DCT - download it per `data/README.md`.
-6. **Tutorial 7** creates a surface PCA model of the five lung lobes from DirLab-4DCT, then fits it to every available case.
-7. **Tutorial 8** registers DirLab respiratory phases with ANTs+ICON and propagates the Tutorial 7 fitted meshes through each time series.
-8. **Tutorial 9** trains a PhysicsNeMo model to predict a PCA-fitted mesh at a user-specified respiratory stage. PhysicsNeMo is an optional extra: install with `pip install "physiomotion4d[physicsnemo]"` (requires Python >= 3.11).
+
+The cardiac mesh stage-prediction pipeline (Tutorials 8 -> 9 -> 10) is
+bring-your-own-data and runs in order:
+
+6. **Tutorial 8** fits the KCL cardiac PCA model to each patient's reference CT and propagates the fitted SSM mesh through every gated phase (output feeds Tutorial 9).
+7. **Tutorial 9a / 9b** train a PhysicsNeMo MeshGraphNet (9a) and MLP (9b) to predict a cardiac surface at any cardiac stage. PhysicsNeMo is an optional extra: install with `pip install "physiomotion4d[physicsnemo]"` (requires Python >= 3.11); the MeshGraphNet also needs `torch-geometric`.
+8. **Tutorial 10a / 10b** load a trained MeshGraphNet (10a) or MLP (10b) checkpoint and predict / score cardiac surfaces for one subject. Each can be run from the command line or, with no arguments, via its `run_tutorial` entry point.
 
 ## For Contributors
 

@@ -69,10 +69,7 @@ if __name__ == "__main__":
     if isinstance(template_data, pv.PolyData):
         template_model = template_data
     else:
-        template_model = cast(
-            pv.PolyData,
-            template_data.extract_surface(algorithm="dataset_surface"),
-        )
+        template_model = template_data.extract_surface(algorithm="dataset_surface")
 
     sample_files = sorted((data_dir / "sample_meshes").glob("*.vtu"))
     if not sample_files:
@@ -85,17 +82,14 @@ if __name__ == "__main__":
             "See data/README.md for download instructions."
         )
 
-    patient_models: list[pv.PolyData] = []
+    patient_models: list[pv.DataSet] = []
     for sample_file in sample_files:
         sample_data = cast(pv.DataSet, pv.read(str(sample_file)))
         if isinstance(sample_data, pv.PolyData):
             patient_models.append(sample_data)
         else:
             patient_models.append(
-                cast(
-                    pv.PolyData,
-                    sample_data.extract_surface(algorithm="dataset_surface"),
-                )
+                sample_data.extract_surface(algorithm="dataset_surface")
             )
 
     pca_model: dict[str, Any] | None = None
