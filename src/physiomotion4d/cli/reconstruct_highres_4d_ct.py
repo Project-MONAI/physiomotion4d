@@ -13,10 +13,10 @@ import os
 import sys
 import traceback
 
-from ._method_factories import build_registration_method
 from ..register_images_greedy import RegisterImagesGreedy
 from ..register_images_greedy_icon import RegisterImagesGreedyICON
 from ..register_images_icon import RegisterImagesICON
+from ._method_factories import build_registration_method
 
 
 def main() -> int:
@@ -119,7 +119,8 @@ Examples:
     parser.add_argument(
         "--ICON-iterations",
         type=int,
-        help="ICON fine-tuning iterations. Default: 20",
+        default=None,
+        help="ICON fine-tuning iterations. Default: None",
     )
 
     # Reconstruction options
@@ -280,7 +281,12 @@ Examples:
 
         # Set number of iterations based on registration method and CLI arguments
         greedy_iterations = args.Greedy_iterations or [30, 15, 7, 3]
-        icon_iterations = args.ICON_iterations if args.ICON_iterations else 20
+        if args.ICON_iterations is None or args.ICON_iterations > 0:
+            icon_iterations = args.ICON_iterations
+        elif args.ICON_iterations <= 0:
+            icon_iterations = None
+        else:
+            icon_iterations = 20
         if isinstance(registration_method, RegisterImagesGreedyICON):
             registration_method.greedy.set_number_of_iterations(greedy_iterations)
             registration_method.icon.set_number_of_iterations(icon_iterations)

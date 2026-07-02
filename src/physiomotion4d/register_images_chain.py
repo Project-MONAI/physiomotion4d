@@ -6,7 +6,7 @@ registration pipeline.
 """
 
 import logging
-from typing import Optional, Union
+from typing import Optional, Union, cast
 
 import itk
 
@@ -106,6 +106,6 @@ class RegisterImagesChain(RegisterImagesBase):
                 initial_forward_transform=current_initial,
             )
             self._capture_delegate_result(registrar, result)
-            current_initial = result["forward_transform"]
+            current_initial = cast(itk.Transform, result["forward_transform"])
 
         return result

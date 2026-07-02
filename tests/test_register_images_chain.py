@@ -109,6 +109,32 @@ def test_chain_propagates_fixed_and_moving_state_to_each_child() -> None:
         assert stage.preprocess_call_count == 1
 
 
+def test_chain_recomputes_fixed_image_pre_when_fixed_image_changes() -> None:
+    """A reused chain must recompute each child's fixed_image_pre when the
+    chain's fixed image changes, not reuse a stale pre from the prior image;
+    but it must NOT recompute across frames that share the same fixed image."""
+    stage = _RecordingRegistrar("stage", 1.0)
+    chain = RegisterImagesChain([stage])
+
+    fixed_a = _small_image(value=1.0)
+    chain.set_fixed_image(fixed_a)
+    chain.register(_small_image(value=9.0))
+    # The stub's preprocess() is identity, so fixed_image_pre is fixed_a.
+    assert stage.fixed_image_pre is fixed_a
+    assert stage.preprocess_call_count == 1
+
+    # Second frame, same fixed image: pre is cached, not recomputed.
+    chain.register(_small_image(value=8.0))
+    assert stage.preprocess_call_count == 1
+
+    # New fixed image: the stale pre for fixed_a must be discarded and recomputed.
+    fixed_b = _small_image(value=2.0)
+    chain.set_fixed_image(fixed_b)
+    chain.register(_small_image(value=7.0))
+    assert stage.fixed_image_pre is fixed_b
+    assert stage.preprocess_call_count == 2
+
+
 def test_chain_rejects_empty_list() -> None:
     """An empty registrars list is not a valid chain."""
     with pytest.raises(ValueError, match="registrars must not be empty"):

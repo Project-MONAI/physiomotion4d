@@ -391,7 +391,14 @@ class RegisterImagesBase(PhysioMotion4DBase):
         """
         other.modality = self.modality
         other.mask_dilation_mm = self.mask_dilation_mm
-        other.fixed_image = self.fixed_image
+        # Recompute other.fixed_image_pre whenever the fixed image changes.
+        # The identity check preserves per-frame caching (many moving frames
+        # against one fixed image reuse the same pre) while preventing a stale
+        # pre from a previous, different fixed image - which would silently
+        # register against the wrong reference - when ``other`` is reused.
+        if other.fixed_image is not self.fixed_image:
+            other.fixed_image = self.fixed_image
+            other.fixed_image_pre = None
         if other.fixed_image_pre is None:
             other.fixed_image_pre = other.preprocess(
                 other.fixed_image, modality=other.modality
