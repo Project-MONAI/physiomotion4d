@@ -363,42 +363,28 @@ class ImageTools(PhysioMotion4DBase):
             largest connected component with value *foreground_value*
             (background is 0).
         """
+        # SimpleITK's filters are not templated on pixel type in the Python
+        # layer, so this avoids the itk.ConnectedComponentImageFilter /
+        # itk.RelabelComponentImageFilter Python wrappings, which only cover
+        # a limited set of input/output pixel type combinations that vary
+        # across ITK Python builds.
         ImageType = type(image)
-        dimension = image.GetImageDimension()
-        # RelabelComponentImageFilter is only wrapped for an itk.ULL input
-        # paired with an itk.UC/itk.US/itk.SS output (not itk.ULL -> itk.ULL,
-        # and not the itk.UL that the functional
-        # connected_component_image_filter defaults to), so request the
-        # component and relabeled types explicitly.
-        ComponentImageType = itk.Image[itk.ULL, dimension]
-        RelabeledImageType = itk.Image[itk.US, dimension]
+        sitk_image = self.convert_itk_image_to_sitk(image)
 
-        cc_filter = itk.ConnectedComponentImageFilter[
-            ImageType, ComponentImageType
-        ].New()
-        cc_filter.SetInput(image)
-        cc_filter.SetFullyConnected(fully_connected)
-        cc_filter.Update()
+        cc_image = sitk.ConnectedComponent(sitk_image, fully_connected)
+        relabeled = sitk.RelabelComponent(cc_image, sortByObjectSize=True)
+        largest = sitk.BinaryThreshold(
+            relabeled,
+            lowerThreshold=1,
+            upperThreshold=1,
+            insideValue=foreground_value,
+            outsideValue=0,
+        )
 
-        relabel_filter = itk.RelabelComponentImageFilter[
-            ComponentImageType, RelabeledImageType
-        ].New()
-        relabel_filter.SetInput(cc_filter.GetOutput())
-        relabel_filter.SetSortByObjectSize(True)
-        relabel_filter.Update()
-
-        threshold_filter = itk.BinaryThresholdImageFilter[
-            RelabeledImageType, ImageType
-        ].New()
-        threshold_filter.SetInput(relabel_filter.GetOutput())
-        threshold_filter.SetLowerThreshold(1)
-        threshold_filter.SetUpperThreshold(1)
-        threshold_filter.SetInsideValue(foreground_value)
-        threshold_filter.SetOutsideValue(0)
-        threshold_filter.Update()
-        result = threshold_filter.GetOutput()
-        result.DisconnectPipeline()
-        return result
+        result = self.convert_sitk_image_to_itk(largest)
+        if type(result) is ImageType:
+            return result
+        return itk.cast_image_filter(result, ttype=(type(result), ImageType))
 
     @overload
     def flip_image(
