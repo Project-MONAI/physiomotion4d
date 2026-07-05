@@ -75,7 +75,6 @@ from pathlib import Path
 
 import itk
 
-from physiomotion4d.register_images_icon import RegisterImagesICON
 from physiomotion4d.test_tools import TestTools
 from physiomotion4d.workflow_convert_image_to_usd import (
     WorkflowConvertImageToUSD,
@@ -112,9 +111,6 @@ if __name__ == "__main__":
     else:
         number_of_registration_iterations = 10
 
-    registration_method = RegisterImagesICON(log_level=log_level)
-    registration_method.set_number_of_iterations(number_of_registration_iterations)
-
     # %%
     frame_files = sorted(data_dir.glob("slice_???.mha"))
     if test_mode:
@@ -129,18 +125,20 @@ if __name__ == "__main__":
             + "See data/README.md for download instructions."
         )
 
+    time_series_images = [itk.imread(str(path)) for path in input_filenames]
+    reference_image = time_series_images[int(0.7 * len(time_series_images))]
+
+    print("Number of time-series images:", len(time_series_images))
+
     # %%
     # Workflow initialization
     workflow = WorkflowConvertImageToUSD(
-        input_filenames=input_filenames,
-        contrast_enhanced=True,
+        time_series_images=time_series_images,
+        reference_image=reference_image,
         output_directory=str(output_dir),
-        project_name="cardiac_model",
-        registration_method=registration_method,
+        usd_project_name="cardiac_model",
         log_level=log_level,
-        save_registered_images=True,
-        save_registration_transforms=True,
-        save_labelmaps=True,
+        save_assets=True,
     )
 
     # %%

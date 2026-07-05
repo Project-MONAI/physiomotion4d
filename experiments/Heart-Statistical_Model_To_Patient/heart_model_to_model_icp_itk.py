@@ -71,7 +71,7 @@ print(f"  Resampled spacing: {itk.spacing(patient_image)}")
 
 # Save preprocessed image
 itk.imwrite(patient_image, str(output_dir / "patient_image.mha"), compression=True)
-print("✓ Saved preprocessed image")
+print("Saved preprocessed image")
 
 # %% [markdown]
 # ## Load and Process Heart Segmentation Mask
@@ -111,7 +111,7 @@ if flip0 or flip1 or flip2:
     patient_heart_mask = flip_filter.GetOutput()
     patient_heart_mask.SetDirection(id_mat)
 
-    print("✓ Images flipped to standard orientation")
+    print("Images flipped to standard orientation")
 
 # Save oriented images
 itk.imwrite(
@@ -162,7 +162,7 @@ icp_result = icp_registrar.register(
 icp_registered_model_surface = icp_result["registered_model"]
 icp_forward_point_transform = icp_result["forward_point_transform"]
 
-print("\n✓ ICP affine registration complete")
+print("\nICP affine registration complete")
 print("   Transform =", icp_result["forward_point_transform"])
 
 # Save aligned model
@@ -184,7 +184,7 @@ icp_registered_model = transform_tools.transform_pvcontour(
     template_model, icp_forward_point_transform
 )
 icp_registered_model.save(str(output_dir / "icp_registered_model.vtk"))
-print("\n✓ Applied ICP transform to full model mesh")
+print("\nApplied ICP transform to full model mesh")
 
 # %% [markdown]
 # ## Visualize Results

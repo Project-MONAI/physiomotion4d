@@ -20,7 +20,7 @@ class SegmentHeartSimplewareTrimmedBranches(SegmentHeartSimpleware):
 
     Example:
         >>> segmenter = SegmentHeartSimplewareTrimmedBranches()
-        >>> result = segmenter.segment(ct_image, contrast_enhanced_study=True)
+        >>> result = segmenter.segment(ct_image)
         >>> labelmap = result['labelmap']
     """
 

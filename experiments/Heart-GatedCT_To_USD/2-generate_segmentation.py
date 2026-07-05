@@ -70,6 +70,7 @@ if __name__ == "__main__":
 
     seg = SegmentChestTotalSegmentator()
     seg.contrast_threshold = 500
+    seg.fast_mode = TestTools.running_as_test()
     if re_run_image_segmentation:
         result = seg.segment(max_image, contrast_enhanced_study=True)
         labelmap_image = result["labelmap"]

@@ -30,7 +30,6 @@ import itk
 
 from .physiomotion4d_base import PhysioMotion4DBase
 from .register_images_base import RegisterImagesBase
-from .register_images_greedy_icon import RegisterImagesGreedyICON
 from .register_time_series_images import RegisterTimeSeriesImages
 
 
@@ -76,21 +75,11 @@ class WorkflowReconstructHighres4DCT(PhysioMotion4DBase):
 
     Example:
         >>> # Initialize workflow with data
-        >>> registration_method = RegisterImagesGreedyICON()
-        >>> registration_method.greedy.set_number_of_iterations([30, 15, 7])
-        >>> registration_method.icon.set_number_of_iterations(20)
         >>> workflow = WorkflowReconstructHighres4DCT(
         ...     time_series_images=lowres_images,
         ...     fixed_image=highres_reference,
-        ...     reference_frame=3,
-        ...     registration_method=registration_method,
+        ...     reference_frame=7,
         ... )
-        >>>
-        >>> # Configure workflow-level registration parameters
-        >>> workflow.set_prior_weight(0.5)
-        >>>
-        >>> # Run complete workflow
-        >>> result = workflow.run_workflow(upsample_to_fixed_resolution=True)
         >>>
         >>> # Access results
         >>> reconstructed = result['reconstructed_images']
@@ -146,9 +135,9 @@ class WorkflowReconstructHighres4DCT(PhysioMotion4DBase):
                 f"[0, {len(time_series_images) - 1}]"
             )
 
-        if registration_method is None:
-            registration_method = RegisterImagesGreedyICON(log_level=log_level)
-        elif not isinstance(registration_method, RegisterImagesBase):
+        if registration_method is not None and not isinstance(
+            registration_method, RegisterImagesBase
+        ):
             raise TypeError(
                 "registration_method must be a RegisterImagesBase instance or None"
             )
@@ -161,7 +150,7 @@ class WorkflowReconstructHighres4DCT(PhysioMotion4DBase):
 
         # Initialize parameters with defaults
         self.prior_weight: float = 0.0
-        self.upsample_to_fixed_resolution: bool = False
+        self.upsample_to_fixed_resolution: bool = True
         self.modality: str = "ct"
         self.mask_dilation_mm: float = 0.0
         self.fixed_mask: Optional[itk.Image] = None
@@ -300,7 +289,7 @@ class WorkflowReconstructHighres4DCT(PhysioMotion4DBase):
         }
 
     def reconstruct_time_series(
-        self, upsample_to_fixed_resolution: bool = False
+        self, upsample_to_fixed_resolution: bool = True
     ) -> dict:
         """Reconstruct high-resolution time series using inverse transforms.
 

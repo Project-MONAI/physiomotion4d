@@ -98,10 +98,8 @@ def test_segment_trims_branches_relative_to_plain_segmenter(
 
     input_image = test_images[3]
 
-    plain_result = plain.segment(input_image, contrast_enhanced_study=True)
-    trimmed_result = SegmentHeartSimplewareTrimmedBranches().segment(
-        input_image, contrast_enhanced_study=True
-    )
+    plain_result = plain.segment(input_image)
+    trimmed_result = SegmentHeartSimplewareTrimmedBranches().segment(input_image)
 
     plain_labelmap = plain_result["labelmap"]
     trimmed_labelmap = trimmed_result["labelmap"]

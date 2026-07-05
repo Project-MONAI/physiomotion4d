@@ -222,6 +222,10 @@ class WorkflowConvertImageToVTK(PhysioMotion4DBase):
             input_image: Input 3D CT image (``itk.Image``).
             contrast_enhanced_study: If ``True``, an additional connected-component
                 pass identifies contrast-enhanced blood.  Default: ``False``.
+                Only supported by segmenters that implement
+                ``set_contrast_enhanced_study`` (e.g.
+                :class:`SegmentChestTotalSegmentator`); requesting ``True``
+                with any other segmenter raises :class:`ValueError`.
             anatomy_groups: Subset of anatomy groups to process.  ``None`` (default)
                 processes all non-empty groups.  Valid names: ``'heart'``,
                 ``'lung'``, ``'major_vessels'``, ``'bone'``, ``'soft_tissue'``,
@@ -258,9 +262,19 @@ class WorkflowConvertImageToVTK(PhysioMotion4DBase):
         self.log_info("Running segmenter: %s", type(self._segmenter).__name__)
 
         self.log_section("Running segmentation")
-        seg_result: dict[str, Any] = self._segmenter.segment(
-            input_image, contrast_enhanced_study=contrast_enhanced_study
+        set_contrast_enhanced_study = getattr(
+            self._segmenter, "set_contrast_enhanced_study", None
         )
+        if contrast_enhanced_study and set_contrast_enhanced_study is None:
+            raise ValueError(
+                "contrast_enhanced_study=True requires a segmenter that "
+                "implements set_contrast_enhanced_study (e.g. "
+                "SegmentChestTotalSegmentator); "
+                f"got {type(self._segmenter).__name__}"
+            )
+        if set_contrast_enhanced_study is not None:
+            set_contrast_enhanced_study(contrast_enhanced_study)
+        seg_result: dict[str, Any] = self._segmenter.segment(input_image)
 
         # Extract VTK objects per anatomy group
         self.log_section("Extracting VTK objects")

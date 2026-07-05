@@ -50,7 +50,7 @@ class SegmentHeartSimpleware(SegmentAnatomyBase):
 
     Example:
         >>> segmenter = SegmentHeartSimpleware()
-        >>> result = segmenter.segment(ct_image, contrast_enhanced_study=True)
+        >>> result = segmenter.segment(ct_image)
         >>> labelmap = result['labelmap']
         >>> heart_mask = result['heart']
 
