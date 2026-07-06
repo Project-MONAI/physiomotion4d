@@ -39,7 +39,9 @@ import pyvista as pv
 from .contour_tools import ContourTools
 from .physiomotion4d_base import PhysioMotion4DBase
 from .segment_anatomy_base import SegmentAnatomyBase
-from .segment_chest_total_segmentator import SegmentChestTotalSegmentator
+from .segment_chest_total_segmentator_with_contrast import (
+    SegmentChestTotalSegmentatorWithContrast,
+)
 from .usd_anatomy_tools import USDAnatomyTools
 
 
@@ -89,7 +91,7 @@ class WorkflowConvertImageToVTK(PhysioMotion4DBase):
 
         Args:
             segmentation_method: Segmentation backend instance. Defaults to
-                a new :class:`SegmentChestTotalSegmentator` when None.
+                a new :class:`SegmentChestTotalSegmentatorWithContrast` when None.
             log_level: Logging level.  Default: ``logging.INFO``.
 
         Raises:
@@ -99,7 +101,9 @@ class WorkflowConvertImageToVTK(PhysioMotion4DBase):
         super().__init__(class_name=self.__class__.__name__, log_level=log_level)
 
         if segmentation_method is None:
-            segmentation_method = SegmentChestTotalSegmentator(log_level=log_level)
+            segmentation_method = SegmentChestTotalSegmentatorWithContrast(
+                log_level=log_level
+            )
         elif not isinstance(segmentation_method, SegmentAnatomyBase):
             raise TypeError(
                 "segmentation_method must be a SegmentAnatomyBase instance or None"
