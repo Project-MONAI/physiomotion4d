@@ -12,6 +12,7 @@ from physiomotion4d import (
     RegisterImagesICON,
     SegmentAnatomyBase,
     SegmentChestTotalSegmentator,
+    SegmentChestTotalSegmentatorWithContrast,
     SegmentHeartSimpleware,
     SegmentHeartSimplewareTrimmedBranches,
 )
@@ -27,20 +28,31 @@ SEGMENTATION_METHODS: tuple[str, ...] = (
 REGISTRATION_METHODS: tuple[str, ...] = ("Greedy", "ICON", "Greedy_ICON")
 
 
-def build_segmentation_method(name: str) -> SegmentAnatomyBase:
+def build_segmentation_method(name: str, contrast: bool = False) -> SegmentAnatomyBase:
     """Build a SegmentAnatomyBase instance for a CLI --segmentation-method choice.
 
     Args:
         name: One of SEGMENTATION_METHODS.
+        contrast: If True, build the contrast-enhanced variant instead of the
+            plain backend. Only supported for "ChestTotalSegmentator".
 
     Returns:
         A new, unconfigured segmentation backend instance.
 
     Raises:
-        ValueError: If name is not one of SEGMENTATION_METHODS.
+        ValueError: If name is not one of SEGMENTATION_METHODS, or if
+            contrast=True is requested for a backend that has no
+            contrast-enhanced variant.
     """
     if name == "ChestTotalSegmentator":
+        if contrast:
+            return SegmentChestTotalSegmentatorWithContrast()
         return SegmentChestTotalSegmentator()
+    if contrast:
+        raise ValueError(
+            f"contrast=True is not supported for segmentation method: {name}. "
+            "Only ChestTotalSegmentator has a contrast-enhanced variant."
+        )
     if name == "HeartSimpleware":
         return SegmentHeartSimpleware()
     if name == "HeartSimplewareTrimmedBranches":

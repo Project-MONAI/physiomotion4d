@@ -21,6 +21,9 @@ from physiomotion4d.register_images_ants import RegisterImagesANTS
 from physiomotion4d.register_images_greedy import RegisterImagesGreedy
 from physiomotion4d.register_images_icon import RegisterImagesICON
 from physiomotion4d.segment_chest_total_segmentator import SegmentChestTotalSegmentator
+from physiomotion4d.segment_chest_total_segmentator_with_contrast import (
+    SegmentChestTotalSegmentatorWithContrast,
+)
 from physiomotion4d.segment_heart_simpleware import SegmentHeartSimpleware
 from physiomotion4d.transform_tools import TransformTools
 
@@ -599,6 +602,14 @@ def test_transforms(
 def segmenter_total_segmentator() -> SegmentChestTotalSegmentator:
     """Create a SegmentChestTotalSegmentator instance."""
     return SegmentChestTotalSegmentator()
+
+
+@pytest.fixture(scope="session")
+def segmenter_total_segmentator_with_contrast() -> (
+    SegmentChestTotalSegmentatorWithContrast
+):
+    """Create a SegmentChestTotalSegmentatorWithContrast instance."""
+    return SegmentChestTotalSegmentatorWithContrast()
 
 
 @pytest.fixture(scope="session")

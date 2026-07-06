@@ -28,7 +28,7 @@ Basic Usage
 
    image = itk.imread("chest_ct.nrrd")
    segmenter = SegmentHeartSimpleware()
-   masks = segmenter.segment(image, contrast_enhanced_study=True)
+   masks = segmenter.segment(image)
 
    heart = masks["heart"]
    vessels = masks["major_vessels"]

@@ -117,7 +117,6 @@ For more control, use the Python API:
 
    processor = WorkflowConvertImageToUSD(
        input_filenames=["path/to/cardiac_4d_ct.nrrd"],
-       contrast_enhanced=True,
        output_directory="./results",
        project_name="cardiac_model",
        registration_method=RegisterImagesICON(),
@@ -152,7 +151,6 @@ For more control over individual steps:
    # Initialize workflow
    workflow = WorkflowConvertImageToUSD(
        input_filenames=["cardiac_4d.nrrd"],
-       contrast_enhanced=True,
        output_directory="./results",
        project_name="cardiac_model",
        registration_method=RegisterImagesICON(),
@@ -170,15 +168,15 @@ If you only need segmentation:
 
 .. code-block:: python
 
-   from physiomotion4d import SegmentChestTotalSegmentator
+   from physiomotion4d import SegmentChestTotalSegmentatorWithContrast
    import itk
 
-   # Initialize segmenter
-   segmenter = SegmentChestTotalSegmentator()
+   # Initialize segmenter (use SegmentChestTotalSegmentator for non-contrast studies)
+   segmenter = SegmentChestTotalSegmentatorWithContrast()
 
    # Load and segment image
    image = itk.imread("chest_ct.nrrd")
-   masks = segmenter.segment(image, contrast_enhanced_study=True)
+   masks = segmenter.segment(image)
 
    # Extract individual anatomy masks by key
    heart_mask = masks["heart"]

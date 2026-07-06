@@ -5,7 +5,9 @@ from pathlib import Path
 import itk
 
 from physiomotion4d.register_images_ants import RegisterImagesANTS
-from physiomotion4d.segment_chest_total_segmentator import SegmentChestTotalSegmentator
+from physiomotion4d.segment_chest_total_segmentator_with_contrast import (
+    SegmentChestTotalSegmentatorWithContrast,
+)
 from physiomotion4d.test_tools import TestTools
 from physiomotion4d.transform_tools import TransformTools
 
@@ -32,10 +34,8 @@ if __name__ == "__main__":
     fixed_image = itk.imread(str(fixed_image_filename))
 
     # %%
-    seg = SegmentChestTotalSegmentator()
-    seg.contrast_threshold = 500
+    seg = SegmentChestTotalSegmentatorWithContrast()
     seg.fast_mode = test_mode
-    seg.set_contrast_enhanced_study(True)
     result = seg.segment(fixed_image)
     # %%
     labelmap_mask = result["labelmap"]

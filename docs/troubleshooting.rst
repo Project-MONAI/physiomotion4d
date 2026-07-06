@@ -69,13 +69,17 @@ Poor Segmentation Quality
 
 **Solutions**:
 
-1. Check if image is contrast-enhanced:
+1. Check if image is contrast-enhanced. Use
+   :class:`SegmentChestTotalSegmentatorWithContrast` instead of
+   :class:`SegmentChestTotalSegmentator` for contrast-enhanced studies:
 
    .. code-block:: python
 
+      from physiomotion4d import SegmentChestTotalSegmentatorWithContrast
+
       workflow = WorkflowConvertImageToUSD(
           ...,
-          contrast_enhanced=True  # or False
+          segmentation_method=SegmentChestTotalSegmentatorWithContrast(),
       )
 
 2. Preprocess intensity, spacing, and field of view before invoking the workflow.

@@ -46,7 +46,7 @@ Basic Segmentation
    from physiomotion4d import SegmentChestTotalSegmentator
 
    segmenter = SegmentChestTotalSegmentator()
-   result = segmenter.segment(ct_image, contrast_enhanced_study=False)
+   result = segmenter.segment(ct_image)
    labelmap = result['labelmap']
 
 Module Documentation

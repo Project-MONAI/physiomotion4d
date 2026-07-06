@@ -13,7 +13,9 @@ from pxr import Usd, UsdGeom
 
 from physiomotion4d.register_images_base import RegisterImagesBase
 from physiomotion4d.register_images_icon import RegisterImagesICON
-from physiomotion4d.segment_chest_total_segmentator import SegmentChestTotalSegmentator
+from physiomotion4d.segment_chest_total_segmentator_with_contrast import (
+    SegmentChestTotalSegmentatorWithContrast,
+)
 from physiomotion4d.workflow_convert_image_to_usd import WorkflowConvertImageToUSD
 
 
@@ -24,7 +26,7 @@ def _small_image() -> itk.Image:
 
 def test_default_segmentation_and_registration_methods(tmp_path: Path) -> None:
     """Omitting segmentation_method/registration_method defaults to
-    SegmentChestTotalSegmentator (contrast_threshold=500) and
+    SegmentChestTotalSegmentatorWithContrast (contrast_threshold=500) and
     RegisterImagesICON, matching this workflow's documented defaults."""
     reference_image = _small_image()
     workflow = WorkflowConvertImageToUSD(
@@ -35,7 +37,7 @@ def test_default_segmentation_and_registration_methods(tmp_path: Path) -> None:
         log_level=logging.CRITICAL,
     )
 
-    assert isinstance(workflow.segmenter, SegmentChestTotalSegmentator)
+    assert isinstance(workflow.segmenter, SegmentChestTotalSegmentatorWithContrast)
     assert workflow.segmenter.contrast_threshold == 500
     assert isinstance(workflow.registrar, RegisterImagesICON)
 
@@ -73,7 +75,8 @@ def test_caller_supplied_instances_are_used_as_is(tmp_path: Path) -> None:
     (beyond the documented shared setters): the workflow must not apply its
     default-only contrast_threshold=500 tuning to a caller-supplied segmenter."""
     reference_image = _small_image()
-    segmenter = SegmentChestTotalSegmentator()
+    segmenter = SegmentChestTotalSegmentatorWithContrast()
+    segmenter.contrast_threshold = 800
     original_contrast_threshold = segmenter.contrast_threshold
     registrar: RegisterImagesBase = RegisterImagesICON()
 
@@ -112,9 +115,8 @@ def test_workflow_convert_image_to_usd_default_operation(
         log_level=logging.CRITICAL,
     )
 
-    assert isinstance(workflow.segmenter, SegmentChestTotalSegmentator)
+    assert isinstance(workflow.segmenter, SegmentChestTotalSegmentatorWithContrast)
     assert workflow.segmenter.contrast_threshold == 500
-    assert workflow.segmenter.contrast_enhanced_study
     assert isinstance(workflow.registrar, RegisterImagesICON)
     workflow.registrar.set_number_of_iterations(2)
 

@@ -351,7 +351,7 @@ for subject_id in test_subjects:
                 compression=True,
             )
 
-            seg_result = segmenter.segment(warped_ref, contrast_enhanced_study=False)
+            seg_result = segmenter.segment(warped_ref)
             warped_ref_labelmap = seg_result["labelmap"]
             warped_ref_landmarks = segmenter.get_landmarks()
 

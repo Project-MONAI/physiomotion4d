@@ -14,6 +14,9 @@ import numpy as np
 import pytest
 
 from physiomotion4d.segment_chest_total_segmentator import SegmentChestTotalSegmentator
+from physiomotion4d.segment_chest_total_segmentator_with_contrast import (
+    SegmentChestTotalSegmentatorWithContrast,
+)
 
 
 @pytest.mark.requires_gpu
@@ -80,7 +83,6 @@ class TestSegmentChestTotalSegmentator:
             "bone",
             "soft_tissue",
             "other",
-            "contrast",
         ]
         for key in expected_keys:
             assert key in result, f"Missing key '{key}' in result"
@@ -182,32 +184,29 @@ class TestSegmentChestTotalSegmentator:
     def test_contrast_detection(
         self,
         segmenter_total_segmentator: SegmentChestTotalSegmentator,
+        segmenter_total_segmentator_with_contrast: (
+            SegmentChestTotalSegmentatorWithContrast
+        ),
         test_images: list[Any],
     ) -> None:
         """Test contrast detection functionality."""
         input_image = test_images[0]
 
-        # Test without contrast
-        segmenter_total_segmentator.set_contrast_enhanced_study(False)
+        # Plain segmenter has no "contrast" group
         result_no_contrast = segmenter_total_segmentator.segment(input_image)
-        contrast_mask_no = result_no_contrast["contrast"]
+        assert "contrast" not in result_no_contrast
 
-        # Test with contrast flag
-        segmenter_total_segmentator.set_contrast_enhanced_study(True)
-        result_with_contrast = segmenter_total_segmentator.segment(input_image)
+        # Contrast-enhanced segmenter adds a "contrast" group
+        result_with_contrast = segmenter_total_segmentator_with_contrast.segment(
+            input_image
+        )
         contrast_mask_yes = result_with_contrast["contrast"]
-        segmenter_total_segmentator.set_contrast_enhanced_study(False)
-
-        # Both should return valid masks
-        assert contrast_mask_no is not None, "Contrast mask (no flag) is None"
         assert contrast_mask_yes is not None, "Contrast mask (with flag) is None"
 
         print("\nContrast detection tested")
 
-        contrast_arr_no = itk.array_from_image(contrast_mask_no)
         contrast_arr_yes = itk.array_from_image(contrast_mask_yes)
-        print(f"  Without contrast flag: {np.sum(contrast_arr_no > 0)} voxels")
-        print(f"  With contrast flag: {np.sum(contrast_arr_yes > 0)} voxels")
+        print(f"  Contrast voxels: {np.sum(contrast_arr_yes > 0)}")
 
     def test_preprocessing(
         self,

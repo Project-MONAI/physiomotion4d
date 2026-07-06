@@ -21,18 +21,17 @@ if __name__ == "__main__":
         import itk
 
         from physiomotion4d.contour_tools import ContourTools
-        from physiomotion4d.segment_chest_total_segmentator import (
-            SegmentChestTotalSegmentator,
+        from physiomotion4d.segment_chest_total_segmentator_with_contrast import (
+            SegmentChestTotalSegmentatorWithContrast,
         )
 
         input_images = sorted(glob.glob(os.path.join(_DATA_DIR, "slice_*.mha")))
-        seg = SegmentChestTotalSegmentator()
-        seg.contrast_threshold = 500
+        seg = SegmentChestTotalSegmentatorWithContrast()
         con = ContourTools()
         for i, img_path in enumerate(input_images):
             print(f"Segmenting {img_path}...")
             img = itk.imread(img_path)
-            result = seg.segment(img, contrast_enhanced_study=True)
+            result = seg.segment(img)
             labelmap_mask = result["labelmap"]
             img_con = con.extract_contours(labelmap_mask)
             img_con.save(os.path.join(_DATA_DIR, f"slice_{i:03d}.vtp"))

@@ -297,7 +297,6 @@ from physiomotion4d import RegisterImagesICON, WorkflowConvertImageToUSD
 # Initialize processor
 processor = WorkflowConvertImageToUSD(
     input_filenames=["path/to/cardiac_4d_ct.nrrd"],
-    contrast_enhanced=True,
     output_directory="./results",
     project_name="cardiac_model",
     registration_method=RegisterImagesICON(),  # or RegisterImagesANTS()
@@ -334,20 +333,21 @@ registered_mesh = result["registered_template_model_surface"]
 ### Custom Segmentation
 
 ```python
-from physiomotion4d import SegmentChestTotalSegmentator
+from physiomotion4d import SegmentChestTotalSegmentatorWithContrast
 import itk
 
-# Initialize TotalSegmentator segmentation
-segmenter = SegmentChestTotalSegmentator()
+# Use SegmentChestTotalSegmentator instead for non-contrast studies
+segmenter = SegmentChestTotalSegmentatorWithContrast()
 
 # Load and segment image
 image = itk.imread("chest_ct.nrrd")
-masks = segmenter.segment(image, contrast_enhanced_study=True)
+masks = segmenter.segment(image)
 
 # Result always contains "labelmap" plus one entry per anatomy group the
 # segmenter registered (heart, lung, bone, major_vessels, soft_tissue,
-# contrast, other for SegmentChestTotalSegmentator). The exact key set is
-# segmenter-specific; check membership when targeting multiple segmenters.
+# contrast, other for SegmentChestTotalSegmentatorWithContrast). The exact
+# key set is segmenter-specific; check membership when targeting multiple
+# segmenters.
 labelmap = masks["labelmap"]
 heart_mask = masks["heart"]
 if "lung" in masks:

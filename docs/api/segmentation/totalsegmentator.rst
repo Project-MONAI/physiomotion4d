@@ -28,7 +28,7 @@ Basic Usage
    image = itk.imread("chest_ct.nrrd")
    segmenter = SegmentChestTotalSegmentator()
 
-   masks = segmenter.segment(image, contrast_enhanced_study=True)
+   masks = segmenter.segment(image)
 
    heart = masks["heart"]
    lungs = masks["lung"]
@@ -53,14 +53,29 @@ keys:
 * ``bone``
 * ``soft_tissue``
 * ``other``
-* ``contrast``
 
 The dictionary should be accessed by key. Do not unpack it positionally.
 The exact key set is determined by the segmenter's :class:`AnatomyTaxonomy`
 and may differ from other segmenters (see :doc:`base`). For
-:class:`SegmentChestTotalSegmentator` specifically, all seven groups plus
+:class:`SegmentChestTotalSegmentator` specifically, all six groups plus
 ``labelmap`` are always present; downstream code that targets a different
 segmenter should check membership.
+
+For contrast-enhanced studies, use
+:class:`SegmentChestTotalSegmentatorWithContrast` instead of
+:class:`SegmentChestTotalSegmentator`. It adds a ``contrast`` key to the
+returned dictionary and exposes a ``contrast_threshold`` attribute
+(default 500) that can be overridden before calling ``segment()``:
+
+.. code-block:: python
+
+   from physiomotion4d import SegmentChestTotalSegmentatorWithContrast
+
+   segmenter = SegmentChestTotalSegmentatorWithContrast()
+   segmenter.contrast_threshold = 600  # optional override
+
+   masks = segmenter.segment(image)
+   contrast = masks["contrast"]
 
 Operational Notes
 =================

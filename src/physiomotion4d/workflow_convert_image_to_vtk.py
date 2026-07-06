@@ -9,12 +9,15 @@ directly.
 Typical usage::
 
     import itk
-    from physiomotion4d import SegmentChestTotalSegmentator, WorkflowConvertImageToVTK
+    from physiomotion4d import (
+        SegmentChestTotalSegmentatorWithContrast,
+        WorkflowConvertImageToVTK,
+    )
 
     ct = itk.imread('chest_ct.nii.gz')
-    segmenter = SegmentChestTotalSegmentator()
+    segmenter = SegmentChestTotalSegmentatorWithContrast()
     workflow = WorkflowConvertImageToVTK(segmentation_method=segmenter)
-    result = workflow.run_workflow(ct, contrast_enhanced_study=True)
+    result = workflow.run_workflow(ct)
 
     # Combined single-file output (default)
     WorkflowConvertImageToVTK.save_combined_surface(result['surfaces'], './out', prefix='patient')
@@ -36,7 +39,9 @@ import pyvista as pv
 from .contour_tools import ContourTools
 from .physiomotion4d_base import PhysioMotion4DBase
 from .segment_anatomy_base import SegmentAnatomyBase
-from .segment_chest_total_segmentator import SegmentChestTotalSegmentator
+from .segment_chest_total_segmentator_with_contrast import (
+    SegmentChestTotalSegmentatorWithContrast,
+)
 from .usd_anatomy_tools import USDAnatomyTools
 
 
@@ -45,10 +50,11 @@ class WorkflowConvertImageToVTK(PhysioMotion4DBase):
 
     ``segmentation_method`` accepts a pre-configured
     :class:`SegmentAnatomyBase` instance (e.g. :class:`SegmentChestTotalSegmentator`,
-    :class:`SegmentHeartSimpleware`, or :class:`SegmentHeartSimplewareTrimmedBranches`
-    for cardiac-only segmentation with pulmonary/great-vessel branches
-    trimmed). Defaults to a new :class:`SegmentChestTotalSegmentator` when
-    omitted.
+    :class:`SegmentChestTotalSegmentatorWithContrast` for contrast-enhanced
+    studies, :class:`SegmentHeartSimpleware`, or
+    :class:`SegmentHeartSimplewareTrimmedBranches` for cardiac-only
+    segmentation with pulmonary/great-vessel branches trimmed). Defaults to
+    a new :class:`SegmentChestTotalSegmentator` when omitted.
 
     **Output anatomy groups**
 
@@ -85,7 +91,7 @@ class WorkflowConvertImageToVTK(PhysioMotion4DBase):
 
         Args:
             segmentation_method: Segmentation backend instance. Defaults to
-                a new :class:`SegmentChestTotalSegmentator` when None.
+                a new :class:`SegmentChestTotalSegmentatorWithContrast` when None.
             log_level: Logging level.  Default: ``logging.INFO``.
 
         Raises:
@@ -95,7 +101,9 @@ class WorkflowConvertImageToVTK(PhysioMotion4DBase):
         super().__init__(class_name=self.__class__.__name__, log_level=log_level)
 
         if segmentation_method is None:
-            segmentation_method = SegmentChestTotalSegmentator(log_level=log_level)
+            segmentation_method = SegmentChestTotalSegmentatorWithContrast(
+                log_level=log_level
+            )
         elif not isinstance(segmentation_method, SegmentAnatomyBase):
             raise TypeError(
                 "segmentation_method must be a SegmentAnatomyBase instance or None"
@@ -206,19 +214,12 @@ class WorkflowConvertImageToVTK(PhysioMotion4DBase):
     def run_workflow(
         self,
         input_image: Any,
-        contrast_enhanced_study: bool = False,
         anatomy_groups: Optional[list[str]] = None,
     ) -> dict[str, Any]:
         """Segment the CT image and extract per-anatomy-group VTK objects.
 
         Args:
             input_image: Input 3D CT image (``itk.Image``).
-            contrast_enhanced_study: If ``True``, an additional connected-component
-                pass identifies contrast-enhanced blood.  Default: ``False``.
-                Only supported by segmenters that implement
-                ``set_contrast_enhanced_study`` (e.g.
-                :class:`SegmentChestTotalSegmentator`); requesting ``True``
-                with any other segmenter raises :class:`ValueError`.
             anatomy_groups: Subset of anatomy groups to process.  ``None`` (default)
                 processes all non-empty groups.  Valid names are given by
                 :attr:`ANATOMY_GROUPS`, derived from the active segmenter's
@@ -255,18 +256,6 @@ class WorkflowConvertImageToVTK(PhysioMotion4DBase):
         self.log_info("Running segmenter: %s", type(self._segmenter).__name__)
 
         self.log_section("Running segmentation")
-        set_contrast_enhanced_study = getattr(
-            self._segmenter, "set_contrast_enhanced_study", None
-        )
-        if contrast_enhanced_study and set_contrast_enhanced_study is None:
-            raise ValueError(
-                "contrast_enhanced_study=True requires a segmenter that "
-                "implements set_contrast_enhanced_study (e.g. "
-                "SegmentChestTotalSegmentator); "
-                f"got {type(self._segmenter).__name__}"
-            )
-        if set_contrast_enhanced_study is not None:
-            set_contrast_enhanced_study(contrast_enhanced_study)
         seg_result: dict[str, Any] = self._segmenter.segment(input_image)
 
         # Extract VTK objects per anatomy group

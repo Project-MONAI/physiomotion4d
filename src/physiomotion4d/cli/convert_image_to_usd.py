@@ -9,14 +9,12 @@ generating dynamic USD models suitable for visualization in NVIDIA Omniverse.
 import argparse
 import os
 import sys
-from typing import cast
 
 import itk
 
 from ..convert_image_4d_to_3d import ConvertImage4DTo3D
 from ..register_images_greedy import RegisterImagesGreedy
 from ..register_images_icon import RegisterImagesICON
-from ..segment_chest_total_segmentator import SegmentChestTotalSegmentator
 from ._method_factories import build_registration_method, build_segmentation_method
 
 
@@ -121,13 +119,9 @@ Examples:
     try:
         from .. import WorkflowConvertImageToUSD
 
-        segmentation_method = build_segmentation_method(args.segmentation_method)
-        if args.segmentation_method == "ChestTotalSegmentator":
-            segmentation_method_tot = cast(
-                SegmentChestTotalSegmentator, segmentation_method
-            )
-            segmentation_method_tot.set_contrast_enhanced_study(args.contrast)
-            segmentation_method_tot.contrast_threshold = 500
+        segmentation_method = build_segmentation_method(
+            args.segmentation_method, contrast=args.contrast
+        )
         registration_method = build_registration_method(args.registration_method)
         if (
             args.registration_iterations is not None
@@ -145,8 +139,6 @@ Examples:
                 registration_method.set_number_of_iterations(
                     args.registration_iterations
                 )
-        if isinstance(registration_method, RegisterImagesICON):
-            registration_method.set_mass_preservation(not args.contrast)
 
         if len(args.input_files) == 1:
             convert_image_4d_to_3d = ConvertImage4DTo3D()

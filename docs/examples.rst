@@ -32,7 +32,6 @@ Complete end-to-end cardiac CT processing:
    # Initialize workflow
    workflow = WorkflowConvertImageToUSD(
        input_filenames=["cardiac_4d.nrrd"],
-       contrast_enhanced=True,
        output_directory="./results",
        project_name="patient_001",
        registration_method=RegisterImagesICON(),
@@ -83,15 +82,15 @@ Quick segmentation with TotalSegmentator:
 
 .. code-block:: python
 
-   from physiomotion4d import SegmentChestTotalSegmentator
+   from physiomotion4d import SegmentChestTotalSegmentatorWithContrast
    import itk
 
    # Load image
    image = itk.imread("chest_ct.nrrd")
 
-   # Segment
-   segmenter = SegmentChestTotalSegmentator()
-   masks = segmenter.segment(image, contrast_enhanced_study=True)
+   # Segment (use SegmentChestTotalSegmentator instead for non-contrast studies)
+   segmenter = SegmentChestTotalSegmentatorWithContrast()
+   masks = segmenter.segment(image)
 
    # Extract masks by anatomy group
    heart = masks["heart"]
@@ -409,7 +408,6 @@ Batch process multiple datasets:
 
        workflow = WorkflowConvertImageToUSD(
            input_filenames=[input_file],
-           contrast_enhanced=True,
            output_directory=f"results/{patient_id}",
            project_name=patient_id,
            registration_method=RegisterImagesICON(),
@@ -428,15 +426,15 @@ Segment multiple images in parallel:
 
 .. code-block:: python
 
-   from physiomotion4d import SegmentChestTotalSegmentator
+   from physiomotion4d import SegmentChestTotalSegmentatorWithContrast
    import itk
    import glob
    from concurrent.futures import ProcessPoolExecutor
 
    def segment_image(filename):
-       segmenter = SegmentChestTotalSegmentator()
+       segmenter = SegmentChestTotalSegmentatorWithContrast()
        image = itk.imread(filename)
-       result = segmenter.segment(image, contrast_enhanced_study=True)
+       result = segmenter.segment(image)
 
        # Save heart mask
        output_name = filename.replace('.nrrd', '_heart.nrrd')
@@ -479,7 +477,6 @@ Run the supported end-to-end workflow API:
 
    workflow = WorkflowConvertImageToUSD(
        input_filenames=["cardiac_4d.nrrd"],
-       contrast_enhanced=True,
        output_directory="./results",
        project_name="cardiac_model",
        registration_method=RegisterImagesICON(),
@@ -497,7 +494,7 @@ Mix and match different components:
 .. code-block:: python
 
    from physiomotion4d import (
-       SegmentChestTotalSegmentator,
+       SegmentChestTotalSegmentatorWithContrast,
        RegisterImagesICON,
        TransformTools,
        ConvertVTKToUSD,
@@ -510,8 +507,8 @@ Mix and match different components:
    frames = [itk.imread(f"frame_{i:03d}.mha") for i in range(10)]
 
    # Segment reference
-   segmenter = SegmentChestTotalSegmentator()
-   result = segmenter.segment(reference, contrast_enhanced_study=True)
+   segmenter = SegmentChestTotalSegmentatorWithContrast()
+   result = segmenter.segment(reference)
    heart_mask = result['heart']
 
    # Extract reference contour

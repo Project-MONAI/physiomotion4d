@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # %%
     img = itk.imread(os.path.join(_RESULTS_DIR, "Experiment_reg.mha"))
     tot_seg = SegmentChestTotalSegmentator()
-    seg_results = tot_seg.segment(img, contrast_enhanced_study=False)
+    seg_results = tot_seg.segment(img)
     itk.imwrite(
         seg_results["labelmap"],
         os.path.join(_RESULTS_DIR, "Experiment_totseg.mha"),

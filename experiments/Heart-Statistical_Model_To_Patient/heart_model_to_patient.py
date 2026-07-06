@@ -59,10 +59,7 @@ if __name__ == "__main__":
     # %%
     if False:
         segmentator = SegmentChestTotalSegmentator()
-        segmentator.contrast_threshold = 500
-        patient_segmentation_data = segmentator.segment(
-            patient_image, contrast_enhanced_study=False
-        )
+        patient_segmentation_data = segmentator.segment(patient_image)
         labelmap = patient_segmentation_data["labelmap"]
         lung_mask = patient_segmentation_data["lung"]
         heart_mask = patient_segmentation_data["heart"]
@@ -70,14 +67,12 @@ if __name__ == "__main__":
         bone_mask = patient_segmentation_data["bone"]
         soft_tissue_mask = patient_segmentation_data["soft_tissue"]
         other_mask = patient_segmentation_data["other"]
-        contrast_mask = patient_segmentation_data["contrast"]
 
         itk.imwrite(
             labelmap, str(output_dir / "patient_labelmap.mha"), compression=True
         )
 
         heart_arr = itk.GetArrayFromImage(heart_mask)
-        # contrast_arr = itk.GetArrayFromImage(contrast_mask)
         mask_arr = (heart_arr > 0).astype(
             np.uint8
         )  # ((heart_arr + contrast_arr) > 0).astype(np.uint8)

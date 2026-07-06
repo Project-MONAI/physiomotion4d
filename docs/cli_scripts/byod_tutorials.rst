@@ -92,7 +92,7 @@ scene.
 
    workflow = pm4d.WorkflowConvertImageToUSD(
        input_filenames=["patient_dicom_dir"],
-       contrast_enhanced=False,
+       segmentation_method=pm4d.SegmentChestTotalSegmentator(),
        output_directory="./results",
        project_name="patient_heart",
    )
@@ -139,7 +139,7 @@ selects its default reference frame internally.
 
    workflow = pm4d.WorkflowConvertImageToUSD(
        input_filenames=["phase_000.mha", "phase_001.mha", "phase_002.mha"],
-       contrast_enhanced=False,
+       segmentation_method=pm4d.SegmentChestTotalSegmentator(),
        output_directory="./results",
        project_name="heart_animated",
        times_per_second=30.0,
