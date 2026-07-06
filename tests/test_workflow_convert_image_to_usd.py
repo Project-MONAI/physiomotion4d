@@ -118,9 +118,9 @@ def test_workflow_convert_image_to_usd_default_operation(
     assert isinstance(workflow.registrar, RegisterImagesICON)
     workflow.registrar.set_number_of_iterations(2)
 
-    result_filename = workflow.process()
+    result_filenames = workflow.process()
 
-    assert result_filename == "slicer_heart_small.all_painted.usd"
+    assert result_filenames == {"all": "slicer_heart_small.all_painted.usd"}
     assert workflow.reference_segmentation is not None
     assert "all" in workflow.reference_contours
     assert len(workflow.transformed_contours["all"]) == 1

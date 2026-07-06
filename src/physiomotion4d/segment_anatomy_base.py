@@ -421,14 +421,14 @@ class SegmentAnatomyBase(PhysioMotion4DBase):
         input_image: itk.image,
     ) -> dict[str, itk.image]:
         """
-        Perform complete chest CT segmentation.
+        Perform complete anatomy segmentation.
 
         This is the main segmentation method that coordinates preprocessing,
         segmentation, subclass-specific labelmap refinement, and anatomical
         group mask creation.
 
         Args:
-            input_image (itk.image): The input 3D CT image to segment
+            input_image (itk.image): The input 3D image to segment
 
         Returns:
             dict[str, itk.image]: Dictionary containing:
@@ -436,7 +436,7 @@ class SegmentAnatomyBase(PhysioMotion4DBase):
                 - one binary mask image per anatomy group, keyed by group name
 
         Example:
-            >>> result = segmenter.segment(ct_image)
+            >>> result = segmenter.segment(image)
             >>> labelmap = result['labelmap']
             >>> heart_mask = result['heart']
         """

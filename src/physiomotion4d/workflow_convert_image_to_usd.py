@@ -55,7 +55,7 @@ class WorkflowConvertImageToUSD(PhysioMotion4DBase):
         times_per_second: float = 24.0,
         log_level: int | str = logging.INFO,
         save_assets: bool = True,
-    ):
+    ) -> None:
         """
         Initialize the image-to-USD workflow.
 
@@ -180,9 +180,9 @@ class WorkflowConvertImageToUSD(PhysioMotion4DBase):
     def _register_with_mask(
         self,
         fixed_image: itk.Image,
-        fixed_mask: itk.Image,
+        fixed_mask: Optional[itk.Image],
         moving_image: itk.Image,
-        moving_mask: itk.Image,
+        moving_mask: Optional[itk.Image],
         filename_prefix: str = "",
     ) -> dict[str, Union[itk.Transform, float]]:
         """Register moving image with mask."""
@@ -326,7 +326,13 @@ class WorkflowConvertImageToUSD(PhysioMotion4DBase):
                     }
                 )
             else:
-                all_reg_results = self.registrar.register(moving_image)
+                all_reg_results = self._register_with_mask(
+                    self.reference_image,
+                    None,
+                    moving_image,
+                    None,
+                    f"slice_{i:03d}_all",
+                )
                 self.registration_results.append(
                     {
                         "all": all_reg_results,

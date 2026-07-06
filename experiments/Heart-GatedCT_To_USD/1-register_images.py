@@ -88,7 +88,6 @@ if __name__ == "__main__":
         print(f"Processing slice {i:03d}")
         moving_image = itk.imread(str(data_dir / f"slice_{i:03d}.mha"))
         result = seg.segment(moving_image)
-        seg.set_contrast_enhanced_study(True)
         labelmap_mask = result["labelmap"]
         lung_mask = result["lung"]
         heart_mask = result["heart"]

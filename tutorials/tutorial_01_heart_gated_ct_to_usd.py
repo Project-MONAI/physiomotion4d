@@ -75,6 +75,7 @@ from pathlib import Path
 
 import itk
 
+from physiomotion4d.register_images_icon import RegisterImagesICON
 from physiomotion4d.test_tools import TestTools
 from physiomotion4d.workflow_convert_image_to_usd import (
     WorkflowConvertImageToUSD,
@@ -132,11 +133,15 @@ if __name__ == "__main__":
 
     # %%
     # Workflow initialization
+    registration_method = RegisterImagesICON(log_level=log_level)
+    registration_method.set_number_of_iterations(number_of_registration_iterations)
+
     workflow = WorkflowConvertImageToUSD(
         time_series_images=time_series_images,
         reference_image=reference_image,
         output_directory=str(output_dir),
         usd_project_name="cardiac_model",
+        registration_method=registration_method,
         log_level=log_level,
         save_assets=True,
     )
