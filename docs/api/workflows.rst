@@ -57,7 +57,7 @@ Convert Image to USD
    workflow = WorkflowConvertImageToUSD(
        input_filenames=["cardiac_4d.nrrd"],
        output_directory="./results",
-       project_name="patient_001",
+       usd_project_name="patient_001",
        segmentation_method=SegmentChestTotalSegmentatorWithContrast(),
        registration_method=RegisterImagesICON(),
    )
