@@ -64,6 +64,9 @@ from .register_time_series_images import RegisterTimeSeriesImages
 # Segmentation classes
 from .segment_anatomy_base import SegmentAnatomyBase
 from .segment_chest_total_segmentator import SegmentChestTotalSegmentator
+from .segment_chest_total_segmentator_with_contrast import (
+    SegmentChestTotalSegmentatorWithContrast,
+)
 from .segment_heart_simpleware import SegmentHeartSimpleware
 from .segment_heart_simpleware_trimmed_branches import (
     SegmentHeartSimplewareTrimmedBranches,
@@ -96,6 +99,7 @@ __all__ = [
     # Segmentation classes
     "SegmentAnatomyBase",
     "SegmentChestTotalSegmentator",
+    "SegmentChestTotalSegmentatorWithContrast",
     "SegmentHeartSimpleware",
     "SegmentHeartSimplewareTrimmedBranches",
     # Registration classes

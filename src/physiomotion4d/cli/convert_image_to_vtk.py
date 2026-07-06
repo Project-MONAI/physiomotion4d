@@ -159,11 +159,12 @@ Examples
         from .. import WorkflowConvertImageToVTK
 
         workflow = WorkflowConvertImageToVTK(
-            segmentation_method=build_segmentation_method(args.segmentation_method),
+            segmentation_method=build_segmentation_method(
+                args.segmentation_method, contrast=args.contrast
+            ),
         )
         result = workflow.run_workflow(
             input_image=input_image,
-            contrast_enhanced_study=args.contrast,
             anatomy_groups=args.anatomy_groups,
         )
     except (ValueError, RuntimeError, OSError) as exc:

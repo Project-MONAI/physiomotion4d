@@ -192,7 +192,6 @@ class WorkflowFitStatisticalModelToPatient(PhysioMotion4DBase):
             )
             patient_models_data = convert_image_to_vtk.run_workflow(
                 input_image=patient_image,
-                contrast_enhanced_study=False,
                 anatomy_groups=["heart"],
             )
             patient_models = [patient_models_data["meshes"]["heart"]]

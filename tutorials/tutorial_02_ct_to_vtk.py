@@ -23,8 +23,8 @@ from pathlib import Path
 import itk
 import pyvista as pv
 
-from physiomotion4d.segment_chest_total_segmentator import (
-    SegmentChestTotalSegmentator,
+from physiomotion4d.segment_chest_total_segmentator_with_contrast import (
+    SegmentChestTotalSegmentatorWithContrast,
 )
 from physiomotion4d.test_tools import TestTools
 from physiomotion4d.workflow_convert_image_to_vtk import WorkflowConvertImageToVTK
@@ -71,16 +71,15 @@ if __name__ == "__main__":
     # %%
     # Workflow initialization
     workflow = WorkflowConvertImageToVTK(
-        segmentation_method=SegmentChestTotalSegmentator(log_level=log_level),
+        segmentation_method=SegmentChestTotalSegmentatorWithContrast(
+            log_level=log_level
+        ),
         log_level=log_level,
     )
 
     # %%
     # Workflow execution
-    result = workflow.run_workflow(
-        input_image=ct_image,
-        contrast_enhanced_study=True,
-    )
+    result = workflow.run_workflow(input_image=ct_image)
 
     # %%
     # Result saving

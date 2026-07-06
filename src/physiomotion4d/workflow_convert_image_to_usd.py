@@ -22,7 +22,9 @@ from .physiomotion4d_base import PhysioMotion4DBase
 from .register_images_base import RegisterImagesBase
 from .register_images_icon import RegisterImagesICON
 from .segment_anatomy_base import SegmentAnatomyBase
-from .segment_chest_total_segmentator import SegmentChestTotalSegmentator
+from .segment_chest_total_segmentator_with_contrast import (
+    SegmentChestTotalSegmentatorWithContrast,
+)
 from .transform_tools import TransformTools
 from .usd_anatomy_tools import USDAnatomyTools
 
@@ -38,7 +40,7 @@ class WorkflowConvertImageToUSD(PhysioMotion4DBase):
     pre-configured :class:`SegmentAnatomyBase` / :class:`RegisterImagesBase`
     instance. Configure backend-specific parameters (iteration counts,
     trim_branches, mass preservation, etc.) on the instance before passing
-    it in. Defaults to :class:`SegmentChestTotalSegmentator` /
+    it in. Defaults to :class:`SegmentChestTotalSegmentatorWithContrast` /
     :class:`RegisterImagesICON` when omitted.
     """
 
@@ -66,7 +68,7 @@ class WorkflowConvertImageToUSD(PhysioMotion4DBase):
             output_directory (str): Directory path where output files will be stored
             segmentation_method (Optional[SegmentAnatomyBase]): Segmentation
                 backend instance. Defaults to a new
-                :class:`SegmentChestTotalSegmentator` when None.
+                :class:`SegmentChestTotalSegmentatorWithContrast` when None.
             registration_method (Optional[RegisterImagesBase]): Registration
                 backend instance. Defaults to a new :class:`RegisterImagesICON`
                 when None. A caller-supplied instance is mutated (fixed
@@ -103,9 +105,9 @@ class WorkflowConvertImageToUSD(PhysioMotion4DBase):
             dict[str, dict[str, Union[itk.Transform, float]]]
         ] = []
         if segmentation_method is None:
-            segmentation_method = SegmentChestTotalSegmentator(log_level=log_level)
-            segmentation_method.contrast_threshold = 500
-            segmentation_method.set_contrast_enhanced_study(True)
+            segmentation_method = SegmentChestTotalSegmentatorWithContrast(
+                log_level=log_level
+            )
         elif not isinstance(segmentation_method, SegmentAnatomyBase):
             raise TypeError(
                 "segmentation_method must be a SegmentAnatomyBase instance or None"

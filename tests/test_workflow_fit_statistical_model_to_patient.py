@@ -120,7 +120,6 @@ def test_fit_workflow_routes_default_to_image_to_vtk_with_trimmed_branches(
         SegmentHeartSimplewareTrimmedBranches,
     )
     assert captured["run_kwargs"]["anatomy_groups"] == ["heart"]
-    assert captured["run_kwargs"]["contrast_enhanced_study"] is False
     assert workflow.patient_models == [heart_mesh]
 
 

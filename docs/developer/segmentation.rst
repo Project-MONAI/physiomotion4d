@@ -16,7 +16,7 @@ Current Segmentation Contract
 
    image = itk.imread("chest_ct.nrrd")
    segmenter = SegmentChestTotalSegmentator()
-   masks = segmenter.segment(image, contrast_enhanced_study=True)
+   masks = segmenter.segment(image)
 
    labelmap = masks["labelmap"]
    if "heart" in masks:

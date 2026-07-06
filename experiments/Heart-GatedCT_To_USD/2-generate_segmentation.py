@@ -7,7 +7,9 @@ import numpy as np
 import pyvista as pv
 
 from physiomotion4d.contour_tools import ContourTools
-from physiomotion4d.segment_chest_total_segmentator import SegmentChestTotalSegmentator
+from physiomotion4d.segment_chest_total_segmentator_with_contrast import (
+    SegmentChestTotalSegmentatorWithContrast,
+)
 from physiomotion4d.test_tools import TestTools
 
 # nnUNetv2 (used by TotalSegmentator) spawns a multiprocessing.Pool. On Windows
@@ -68,10 +70,8 @@ if __name__ == "__main__":
         )
         outname = "slice_max"
 
-    seg = SegmentChestTotalSegmentator()
-    seg.contrast_threshold = 500
+    seg = SegmentChestTotalSegmentatorWithContrast()
     seg.fast_mode = TestTools.running_as_test()
-    seg.set_contrast_enhanced_study(True)
     if re_run_image_segmentation:
         result = seg.segment(max_image)
         labelmap_image = result["labelmap"]
