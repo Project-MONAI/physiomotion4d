@@ -188,10 +188,11 @@ class DataDownloadTools:
         and extracts each into its matching subdirectory: ``Alterra/`` and
         ``TPV25/`` (valve mesh time series, >1 GB each) and ``CT/`` (source
         CT volume and Simpleware segmentation). A subdirectory that already
-        has any files is left alone, so re-running resumes an interrupted
-        download. See ``data/CHOP-Valve4D/README.md`` for what this
-        converted data contains and how it relates to the original FEBio
-        source model.
+        has its expected files (see ``_CHOPValve4DSubdirIsPopulated``) is
+        left alone, so re-running resumes an interrupted download without
+        re-fetching a subdirectory a partial extraction left behind. See
+        ``data/CHOP-Valve4D/README.md`` for what this converted data
+        contains and how it relates to the original FEBio source model.
 
         Args:
             dirname: Directory where the CHOP-Valve4D dataset should live.
@@ -202,11 +203,35 @@ class DataDownloadTools:
         data_dir = Path(dirname)
         for subdir_name, asset_name in DataDownloadTools.CHOP_VALVE4D_ASSETS.items():
             target_dir = data_dir / subdir_name
-            if target_dir.is_dir() and any(target_dir.iterdir()):
+            if DataDownloadTools._CHOPValve4DSubdirIsPopulated(subdir_name, target_dir):
                 continue
             url = DataDownloadTools.CHOP_VALVE4D_RELEASE_URL + asset_name
             DataDownloadTools._DownloadAndExtractZip(url, target_dir)
         return data_dir
+
+    @staticmethod
+    def _CHOPValve4DSubdirIsPopulated(  # noqa: N802
+        subdir_name: str, target_dir: Path
+    ) -> bool:
+        """Return True when ``target_dir`` already has subdir_name's expected files.
+
+        Used to decide whether a subdirectory can be skipped on a re-run.
+        Checking for *any* file is not enough — an interrupted extraction
+        can leave a partially-populated directory that would then be
+        skipped forever — so this checks for the specific files each
+        subdirectory is expected to contain once fully extracted.
+        """
+        if not target_dir.is_dir():
+            return False
+        if subdir_name == "CT":
+            has_ct_volume = any(
+                (target_dir / filename).is_file()
+                for filename in ("RVOT28-Dias.nii.gz", "RVOT28-Dias.mha")
+            )
+            has_simpleware_parts = (target_dir / "Simpleware" / "parts").is_dir()
+            return has_ct_volume or has_simpleware_parts
+        # Alterra and TPV25 are valve mesh time series.
+        return any(target_dir.glob("*.vtk"))
 
     @staticmethod
     def _DownloadAndExtractZip(url: str, target_dir: Path) -> None:  # noqa: N802
@@ -236,18 +261,39 @@ class DataDownloadTools:
         experiments.
         """
         data_dir = Path(dirname)
-        has_ct_volume = any(
-            (data_dir / "CT" / filename).is_file()
-            for filename in ("RVOT28-Dias.nii.gz", "RVOT28-Dias.mha")
+        has_ct = DataDownloadTools._CHOPValve4DSubdirIsPopulated("CT", data_dir / "CT")
+        has_alterra = DataDownloadTools._CHOPValve4DSubdirIsPopulated(
+            "Alterra", data_dir / "Alterra"
         )
-        has_simpleware_parts = (data_dir / "CT" / "Simpleware" / "parts").is_dir()
-        has_alterra = (data_dir / "Alterra").is_dir() and any(
-            (data_dir / "Alterra").glob("*.vtk")
+        has_tpv25 = DataDownloadTools._CHOPValve4DSubdirIsPopulated(
+            "TPV25", data_dir / "TPV25"
         )
-        has_tpv25 = (data_dir / "TPV25").is_dir() and any(
-            (data_dir / "TPV25").glob("*.vtk")
-        )
-        return has_ct_volume or has_simpleware_parts or (has_alterra and has_tpv25)
+        return has_ct or (has_alterra and has_tpv25)
+
+    @staticmethod
+    def _MetaImageHeaderHasBackingData(mhd_file: Path) -> bool:  # noqa: N802
+        """Return True when a MetaImage ``.mhd`` header's pixel data exists.
+
+        Committed ``.mhd`` headers are tiny text files (a few hundred
+        bytes) that ship with the repository as documentation of the
+        expected DirLab-4DCT layout; their presence alone does not mean
+        the (large, gitignored) raw pixel data has been downloaded. This
+        checks that the file the header's ``ElementDataFile`` line points
+        to actually exists, resolved relative to the header's directory.
+        """
+        try:
+            lines = mhd_file.read_text(errors="ignore").splitlines()
+        except OSError:
+            return False
+        for line in lines:
+            key, sep, value = line.partition("=")
+            if sep and key.strip() == "ElementDataFile":
+                data_file = value.strip()
+                if not data_file or data_file.upper() == "LOCAL":
+                    # Pixel data is embedded in this same file.
+                    return True
+                return (mhd_file.parent / data_file).is_file()
+        return False
 
     @staticmethod
     def VerifyDirLab4DCTData(dirname: Union[str, Path]) -> bool:  # noqa: N802
@@ -256,11 +302,16 @@ class DataDownloadTools:
         case1_dir = data_dir / "Case1"
         has_case_dir_layout = case1_dir.is_dir() and any(case1_dir.glob("*.mha"))
         has_case_dir_layout = has_case_dir_layout or (
-            case1_dir.is_dir() and any(case1_dir.glob("*.mhd"))
+            case1_dir.is_dir()
+            and any(
+                DataDownloadTools._MetaImageHeaderHasBackingData(mhd_file)
+                for mhd_file in case1_dir.glob("*.mhd")
+            )
         )
 
-        has_pack_layout = any(data_dir.glob("Case1Pack_T*.mhd")) or any(
-            data_dir.glob("Case1Pack_T*.mha")
+        has_pack_layout = any(data_dir.glob("Case1Pack_T*.mha")) or any(
+            DataDownloadTools._MetaImageHeaderHasBackingData(mhd_file)
+            for mhd_file in data_dir.glob("Case1Pack_T*.mhd")
         )
         return has_case_dir_layout or has_pack_layout
 
