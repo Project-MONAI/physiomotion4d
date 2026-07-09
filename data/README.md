@@ -10,6 +10,7 @@ data/
 ├── DirLab-4DCT/              # 4D lung CT benchmark dataset (MANUAL)
 ├── KCL-Heart-Model/          # Statistical shape model of the heart (AUTO-DOWNLOAD)
 ├── CHOP-Valve4D/             # 4D valve models (AUTO-DOWNLOAD)
+├── test/                     # pytest-managed cache, not a manual/auto dataset
 ```
 
 ## Data Download Methods
