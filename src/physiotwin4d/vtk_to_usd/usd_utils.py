@@ -163,15 +163,10 @@ def numpy_to_vt_array(array: NDArray, data_type: DataType) -> Any:
         array_uc = array.astype(np.uint8)
         return Vt.UCharArray.FromNumpy(array_uc.flatten())
 
-    elif data_type in [DataType.SHORT, DataType.USHORT]:
+    else:  # DataType.SHORT, DataType.USHORT
         # Convert to int
         array_i = array.astype(np.int32)
         return Vt.IntArray.FromNumpy(array_i.flatten())
-
-    else:
-        # Fallback to float
-        array_f = array.astype(np.float32)
-        return Vt.FloatArray.FromNumpy(array_f.flatten())
 
 
 def get_sdf_value_type(data_type: DataType, num_components: int) -> Sdf.ValueTypeName:
@@ -214,11 +209,8 @@ def get_sdf_value_type(data_type: DataType, num_components: int) -> Sdf.ValueTyp
     elif data_type in [DataType.UCHAR, DataType.CHAR]:
         return Sdf.ValueTypeNames.UCharArray
 
-    elif data_type in [DataType.SHORT, DataType.USHORT]:
+    else:  # DataType.SHORT, DataType.USHORT
         return Sdf.ValueTypeNames.IntArray
-
-    else:
-        return Sdf.ValueTypeNames.FloatArray
 
 
 def sanitize_primvar_name(name: str) -> str:
