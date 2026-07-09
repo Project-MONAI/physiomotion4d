@@ -68,7 +68,7 @@ points for registration validation.
 
 ### Dataset Details
 
-- **Format**: `.mhd`/`.raw` (MetaImage format)
+- **Format**: `.mhd` headers + `.img` raw volumes (MetaImage format)
 - **Cases**: 10 patient cases (Case 1-10)
 - **Phases**: 10 respiratory phases per case (T00-T90)
 - **Content**: Non-contrast lung CT

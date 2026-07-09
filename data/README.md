@@ -4,27 +4,31 @@ This directory contains sample datasets used for experiments, testing, and devel
 
 ## Directory Structure
 
-```
+```text
 data/
 ├── Slicer-Heart-CT/          # 4D cardiac CT with gated cardiac phases (AUTO-DOWNLOAD)
 ├── DirLab-4DCT/              # 4D lung CT benchmark dataset (MANUAL)
-├── KCL-Heart-Model/          # Statistical shape model of the heart (MANUAL)
-├── CHOP-Valve4D/             # 4D valve models (MANUAL)
+├── KCL-Heart-Model/          # Statistical shape model of the heart (AUTO-DOWNLOAD)
+├── CHOP-Valve4D/             # 4D valve models (AUTO-DOWNLOAD)
 ```
 
 ## Data Download Methods
 
-### Automatic Download (Only Slicer-Heart-CT)
+### Automatic Download (Slicer-Heart-CT, KCL-Heart-Model, CHOP-Valve4D)
 
-Only the **Slicer-Heart-CT** dataset can be automatically downloaded by running the appropriate script.
+These datasets can be downloaded automatically via `DataDownloadTools` or the
+`physiotwin4d-download-data` CLI:
 
-### Manual Download (All Others)
+```bash
+physiotwin4d-download-data Slicer-Heart-CT --directory data/Slicer-Heart-CT
+physiotwin4d-download-data KCL-Heart-Model --directory data/KCL-Heart-Model
+physiotwin4d-download-data CHOP-Valve4D --directory data/CHOP-Valve4D
+```
 
-The following datasets must be **manually downloaded and preprocessed** by the user:
+### Manual Download (DirLab-4DCT)
 
-- **DirLab-4DCT**: Respiratory motion benchmark data
-- **KCL-Heart-Model**: Statistical cardiac shape models
-- **CHOP-Valve4D**: Time-varying valve reconstructions
+- **DirLab-4DCT**: Respiratory motion benchmark data must be **manually
+  downloaded and preprocessed** by the user.
 
 See individual dataset sections below for download instructions and preprocessing requirements.
 
@@ -100,7 +104,7 @@ Benchmark dataset for 4D CT respiratory motion analysis. Contains 10 cases of lu
 
 ### Specifications
 
-- **Format**: `.mhd/.raw` (MetaImage format)
+- **Format**: `.mhd` headers + `.img` raw volumes (MetaImage format)
 - **Cases**: 10 patient cases (Case 1-10)
 - **Phases**: 10 respiratory phases per case (T00-T90)
 - **Content**: Non-contrast lung CT
@@ -138,7 +142,7 @@ Users are responsible for:
 
 ### Directory Structure
 
-```
+```text
 DirLab-4DCT/
 ├── Case1Pack/
 │   ├── Images/              # T00-T50 phase images
@@ -148,7 +152,6 @@ DirLab-4DCT/
 ├── Case1Pack_T10.mhd
 ...
 ├── Case10Pack/
-└── dirlab_password.txt      # Password for access (if needed)
 ```
 
 ### Usage
@@ -160,7 +163,7 @@ DirLab-4DCT/
 
 ---
 
-## KCL-Heart-Model MANUAL DOWNLOAD
+## KCL-Heart-Model AUTO-DOWNLOAD
 
 ### Description
 
@@ -188,15 +191,20 @@ Data from King's College London (KCL):
 
 ### Downloading the Data
 
-**MANUAL DOWNLOAD REQUIRED**
+**Automatic download** (recommended):
 
-Users must manually obtain and place this data:
+```bash
+physiotwin4d-download-data KCL-Heart-Model --directory data/KCL-Heart-Model
+```
 
-1. Obtain data from published research repositories or contact authors
-2. Place files in `data/KCL-Heart-Model/` directory
-3. Required files: `average_mesh.vtk`
+```python
+from physiotwin4d import DataDownloadTools
 
-Check the included PDFs (if available) for source information and proper citation.
+DataDownloadTools.DownloadKCLHeartModelData("data/KCL-Heart-Model")
+assert DataDownloadTools.VerifyKCLHeartModelData("data/KCL-Heart-Model")
+```
+
+See `data/KCL-Heart-Model/README.md` for details on what is downloaded.
 
 ### Usage
 
@@ -209,7 +217,7 @@ Check the included PDFs (if available) for source information and proper citatio
 
 ---
 
-## CHOP-Valve4D MANUAL DOWNLOAD
+## CHOP-Valve4D AUTO-DOWNLOAD
 
 ### Description
 
@@ -225,7 +233,7 @@ Time-varying 4D valve reconstruction models showing valve motion over the cardia
 
 ### Directory Structure
 
-```
+```text
 CHOP-Valve4D/
 ├── Alterra/
 │   ├── frame_0000.vtk
@@ -245,20 +253,23 @@ Data provided by Jolley Lab at CHOP (Children's Hospital of Philadelphia):
 
 ### Downloading the Data
 
-**MANUAL DOWNLOAD REQUIRED**
+**Automatic download** (recommended):
 
-**Availability**: This dataset will soon be publicly available for download from the **FEBio website** under the **Creative Commons Attribution (CC-BY) license**.
+```bash
+physiotwin4d-download-data CHOP-Valve4D --directory data/CHOP-Valve4D
+```
 
-- **Source**: [https://febio.org/](https://febio.org/) (coming soon)
-- **License**: CC-BY (Creative Commons Attribution)
-- **Citation**: Please cite the Jolley Lab and FEBio when using this data
+```python
+from physiotwin4d import DataDownloadTools
 
-**Setup Instructions**:
+DataDownloadTools.DownloadCHOPValve4DData("data/CHOP-Valve4D")
+assert DataDownloadTools.VerifyCHOPValve4DData("data/CHOP-Valve4D")
+```
 
-1. Download valve reconstruction data from FEBio website when available
-2. Place files in `data/CHOP-Valve4D/` with proper subdirectory structure
-3. Ensure files are named sequentially for time-series processing (e.g., `frame_0000.vtk`, `frame_0001.vtk`, ...)
-4. Organize by valve type in subdirectories (e.g., `Alterra/`, `TPV25/`)
+This fetches the PhysioTwin4D convenience release (VTK/ITK conversion of the
+original FEBio model). The original `.feb` source is available separately
+from the FEBio website under CC-BY. See `data/CHOP-Valve4D/README.md` for
+details and citation.
 
 ### Usage
 
@@ -300,8 +311,8 @@ Data provided by Jolley Lab at CHOP (Children's Hospital of Philadelphia):
 
 - **Slicer-Heart-CT** : Public release from GitHub (auto-download available)
 - **DirLab-4DCT** : Public benchmark dataset (manual download required, may require registration)
-- **KCL-Heart-Model** : Requires manual download from research repositories
-- **CHOP-Valve4D** : Soon available from FEBio website under CC-BY license (manual download)
+- **KCL-Heart-Model** : Public release from Zenodo (auto-download available)
+- **CHOP-Valve4D** : PhysioTwin4D convenience release under CC-BY license (auto-download available)
 
 **Important**: Always cite the original data sources in publications and respect any usage restrictions.
 
@@ -312,8 +323,8 @@ Data provided by Jolley Lab at CHOP (Children's Hospital of Philadelphia):
 | --------------- | ------------- | --------------- | --------------- | ------------------- | ------------------------ |
 | Slicer-Heart-CT | Yes           | No              | Public          | GitHub              | Yes                      |
 | DirLab-4DCT     | No            | Yes             | Public/Academic | DIR-Lab             | No                       |
-| KCL-Heart-Model | No            | Yes             | Check citation  | Zenodo/KCL          | Yes (skipped if missing) |
-| CHOP-Valve4D    | No            | Yes             | CC-BY           | FEBio (coming soon) | No                       |
+| KCL-Heart-Model | Yes           | No              | Check citation  | Zenodo/KCL          | Yes (skipped if missing) |
+| CHOP-Valve4D    | Yes           | No              | CC-BY           | GitHub release      | No                       |
 
 
 ---
@@ -339,7 +350,7 @@ Data provided by Jolley Lab at CHOP (Children's Hospital of Philadelphia):
 ### CHOP-Valve4D
 
 - Jolley Lab (CHOP): [https://www.linkedin.com/company/jolleylab](https://www.linkedin.com/company/jolleylab)
-- FEBio Project: [https://febio.org/](https://febio.org/) (dataset coming soon)
+- Original FEBio source model: [repo.febio.org/permalink/project/136](https://repo.febio.org/permalink/project/136)
 - License: Creative Commons Attribution (CC-BY)
 - Citation: Please acknowledge Jolley Lab at CHOP and the FEBio Project
 
