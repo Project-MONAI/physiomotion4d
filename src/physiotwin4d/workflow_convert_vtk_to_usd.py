@@ -14,7 +14,7 @@ from typing import Literal, Optional, Sequence, Union
 import pyvista as pv
 import vtk
 
-from .convert_vtk_to_usd import ConvertVTKToUSD
+from .convert_vtk_to_usd import ConvertVTKToUSD, _split_usd_extension
 from .physiotwin4d_base import PhysioTwin4DBase
 from .usd_anatomy_tools import USDAnatomyTools
 from .usd_tools import USDTools
@@ -47,7 +47,7 @@ class WorkflowConvertVTKToUSD(PhysioTwin4DBase):
         colormap_name: str = "viridis",
         colormap_intensity_range: Optional[tuple[float, float]] = None,
         log_level: int | str = logging.INFO,
-    ):
+    ) -> None:
         """
         Initialize the VTK-to-USD workflow.
 
@@ -57,8 +57,10 @@ class WorkflowConvertVTKToUSD(PhysioTwin4DBase):
                 with static_merge=False (default) are treated as ordered
                 time-series frames, in list order.
             usd_project_name: Project name; used as the root USD prim name
-                (/World/{usd_project_name}) and the output filename
-                ({usd_project_name}.usd).
+                (/World/{usd_project_name}) and the output filename. A
+                trailing USD extension (.usd, .usda, .usdc) is stripped from
+                the prim name but preserved for the output filename; if
+                omitted, ".usd" is used.
             output_directory: Directory where the output USD file is written.
             separate_by_connectivity: If True, split mesh into separate objects by connectivity.
             separate_by_cell_type: If True, split mesh by cell type (triangle/quad/...).
@@ -82,7 +84,9 @@ class WorkflowConvertVTKToUSD(PhysioTwin4DBase):
         """
         super().__init__(class_name=self.__class__.__name__, log_level=log_level)
         self.input_meshes = list(input_meshes)
-        self.usd_project_name = usd_project_name
+        self.usd_project_name, self._usd_extension = _split_usd_extension(
+            usd_project_name
+        )
         self.output_directory = Path(output_directory)
         self.separate_by_connectivity = separate_by_connectivity
         self.separate_by_cell_type = separate_by_cell_type
@@ -123,7 +127,9 @@ class WorkflowConvertVTKToUSD(PhysioTwin4DBase):
             time_codes = self.time_codes
 
         self.output_directory.mkdir(parents=True, exist_ok=True)
-        output_usd = self.output_directory / f"{self.usd_project_name}.usd"
+        output_usd = (
+            self.output_directory / f"{self.usd_project_name}{self._usd_extension}"
+        )
 
         self.log_info("Input: %d mesh(es)", n_frames)
         if self.static_merge:

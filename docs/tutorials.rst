@@ -351,6 +351,8 @@ Inner API usage
 
    .. code-block:: python
 
+      import pyvista as pv
+
       mesh = pv.read(str(vtk_file))
       workflow = WorkflowConvertVTKToUSD(
           input_meshes=[mesh],

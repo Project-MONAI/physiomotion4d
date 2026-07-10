@@ -41,6 +41,20 @@ from .vtk_to_usd import (
     validate_time_series_topology,
 )
 
+_USD_EXTENSIONS = {".usd", ".usda", ".usdc"}
+
+
+def _split_usd_extension(name: str) -> tuple[str, str]:
+    """Split a trailing USD extension off ``name``.
+
+    Returns ``(name_without_extension, extension)``. ``extension`` is ``".usd"``
+    when ``name`` has no recognized USD extension (``.usd``, ``.usda``, ``.usdc``).
+    """
+    suffix = Path(name).suffix
+    if suffix.lower() in _USD_EXTENSIONS:
+        return name[: -len(suffix)], suffix
+    return name, ".usd"
+
 
 class ConvertVTKToUSD(PhysioTwin4DBase):
     """
@@ -91,7 +105,8 @@ class ConvertVTKToUSD(PhysioTwin4DBase):
         Initialize converter.
 
         Args:
-            data_basename: Base name for USD data (used in prim paths)
+            data_basename: Base name for USD data (used in prim paths). A
+                trailing USD extension (.usd, .usda, .usdc) is stripped.
             input_polydata: Sequence of PyVista/VTK meshes (one per time step, or
                 one per static object when static_merge is True)
             mask_ids: Optional mapping of label IDs to anatomical region names.
@@ -124,7 +139,7 @@ class ConvertVTKToUSD(PhysioTwin4DBase):
         """
         super().__init__(class_name=self.__class__.__name__, log_level=log_level)
 
-        self.data_basename = data_basename
+        self.data_basename, _ = _split_usd_extension(data_basename)
         self.input_polydata = list(input_polydata)
         self.mask_ids = mask_ids
         self.compute_normals = compute_normals
@@ -198,7 +213,8 @@ class ConvertVTKToUSD(PhysioTwin4DBase):
         For a static scene with multiple disconnected meshes, set static_merge=True.
 
         Args:
-            data_basename: Base name for USD prim paths.
+            data_basename: Base name for USD prim paths. A trailing USD
+                extension (.usd, .usda, .usdc) is stripped.
             vtk_files: Paths to VTK files; one file = one time step (or one static mesh).
             extract_surface: If True, extract surface from UnstructuredGrid (.vtu) meshes.
             separate_by: How to split each mesh into sub-prims.

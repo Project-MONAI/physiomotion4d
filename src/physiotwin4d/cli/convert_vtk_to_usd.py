@@ -198,8 +198,11 @@ Examples:
             return 1
 
     output_path = Path(args.output_usd)
-    if output_path.suffix.lower() != ".usd":
-        print(f"Error: Output file must have a .usd extension, got: {output_path}")
+    if output_path.suffix.lower() not in {".usd", ".usda", ".usdc"}:
+        print(
+            "Error: Output file must have a .usd, .usda, or .usdc extension, "
+            f"got: {output_path}"
+        )
         return 1
 
     try:
@@ -209,7 +212,7 @@ Examples:
 
         workflow = WorkflowConvertVTKToUSD(
             input_meshes=input_meshes,
-            usd_project_name=output_path.stem,
+            usd_project_name=output_path.name,
             output_directory=output_path.parent,
             separate_by_connectivity=separate_by_connectivity,
             separate_by_cell_type=separate_by_cell_type,
