@@ -194,7 +194,7 @@ class WorkflowFitStatisticalModelToPatient(PhysioTwin4DBase):
                 input_image=patient_image,
                 anatomy_groups=["heart"],
             )
-            patient_models = [patient_models_data["meshes"]["heart"]]
+            patient_models = [patient_models_data["surfaces"]["heart"]]
         elif patient_models is None:
             raise ValueError("Either patient_models or patient_image must be provided.")
         self.patient_models = patient_models

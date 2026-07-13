@@ -48,6 +48,12 @@ if __name__ == "__main__":
     BASELINES_DIR = REPO_ROOT / "tests" / "baselines"
     LOG_LEVEL = logging.INFO
 
+    # In addition to the combined surface file always saved below, also
+    # save one VTP per anatomy group (e.g. heart.vtp, lung.vtp) and/or one
+    # VTP per individual anatomical structure (e.g. left_ventricle.vtp).
+    SAVE_GROUP_SURFACES = True
+    SAVE_LABEL_SURFACES = True
+
     # %%
     # Data reading
     test_mode = TestTools.running_as_test()
@@ -85,6 +91,7 @@ if __name__ == "__main__":
     result = workflow.process(
         input_image=ct_image,
         surface_target_reduction=0.5,
+        extract_label_surfaces=SAVE_LABEL_SURFACES,
     )
 
     # %%
@@ -96,6 +103,14 @@ if __name__ == "__main__":
             prefix="patient",
         )
     )
+    if SAVE_GROUP_SURFACES:
+        ContourTools.save_surfaces(
+            result["surfaces"], str(output_dir), prefix="patient"
+        )
+    if SAVE_LABEL_SURFACES:
+        ContourTools.save_surfaces(
+            result["label_surfaces"], str(output_dir), prefix="patient"
+        )
     labelmap_file = output_dir / "patient_labelmap.mha"
     itk.imwrite(result["labelmap"], str(labelmap_file), compression=True)
 

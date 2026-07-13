@@ -217,6 +217,13 @@ Inner API usage
 
    Use ``SegmentChestTotalSegmentator`` instead for non-contrast studies.
 
+   By default the script saves one combined ``patient_surfaces.vtp``.  Set
+   ``SAVE_GROUP_SURFACES = True`` and/or ``SAVE_LABEL_SURFACES = True`` near
+   the top of the script to additionally save one VTP per anatomy group
+   (e.g. ``patient_heart.vtp``) and/or one VTP per individual anatomical
+   structure (e.g. ``patient_left_ventricle.vtp``); the latter passes
+   ``extract_label_surfaces=True`` to :meth:`WorkflowConvertImageToVTK.process`.
+
 Run
    .. code-block:: bash
 

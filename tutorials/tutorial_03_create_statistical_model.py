@@ -74,6 +74,9 @@ if __name__ == "__main__":
     sample_files = sorted(sample_dir.glob("*.vtk"))
     if not sample_files:
         sample_files = sorted(data_dir.glob("*.vtk"))
+        sample_files = [
+            path for path in sample_files if path.name != reference_file.name
+        ]
     if len(sample_files) < 3:
         raise FileNotFoundError(
             f"Need at least 3 sample meshes under {sample_dir} or {data_dir}.\n"

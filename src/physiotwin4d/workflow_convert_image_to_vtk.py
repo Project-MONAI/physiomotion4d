@@ -24,6 +24,10 @@ Typical usage::
 
     # Per-group split output
     ContourTools.save_surfaces(result['surfaces'], './out', prefix='patient')
+
+    # Per-label split output (one VTP per individual anatomical structure)
+    result = workflow.process(ct, extract_label_surfaces=True)
+    ContourTools.save_surfaces(result['label_surfaces'], './out', prefix='patient')
 """
 
 import logging
@@ -57,7 +61,10 @@ class WorkflowConvertImageToVTK(PhysioTwin4DBase):
 
     Determined by the active segmenter's :attr:`SegmentAnatomyBase.taxonomy`
     (see :attr:`ANATOMY_GROUPS`).  Groups that are empty after segmentation
-    are silently skipped.
+    are silently skipped.  Pass ``extract_label_surfaces=True`` to
+    :meth:`process` to additionally extract one surface per individual
+    structure (label) within each group, e.g. ``left_ventricle`` separately
+    from ``right_ventricle`` within ``heart``.
 
     **VTK object annotation**
 
@@ -180,6 +187,27 @@ class WorkflowConvertImageToVTK(PhysioTwin4DBase):
             return None
         return self._contour_tools.extract_contours(mask_image)
 
+    def _extract_label_surface(
+        self, labelmap_image: Any, label_id: int
+    ) -> Optional[pv.PolyData]:
+        """Extract a smoothed triangulated surface for one individual label.
+
+        Isolates *label_id* out of the detailed multi-value *labelmap_image*
+        into its own binary mask before delegating to
+        :meth:`ContourTools.extract_contours`.
+
+        Returns:
+            Smoothed :class:`pyvista.PolyData`, or ``None`` if *label_id* has
+            no voxels in this labelmap.
+        """
+        arr = itk.GetArrayFromImage(labelmap_image)
+        label_mask_arr = (arr == label_id).astype(np.uint8)
+        if int(label_mask_arr.sum()) == 0:
+            return None
+        label_mask = itk.GetImageFromArray(label_mask_arr)
+        label_mask.CopyInformation(labelmap_image)
+        return self._contour_tools.extract_contours(label_mask)
+
     # ─────────────────────────── Main workflow ─────────────────────────────
 
     def process(
@@ -187,6 +215,7 @@ class WorkflowConvertImageToVTK(PhysioTwin4DBase):
         input_image: Any,
         anatomy_groups: Optional[list[str]] = None,
         surface_target_reduction: float = 0.0,
+        extract_label_surfaces: bool = False,
     ) -> dict[str, Any]:
         """Segment the CT image and extract per-anatomy-group VTK surfaces.
 
@@ -199,11 +228,20 @@ class WorkflowConvertImageToVTK(PhysioTwin4DBase):
             surface_target_reduction: Fraction in ``[0, 1)`` of surface
                 triangles to remove via ``decimate_pro(surface_target_reduction,
                 preserve_topology=True)``.  ``0.0`` (default) skips decimation.
+                Applied to both group and (when requested) label surfaces.
+            extract_label_surfaces: When ``True``, also extract one surface per
+                individual anatomical structure (label) within each processed
+                group — e.g. ``left_ventricle`` and ``right_ventricle``
+                separately within the ``heart`` group — in addition to the
+                per-group surfaces.  ``False`` (default) skips this and leaves
+                ``'label_surfaces'`` empty.
 
         Returns:
             ``dict`` with the following keys:
 
             - ``'surfaces'`` — ``dict[str, pv.PolyData]``: smoothed surface per group.
+            - ``'label_surfaces'`` — ``dict[str, pv.PolyData]``: smoothed surface per
+              individual label, populated only when *extract_label_surfaces* is True.
             - ``'labelmap'`` — ``itk.Image``: detailed per-structure segmentation
               labelmap from the segmenter.
             - ``'segmentation_masks'`` — ``dict[str, itk.Image]``: per-group binary
@@ -235,6 +273,7 @@ class WorkflowConvertImageToVTK(PhysioTwin4DBase):
         # Extract VTK objects per anatomy group
         self.log_section("Extracting VTK objects")
         surfaces: dict[str, pv.PolyData] = {}
+        label_surfaces: dict[str, pv.PolyData] = {}
         seg_masks: dict[str, Any] = {}
 
         for group in groups_to_process:
@@ -268,11 +307,30 @@ class WorkflowConvertImageToVTK(PhysioTwin4DBase):
             self._annotate(export_surface, group, label_names, label_ids, color)
             surfaces[group] = export_surface
 
+            if extract_label_surfaces:
+                self.log_info("  Extracting label surfaces for: %s", group)
+                for label_id, label_name in zip(label_ids, label_names, strict=True):
+                    label_surface = self._extract_label_surface(
+                        seg_result["labelmap"], label_id
+                    )
+                    if label_surface is None:
+                        continue
+                    if surface_target_reduction > 0.0:
+                        label_surface = label_surface.decimate_pro(
+                            surface_target_reduction, preserve_topology=True
+                        )
+                    self._annotate(
+                        label_surface, group, [label_name], [label_id], color
+                    )
+                    label_surfaces[label_name] = label_surface
+
         self.log_section("IMAGE TO VTK WORKFLOW COMPLETE")
-        self.log_info("Surfaces extracted: %d", len(surfaces))
+        self.log_info("Surfaces extracted:       %d", len(surfaces))
+        self.log_info("Label surfaces extracted: %d", len(label_surfaces))
 
         return {
             "surfaces": surfaces,
+            "label_surfaces": label_surfaces,
             "labelmap": seg_result["labelmap"],
             "segmentation_masks": seg_masks,
         }

@@ -93,9 +93,17 @@ class DataDownloadTools:
 
         slice_basename = DataDownloadTools.SLICER_HEART_CT_SLICE_BASENAME
         if not any(data_dir.glob(f"{slice_basename}_???.mha")):
-            conv = ConvertImage4DTo3D()
-            conv.load_image_4d(str(data_file))
-            conv.save_3d_images(data_dir, slice_basename)
+            # Convert into a temp directory first, then atomically move each
+            # finished frame into data_dir, so a failed or interrupted
+            # conversion leaves no partial slice_???.mha files behind and
+            # concurrent callers never observe a half-written frame.
+            with tempfile.TemporaryDirectory(dir=str(data_dir)) as tmp_dir_name:
+                tmp_dir = Path(tmp_dir_name)
+                conv = ConvertImage4DTo3D()
+                conv.load_image_4d(str(data_file))
+                conv.save_3d_images(tmp_dir, slice_basename)
+                for tmp_slice_file in sorted(tmp_dir.glob(f"{slice_basename}_???.mha")):
+                    tmp_slice_file.replace(data_dir / tmp_slice_file.name)
             _logger.info(
                 "Converted %s to %s_???.mha frames",
                 DataDownloadTools.SLICER_HEART_CT_FILENAME,

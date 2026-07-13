@@ -25,7 +25,7 @@ reused, and the split is skipped once the `slice_???.mha` files are present —
 so re-running the command resumes an interrupted download or conversion.
 
 **Directory structure after download:**
-```
+```text
 data/Slicer-Heart-CT/
 ├── TruncalValve_4DCT.seq.nrrd
 ├── slice_000.mha ... slice_020.mha

@@ -37,9 +37,13 @@ Output files — combined mode (default)
 ---------------------------------------
   {prefix}_surfaces.vtp   all surfaces merged into one file
 
-Output files — split mode (--split-files)
-------------------------------------------
+Output files — group mode (--output-mode group)
+---------------------------------------------------
   {prefix}_{group}.vtp    one surface per anatomy group
+
+Output files — label mode (--output-mode label)
+---------------------------------------------------
+  {prefix}_{label}.vtp    one surface per individual anatomical structure
 
 Examples
 --------
@@ -122,12 +126,13 @@ Examples
         help="Filename prefix for output files (default: no prefix).",
     )
     parser.add_argument(
-        "--split-files",
-        action="store_true",
-        default=False,
+        "--output-mode",
+        choices=("combined", "group", "label"),
+        default="combined",
         help=(
-            "Write one VTP file per anatomy group instead of merging all "
-            "groups into a single VTP (default: combined)."
+            "combined (default): merge all surfaces into one VTP.  "
+            "group: one VTP per anatomy group.  "
+            "label: one VTP per individual anatomical structure."
         ),
     )
     parser.add_argument(
@@ -173,13 +178,16 @@ Examples
             input_image=input_image,
             anatomy_groups=args.anatomy_groups,
             surface_target_reduction=args.surface_target_reduction,
+            extract_label_surfaces=(args.output_mode == "label"),
         )
     except (ValueError, RuntimeError, OSError) as exc:
         print(f"Error during workflow: {exc}")
         traceback.print_exc()
         return 1
 
-    surfaces = result["surfaces"]
+    surfaces = (
+        result["label_surfaces"] if args.output_mode == "label" else result["surfaces"]
+    )
 
     if not surfaces:
         print("No anatomy groups produced any output.  Check the input image.")
@@ -192,19 +200,18 @@ Examples
     prefix = args.output_prefix
 
     try:
-        if args.split_files:
-            # One file per anatomy group
-            saved_surfaces = ContourTools.save_surfaces(
-                surfaces, args.output_dir, prefix=prefix
-            )
-            for group, path in saved_surfaces.items():
-                print(f"  Surface  [{group:15s}] -> {path}")
-        else:
-            # Combined single-file output
+        if args.output_mode == "combined":
             surface_file = ContourTools.save_combined_surface(
                 surfaces, args.output_dir, prefix=prefix
             )
             print(f"  Combined surface -> {surface_file}")
+        else:
+            # One file per anatomy group or per individual label
+            saved_surfaces = ContourTools.save_surfaces(
+                surfaces, args.output_dir, prefix=prefix
+            )
+            for name, path in saved_surfaces.items():
+                print(f"  Surface  [{name:20s}] -> {path}")
 
         if args.save_labelmap:
             labelmap = result["labelmap"]
