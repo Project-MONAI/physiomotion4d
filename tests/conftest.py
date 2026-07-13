@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Shared pytest fixtures for PhysioTwin4D tests.
 
@@ -15,7 +14,6 @@ import itk
 import pytest
 
 from physiotwin4d.contour_tools import ContourTools
-from physiotwin4d.convert_image_4d_to_3d import ConvertImage4DTo3D
 from physiotwin4d.data_download_tools import DataDownloadTools
 from physiotwin4d.register_images_ants import RegisterImagesANTS
 from physiotwin4d.register_images_greedy import RegisterImagesGreedy
@@ -456,21 +454,12 @@ def test_images(
     download_test_data: Path,
     test_directories: dict[str, Path],
 ) -> list[Any]:
-    """Convert and resample 4D NRRD data; return pre-resampled time points."""
+    """Resample DownloadSlicerHeartCTData's 3D time series; return time points."""
     data_dir = test_directories["slicer_heart_data"]
     small_data_dir = test_directories["slicer_heart_small_data"]
 
-    # Convert 4D NRRD to 3D time series if not already done
-    slice_000 = data_dir / "slice_000.mha"
-    slice_007 = data_dir / "slice_007.mha"
-    if not slice_000.exists() or not slice_007.exists():
-        print("\nConverting 4D image to 3D time series...")
-        conv = ConvertImage4DTo3D()
-        conv.load_image_4d(str(download_test_data))
-        conv.save_3d_images(data_dir, "slice")
-    else:
-        print("\n3D slice files already exist")
-
+    # DownloadSlicerHeartCTData() already split the 4D NRRD into
+    # slice_???.mha 3D time-series volumes.
     # Resample each slice_???.mha to 1.5x1.5x1.5 mm into slicer_heart_small.
     target_spacing = [1.5, 1.5, 1.5]
     for slice_file in sorted(data_dir.glob("slice_???.mha")):

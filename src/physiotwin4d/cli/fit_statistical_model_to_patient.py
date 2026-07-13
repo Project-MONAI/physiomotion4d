@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Command-line interface for Heart Model to Patient Registration workflow.
 

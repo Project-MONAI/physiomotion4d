@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Command-line interface for VTK to USD conversion workflow.
 

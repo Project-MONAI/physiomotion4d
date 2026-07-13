@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %% [markdown]
 # # ICP via ITK Heart Model to Image Registration Experiment
 #

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Tests for LabelmapTools functionality.
 

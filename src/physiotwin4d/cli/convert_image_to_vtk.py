@@ -1,9 +1,7 @@
-#!/usr/bin/env python
 """Command-line interface for the image-to-VTK segmentation workflow.
 
 Segments a 3D image using a chosen backend and writes per-anatomy-group VTP
-surfaces and VTU tetrahedral volume meshes annotated with anatomy labels and
-colors.
+surfaces annotated with anatomy labels and colors.
 """
 
 import argparse
@@ -27,7 +25,7 @@ ANATOMY_GROUPS = (
 def main() -> int:
     """CLI entry point for image to VTK conversion."""
     parser = argparse.ArgumentParser(
-        description="Segment a 3D image and export anatomy groups as VTK surfaces and meshes.",
+        description="Segment a 3D image and export anatomy groups as VTK surfaces.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Anatomy groups
@@ -38,12 +36,14 @@ Anatomy groups
 Output files — combined mode (default)
 ---------------------------------------
   {prefix}_surfaces.vtp   all surfaces merged into one file
-  {prefix}_meshes.vtu     all tetrahedral volume meshes merged into one file
 
-Output files — split mode (--split-files)
-------------------------------------------
+Output files — group mode (--output-mode group)
+---------------------------------------------------
   {prefix}_{group}.vtp    one surface per anatomy group
-  {prefix}_{group}.vtu    one tetrahedral volume mesh per anatomy group
+
+Output files — label mode (--output-mode label)
+---------------------------------------------------
+  {prefix}_{label}.vtp    one surface per individual anatomical structure
 
 Examples
 --------
@@ -118,17 +118,6 @@ Examples
             "decimate_pro (default: 0.0, no decimation)."
         ),
     )
-    parser.add_argument(
-        "--mesh-target-reduction",
-        type=float,
-        default=0.0,
-        help=(
-            "Fraction in [0, 1) of triangles to remove from the surface "
-            "(via decimate_pro) before it is meshed into a tetrahedral "
-            "volume mesh by netgen; a coarser input surface yields a "
-            "coarser volume mesh (default: 0.0, no decimation)."
-        ),
-    )
 
     # ── Output ────────────────────────────────────────────────────────────
     parser.add_argument(
@@ -137,12 +126,13 @@ Examples
         help="Filename prefix for output files (default: no prefix).",
     )
     parser.add_argument(
-        "--split-files",
-        action="store_true",
-        default=False,
+        "--output-mode",
+        choices=("combined", "group", "label"),
+        default="combined",
         help=(
-            "Write one VTP and one VTU file per anatomy group instead of "
-            "merging all groups into a single VTP and VTU (default: combined)."
+            "combined (default): merge all surfaces into one VTP.  "
+            "group: one VTP per anatomy group.  "
+            "label: one VTP per individual anatomical structure."
         ),
     )
     parser.add_argument(
@@ -188,17 +178,18 @@ Examples
             input_image=input_image,
             anatomy_groups=args.anatomy_groups,
             surface_target_reduction=args.surface_target_reduction,
-            mesh_target_reduction=args.mesh_target_reduction,
+            extract_label_surfaces=(args.output_mode == "label"),
         )
     except (ValueError, RuntimeError, OSError) as exc:
         print(f"Error during workflow: {exc}")
         traceback.print_exc()
         return 1
 
-    surfaces = result["surfaces"]
-    meshes = result["meshes"]
+    surfaces = (
+        result["label_surfaces"] if args.output_mode == "label" else result["surfaces"]
+    )
 
-    if not surfaces and not meshes:
+    if not surfaces:
         print("No anatomy groups produced any output.  Check the input image.")
         return 1
 
@@ -209,32 +200,18 @@ Examples
     prefix = args.output_prefix
 
     try:
-        if args.split_files:
-            # One file per anatomy group
-            if surfaces:
-                saved_surfaces = ContourTools.save_surfaces(
-                    surfaces, args.output_dir, prefix=prefix
-                )
-                for group, path in saved_surfaces.items():
-                    print(f"  Surface  [{group:15s}] -> {path}")
-            if meshes:
-                saved_meshes = ContourTools.save_meshes(
-                    meshes, args.output_dir, prefix=prefix
-                )
-                for group, path in saved_meshes.items():
-                    print(f"  Mesh     [{group:15s}] -> {path}")
+        if args.output_mode == "combined":
+            surface_file = ContourTools.save_combined_surface(
+                surfaces, args.output_dir, prefix=prefix
+            )
+            print(f"  Combined surface -> {surface_file}")
         else:
-            # Combined single-file output
-            if surfaces:
-                surface_file = ContourTools.save_combined_surface(
-                    surfaces, args.output_dir, prefix=prefix
-                )
-                print(f"  Combined surface -> {surface_file}")
-            if meshes:
-                mesh_file = ContourTools.save_combined_mesh(
-                    meshes, args.output_dir, prefix=prefix
-                )
-                print(f"  Combined mesh    -> {mesh_file}")
+            # One file per anatomy group or per individual label
+            saved_surfaces = ContourTools.save_surfaces(
+                surfaces, args.output_dir, prefix=prefix
+            )
+            for name, path in saved_surfaces.items():
+                print(f"  Surface  [{name:20s}] -> {path}")
 
         if args.save_labelmap:
             labelmap = result["labelmap"]

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %% [markdown]
 # # ICP Affine Registration: Align Heart Models to Average
 #

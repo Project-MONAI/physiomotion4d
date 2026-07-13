@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %%
 from data_dirlab_4d_ct import DataDirLab4DCT
 from pxr import Usd

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %% [markdown]
 # # Displacement Field to USD for Omniverse Visualization
 #

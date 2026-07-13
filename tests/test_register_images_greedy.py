@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Tests for Greedy-based image registration.
 

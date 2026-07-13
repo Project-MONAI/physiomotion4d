@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %% [markdown]
 # # PCA-based Heart Model to Image Registration Experiment
 #

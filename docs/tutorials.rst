@@ -201,7 +201,7 @@ Preview
 
 Inner API usage
    The workflow owns a segmentation method and turns each anatomy group into
-   decimated VTK surfaces and volume meshes:
+   a decimated VTK surface:
 
    .. code-block:: python
 
@@ -213,10 +213,16 @@ Inner API usage
       result = workflow.process(
           input_image=ct_image,
           surface_target_reduction=0.5,
-          mesh_target_reduction=0.7,
       )
 
    Use ``SegmentChestTotalSegmentator`` instead for non-contrast studies.
+
+   By default the script saves one combined ``patient_surfaces.vtp``.  Set
+   ``SAVE_GROUP_SURFACES = True`` and/or ``SAVE_LABEL_SURFACES = True`` near
+   the top of the script to additionally save one VTP per anatomy group
+   (e.g. ``patient_heart.vtp``) and/or one VTP per individual anatomical
+   structure (e.g. ``patient_left_ventricle.vtp``); the latter passes
+   ``extract_label_surfaces=True`` to :meth:`WorkflowConvertImageToVTK.process`.
 
 Run
    .. code-block:: bash

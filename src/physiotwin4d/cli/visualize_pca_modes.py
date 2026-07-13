@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Command-line interface to visualize PCA modes of variation.
 

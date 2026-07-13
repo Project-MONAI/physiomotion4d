@@ -82,7 +82,7 @@ def test_fit_workflow_routes_default_to_image_to_vtk_with_trimmed_branches(
             dtype=np.float64,
         )
     )
-    heart_mesh = pv.PolyData(
+    heart_surface = pv.PolyData(
         np.array(
             [
                 [0.0, 0.0, 0.0],
@@ -102,7 +102,7 @@ def test_fit_workflow_routes_default_to_image_to_vtk_with_trimmed_branches(
 
         def process(self, **kwargs: Any) -> dict[str, Any]:
             captured["process_kwargs"] = kwargs
-            return {"meshes": {"heart": heart_mesh}}
+            return {"surfaces": {"heart": heart_surface}}
 
     monkeypatch.setattr(
         "physiotwin4d.workflow_fit_statistical_model_to_patient."
@@ -120,7 +120,7 @@ def test_fit_workflow_routes_default_to_image_to_vtk_with_trimmed_branches(
         SegmentHeartSimplewareTrimmedBranches,
     )
     assert captured["process_kwargs"]["anatomy_groups"] == ["heart"]
-    assert workflow.patient_models == [heart_mesh]
+    assert workflow.patient_models == [heart_surface]
 
 
 def test_image_to_vtk_segmenter_uses_supplied_instance() -> None:

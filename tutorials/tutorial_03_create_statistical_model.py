@@ -46,7 +46,6 @@ if __name__ == "__main__":
     OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_03"
     BASELINES_DIR = REPO_ROOT / "tests" / "baselines"
     PCA_COMPONENTS = 10
-    MAX_SAMPLES = 20
     LOG_LEVEL = logging.INFO
 
     # %%
@@ -59,26 +58,25 @@ if __name__ == "__main__":
 
     if test_mode:
         pca_components = min(PCA_COMPONENTS, 5)
-        max_samples = min(MAX_SAMPLES, 10)
     else:
         pca_components = PCA_COMPONENTS
-        max_samples = MAX_SAMPLES
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    reference_file = data_dir / "pca_mean.vtu"
+    reference_file = data_dir / "average_mesh.vtk"
     if not reference_file.exists():
         raise FileNotFoundError(
             f"KCL-Heart-Model reference mesh not found: {reference_file}\n"
             "See data/README.md for download instructions."
         )
 
-    sample_dir = data_dir / "sample_meshes"
-    sample_files = sorted(sample_dir.glob("*.vtu"))
+    sample_dir = data_dir / "input_meshes"
+    sample_files = sorted(sample_dir.glob("*.vtk"))
     if not sample_files:
-        sample_files = sorted(data_dir.glob("*.vtu"))
-    sample_files = [path for path in sample_files if path.name != "pca_mean.vtu"]
-    sample_files = sample_files[:max_samples]
+        sample_files = sorted(data_dir.glob("*.vtk"))
+        sample_files = [
+            path for path in sample_files if path.name != reference_file.name
+        ]
     if len(sample_files) < 3:
         raise FileNotFoundError(
             f"Need at least 3 sample meshes under {sample_dir} or {data_dir}.\n"

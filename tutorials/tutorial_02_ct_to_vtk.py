@@ -3,9 +3,9 @@ Tutorial 2: CT Segmentation to VTK Surfaces
 
 Purpose
 -------
-Segment one 3D CT frame into anatomical groups and save combined VTK surface
-and tetrahedral volume mesh files. The output can be inspected directly in
-PyVista or used as input for Tutorial 5.
+Segment one 3D CT frame into anatomical groups and save a combined VTK
+surface file. The output can be inspected directly in PyVista or used as
+input for Tutorial 5.
 
 Data Required
 -------------
@@ -48,6 +48,12 @@ if __name__ == "__main__":
     BASELINES_DIR = REPO_ROOT / "tests" / "baselines"
     LOG_LEVEL = logging.INFO
 
+    # In addition to the combined surface file always saved below, also
+    # save one VTP per anatomy group (e.g. heart.vtp, lung.vtp) and/or one
+    # VTP per individual anatomical structure (e.g. left_ventricle.vtp).
+    SAVE_GROUP_SURFACES = True
+    SAVE_LABEL_SURFACES = True
+
     # %%
     # Data reading
     test_mode = TestTools.running_as_test()
@@ -81,13 +87,11 @@ if __name__ == "__main__":
     # %%
     # Workflow execution
     #
-    # surface_target_reduction decimates each exported VTP surface;
-    # mesh_target_reduction decimates the surface netgen tetrahedralizes into
-    # each VTU volume mesh (a coarser input surface yields a coarser mesh).
+    # surface_target_reduction decimates each exported VTP surface.
     result = workflow.process(
         input_image=ct_image,
         surface_target_reduction=0.5,
-        mesh_target_reduction=0.7,
+        extract_label_surfaces=SAVE_LABEL_SURFACES,
     )
 
     # %%
@@ -99,13 +103,14 @@ if __name__ == "__main__":
             prefix="patient",
         )
     )
-    mesh_file = Path(
-        ContourTools.save_combined_mesh(
-            result["meshes"],
-            str(output_dir),
-            prefix="patient",
+    if SAVE_GROUP_SURFACES:
+        ContourTools.save_surfaces(
+            result["surfaces"], str(output_dir), prefix="patient"
         )
-    )
+    if SAVE_LABEL_SURFACES:
+        ContourTools.save_surfaces(
+            result["label_surfaces"], str(output_dir), prefix="patient"
+        )
     labelmap_file = output_dir / "patient_labelmap.mha"
     itk.imwrite(result["labelmap"], str(labelmap_file), compression=True)
 
@@ -148,7 +153,6 @@ if __name__ == "__main__":
     tutorial_results = {
         "result": result,
         "surface_file": surface_file,
-        "mesh_file": mesh_file,
         "labelmap_file": labelmap_file,
         "screenshots": screenshots,
     }

@@ -54,15 +54,18 @@ Options
 Output
 ======
 
-For ``Slicer-Heart-CT``, the command downloads or reuses:
+For ``Slicer-Heart-CT``, the command downloads the 4-D sequence and splits it
+into per-phase 3-D volumes:
 
 .. code-block:: text
 
    data/Slicer-Heart-CT/TruncalValve_4DCT.seq.nrrd
+   data/Slicer-Heart-CT/slice_000.mha ... slice_020.mha
 
 The command uses
 :meth:`physiotwin4d.data_download_tools.DataDownloadTools.DownloadSlicerHeartCTData`,
-so repeated runs reuse the existing non-empty file.
+so repeated runs reuse the existing non-empty file and skip the split once
+the ``slice_???.mha`` files are present.
 
 For ``KCL-Heart-Model``, the command downloads, extracts, and reuses:
 

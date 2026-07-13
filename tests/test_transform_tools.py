@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Test for transform tools functionality.
 

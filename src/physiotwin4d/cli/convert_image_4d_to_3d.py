@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Command-line interface for splitting a 3D/4D image into a 3D time series.
 
 Reads a 3D or 4D medical image and writes one ``.mha`` file per temporal frame

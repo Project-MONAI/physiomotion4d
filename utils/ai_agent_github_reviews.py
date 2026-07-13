@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 ai_agent_github_reviews.py — Screen GitHub PR review comments with an AI agent.
 

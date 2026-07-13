@@ -25,7 +25,7 @@ for users and contributors. Key sections:
 
 - **Personalized digital twins**: build subject-specific anatomic models and physiological AI surrogates from 3D/4D medical images
 - **Statistical shape models**: capture subject-specific anatomy and establish cross-subject correspondence, aiding AI surrogate generalization and simplifying traditional solver setup
-- **Simplified workflows on industry-leading open-source tools**: ICON and Greedy for registration; MONAI with TotalSegmentator and Simpleware for segmentation; Netgen for meshing (LGPL license); scikit-learn for statistical shape modeling; ITK for image processing; PyVista and OpenUSD/Omniverse for geometry manipulation; CuPy for accelerated computing; and PhysicsNeMo for AI surrogates
+- **Simplified workflows on industry-leading open-source tools**: ICON and Greedy for registration; MONAI with TotalSegmentator and Simpleware for segmentation; scikit-learn for statistical shape modeling; ITK for image processing; PyVista and OpenUSD/Omniverse for geometry manipulation; CuPy for accelerated computing; and PhysicsNeMo for AI surrogates
 - **Extensible class hierarchy**: add new segmentation and registration methods, and extend to new data types, organs, and physiological processes, without reworking the workflow layer
 - **Physiological motion**: cardiac and respiratory motion today, expanding to electrophysiology, blood flow, and organ perfusion
 - **NVIDIA Omniverse as the simulation hub**: the end goal for simulation — a simulation-information hub and gateway to other engines (e.g., Ansys solvers), interactive simulations for treatment planning (e.g., Isaac Sim, Newton), visualization systems (e.g., AR/VR devices), and physical systems (e.g., robots via ROS)
@@ -71,9 +71,8 @@ See the [contributing guide](https://project-monai.github.io/physiotwin4d/contri
 
 This project is licensed under the Apache 2.0 License - see the LICENSE file for details.
 
-Note that some optional dependencies carry their own license terms: meshing
-via Netgen is LGPL-licensed, and NVIDIA Omniverse is distributed under its
-own customer license, which is free for academic and commercial use. To our
-knowledge, none of the dependencies carry commercially prohibitive licenses
-such as GPL, but no guarantees are provided — review the license of each
-dependency for your own use case.
+Note that some optional dependencies carry their own license terms: NVIDIA
+Omniverse is distributed under its own customer license, which is free for
+academic and commercial use. To our knowledge, none of the dependencies
+carry commercially prohibitive licenses such as GPL, but no guarantees are
+provided — review the license of each dependency for your own use case.

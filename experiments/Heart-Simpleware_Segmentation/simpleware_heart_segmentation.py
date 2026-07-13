@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %% [markdown]
 # # Heart Segmentation using Simpleware Medical ASCardio
 #

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Test for chest CT segmentation using TotalSegmentator.
 

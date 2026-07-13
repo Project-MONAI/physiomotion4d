@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Command-line interface for downloading PhysioTwin4D example data."""
 
 from __future__ import annotations

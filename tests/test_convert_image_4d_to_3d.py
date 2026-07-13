@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Test for converting a 4D image to a 3D time series using ITK readers.
 

@@ -113,7 +113,6 @@ class TestTutorial02CTToVTK:
         out_dir = _REPO_ROOT / "tutorials" / "output" / "tutorial_02"
         results = _run_tutorial_script("tutorial_02_ct_to_vtk.py")
         assert results["surface_file"].exists(), "Combined VTP surface should exist"
-        assert results["mesh_file"].exists(), "Combined VTU mesh should exist"
 
         tt = TestTools(
             class_name=self._class_name,
@@ -137,7 +136,7 @@ class TestTutorial03CreateStatisticalModel:
 
     def test_run(self, test_directories: dict[str, Path]) -> None:
         kcl_dir = test_directories["data"] / "KCL-Heart-Model"
-        if not (kcl_dir / "pca_mean.vtu").exists():
+        if not (kcl_dir / "average_mesh.vtk").exists():
             pytest.skip(
                 "KCL-Heart-Model not downloaded. See data/README.md for instructions."
             )
@@ -164,7 +163,7 @@ class TestTutorial04FitStatisticalModelToPatient:
 
     def test_run(self, test_directories: dict[str, Path]) -> None:
         kcl_dir = test_directories["data"] / "KCL-Heart-Model"
-        if not (kcl_dir / "pca_mean.vtu").exists():
+        if not (kcl_dir / "average_mesh.vtk").exists():
             pytest.skip(
                 "KCL-Heart-Model not downloaded. See data/README.md for instructions."
             )
