@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %% [markdown]
 # # Cardiac Valve 4D Time-Series Conversion to USD
 #

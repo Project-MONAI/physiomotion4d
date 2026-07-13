@@ -27,7 +27,7 @@ Available Workflows
    * - :class:`WorkflowConvertImageToUSD`
      - Convert a 4D cardiac CT sequence into animated USD anatomy.
    * - :class:`WorkflowConvertImageToVTK`
-     - Segment one CT image and export anatomy-group VTK surfaces and meshes.
+     - Segment one CT image and export anatomy-group VTK surfaces.
    * - :class:`WorkflowConvertVTKToUSD`
      - Convert VTK/VTP/VTU meshes or time series into USD.
    * - :class:`WorkflowCreateStatisticalModel`

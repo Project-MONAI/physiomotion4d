@@ -54,7 +54,7 @@ Current Scripts
    * - :doc:`heart_gated_ct`
      - Process cardiac gated CT to animated heart models with physiological motion
    * - ``physiotwin4d-convert-image-to-vtk``
-     - Segment one 3D image and export anatomy-group VTK surfaces and meshes
+     - Segment one 3D image and export anatomy-group VTK surfaces
    * - ``physiotwin4d-convert-image-4d-to-3d``
      - Split a 4D medical image into a 3D time series using ITK readers
    * - :doc:`create_statistical_model`

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Command-line interface for Create Statistical Model workflow.
 

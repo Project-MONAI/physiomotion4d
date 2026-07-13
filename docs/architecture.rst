@@ -61,8 +61,7 @@ Primary Workflows
    contours and painted animated USD files.
 
 ``WorkflowConvertImageToVTK``
-   Segments a 3D CT image and exports anatomy groups as VTK surfaces and voxel
-   meshes.
+   Segments a 3D CT image and exports anatomy groups as VTK surfaces.
 
 ``WorkflowCreateStatisticalModel``
    Aligns a population of meshes to a reference and builds a PCA statistical

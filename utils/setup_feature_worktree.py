@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 setup_feature_worktree.py — Automate creation of a Git feature worktree on Windows.
 

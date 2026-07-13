@@ -3,9 +3,9 @@ Tutorial 2: CT Segmentation to VTK Surfaces
 
 Purpose
 -------
-Segment one 3D CT frame into anatomical groups and save combined VTK surface
-and tetrahedral volume mesh files. The output can be inspected directly in
-PyVista or used as input for Tutorial 5.
+Segment one 3D CT frame into anatomical groups and save a combined VTK
+surface file. The output can be inspected directly in PyVista or used as
+input for Tutorial 5.
 
 Data Required
 -------------
@@ -81,13 +81,10 @@ if __name__ == "__main__":
     # %%
     # Workflow execution
     #
-    # surface_target_reduction decimates each exported VTP surface;
-    # mesh_target_reduction decimates the surface netgen tetrahedralizes into
-    # each VTU volume mesh (a coarser input surface yields a coarser mesh).
+    # surface_target_reduction decimates each exported VTP surface.
     result = workflow.process(
         input_image=ct_image,
         surface_target_reduction=0.5,
-        mesh_target_reduction=0.7,
     )
 
     # %%
@@ -95,13 +92,6 @@ if __name__ == "__main__":
     surface_file = Path(
         ContourTools.save_combined_surface(
             result["surfaces"],
-            str(output_dir),
-            prefix="patient",
-        )
-    )
-    mesh_file = Path(
-        ContourTools.save_combined_mesh(
-            result["meshes"],
             str(output_dir),
             prefix="patient",
         )
@@ -148,7 +138,6 @@ if __name__ == "__main__":
     tutorial_results = {
         "result": result,
         "surface_file": surface_file,
-        "mesh_file": mesh_file,
         "labelmap_file": labelmap_file,
         "screenshots": screenshots,
     }

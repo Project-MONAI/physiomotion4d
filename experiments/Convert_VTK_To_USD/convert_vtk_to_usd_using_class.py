@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %% [markdown]
 # # VTK to USD Converter Test Notebook
 #

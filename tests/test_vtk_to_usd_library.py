@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Tests for VTK-to-USD conversion through ConvertVTKToUSD.
 

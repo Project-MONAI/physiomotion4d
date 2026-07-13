@@ -18,6 +18,8 @@ import zipfile
 from pathlib import Path
 from typing import Union
 
+from .convert_image_4d_to_3d import ConvertImage4DTo3D
+
 _DOWNLOAD_TIMEOUT_SECONDS = 60.0
 _logger = logging.getLogger(__name__)
 
@@ -31,12 +33,20 @@ class DataDownloadTools:
     )
     SLICER_HEART_CT_FILENAME = "TruncalValve_4DCT.seq.nrrd"
 
+    SLICER_HEART_CT_SLICE_BASENAME = "slice"
+
     @staticmethod
     def DownloadSlicerHeartCTData(dirname: Union[str, Path]) -> Path:  # noqa: N802
         """Download the Slicer-Heart-CT 4-D CT sample into ``dirname``.
 
+        Also splits the downloaded 4-D sequence into per-frame
+        ``slice_???.mha`` volumes in the same directory (via
+        ``ConvertImage4DTo3D``), skipping the split if those files already
+        exist.
+
         Args:
-            dirname: Directory where ``TruncalValve_4DCT.seq.nrrd`` should live.
+            dirname: Directory where ``TruncalValve_4DCT.seq.nrrd`` and the
+                converted ``slice_???.mha`` files should live.
 
         Returns:
             Path to the downloaded or already-cached ``.seq.nrrd`` file.
@@ -45,41 +55,52 @@ class DataDownloadTools:
         data_dir.mkdir(parents=True, exist_ok=True)
 
         data_file = data_dir / DataDownloadTools.SLICER_HEART_CT_FILENAME
-        if data_file.exists() and data_file.stat().st_size > 0:
-            return data_file
-
-        # Stream to a unique temp file in the same directory with an explicit
-        # timeout, then atomically replace the target on success. The temp
-        # name is unique so concurrent callers do not clobber each other.
-        # Avoids partial files on interrupt and the indefinite hang that
-        # urlretrieve has without a timeout.
-        tmp_handle = tempfile.NamedTemporaryFile(
-            dir=str(data_dir),
-            prefix=f".{DataDownloadTools.SLICER_HEART_CT_FILENAME}.",
-            suffix=".tmp",
-            delete=False,
-        )
-        tmp_file = Path(tmp_handle.name)
-        try:
-            with (
-                urllib.request.urlopen(  # noqa: S310
-                    DataDownloadTools.SLICER_HEART_CT_URL,
-                    timeout=_DOWNLOAD_TIMEOUT_SECONDS,
-                ) as response,
-                tmp_handle as out,
-            ):
-                shutil.copyfileobj(response, out)
-            if tmp_file.stat().st_size == 0:
-                raise RuntimeError(
-                    f"Downloaded file is empty: {DataDownloadTools.SLICER_HEART_CT_URL}"
+        if not (data_file.exists() and data_file.stat().st_size > 0):
+            # Stream to a unique temp file in the same directory with an
+            # explicit timeout, then atomically replace the target on
+            # success. The temp name is unique so concurrent callers do not
+            # clobber each other. Avoids partial files on interrupt and the
+            # indefinite hang that urlretrieve has without a timeout.
+            tmp_handle = tempfile.NamedTemporaryFile(
+                dir=str(data_dir),
+                prefix=f".{DataDownloadTools.SLICER_HEART_CT_FILENAME}.",
+                suffix=".tmp",
+                delete=False,
+            )
+            tmp_file = Path(tmp_handle.name)
+            try:
+                with (
+                    urllib.request.urlopen(  # noqa: S310
+                        DataDownloadTools.SLICER_HEART_CT_URL,
+                        timeout=_DOWNLOAD_TIMEOUT_SECONDS,
+                    ) as response,
+                    tmp_handle as out,
+                ):
+                    shutil.copyfileobj(response, out)
+                if tmp_file.stat().st_size == 0:
+                    raise RuntimeError(
+                        f"Downloaded file is empty: {DataDownloadTools.SLICER_HEART_CT_URL}"
+                    )
+                tmp_file.replace(data_file)
+                _logger.info(
+                    "Downloaded %s", DataDownloadTools.SLICER_HEART_CT_FILENAME
                 )
-            tmp_file.replace(data_file)
-            _logger.info("Downloaded %s", DataDownloadTools.SLICER_HEART_CT_FILENAME)
-        except BaseException:
-            tmp_handle.close()
-            if tmp_file.exists():
-                tmp_file.unlink()
-            raise
+            except BaseException:
+                tmp_handle.close()
+                if tmp_file.exists():
+                    tmp_file.unlink()
+                raise
+
+        slice_basename = DataDownloadTools.SLICER_HEART_CT_SLICE_BASENAME
+        if not any(data_dir.glob(f"{slice_basename}_???.mha")):
+            conv = ConvertImage4DTo3D()
+            conv.load_image_4d(str(data_file))
+            conv.save_3d_images(data_dir, slice_basename)
+            _logger.info(
+                "Converted %s to %s_???.mha frames",
+                DataDownloadTools.SLICER_HEART_CT_FILENAME,
+                slice_basename,
+            )
         return data_file
 
     @staticmethod

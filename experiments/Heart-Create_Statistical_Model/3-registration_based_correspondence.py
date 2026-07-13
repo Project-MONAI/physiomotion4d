@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %% [markdown]
 # # Registration-Based Correspondence
 #

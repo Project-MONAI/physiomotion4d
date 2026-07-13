@@ -201,7 +201,7 @@ Preview
 
 Inner API usage
    The workflow owns a segmentation method and turns each anatomy group into
-   decimated VTK surfaces and volume meshes:
+   a decimated VTK surface:
 
    .. code-block:: python
 
@@ -213,7 +213,6 @@ Inner API usage
       result = workflow.process(
           input_image=ct_image,
           surface_target_reduction=0.5,
-          mesh_target_reduction=0.7,
       )
 
    Use ``SegmentChestTotalSegmentator`` instead for non-contrast studies.

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Tests for heart CT segmentation using SegmentHeartSimpleware (Simpleware Medical ASCardio).
 

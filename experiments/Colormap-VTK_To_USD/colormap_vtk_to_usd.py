@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %% [markdown]
 # # Colormap Features for VTK to USD Conversion
 #

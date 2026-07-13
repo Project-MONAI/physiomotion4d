@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %% [markdown]
 # # Convert VTK to VTP Surface Files
 #

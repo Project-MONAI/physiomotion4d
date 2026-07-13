@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %% [markdown]
 # ## Setup and Imports
 

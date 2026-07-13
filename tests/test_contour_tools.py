@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Test for contour tools functionality.
 

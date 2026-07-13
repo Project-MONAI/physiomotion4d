@@ -40,7 +40,7 @@ Workflow Classes
    transformation, and animated USD generation.
 
 ``WorkflowConvertImageToVTK``
-   Converts one 3D image into labeled VTK surface and voxel-mesh outputs.
+   Converts one 3D image into labeled VTK surface outputs.
 
 ``WorkflowCreateStatisticalModel``
    Builds a PCA statistical shape model from aligned population meshes.

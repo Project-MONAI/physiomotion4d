@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Command-line interface for high-resolution 4D CT reconstruction workflow.
 

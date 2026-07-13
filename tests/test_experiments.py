@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Test suite for running experiment scripts.
 

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Test for downloading and converting Slicer-Heart-CT data.
 

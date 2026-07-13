@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Generate a structured API index of public Python symbols in the repository.
 

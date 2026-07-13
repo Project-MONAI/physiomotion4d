@@ -112,7 +112,7 @@ PhysioTwin4D operates across several technically demanding domains:
 | **Medical Imaging**    | ITK, MONAI, nibabel, pydicom, pynrrd                 |
 | **Deep Learning**      | PyTorch, CuPy (CUDA 13), transformers                |
 | **Registration**       | ANTs (antspyx), picsl-greedy, icon-registration, UniGradICON |
-| **3D Graphics / USD**  | VTK, PyVista, USD-core, trimesh, netgen-mesher        |
+| **3D Graphics / USD**  | VTK, PyVista, USD-core, trimesh                       |
 | **AI Segmentation**    | TotalSegmentator                                      |
 | **Development Tools**  | pytest, pytest-cov, pytest-xdist, ruff, mypy, sphinx, uv |
 

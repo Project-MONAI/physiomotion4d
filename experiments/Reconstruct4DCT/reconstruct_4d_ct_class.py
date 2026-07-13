@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # %% [markdown]
 # # 4D CT Reconstruction Using RegisterTimeSeriesImages Class
 #

@@ -113,7 +113,6 @@ class TestTutorial02CTToVTK:
         out_dir = _REPO_ROOT / "tutorials" / "output" / "tutorial_02"
         results = _run_tutorial_script("tutorial_02_ct_to_vtk.py")
         assert results["surface_file"].exists(), "Combined VTP surface should exist"
-        assert results["mesh_file"].exists(), "Combined VTU mesh should exist"
 
         tt = TestTools(
             class_name=self._class_name,
