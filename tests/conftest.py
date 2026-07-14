@@ -525,7 +525,6 @@ def test_labelmaps(
                 "bone": labelmaps["bone"],
                 "soft_tissue": labelmaps["soft_tissue"],
                 "other": labelmaps["other"],
-                "contrast": labelmaps["contrast"],
             }
         )
 

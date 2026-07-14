@@ -306,10 +306,14 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
                 if self.has_highres_heart_license:
                     self.log_info("Running heart chambers task")
                     output_nib_image_heart = totalsegmentator(
-                        nib_image, task="heartchambers_highres", device="gpu",
-                        nr_thr_resamp=resamp_threads
+                        nib_image,
+                        task="heartchambers_highres",
+                        device="gpu",
+                        nr_thr_resamp=resamp_threads,
                     )
-                    labelmap_arr_heart = output_nib_image_heart.get_fdata().astype(np.uint8)
+                    labelmap_arr_heart = output_nib_image_heart.get_fdata().astype(
+                        np.uint8
+                    )
                     # labelmap_arr_heart contains: 1=myocardium, 2=atrium_left, 3=ventricle_left,
                     #     4=atrium_right, 5=ventricle_right, 6=aorta, 7=pulmonary_artery
                     final_arr = np.where(labelmap_arr_heart == 1, 140, final_arr)
@@ -318,14 +322,16 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
                     final_arr = np.where(labelmap_arr_heart == 4, 143, final_arr)
                     final_arr = np.where(labelmap_arr_heart == 5, 144, final_arr)
                     final_arr = np.where(labelmap_arr_heart == 7, 146, final_arr)
-                    #final_arr = np.where(labelmap_arr_heart == 6, 145, final_arr)
+                    # final_arr = np.where(labelmap_arr_heart == 6, 145, final_arr)
                     #  Aorta is not included in heart model.
                     #  Should include only a portion of the aorta in the heart model.
 
                 self.log_info("Running lung vessels task")
                 output_nib_image_lung = totalsegmentator(
-                    nib_image, task="lung_vessels", device="gpu",
-                    nr_thr_resamp=resamp_threads
+                    nib_image,
+                    task="lung_vessels",
+                    device="gpu",
+                    nr_thr_resamp=resamp_threads,
                 )
                 labelmap_arr_lung = output_nib_image_lung.get_fdata().astype(np.uint8)
                 # labelmap_arr_lung contains: 1=arteries, 2=veins, 3=airways,
@@ -338,8 +344,7 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
 
                 self.log_info("Running body task")
                 output_nib_image_body = totalsegmentator(
-                    nib_image, task="body", device="gpu",
-                    nr_thr_resamp=resamp_threads
+                    nib_image, task="body", device="gpu", nr_thr_resamp=resamp_threads
                 )
                 labelmap_arr_body = output_nib_image_body.get_fdata().astype(np.uint8)
                 # labelmap_arr_body contains: 1=body, 2=body_trunc, 3=body_extremities,
@@ -365,8 +370,10 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
             # Add heart around interior regions.
             if self.has_highres_heart_license:
                 interior_mask = np.isin(labelmap_arr, [141, 142, 143, 144])
-                interior_arr = labelmap_arr * interior_mask
-                interior_image = itk.GetImageFromArray(interior_arr.astype(np.uint8))
+                # Binarize to foreground value 1 so the dilate/erode calls
+                # below (which use foreground=1) operate on the mask.
+                interior_arr = interior_mask.astype(np.uint8)
+                interior_image = itk.GetImageFromArray(interior_arr)
                 interior_image.CopyInformation(preprocessed_image)
                 imMath = ImageTools()
                 spacing = interior_image.GetSpacing()
@@ -379,13 +386,9 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
                 exterior_arr = itk.GetArrayFromImage(exterior_image)
                 mask_id = 51  # Heart mask id
                 exterior_arr = exterior_arr * mask_id
-                labelmap_arr = np.where(
-                    labelmap_arr == 0, exterior_arr, labelmap_arr
-                )
+                labelmap_arr = np.where(labelmap_arr == 0, exterior_arr, labelmap_arr)
                 replace_arr = np.where(labelmap_arr == 133, exterior_arr, 0)
-                labelmap_arr = np.where(
-                    replace_arr > 0, exterior_arr, labelmap_arr
-                )
+                labelmap_arr = np.where(replace_arr > 0, exterior_arr, labelmap_arr)
 
             labelmap_image = itk.image_from_array(labelmap_arr)
             labelmap_image.CopyInformation(preprocessed_image)

@@ -23,14 +23,13 @@ from pathlib import Path
 from typing import Any, Optional, cast
 
 import itk
-import numpy as np
 import pyvista as pv
 
 from physiotwin4d import (
     ContourTools,
     SegmentChestTotalSegmentator,
-    #SegmentHeartSimplewareTrimmedBranches,
-    #SegmentChestTotalSegmentatorWithContrast,
+    # SegmentHeartSimplewareTrimmedBranches,
+    # SegmentChestTotalSegmentatorWithContrast,
     TestTools,
     WorkflowFitStatisticalModelToPatient,
 )
@@ -51,7 +50,9 @@ if __name__ == "__main__":
     BASELINES_DIR = REPO_ROOT / "tests" / "baselines"
     PCA_JSON = TUTORIALS_DIR / "output" / "tutorial_03" / "pca_model.json"
     PCA_MEAN_FILE = TUTORIALS_DIR / "output" / "tutorial_03" / "pca_mean_surface.vtp"
-    PATIENT_IMAGE_FILE = DATA_DIR / "Case1Pack_T70.mhd"
+    # .mha files are DirLab-4DCT data already converted to HU by
+    # data/DirLab-4DCT/fix_downloaded_data.py.
+    PATIENT_IMAGE_FILE = DATA_DIR / "Case1Pack_T70.mha"
     SEGMENTATION_METHOD = SegmentChestTotalSegmentator()
     SEGMENTATION_METHOD.set_has_highres_heart_license(True)
     # SEGMENTATION_METHOD = SegmentHeartSimplewareTrimmedBranches() # Use when available
@@ -90,18 +91,10 @@ if __name__ == "__main__":
             "See data/README.md for download instructions."
         )
     patient_image = itk.imread(str(patient_image_file))
-    
-    # DirLab data is not in Hounsfield units, so we need to convert it to HU.
-    patient_image_arr = itk.GetArrayFromImage(patient_image)
-    patient_image_arr = patient_image_arr - 1024
-    patient_image_arr = np.clip(patient_image_arr, -1024, 2048)
-    patient_image_new = itk.GetImageFromArray(patient_image_arr)
-    patient_image_new.CopyInformation(patient_image)
-    patient_image = patient_image_new
     itk.imwrite(patient_image, output_dir / "patient_image.nii.gz")
 
     segmentation_result = segmentation_method.segment(
-        patient_image_new,
+        patient_image,
     )
     patient_labelmap = segmentation_result["labelmap"]
     itk.imwrite(patient_labelmap, output_dir / "patient_labelmap.nii.gz")
@@ -125,11 +118,12 @@ if __name__ == "__main__":
         log_level=log_level,
         labelmap_interior_object_ids=[141, 142, 143, 144],
     )
-    workflow.set_use_pca_registration(
-        use_pca_registration=True,
-        pca_model=pca_model,
-        use_surface=False,
-    )
+    if pca_model is not None:
+        workflow.set_use_pca_registration(
+            use_pca_registration=True,
+            pca_model=pca_model,
+            use_surface=False,
+        )
 
     # %%
     # Workflow execution
@@ -138,9 +132,10 @@ if __name__ == "__main__":
     # %%
     # Result saving
     registered_coefficients = workflow.pca_coefficients
-    registered_coefficients_path = output_dir / "registered_coefficients.json"
-    with registered_coefficients_path.open(mode="w", encoding="utf-8") as f:
-        json.dump(registered_coefficients.tolist(), f)
+    if registered_coefficients is not None:
+        registered_coefficients_path = output_dir / "registered_coefficients.json"
+        with registered_coefficients_path.open(mode="w", encoding="utf-8") as f:
+            json.dump(registered_coefficients.tolist(), f)
 
     template_mesh = workflow.pca_template_model
     template_mesh.save(str(output_dir / "template_mesh.vtp"))
@@ -153,7 +148,6 @@ if __name__ == "__main__":
 
     registered_surface = workflow_results["registered_template_model_surface"]
     registered_surface.save(str(output_dir / "template_surface_registered.vtp"))
-
 
     # %%
     try:

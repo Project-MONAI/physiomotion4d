@@ -41,11 +41,13 @@ if __name__ == "__main__":
     REPO_ROOT = Path(__file__).resolve().parent.parent
     TUTORIALS_DIR = Path(__file__).resolve().parent
     DATA_DIR = REPO_ROOT / "data"
-    FULL_DATA_DIR = DATA_DIR / "DirLab-4DCT" / "Case1"
-    TEST_DATA_DIR = DATA_DIR / "test" / "DirLab-4DCT" / "Case1"
+    FULL_DATA_DIR = DATA_DIR / "DirLab-4DCT"
+    TEST_DATA_DIR = DATA_DIR / "test" / "DirLab-4DCT"
+    # .mha files are DirLab-4DCT data already converted to HU by
+    # data/DirLab-4DCT/fix_downloaded_data.py.
+    CASE_GLOB = "Case1Pack_T??.mha"
     OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_06"
     BASELINES_DIR = REPO_ROOT / "tests" / "baselines"
-    MAX_FRAMES = 4
     LOG_LEVEL = logging.INFO
 
     # %%
@@ -57,22 +59,19 @@ if __name__ == "__main__":
     log_level = LOG_LEVEL
 
     if test_mode:
-        max_frames = min(MAX_FRAMES, 3)
         number_of_iterations_Greedy = [1, 0]
     else:
-        max_frames = MAX_FRAMES
         number_of_iterations_Greedy = [30, 15, 7, 3]
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    phase_files = sorted(list(data_dir.glob("*.mhd")) + list(data_dir.glob("*.mha")))
+    phase_files = sorted(list(data_dir.glob(CASE_GLOB)))
     if not phase_files:
         raise FileNotFoundError(
             f"No DirLab phase images found under {data_dir}.\n"
             "See data/README.md for download instructions."
         )
 
-    phase_files = phase_files[:max_frames]
     time_series = [itk.imread(str(path)) for path in phase_files]
     fixed_image = time_series[0]
 
@@ -106,10 +105,10 @@ if __name__ == "__main__":
 
         out_path = output_dir / f"reconstructed_frame_{frame_index:03d}_fwd.hdf"
         itk.transformwrite(forward_transform[frame_index], str(out_path))
-        
+
         out_path = output_dir / f"reconstructed_frame_{frame_index:03d}_inv.hdf"
         itk.transformwrite(inverse_transform[frame_index], str(out_path))
-        
+
     tt = TestTools(
         class_name="tutorial_06_reconstruct_highres_4d_ct",
         results_dir=output_dir,
