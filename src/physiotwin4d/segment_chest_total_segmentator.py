@@ -283,8 +283,6 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
             itk.imwrite(preprocessed_image, tmp_file, compression=True)
             nib_image = nib.load(tmp_file)
 
-            itk.imwrite(preprocessed_image, "preprocessed_image.nii.gz")
-
             # fast_mode trades accuracy for speed (e.g. for automated tests):
             # it runs only the 'total' task with TotalSegmentator's faster
             # model, skipping the 'body' background-fill and 'lung_vessels'
@@ -312,7 +310,6 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
                         nr_thr_resamp=resamp_threads
                     )
                     labelmap_arr_heart = output_nib_image_heart.get_fdata().astype(np.uint8)
-                    itk.imwrite(itk.image_from_array(labelmap_arr_heart), "labelmap_arr_heart.nii.gz")
                     # labelmap_arr_heart contains: 1=myocardium, 2=atrium_left, 3=ventricle_left,
                     #     4=atrium_right, 5=ventricle_right, 6=aorta, 7=pulmonary_artery
                     final_arr = np.where(labelmap_arr_heart == 1, 140, final_arr)
@@ -345,7 +342,6 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
                     nr_thr_resamp=resamp_threads
                 )
                 labelmap_arr_body = output_nib_image_body.get_fdata().astype(np.uint8)
-                itk.imwrite(itk.image_from_array(labelmap_arr_body), "labelmap_arr_body.nii.gz")
                 # labelmap_arr_body contains: 1=body, 2=body_trunc, 3=body_extremities,
                 #     4=skin
                 # Only overwrite the background with body labels
