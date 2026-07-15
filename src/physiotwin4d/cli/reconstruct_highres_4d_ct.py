@@ -96,9 +96,12 @@ Examples:
     )
     parser.add_argument(
         "--register-reference",
-        action="store_true",
-        default=False,
-        help="Register reference frame to fixed image (default: use identity)",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help=(
+            "Register the reference time frame to the reference image "
+            "(default: enabled; use --no-register-reference for an identity transform)"
+        ),
     )
     parser.add_argument(
         "--prior-weight",
@@ -285,9 +288,9 @@ Examples:
 
         workflow = WorkflowReconstructHighres4DCT(
             time_series_images=time_series_images,
-            fixed_image=fixed_image,
-            reference_frame=args.reference_frame,
-            register_reference=args.register_reference,
+            reference_image=fixed_image,
+            reference_time_frame=args.reference_frame,
+            register_reference_time_frame_to_reference_image=args.register_reference,
             registration_method=registration_method,
         )
 

@@ -218,8 +218,7 @@ for patient_dir in patient_dirs:
         icon_registration_method.set_number_of_iterations(None)
         reg_workflow = WorkflowReconstructHighres4DCT(
             time_series_images=time_series,
-            fixed_image=ref_image,
-            register_reference=True,
+            reference_image=ref_image,
             registration_method=icon_registration_method,
         )
         reg_workflow.set_modality("ct")

@@ -82,15 +82,15 @@ if not phase_files:
     )
 
 time_series = [itk.imread(str(path)) for path in phase_files]
-fixed_image = time_series[0]
+reference_image = time_series[0]
 
 # %%
 # Workflow initialization
 
 workflow = WorkflowReconstructHighres4DCT(
     time_series_images=time_series,
-    fixed_image=fixed_image,
-    reference_frame=6,
+    reference_image=reference_image,
+    reference_time_frame=6,
     registration_method=registration_method,
     log_level=log_level,
 )
@@ -129,7 +129,7 @@ tt = TestTools(
 screenshots: list[Path] = []
 screenshots.append(
     tt.save_screenshot_image_slice(
-        fixed_image,
+        reference_image,
         "reference_frame.png",
         axis=0,
         slice_fraction=0.5,

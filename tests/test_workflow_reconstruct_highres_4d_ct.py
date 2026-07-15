@@ -25,7 +25,7 @@ def test_default_registration_method_is_greedy_icon() -> None:
     matching this workflow's historical 'Greedy_ICON' string default."""
     workflow = WorkflowReconstructHighres4DCT(
         time_series_images=[_small_image(), _small_image()],
-        fixed_image=_small_image(),
+        reference_image=_small_image(),
     )
     assert isinstance(workflow.registrar.registrar, RegisterImagesGreedyICON)
 
@@ -35,7 +35,7 @@ def test_registration_method_rejects_wrong_type() -> None:
     with pytest.raises(TypeError, match="registration_method must be"):
         WorkflowReconstructHighres4DCT(
             time_series_images=[_small_image(), _small_image()],
-            fixed_image=_small_image(),
+            reference_image=_small_image(),
             registration_method="ICON",  # type: ignore[arg-type]
         )
 
@@ -45,7 +45,7 @@ def test_caller_supplied_instance_is_used_as_is() -> None:
     registrar: RegisterImagesBase = RegisterImagesICON()
     workflow = WorkflowReconstructHighres4DCT(
         time_series_images=[_small_image(), _small_image()],
-        fixed_image=_small_image(),
+        reference_image=_small_image(),
         registration_method=registrar,
     )
     assert workflow.registrar.registrar is registrar
