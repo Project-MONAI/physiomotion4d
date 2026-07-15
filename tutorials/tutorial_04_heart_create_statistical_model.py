@@ -43,7 +43,7 @@ if __name__ == "__main__":
     DATA_DIR = REPO_ROOT / "data"
     FULL_DATA_DIR = DATA_DIR / "KCL-Heart-Model"
     TEST_DATA_DIR = DATA_DIR / "test" / "KCL-Heart-Model"
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_04a"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_04_heart"
     BASELINES_DIR = REPO_ROOT / "tests" / "baselines"
     PCA_COMPONENTS = 10
     LOG_LEVEL = logging.INFO

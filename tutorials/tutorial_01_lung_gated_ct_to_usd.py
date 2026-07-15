@@ -95,7 +95,7 @@ if __name__ == "__main__":
     DATA_DIR = REPO_ROOT / "data"
     FULL_DATA_DIR = DATA_DIR / "DirLab-4DCT"
     TEST_DATA_DIR = DATA_DIR / "test" / "DirLab-4DCT"
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_01b"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_01_lung"
     LOG_LEVEL = logging.INFO
 
     # %%

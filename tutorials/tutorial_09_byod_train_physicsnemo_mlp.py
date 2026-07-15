@@ -90,8 +90,8 @@ if __name__ == "__main__":
     TUTORIALS_DIR = Path(__file__).resolve().parent
     FITTED_MESHES_DIR = Path("D:/PhysioTwin4D/duke_data/fitted_kcl_meshes")
     PCA_MEAN_VTU = Path("D:/PhysioTwin4D/kcl-heart-pca/pca-vol-kcl/pca_mean.vtu")
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_09d"
-    MANIFESTS_DIR = TUTORIALS_DIR / "manifests_mlp"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_09_byod_mlp"
+    MANIFESTS_DIR = OUTPUT_DIR / "manifests_mlp"
 
     EPOCHS = 10000
     BATCH_SIZE_SAMPLES = 32  # (subject, phase) samples per step; points shuffled within
@@ -100,8 +100,8 @@ if __name__ == "__main__":
     NUM_LAYERS = 6
 
     # Explicit held-out splits; every other discovered subject is used for training.
-    TEST_SUBJECTS = ["pm0028"]
-    VAL_SUBJECTS = ["pm0027"]
+    TEST_SUBJECTS = ["pm0027"]
+    VAL_SUBJECTS = []
     LOG_LEVEL = logging.INFO
 
     def run_tutorial() -> dict[str, Any]:

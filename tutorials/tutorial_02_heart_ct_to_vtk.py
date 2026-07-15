@@ -44,7 +44,7 @@ if __name__ == "__main__":
     DATA_DIR = REPO_ROOT / "data"
     FULL_DATA_DIR = DATA_DIR / "Slicer-Heart-CT"
     TEST_DATA_DIR = DATA_DIR / "test" / "slicer_heart_small"
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_02"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_02_heart"
     BASELINES_DIR = REPO_ROOT / "tests" / "baselines"
     LOG_LEVEL = logging.INFO
 
@@ -77,10 +77,12 @@ if __name__ == "__main__":
 
     # %%
     # Workflow initialization
+    my_segmentation_method=SegmentChestTotalSegmentatorWithContrast(
+        log_level=log_level
+    )
+    my_segmentation_method.set_has_academic_license(True)
     workflow = WorkflowConvertImageToVTK(
-        segmentation_method=SegmentChestTotalSegmentatorWithContrast(
-            log_level=log_level
-        ),
+        segmentation_method=my_segmentation_method,
         log_level=log_level,
     )
 

@@ -40,15 +40,15 @@ from typing import Any, Optional, cast
 
 from physiotwin4d import WorkflowInferPhysicsNeMoMLP
 
-logger = logging.getLogger("tutorial_10d_byod_eval_physicsnemo_mlp")
+logger = logging.getLogger("tutorial_10_mlp")
 
 TUTORIALS_DIR = Path(__file__).resolve().parent
 FITTED_MESHES_DIR = Path("D:/PhysioTwin4D/duke_data/fitted_kcl_meshes")
 # Tutorial 9d run directory to evaluate (matches that trainer's OUTPUT_DIR).
-MODEL_DIR = TUTORIALS_DIR / "output" / "tutorial_09d"
+MODEL_DIR = TUTORIALS_DIR / "output" / "tutorial_09_byod_mlp"
 
-DEFAULT_SUBJECT = "pm0028"
-DEFAULT_OUT_DIR = MODEL_DIR / "tutorial_10d" / DEFAULT_SUBJECT
+DEFAULT_SUBJECT = "pm0027"
+DEFAULT_OUT_DIR = MODEL_DIR / "tutorial_10_byod_mlp" / DEFAULT_SUBJECT
 
 
 def _gating_stage_from_filename(mesh_file: Path) -> float:

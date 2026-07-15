@@ -46,7 +46,7 @@ if __name__ == "__main__":
     # .mha files are DirLab-4DCT data already converted to HU by
     # data/DirLab-4DCT/fix_downloaded_data.py.
     CASE_GLOB = "Case1Pack_T??.mha"
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_06"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_06_lung"
     BASELINES_DIR = REPO_ROOT / "tests" / "baselines"
     LOG_LEVEL = logging.INFO
 

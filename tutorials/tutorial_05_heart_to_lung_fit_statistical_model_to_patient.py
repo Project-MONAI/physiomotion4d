@@ -46,12 +46,10 @@ if __name__ == "__main__":
     REPO_ROOT = Path(__file__).resolve().parent.parent
     TUTORIALS_DIR = Path(__file__).resolve().parent
     DATA_DIR = REPO_ROOT / "data" / "DirLab-4DCT"
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_05a"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_05_heart_to_lung"
     BASELINES_DIR = REPO_ROOT / "tests" / "baselines"
-    PCA_JSON = TUTORIALS_DIR / "output" / "tutorial_04a" / "pca_model.json"
-    PCA_MEAN_FILE = TUTORIALS_DIR / "output" / "tutorial_04a" / "pca_mean_surface.vtp"
-    # .mha files are DirLab-4DCT data already converted to HU by
-    # data/DirLab-4DCT/fix_downloaded_data.py.
+    PCA_JSON = TUTORIALS_DIR / "output" / "tutorial_04_heart" / "pca_model.json"
+    PCA_MEAN_FILE = TUTORIALS_DIR / "output" / "tutorial_04_heart" / "pca_mean_surface.vtp"
     PATIENT_IMAGE_FILE = DATA_DIR / "Case1Pack_T70.mha"
     SEGMENTATION_METHOD = SegmentChestTotalSegmentator()
     SEGMENTATION_METHOD.set_has_academic_license(True)

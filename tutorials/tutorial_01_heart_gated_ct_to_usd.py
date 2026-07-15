@@ -75,9 +75,10 @@ from pathlib import Path
 
 import itk
 
-from physiotwin4d.register_images_icon import RegisterImagesICON
-from physiotwin4d.test_tools import TestTools
-from physiotwin4d.workflow_convert_image_to_usd import (
+from physiotwin4d import (
+    RegisterImagesICON,
+    SegmentChestTotalSegmentator,
+    TestTools,
     WorkflowConvertImageToUSD,
 )
 
@@ -94,7 +95,7 @@ if __name__ == "__main__":
     DATA_DIR = REPO_ROOT / "data"
     FULL_DATA_DIR = DATA_DIR / "Slicer-Heart-CT"
     TEST_DATA_DIR = DATA_DIR / "test" / "slicer_heart_small"
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_01a"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_01_heart"
     LOG_LEVEL = logging.INFO
 
     # %%
@@ -133,15 +134,19 @@ if __name__ == "__main__":
 
     # %%
     # Workflow initialization
-    registration_method = RegisterImagesICON(log_level=log_level)
-    registration_method.set_number_of_iterations(number_of_registration_iterations)
+    icon_registration_method = RegisterImagesICON(log_level=log_level)
+    icon_registration_method.set_number_of_iterations(number_of_registration_iterations)
+
+    segment_chest_total_segmentator = SegmentChestTotalSegmentator(log_level=log_level)
+    segment_chest_total_segmentator.set_has_academic_license(True)
 
     workflow = WorkflowConvertImageToUSD(
         time_series_images=time_series_images,
         reference_image=reference_image,
         output_directory=str(output_dir),
         usd_project_name="cardiac_model",
-        registration_method=registration_method,
+        registration_method=icon_registration_method,
+        segmentation_method=segment_chest_total_segmentator,
         log_level=log_level,
         save_assets=True,
     )

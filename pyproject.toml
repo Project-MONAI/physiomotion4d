@@ -112,12 +112,16 @@ cuda13 = [
 # PhysicsNeMo pulls in a large dependency stack (CUDA-only toolchain, narrower
 # Python support). It is needed for the PhysicsNeMo train/infer workflows and
 # Tutorial 9 (mesh stage MLP / MeshGraphNet). ``torch-geometric`` supplies the
-# graph batching / connectivity utilities used by the MeshGraphNet (MGN) path.
-# Install with ``pip install physiotwin4d[physicsnemo]`` when you need it. Note:
-# nvidia-physicsnemo itself requires Python >= 3.11.
+# graph batching / connectivity utilities used by the MeshGraphNet (MGN) path,
+# and ``torch-scatter`` provides its scatter/segment reduction backend. Install
+# with ``pip install physiotwin4d[physicsnemo]`` when you need it. Note:
+# nvidia-physicsnemo itself requires Python >= 3.11. On a custom NVIDIA PyTorch
+# build with no matching pre-built wheel, torch-scatter must be built from
+# source: ``pip install torch-scatter --no-build-isolation``.
 physicsnemo = [
     "nvidia-physicsnemo>=2.0.0",
     "torch-geometric>=2.5.0",
+    "torch-scatter>=2.1.0",
 ]
 dev = [
     "bumpver>=2023.0.0",

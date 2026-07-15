@@ -39,10 +39,10 @@ if __name__ == "__main__":
     DATA_DIR = REPO_ROOT / "data"
     FULL_DATA_DIR = DATA_DIR
     TEST_DATA_DIR = DATA_DIR / "test"
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_03"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_03_heart"
     BASELINES_DIR = REPO_ROOT / "tests" / "baselines"
     TUTORIAL_02_SURFACE = (
-        TUTORIALS_DIR / "output" / "tutorial_02" / "patient_surfaces.vtp"
+        TUTORIALS_DIR / "output" / "tutorial_02_heart" / "patient_surfaces.vtp"
     )
     VTK_FILE: Optional[Path] = None
     LOG_LEVEL = logging.INFO
