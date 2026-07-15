@@ -20,7 +20,7 @@ The ``tutorials/`` directory contains eleven end-to-end scripts covering nine
 major workflows (Tutorials 9 and 10 each have MeshGraphNet and MLP variants).
 Each script is a ``# %%`` percent-cell Python script that exercises
 the workflow classes directly. Run as a regular file
-(``python tutorials/tutorial_01a_...py``) or cell-by-cell in VS Code or Cursor.
+(``python tutorials/tutorial_01_...py``) or cell-by-cell in VS Code or Cursor.
 
 See :doc:`tutorials` for the NVIDIA-styled tutorial card index, dataset
 requirements, script paths, and workflow details.
@@ -41,9 +41,9 @@ tutorials:
 
 .. code-block:: bash
 
-   python tutorials/tutorial_01a_heart_gated_ct_to_usd.py
+   python tutorials/tutorial_01_heart_gated_ct_to_usd.py
 
-   python tutorials/tutorial_02_ct_to_vtk.py
+   python tutorials/tutorial_02_heart_ct_to_vtk.py
 
 Tutorial paths are defined near the top of each script. To use different paths,
 edit the script constants or use the installed ``physiotwin4d-*`` CLI commands.
@@ -52,16 +52,16 @@ recommended run order.
 
 Recommended run order:
 
-1. Tutorials 1a and 2 first, after downloading Slicer-Heart-CT data.
+1. Tutorials 1 and 2 first, after downloading Slicer-Heart-CT data.
 2. Tutorial 3 after Tutorial 2 (consumes Tutorial 2 output).
-3. Tutorial 4a after downloading KCL-Heart-Model.
-4. Tutorial 5a after Tutorial 4a because it can consume Tutorial 4a output.
+3. Tutorial 4 after downloading KCL-Heart-Model.
+4. Tutorial 5 after Tutorial 4 because it can consume Tutorial 4 output.
 5. Tutorial 6 after downloading DirLab-4DCT (manual).
-6. Tutorial 8cd after preparing your own cardiac gated CT, labelmaps, KCL volume
+6. Tutorial 8 after preparing your own cardiac gated CT, labelmaps, KCL volume
    PCA model, and ICON weights (bring-your-own-data).
-7. Tutorial 9c and/or 9d after Tutorial 8cd because they train from its fitted
+7. Tutorial 9 (MGN and/or MLP) after Tutorial 8 because they train from its fitted
    meshes.
-8. Tutorial 10c and/or 10d after Tutorial 9c / 9d because they evaluate the
+8. Tutorial 10 (MGN and/or MLP) after Tutorial 9 because they evaluate the
    trained checkpoints.
 
 Prerequisites

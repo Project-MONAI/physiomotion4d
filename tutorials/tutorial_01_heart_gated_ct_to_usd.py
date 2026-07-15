@@ -1,5 +1,5 @@
 """
-Tutorial 1a: Heart-Gated CT to Animated USD
+Tutorial 1: Heart-Gated CT to Animated USD
 
 Purpose
 -------
@@ -66,7 +66,6 @@ This script expects the data to already exist at
 download notebook or download the file manually before running this tutorial.
 """
 
-# %%
 # Imports
 from __future__ import annotations
 
@@ -75,11 +74,14 @@ from pathlib import Path
 
 import itk
 
-from physiotwin4d.register_images_icon import RegisterImagesICON
-from physiotwin4d.test_tools import TestTools
-from physiotwin4d.workflow_convert_image_to_usd import (
+from physiotwin4d import (
+    RegisterImagesICON,
+    SegmentChestTotalSegmentatorWithContrast,
+    TestTools,
     WorkflowConvertImageToUSD,
 )
+
+# Only run if this script is not imported as a module
 
 # nnUNetv2 (used by TotalSegmentator inside WorkflowConvertImageToUSD)
 # spawns a multiprocessing.Pool. On Windows the spawn start method re-imports
@@ -87,35 +89,35 @@ from physiotwin4d.workflow_convert_image_to_usd import (
 # the top-level work, that re-import fires workflow.process() again and
 # Python's spawn-cascade detector raises RuntimeError.
 if __name__ == "__main__":
-    # %%
     # Data directory specification
-    REPO_ROOT = Path(__file__).resolve().parent.parent
-    TUTORIALS_DIR = Path(__file__).resolve().parent
-    DATA_DIR = REPO_ROOT / "data"
-    FULL_DATA_DIR = DATA_DIR / "Slicer-Heart-CT"
-    TEST_DATA_DIR = DATA_DIR / "test" / "slicer_heart_small"
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_01a"
-    LOG_LEVEL = logging.INFO
+    repo_root = Path(__file__).resolve().parent.parent
+    tutorials_dir = Path(__file__).resolve().parent
 
-    # %%
-    # Data reading
+    class_name = "tutorial_01_heart_gated_ct_to_usd"
+
+    output_dir = tutorials_dir / "output" / "tutorial_01_heart"
+
     test_mode = TestTools.running_as_test()
+    if test_mode:
+        data_dir = repo_root / "data" / "test" / "slicer_heart_small"
+        number_of_registration_iterations = 1
+        frame_files = sorted(data_dir.glob("slice_???.mha"))[0:2]
+    else:
+        data_dir = repo_root / "data" / "Slicer-Heart-CT"
+        number_of_registration_iterations = 10
+        frame_files = sorted(data_dir.glob("slice_???.mha"))
 
-    data_dir = TEST_DATA_DIR if test_mode else FULL_DATA_DIR
-    output_dir = OUTPUT_DIR
-    log_level = LOG_LEVEL
+    log_level = logging.INFO
+
+    registration_method = RegisterImagesICON(log_level=log_level)
+    registration_method.set_number_of_iterations(number_of_registration_iterations)
+
+    segmentation_method = SegmentChestTotalSegmentatorWithContrast(log_level=log_level)
+    segmentation_method.set_has_academic_license(True)
+
+    # Directory setup and data reading
 
     output_dir.mkdir(parents=True, exist_ok=True)
-
-    if test_mode:
-        number_of_registration_iterations = 1
-    else:
-        number_of_registration_iterations = 10
-
-    # %%
-    frame_files = sorted(data_dir.glob("slice_???.mha"))
-    if test_mode:
-        frame_files = frame_files[:2]
 
     input_filenames = [str(path) for path in frame_files]
     if not input_filenames:
@@ -131,10 +133,7 @@ if __name__ == "__main__":
 
     print("Number of time-series images:", len(time_series_images))
 
-    # %%
     # Workflow initialization
-    registration_method = RegisterImagesICON(log_level=log_level)
-    registration_method.set_number_of_iterations(number_of_registration_iterations)
 
     workflow = WorkflowConvertImageToUSD(
         time_series_images=time_series_images,
@@ -142,23 +141,23 @@ if __name__ == "__main__":
         output_directory=str(output_dir),
         usd_project_name="cardiac_model",
         registration_method=registration_method,
+        segmentation_method=segmentation_method,
         log_level=log_level,
         save_assets=True,
     )
 
-    # %%
     # Workflow execution
-    usd_files = workflow.process()
+    workflow_results = workflow.process()
+
     # if dynamic_labelmap_ids is not None, there are two USD files
     if len(workflow.dynamic_labelmap_ids) > 0:
-        usd_file = output_dir / usd_files["dynamic"]
+        usd_file = output_dir / workflow_results["dynamic"]
     else:
-        usd_file = output_dir / usd_files["all"]
+        usd_file = output_dir / workflow_results["all"]
 
-    # %%
     # Result saving
     tt = TestTools(
-        class_name="tutorial_01a_heart_gated_ct_to_usd",
+        class_name=class_name,
         results_dir=output_dir,
         log_level=log_level,
     )

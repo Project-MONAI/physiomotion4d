@@ -13,7 +13,6 @@ Full data: ``data/Slicer-Heart-CT/slice_???.mha``
 Test data: ``data/test/slicer_heart_small/slice_???.mha``
 """
 
-# %%
 # Imports
 from __future__ import annotations
 
@@ -23,48 +22,52 @@ from pathlib import Path
 import itk
 import pyvista as pv
 
-from physiotwin4d.contour_tools import ContourTools
-from physiotwin4d.segment_chest_total_segmentator_with_contrast import (
+from physiotwin4d import (
+    ContourTools,
     SegmentChestTotalSegmentatorWithContrast,
+    TestTools,
+    WorkflowConvertImageToVTK,
 )
-from physiotwin4d.test_tools import TestTools
-from physiotwin4d.workflow_convert_image_to_vtk import WorkflowConvertImageToVTK
+
+# Only run if this script is not imported as a module
 
 # nnUNetv2 (used by TotalSegmentator inside several workflows) spawns a
 # multiprocessing.Pool. On Windows the spawn start method re-imports this
 # script in each child; without the __name__ == "__main__" guard around
 # top-level work, that re-import fires the segmenter again and Python's
-# spawn-cascade detector raises RuntimeError. Wrapping consistently across
-# tutorials also matches the style of tutorial_01a.
+# spawn-cascade detector raises RuntimeError.
 if __name__ == "__main__":
-    # %%
     # Data directory specification
-    REPO_ROOT = Path(__file__).resolve().parent.parent
-    TUTORIALS_DIR = Path(__file__).resolve().parent
-    DATA_DIR = REPO_ROOT / "data"
-    FULL_DATA_DIR = DATA_DIR / "Slicer-Heart-CT"
-    TEST_DATA_DIR = DATA_DIR / "test" / "slicer_heart_small"
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_02"
-    BASELINES_DIR = REPO_ROOT / "tests" / "baselines"
-    LOG_LEVEL = logging.INFO
+    repo_root = Path(__file__).resolve().parent.parent
+    tutorials_dir = Path(__file__).resolve().parent
+
+    class_name = "tutorial_02_heart_ct_to_vtk"
+
+    output_dir = tutorials_dir / "output" / "tutorial_02_heart"
 
     # In addition to the combined surface file always saved below, also
     # save one VTP per anatomy group (e.g. heart.vtp, lung.vtp) and/or one
     # VTP per individual anatomical structure (e.g. left_ventricle.vtp).
-    SAVE_GROUP_SURFACES = True
-    SAVE_LABEL_SURFACES = True
+    save_group_surfaces = True
+    save_label_surfaces = True
 
-    # %%
-    # Data reading
     test_mode = TestTools.running_as_test()
+    if test_mode:
+        data_dir = repo_root / "data" / "test" / "slicer_heart_small"
+    else:
+        data_dir = repo_root / "data" / "Slicer-Heart-CT"
 
-    data_dir = TEST_DATA_DIR if test_mode else FULL_DATA_DIR
-    output_dir = OUTPUT_DIR
-    log_level = LOG_LEVEL
+    frame_files = sorted(data_dir.glob("slice_???.mha"))
+
+    log_level = logging.INFO
+
+    segmentation_method = SegmentChestTotalSegmentatorWithContrast(log_level=log_level)
+    segmentation_method.set_has_academic_license(True)
+
+    # Directory setup and data reading
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    frame_files = sorted(data_dir.glob("slice_???.mha"))
     if not frame_files:
         raise FileNotFoundError(
             "Slicer-Heart-CT frame data not found. Checked:\n"
@@ -75,26 +78,22 @@ if __name__ == "__main__":
     ct_file = frame_files[0]
     ct_image = itk.imread(str(ct_file))
 
-    # %%
     # Workflow initialization
+
     workflow = WorkflowConvertImageToVTK(
-        segmentation_method=SegmentChestTotalSegmentatorWithContrast(
-            log_level=log_level
-        ),
+        segmentation_method=segmentation_method,
         log_level=log_level,
     )
 
-    # %%
     # Workflow execution
     #
     # surface_target_reduction decimates each exported VTP surface.
     result = workflow.process(
         input_image=ct_image,
         surface_target_reduction=0.5,
-        extract_label_surfaces=SAVE_LABEL_SURFACES,
+        extract_label_surfaces=save_label_surfaces,
     )
 
-    # %%
     # Result saving
     surface_file = Path(
         ContourTools.save_combined_surface(
@@ -103,21 +102,21 @@ if __name__ == "__main__":
             prefix="patient",
         )
     )
-    if SAVE_GROUP_SURFACES:
+    if save_group_surfaces:
         ContourTools.save_surfaces(
             result["surfaces"], str(output_dir), prefix="patient"
         )
-    if SAVE_LABEL_SURFACES:
+    if save_label_surfaces:
         ContourTools.save_surfaces(
             result["label_surfaces"], str(output_dir), prefix="patient"
         )
     labelmap_file = output_dir / "patient_labelmap.mha"
     itk.imwrite(result["labelmap"], str(labelmap_file), compression=True)
 
+    # Testing
     tt = TestTools(
-        class_name="tutorial_02_ct_to_vtk",
+        class_name=class_name,
         results_dir=output_dir,
-        baselines_dir=BASELINES_DIR,
         log_level=log_level,
     )
 

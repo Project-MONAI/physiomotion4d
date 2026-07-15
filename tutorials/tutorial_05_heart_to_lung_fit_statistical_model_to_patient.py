@@ -1,19 +1,18 @@
 """
-Tutorial 5a: Fit Statistical Shape Model to Patient Data
+Tutorial 5: Fit Statistical Shape Model to Patient Data
 
 Purpose
 -------
 Fit a generic anatomical template mesh to one or more patient-like surface
-meshes. If Tutorial 4a has already written ``pca_model.json``, the workflow uses
+meshes. If Tutorial 4 has already written ``pca_model.json``, the workflow uses
 that model to constrain the fitted shape.
 
 Data Required
 -------------
-Full data: ``data/KCL-Heart-Model``
-Test data: ``data/test/KCL-Heart-Model``
+PCA model: Tutorial 4 output (``output/tutorial_04_heart``)
+Patient image: ``data/DirLab-4DCT`` (test: ``data/test/DirLab-4DCT``)
 """
 
-# %%
 # Imports
 from __future__ import annotations
 
@@ -34,8 +33,7 @@ from physiotwin4d import (
     WorkflowFitStatisticalModelToPatient,
 )
 
-# %%
-# Data directory specification
+# Only run if this script is not imported as a module
 
 # nnUNetv2 (used by TotalSegmentator inside several workflows) spawns a
 # multiprocessing.Pool. On Windows the spawn start method re-imports this
@@ -43,40 +41,45 @@ from physiotwin4d import (
 # top-level work, that re-import fires the segmenter again and Python's
 # spawn-cascade detector raises RuntimeError.
 if __name__ == "__main__":
-    REPO_ROOT = Path(__file__).resolve().parent.parent
-    TUTORIALS_DIR = Path(__file__).resolve().parent
-    DATA_DIR = REPO_ROOT / "data" / "DirLab-4DCT"
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_05a"
-    BASELINES_DIR = REPO_ROOT / "tests" / "baselines"
-    PCA_JSON = TUTORIALS_DIR / "output" / "tutorial_04a" / "pca_model.json"
-    PCA_MEAN_FILE = TUTORIALS_DIR / "output" / "tutorial_04a" / "pca_mean_surface.vtp"
-    # .mha files are DirLab-4DCT data already converted to HU by
-    # data/DirLab-4DCT/fix_downloaded_data.py.
-    PATIENT_IMAGE_FILE = DATA_DIR / "Case1Pack_T70.mha"
-    SEGMENTATION_METHOD = SegmentChestTotalSegmentator()
-    SEGMENTATION_METHOD.set_has_academic_license(True)
-    # SEGMENTATION_METHOD = SegmentHeartSimplewareTrimmedBranches() # Use when available
+    # Data directory specification
+    repo_root = Path(__file__).resolve().parent.parent
+    tutorials_dir = Path(__file__).resolve().parent
+
+    class_name = "tutorial_05_heart_to_lung_fit_statistical_model_to_patient"
+
+    output_dir = tutorials_dir / "output" / "tutorial_05_heart_to_lung"
+    baselines_dir = repo_root / "tests" / "baselines"
+
+    # PCA model + mean surface produced by Tutorial 4.
+    pca_json = tutorials_dir / "output" / "tutorial_04_heart" / "pca_model.json"
+    pca_mean_file = (
+        tutorials_dir / "output" / "tutorial_04_heart" / "pca_mean_surface.vtp"
+    )
+
+    test_mode = TestTools.running_as_test()
+    if test_mode:
+        data_dir = repo_root / "data" / "test" / "DirLab-4DCT"
+    else:
+        data_dir = repo_root / "data" / "DirLab-4DCT"
+    patient_image_file = data_dir / "Case1Pack_T70.mha"
+
+    log_level = logging.INFO
+
+    segmentation_method = SegmentChestTotalSegmentator()
+    segmentation_method.set_has_academic_license(True)
+    # segmentation_method = SegmentHeartSimplewareTrimmedBranches() # Use when available
     #     and images are contrast-enhanced.
-    # SEGMENTATION_METHOD = SegmentChestTotalSegmentatorWithContrast() # Use when contrast-enhanced
-    #     images and Simpleware is not available.
-    LOG_LEVEL = logging.INFO
+    # segmentation_method = SegmentChestTotalSegmentatorWithContrast() # Use when
+    #     contrast-enhanced images and Simpleware is not available.
 
-    TEST_MODE = TestTools.running_as_test()
-
-    data_dir = DATA_DIR
-    output_dir = OUTPUT_DIR
-    pca_json = PCA_JSON
-    pca_mean_file = PCA_MEAN_FILE
-    patient_image_file = PATIENT_IMAGE_FILE
-    segmentation_method = SEGMENTATION_METHOD
-    log_level = LOG_LEVEL
+    # Directory setup and data reading
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if not pca_mean_file.exists():
         raise FileNotFoundError(
-            f"DirLab-4DCT template not found: {pca_mean_file}\n"
-            "See data/README.md for download instructions."
+            f"Tutorial 4 PCA mean surface not found: {pca_mean_file}\n"
+            "Run Tutorial 4 first (see data/README.md for download instructions)."
         )
     pca_mean = cast(pv.DataSet, pv.read(str(pca_mean_file)))
 
@@ -87,15 +90,13 @@ if __name__ == "__main__":
 
     if not patient_image_file.exists():
         raise FileNotFoundError(
-            f"DirLab-4DCT template not found: {patient_image_file}\n"
+            f"DirLab-4DCT patient image not found: {patient_image_file}\n"
             "See data/README.md for download instructions."
         )
     patient_image = itk.imread(str(patient_image_file))
     itk.imwrite(patient_image, output_dir / "patient_image.nii.gz")
 
-    segmentation_result = segmentation_method.segment(
-        patient_image,
-    )
+    segmentation_result = segmentation_method.segment(patient_image)
     patient_labelmap = segmentation_result["labelmap"]
     itk.imwrite(patient_labelmap, output_dir / "patient_labelmap.nii.gz")
 
@@ -103,13 +104,11 @@ if __name__ == "__main__":
     itk.imwrite(heart_labelmap, output_dir / "heart_labelmap.nii.gz")
 
     contour_tools = ContourTools()
-    heart_surface = contour_tools.extract_contours(
-        labelmap_image=heart_labelmap,
-    )
+    heart_surface = contour_tools.extract_contours(labelmap_image=heart_labelmap)
     heart_surface.save(output_dir / "heart_surface.vtp")
 
-    # %%
     # Workflow initialization
+
     workflow = WorkflowFitStatisticalModelToPatient(
         template_model=pca_mean,
         patient_models=[heart_surface],
@@ -126,11 +125,9 @@ if __name__ == "__main__":
             use_surface=False,
         )
 
-    # %%
     # Workflow execution
     workflow_results = workflow.process()
 
-    # %%
     # Result saving
     registered_coefficients = workflow.pca_coefficients
     if registered_coefficients is not None:
@@ -150,7 +147,14 @@ if __name__ == "__main__":
     registered_surface = workflow_results["registered_template_model_surface"]
     registered_surface.save(str(output_dir / "template_surface_registered.vtp"))
 
-    # %%
+    # Testing
+    TestTools(
+        class_name=class_name,
+        results_dir=output_dir,
+        baselines_dir=baselines_dir,
+        log_level=log_level,
+    )
+
     try:
         pv.start_xvfb()
     except Exception:
@@ -175,13 +179,6 @@ if __name__ == "__main__":
     plotter.screenshot(str(after_path))
     plotter.close()
     screenshots.append(after_path)
-
-    TestTools(
-        class_name="tutorial_05a_heart_fit_statistical_model_to_patient",
-        results_dir=output_dir,
-        baselines_dir=BASELINES_DIR,
-        log_level=log_level,
-    )
 
     tutorial_results = {
         "registered_mesh": registered_mesh,

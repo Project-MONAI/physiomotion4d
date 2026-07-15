@@ -1,41 +1,41 @@
 """
-Tutorial 9c (MGN): Train a PhysicsNeMo MeshGraphNet for cardiac mesh stages.
+Tutorial 9 (MLP): Train a PhysicsNeMo fully connected model for cardiac mesh stages.
 
-Second stage of the cardiac 4D deep-learning pipeline (Tutorials 08cd -> 09c/09d
--> 10c/10d).  This tutorial is a thin driver over the reusable
-:class:`physiotwin4d.WorkflowTrainPhysicsNeMoMGN` workflow: it discovers the
-per-time-point SSM surfaces produced by Tutorial 8cd
-(``tutorial_08cd_byod_fit_model_to_patients.py``), writes one JSON manifest per
-subject, splits the subjects into train / validation / held-out test, trains the
-MeshGraphNet, and evaluates the held-out test subjects with
-:class:`physiotwin4d.WorkflowInferPhysicsNeMoMGN`.  The companion MLP tutorial is
-``tutorial_09d_byod_train_physicsnemo_mlp.py``.
+Second stage of the cardiac 4D deep-learning pipeline (Tutorials 8 -> 9 -> 10).
+This tutorial is a thin driver over the reusable
+:class:`physiotwin4d.WorkflowTrainPhysicsNeMoMLP` workflow: it discovers the
+per-time-point SSM surfaces produced by Tutorial 8
+(``tutorial_08_byod_fit_model_to_patients.py``), writes one JSON manifest per
+subject, splits the subjects into train / validation / held-out test, trains a
+FullyConnected (MLP) model, and evaluates the held-out test subjects with
+:class:`physiotwin4d.WorkflowInferPhysicsNeMoMLP`.
 
-Why a GNN?
-----------
-The SSM mesh has a fixed topology across all subjects and cardiac tissue is a
-continuum: adjacent vertices co-vary smoothly.  MeshGraphNet encodes that prior
-directly by passing messages along mesh edges, giving an explicit
-continuum-deformation inductive bias the MLP must infer from coordinates alone.
+The companion Tutorial 9 (``tutorial_09_byod_train_physicsnemo_mgn.py``)
+solves the same task with a MeshGraphNet so the two architectures can be compared
+directly; both map a surface point ``(x, y, z, pca_c1 ... pca_cN, stage)`` to its
+displacement from the subject's SSM reference surface (the Option B convention),
+where the coordinates come from the shared PCA mean shape.
 
-Node features (per vertex):   [mean_shape_x, mean_shape_y, mean_shape_z, pca_c1 ... pca_cN, stage]
-Edge features (per edge):     [rel_x, rel_y, rel_z, distance]   (from the mean shape)
-Output (per vertex):          [dx, dy, dz]  (displacement in mm)
+Batch size note
+---------------
+Because the workflow streams samples from disk, ``batch_size`` counts
+``(subject, phase)`` samples per step (not individual points as the original
+inline trainer did); the MLP shuffles points *within* each batch to keep
+gradient mixing.
 
 Bring Your Own Data
 -------------------
 The path constants below point at a local ``D:/PhysioTwin4D/`` layout produced by
-Tutorial 8cd, not at the repository ``data/`` directory.  Edit them to match your
-own data location.  Run Tutorial 8cd first.
+Tutorial 8, not at the repository ``data/`` directory.  Edit them to match your
+own data location.  Run Tutorial 8 first.
 
 Extra Install Required
 ----------------------
-PhysicsNeMo and PyTorch Geometric must be installed::
+PhysicsNeMo must be installed (requires Python >= 3.11)::
 
     pip install "physiotwin4d[physicsnemo]"
 """
 
-# %%
 from __future__ import annotations
 
 import json
@@ -43,7 +43,7 @@ import logging
 from pathlib import Path
 from typing import Any, Optional
 
-from physiotwin4d import WorkflowInferPhysicsNeMoMGN, WorkflowTrainPhysicsNeMoMGN
+from physiotwin4d import WorkflowInferPhysicsNeMoMLP, WorkflowTrainPhysicsNeMoMLP
 
 
 def _gating_stage_from_filename(mesh_file: Path) -> float:
@@ -85,30 +85,27 @@ def _write_subject_manifest(subject_dir: Path, manifests_dir: Path) -> Optional[
 
 
 if __name__ == "__main__":
-    # %%
     TUTORIALS_DIR = Path(__file__).resolve().parent
     FITTED_MESHES_DIR = Path("D:/PhysioTwin4D/duke_data/fitted_kcl_meshes")
     PCA_MEAN_VTU = Path("D:/PhysioTwin4D/kcl-heart-pca/pca-vol-kcl/pca_mean.vtu")
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_09c"
-    MANIFESTS_DIR = TUTORIALS_DIR / "manifests_mgn"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_09_byod_mlp"
+    MANIFESTS_DIR = OUTPUT_DIR / "manifests_mlp"
 
-    EPOCHS = 1500
-    BATCH_SIZE_GRAPHS = 4  # mini-batch measured in (subject, phase) graphs
+    EPOCHS = 10000
+    BATCH_SIZE_SAMPLES = 32  # (subject, phase) samples per step; points shuffled within
     LEARNING_RATE = 1.0e-3
-    PROCESSOR_SIZE = 3  # message-passing hops
-    HIDDEN_DIM = 128
-    NUM_LAYERS = 2  # MLP layers inside each encoder / processor / decoder block
+    LAYER_SIZE = 512
+    NUM_LAYERS = 6
 
     # Explicit held-out splits; every other discovered subject is used for training.
-    TEST_SUBJECTS = ["pm0028"]
-    VAL_SUBJECTS = ["pm0027"]
+    TEST_SUBJECTS = ["pm0027"]
+    VAL_SUBJECTS = []
     LOG_LEVEL = logging.INFO
 
     def run_tutorial() -> dict[str, Any]:
-        """Discover subjects, train a MeshGraphNet, and evaluate the test split."""
+        """Discover subjects, train an MLP, and evaluate the test split."""
         logging.basicConfig(level=LOG_LEVEL)
 
-        # Build one manifest per valid subject and partition into splits.
         manifests: dict[str, Path] = {}
         for subject_dir in sorted(FITTED_MESHES_DIR.glob("pm????")):
             manifest_path = _write_subject_manifest(subject_dir, MANIFESTS_DIR)
@@ -139,8 +136,7 @@ if __name__ == "__main__":
             len(test_manifests),
         )
 
-        # Train the MeshGraphNet.
-        trainer = WorkflowTrainPhysicsNeMoMGN(
+        trainer = WorkflowTrainPhysicsNeMoMLP(
             train_manifests=train_manifests,
             val_manifests=val_manifests,
             pca_mean_mesh=PCA_MEAN_VTU,
@@ -148,24 +144,21 @@ if __name__ == "__main__":
             log_level=LOG_LEVEL,
         )
         trainer.set_epochs(EPOCHS)
-        trainer.set_batch_size(BATCH_SIZE_GRAPHS)
+        trainer.set_batch_size(BATCH_SIZE_SAMPLES)
         trainer.set_learning_rate(LEARNING_RATE)
-        trainer.set_processor_size(PROCESSOR_SIZE)
-        trainer.set_hidden_dim(HIDDEN_DIM)
+        trainer.set_layer_size(LAYER_SIZE)
         trainer.set_num_layers(NUM_LAYERS)
         train_result = trainer.process()
 
-        # Evaluate held-out test subjects against their ground-truth phases.
-        infer = WorkflowInferPhysicsNeMoMGN(
+        infer = WorkflowInferPhysicsNeMoMLP(
             model_directory=OUTPUT_DIR, log_level=LOG_LEVEL
         )
         eval_outputs: dict[str, Any] = {}
         for sid in TEST_SUBJECTS:
             eval_outputs[sid] = infer.predict(
-                manifests[sid], output_directory=OUTPUT_DIR / "eval_mgn" / sid
+                manifests[sid], output_directory=OUTPUT_DIR / "eval_mlp" / sid
             )
 
         return {"training": train_result, "evaluation": eval_outputs}
 
-    # %%
     tutorial_results = run_tutorial()

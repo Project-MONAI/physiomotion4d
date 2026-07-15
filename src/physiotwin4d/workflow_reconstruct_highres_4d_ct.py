@@ -49,7 +49,7 @@ class WorkflowReconstructHighres4DCT(PhysioTwin4DBase):
 
     **Input Requirements:**
         - time_series_images: Ordered list of 3D images (typically lower resolution)
-        - fixed_image: High-resolution reference image
+        - reference_image: High-resolution reference image
         - All images should be in the same anatomical coordinate system
 
     ``registration_method`` accepts a pre-configured
@@ -60,16 +60,17 @@ class WorkflowReconstructHighres4DCT(PhysioTwin4DBase):
 
     Attributes:
         time_series_images (list[itk.Image]): Ordered list of time-series images
-        fixed_image (itk.Image): High-resolution reference image
-        reference_frame (int): Index of reference frame in time series
-        register_reference (bool): Whether to register reference frame
+        reference_image (itk.Image): High-resolution reference image
+        reference_time_frame (int): Index of reference time frame in time series
+        register_reference_time_frame_to_reference_image (bool): Whether to register
+            the reference time frame to the reference image
         prior_weight (float): Weight for temporal smoothing (0.0-1.0)
         upsample_to_fixed_resolution (bool): Whether to upsample reconstruction
         registrar (RegisterTimeSeriesImages): Internal registration object
         forward_transforms (list[itk.Transform]): one per frame; each warps its
-            moving image onto the fixed grid
+            moving image onto the reference grid
         inverse_transforms (list[itk.Transform]): one per frame; each warps the
-            fixed image onto that frame's moving grid (used for reconstruction)
+            reference image onto that frame's moving grid (used for reconstruction)
         losses (list[float]): Registration loss values
         reconstructed_images (list[itk.Image]): Reconstructed high-resolution images
 
@@ -77,8 +78,8 @@ class WorkflowReconstructHighres4DCT(PhysioTwin4DBase):
         >>> # Initialize workflow with data
         >>> workflow = WorkflowReconstructHighres4DCT(
         ...     time_series_images=lowres_images,
-        ...     fixed_image=highres_reference,
-        ...     reference_frame=7,
+        ...     reference_image=highres_reference,
+        ...     reference_time_frame=7,
         ... )
         >>>
         >>> # Access results
@@ -90,9 +91,9 @@ class WorkflowReconstructHighres4DCT(PhysioTwin4DBase):
     def __init__(
         self,
         time_series_images: list[itk.Image],
-        fixed_image: itk.Image,
-        reference_frame: int = 0,
-        register_reference: bool = False,
+        reference_image: itk.Image,
+        reference_time_frame: int = 0,
+        register_reference_time_frame_to_reference_image: bool = True,
         registration_method: Optional[RegisterImagesBase] = None,
         log_level: int | str = logging.INFO,
     ):
@@ -101,13 +102,13 @@ class WorkflowReconstructHighres4DCT(PhysioTwin4DBase):
         Args:
             time_series_images (list[itk.Image]): Ordered list of 3D time-series images
                 to be registered and reconstructed
-            fixed_image (itk.Image): High-resolution 3D reference image
-            reference_frame (int, optional): Index of the reference frame in the
-                time series. Registration proceeds bidirectionally from this frame.
+            reference_image (itk.Image): High-resolution 3D reference image
+            reference_time_frame (int, optional): Index of the reference time frame in
+                the time series. Registration proceeds bidirectionally from this frame.
                 Default: 0
-            register_reference (bool, optional): If True, register the reference frame
-                to the fixed image. If False, use identity transform for reference.
-                Default: False
+            register_reference_time_frame_to_reference_image (bool, optional): If True,
+                register the reference time frame to the reference image. If False, use
+                an identity transform for that frame. Default: True
             registration_method (Optional[RegisterImagesBase]): Registration
                 backend instance. Defaults to a new
                 :class:`RegisterImagesGreedyICON` when None.
@@ -116,7 +117,7 @@ class WorkflowReconstructHighres4DCT(PhysioTwin4DBase):
 
         Raises:
             ValueError: If time_series_images is empty
-            ValueError: If reference_frame is out of range
+            ValueError: If reference_time_frame is out of range
             TypeError: If registration_method is neither None nor a
                 RegisterImagesBase instance
         """
@@ -129,9 +130,9 @@ class WorkflowReconstructHighres4DCT(PhysioTwin4DBase):
         if not time_series_images:
             raise ValueError("time_series_images cannot be empty")
 
-        if reference_frame < 0 or reference_frame >= len(time_series_images):
+        if reference_time_frame < 0 or reference_time_frame >= len(time_series_images):
             raise ValueError(
-                f"reference_frame {reference_frame} out of range "
+                f"reference_time_frame {reference_time_frame} out of range "
                 f"[0, {len(time_series_images) - 1}]"
             )
 
@@ -144,9 +145,11 @@ class WorkflowReconstructHighres4DCT(PhysioTwin4DBase):
 
         # Store input data
         self.time_series_images = time_series_images
-        self.fixed_image = fixed_image
-        self.reference_frame = reference_frame
-        self.register_reference = register_reference
+        self.reference_image = reference_image
+        self.reference_time_frame = reference_time_frame
+        self.register_reference_time_frame_to_reference_image = (
+            register_reference_time_frame_to_reference_image
+        )
 
         # Initialize parameters with defaults
         self.prior_weight: float = 0.0
@@ -238,9 +241,9 @@ class WorkflowReconstructHighres4DCT(PhysioTwin4DBase):
         Returns:
             dict: Dictionary containing:
                 - 'forward_transforms' (list[itk.Transform]): one per frame;
-                  each warps its moving image onto the fixed grid
+                  each warps its moving image onto the reference grid
                 - 'inverse_transforms' (list[itk.Transform]): one per frame;
-                  each warps the fixed image onto that frame's moving grid
+                  each warps the reference image onto that frame's moving grid
                   (see docs/developer/transform_conventions)
                 - 'losses' (list[float]): Registration loss value for each image
 
@@ -252,23 +255,26 @@ class WorkflowReconstructHighres4DCT(PhysioTwin4DBase):
         )
 
         # Configure registrar
-        self.registrar.set_fixed_image(self.fixed_image)
+        self.registrar.set_fixed_image(self.reference_image)
         self.registrar.set_modality(self.modality)
         self.registrar.set_mask_dilation(self.mask_dilation_mm)
         self.registrar.set_fixed_mask(self.fixed_mask)
 
         self.log_info(f"Registration method: {type(self.registrar.registrar).__name__}")
         self.log_info(f"Number of time points: {len(self.time_series_images)}")
-        self.log_info(f"Reference frame: {self.reference_frame}")
-        self.log_info(f"Register reference: {self.register_reference}")
+        self.log_info(f"Reference time frame: {self.reference_time_frame}")
+        self.log_info(
+            "Register reference time frame to reference image: "
+            f"{self.register_reference_time_frame_to_reference_image}"
+        )
         self.log_info(f"Prior weight: {self.prior_weight}")
 
         # Perform registration
         result = self.registrar.register_time_series(
             moving_images=self.time_series_images,
             moving_masks=self.moving_masks,
-            reference_frame=self.reference_frame,
-            register_reference=self.register_reference,
+            reference_frame=self.reference_time_frame,
+            register_reference=self.register_reference_time_frame_to_reference_image,
             prior_weight=self.prior_weight,
         )
 
@@ -371,7 +377,7 @@ class WorkflowReconstructHighres4DCT(PhysioTwin4DBase):
         self.log_info(f"  Number of time points: {len(self.time_series_images)}")
         registrar_type = type(self.registrar.registrar).__name__
         self.log_info(f"  Registration method: {registrar_type}")
-        self.log_info(f"  Reference frame: {self.reference_frame}")
+        self.log_info(f"  Reference time frame: {self.reference_time_frame}")
         self.log_info(f"  Prior weight: {self.prior_weight}")
         self.log_info(
             f"  Upsample to fixed resolution: {self.upsample_to_fixed_resolution}"

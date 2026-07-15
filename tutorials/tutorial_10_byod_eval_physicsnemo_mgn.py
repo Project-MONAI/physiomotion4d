@@ -1,22 +1,22 @@
 """
-Tutorial 10d (MLP): Predict cardiac stage meshes for a subject with a trained
-PhysicsNeMo fully connected (MLP) model.
+Tutorial 10 (MGN): Predict cardiac stage meshes for a subject with a trained
+PhysicsNeMo MeshGraphNet.
 
-Final stage of the cardiac 4D deep-learning pipeline (Tutorials 08cd -> 09c/09d
--> 10c/10d).  This tutorial is a thin driver over
-:class:`physiotwin4d.WorkflowInferPhysicsNeMoMLP`.  It builds a per-subject
+Final stage of the cardiac 4D deep-learning pipeline (Tutorials 8 -> 9 -> 10).
+This tutorial is a thin driver over
+:class:`physiotwin4d.WorkflowInferPhysicsNeMoMGN`.  It builds a per-subject
 manifest from the fitted-meshes directory and calls the workflow to predict
-cardiac surfaces for one subject, loading the model trained by Tutorial 9d
-(``tutorial_09d_byod_train_physicsnemo_mlp.py``).
+cardiac surfaces for one subject, loading the model trained by Tutorial 9
+(``tutorial_09_byod_train_physicsnemo_mgn.py``).
 
 This is a bring-your-own-data tutorial: the path constants below point at a local
-``D:/PhysioTwin4D/`` layout and the Tutorial 9d run directory, not at the
+``D:/PhysioTwin4D/`` layout and the Tutorial 9 run directory, not at the
 repository ``data/`` directory.
 
 Usage (command line)
 --------------------
-    py tutorial_10d_byod_eval_physicsnemo_mlp.py pm0028 --out results/pm0028_mlp
-    py tutorial_10d_byod_eval_physicsnemo_mlp.py pm0028 --out results/pm0028_mlp --stages 0.0 0.25 0.5 0.75
+    py tutorial_10_byod_eval_physicsnemo_mgn.py pm0028 --out results/pm0028_mgn
+    py tutorial_10_byod_eval_physicsnemo_mgn.py pm0028 --out results/pm0028_mgn --stages 0.0 0.25 0.5 0.75
 
 Arguments
     subject    Subject ID, e.g. pm0028
@@ -38,17 +38,15 @@ import sys
 from pathlib import Path
 from typing import Any, Optional, cast
 
-from physiotwin4d import WorkflowInferPhysicsNeMoMLP
-
-logger = logging.getLogger("tutorial_10d_byod_eval_physicsnemo_mlp")
+from physiotwin4d import WorkflowInferPhysicsNeMoMGN
 
 TUTORIALS_DIR = Path(__file__).resolve().parent
 FITTED_MESHES_DIR = Path("D:/PhysioTwin4D/duke_data/fitted_kcl_meshes")
-# Tutorial 9d run directory to evaluate (matches that trainer's OUTPUT_DIR).
-MODEL_DIR = TUTORIALS_DIR / "output" / "tutorial_09d"
+# Tutorial 9 run directory to evaluate (matches that trainer's OUTPUT_DIR).
+MODEL_DIR = TUTORIALS_DIR / "output" / "tutorial_09_byod_mgn"
 
-DEFAULT_SUBJECT = "pm0028"
-DEFAULT_OUT_DIR = MODEL_DIR / "tutorial_10d" / DEFAULT_SUBJECT
+DEFAULT_SUBJECT = "pm0027"
+DEFAULT_OUT_DIR = MODEL_DIR / "tutorial_10_byod_mgn" / DEFAULT_SUBJECT
 
 
 def _gating_stage_from_filename(mesh_file: Path) -> float:
@@ -91,9 +89,9 @@ def predict(
     epoch: Optional[int] = None,
     stages: Optional[list[float]] = None,
 ) -> dict[str, Any]:
-    """Predict cardiac surfaces for *subject* using the trained MLP."""
+    """Predict cardiac surfaces for *subject* using the trained MeshGraphNet."""
     manifest_path = _write_subject_manifest(subject, out_dir)
-    infer = WorkflowInferPhysicsNeMoMLP(model_directory=MODEL_DIR, epoch=epoch)
+    infer = WorkflowInferPhysicsNeMoMGN(model_directory=MODEL_DIR, epoch=epoch)
     return cast(
         "dict[str, Any]",
         infer.predict(manifest_path, stages=stages, output_directory=out_dir),
@@ -107,7 +105,7 @@ def run_tutorial() -> dict[str, Any]:
 
 def main() -> None:
     ap = argparse.ArgumentParser(
-        description="Predict cardiac stage meshes for one subject with an MLP.",
+        description="Predict cardiac stage meshes for one subject with MeshGraphNet.",
     )
     ap.add_argument("subject", help="Subject ID, e.g. pm0028")
     ap.add_argument(
@@ -130,6 +128,5 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         main()
     else:
-        # %%
         # Tutorial / test entry point (no CLI arguments)
         tutorial_results = run_tutorial()

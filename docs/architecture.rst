@@ -91,29 +91,29 @@ Primary Workflows
 AI Surrogate Workflows (PhysicsNeMo)
 =====================================
 
-The final tier of tutorials (``tutorials/tutorial_08cd`` through
-``tutorial_10d``) turns a fitted statistical shape model into a trained AI
+The final tier of tutorials (``tutorials/tutorial_08`` through
+``tutorial_10``) turns a fitted statistical shape model into a trained AI
 physiological surrogate, replacing the explicit per-phase registration solve
 with a learned model at inference time:
 
-``tutorial_08cd_byod_fit_model_to_patients.py``
+``tutorial_08_byod_fit_model_to_patients.py``
    Fits the cardiac PCA model to a patient (via
    ``WorkflowFitStatisticalModelToPatient``) and propagates the fitted mesh
    through every gated phase using ICON-based registration
    (``WorkflowReconstructHighres4DCT``), producing the per-phase mesh/surface
    pairs used as AI surrogate training data.
 
-``tutorial_09c_byod_train_physicsnemo_mgn.py`` /
-``tutorial_09d_byod_train_physicsnemo_mlp.py``
+``tutorial_09_byod_train_physicsnemo_mgn.py`` /
+``tutorial_09_byod_train_physicsnemo_mlp.py``
    Train a PhysicsNeMo surrogate — a graph-based ``MeshGraphNet`` via
    ``WorkflowTrainPhysicsNeMoMGN`` or a fully connected MLP via
-   ``WorkflowTrainPhysicsNeMoMLP`` — on the Tutorial 8cd output to predict
+   ``WorkflowTrainPhysicsNeMoMLP`` — on the Tutorial 8 output to predict
    per-phase cardiac mesh deformation directly from the fitted SSM
    coefficients. Requires the ``[physicsnemo]`` extra (and ``torch-geometric``
    for the MeshGraphNet variant); Python >= 3.11.
 
-``tutorial_10c_byod_eval_physicsnemo_mgn.py`` /
-``tutorial_10d_byod_eval_physicsnemo_mlp.py``
+``tutorial_10_byod_eval_physicsnemo_mgn.py`` /
+``tutorial_10_byod_eval_physicsnemo_mlp.py``
    Load a trained MeshGraphNet or MLP checkpoint (via
    ``WorkflowInferPhysicsNeMoMGN`` / ``WorkflowInferPhysicsNeMoMLP``) and
    predict/score cardiac surfaces without running registration, i.e. the AI
