@@ -22,8 +22,8 @@
    </section>
 
    <section class="pt4d-card-grid" aria-label="Tutorial cards">
-     <a class="pt4d-card" href="tutorials.html#tutorial-1a-heart-gated-ct-to-animated-usd">
-       <span class="pt4d-card__number">1a</span>
+     <a class="pt4d-card" href="tutorials.html#tutorial-1-heart-gated-ct-to-animated-usd">
+       <span class="pt4d-card__number">01</span>
        <h2>Heart-Gated CT to Animated USD</h2>
        <p>Convert cardiac 4D CT frames into registered contours and an animated OpenUSD model.</p>
        <span class="pt4d-card__meta">Slicer-Heart-CT</span>
@@ -40,17 +40,17 @@
        <p>Convert VTK meshes into a time-sampled USD scene for Omniverse playback.</p>
        <span class="pt4d-card__meta">Tutorial 2 output</span>
      </a>
-     <a class="pt4d-card" href="tutorials.html#tutorial-4a-create-a-pca-shape-model">
-       <span class="pt4d-card__number">4a</span>
+     <a class="pt4d-card" href="tutorials.html#tutorial-4-create-a-pca-shape-model">
+       <span class="pt4d-card__number">04</span>
        <h2>Create a PCA Shape Model</h2>
        <p>Build a statistical shape model from aligned cardiac meshes.</p>
        <span class="pt4d-card__meta">KCL-Heart-Model</span>
      </a>
-     <a class="pt4d-card" href="tutorials.html#tutorial-5a-fit-statistical-model-to-patient">
-       <span class="pt4d-card__number">5a</span>
+     <a class="pt4d-card" href="tutorials.html#tutorial-5-fit-statistical-model-to-patient">
+       <span class="pt4d-card__number">05</span>
        <h2>Fit Statistical Model to Patient</h2>
        <p>Fit a PCA heart model to patient-specific anatomy for model-based reconstruction.</p>
-       <span class="pt4d-card__meta">Tutorial 4a output</span>
+       <span class="pt4d-card__meta">Tutorial 4 output</span>
      </a>
      <a class="pt4d-card" href="tutorials.html#tutorial-6-reconstruct-high-resolution-4d-ct">
        <span class="pt4d-card__number">06</span>
@@ -58,23 +58,23 @@
        <p>Register respiratory CT phases and reconstruct a higher-resolution 4D volume series.</p>
        <span class="pt4d-card__meta">DirLab-4DCT</span>
      </a>
-     <a class="pt4d-card" href="tutorials.html#tutorial-8cd-fit-the-cardiac-ssm-and-propagate-through-gated-phases">
-       <span class="pt4d-card__number">8cd</span>
+     <a class="pt4d-card" href="tutorials.html#tutorial-8-fit-the-cardiac-ssm-and-propagate-through-gated-phases">
+       <span class="pt4d-card__number">08</span>
        <h2>Fit the Cardiac SSM and Propagate Through Gated Phases</h2>
        <p>Fit a PCA heart model to the reference phase and propagate it to every gated phase with ICON registration.</p>
        <span class="pt4d-card__meta">Bring your own cardiac data</span>
      </a>
-     <a class="pt4d-card" href="tutorials.html#tutorial-9c-9d-train-a-physicsnemo-cardiac-stage-model">
-       <span class="pt4d-card__number">9cd</span>
+     <a class="pt4d-card" href="tutorials.html#tutorial-9-train-a-physicsnemo-cardiac-stage-model">
+       <span class="pt4d-card__number">09</span>
        <h2>Train a PhysicsNeMo Cardiac Stage Model</h2>
-       <p>Train a PhysicsNeMo MeshGraphNet (9c) or MLP (9d) to predict cardiac meshes at requested stages.</p>
-       <span class="pt4d-card__meta">Tutorial 8cd output</span>
+       <p>Train a PhysicsNeMo MeshGraphNet or MLP to predict cardiac meshes at requested stages.</p>
+       <span class="pt4d-card__meta">Tutorial 8 output</span>
      </a>
-     <a class="pt4d-card" href="tutorials.html#tutorial-10c-10d-predict-and-evaluate-cardiac-surfaces">
-       <span class="pt4d-card__number">10cd</span>
+     <a class="pt4d-card" href="tutorials.html#tutorial-10-predict-and-evaluate-cardiac-surfaces">
+       <span class="pt4d-card__number">10</span>
        <h2>Predict and Evaluate Cardiac Surfaces</h2>
-       <p>Load a Tutorial 9c/9d checkpoint and predict cardiac surfaces at gated phases or caller-specified stages.</p>
-       <span class="pt4d-card__meta">Tutorial 9c / 9d output</span>
+       <p>Load a Tutorial 9 checkpoint and predict cardiac surfaces at gated phases or caller-specified stages.</p>
+       <span class="pt4d-card__meta">Tutorial 9 output</span>
      </a>
    </section>
 

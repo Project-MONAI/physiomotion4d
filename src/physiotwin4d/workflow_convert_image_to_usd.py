@@ -179,7 +179,7 @@ class WorkflowConvertImageToUSD(PhysioTwin4DBase):
 
         return painted_usd_files
 
-    def _register_with_mask(
+    def _register(
         self,
         fixed_image: itk.Image,
         fixed_mask: Optional[itk.Image],
@@ -268,17 +268,18 @@ class WorkflowConvertImageToUSD(PhysioTwin4DBase):
 
             moving_image = self.time_series_images[i]
 
-            moving_segmentation_results = self.segmenter.segment(moving_image)
-            moving_labelmap = moving_segmentation_results["labelmap"]
-            if self.save_assets:
-                itk.imwrite(
-                    moving_labelmap,
-                    os.path.join(self.output_directory, f"slice_{i:03d}_labelmap.mha"),
-                    compression=True,
-                )
-
             if len(self.dynamic_labelmap_ids) > 0:
                 self.registrar.set_fixed_mask(reference_dynamic_mask)
+
+                moving_segmentation_results = self.segmenter.segment(moving_image)
+                moving_labelmap = moving_segmentation_results["labelmap"]
+                if self.save_assets:
+                    itk.imwrite(
+                        moving_labelmap,
+                        os.path.join(self.output_directory, f"slice_{i:03d}_labelmap.mha"),
+                        compression=True,
+                    )
+
                 moving_labelmap_arr = itk.GetArrayFromImage(moving_labelmap)
                 moving_is_dynamic_arr = np.isin(
                     moving_labelmap_arr, self.dynamic_labelmap_ids
@@ -298,7 +299,7 @@ class WorkflowConvertImageToUSD(PhysioTwin4DBase):
                         compression=True,
                     )
 
-                dynamic_reg_results = self._register_with_mask(
+                dynamic_reg_results = self._register(
                     self.reference_image,
                     reference_dynamic_mask,
                     moving_image,
@@ -315,7 +316,7 @@ class WorkflowConvertImageToUSD(PhysioTwin4DBase):
                     static_labelmap, self.mask_dilation_radius
                 )
 
-                static_reg_results = self._register_with_mask(
+                static_reg_results = self._register(
                     self.reference_image,
                     reference_static_mask,
                     moving_image,
@@ -330,7 +331,7 @@ class WorkflowConvertImageToUSD(PhysioTwin4DBase):
                     }
                 )
             else:
-                all_reg_results = self._register_with_mask(
+                all_reg_results = self._register(
                     self.reference_image,
                     None,
                     moving_image,

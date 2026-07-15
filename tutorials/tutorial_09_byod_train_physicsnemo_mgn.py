@@ -1,15 +1,15 @@
 """
-Tutorial 9c (MGN): Train a PhysicsNeMo MeshGraphNet for cardiac mesh stages.
+Tutorial 9 (MGN): Train a PhysicsNeMo MeshGraphNet for cardiac mesh stages.
 
-Second stage of the cardiac 4D deep-learning pipeline (Tutorials 08cd -> 09c/09d
--> 10c/10d).  This tutorial is a thin driver over the reusable
+Second stage of the cardiac 4D deep-learning pipeline (Tutorials 8 -> 9 -> 10).
+This tutorial is a thin driver over the reusable
 :class:`physiotwin4d.WorkflowTrainPhysicsNeMoMGN` workflow: it discovers the
-per-time-point SSM surfaces produced by Tutorial 8cd
-(``tutorial_08cd_byod_fit_model_to_patients.py``), writes one JSON manifest per
+per-time-point SSM surfaces produced by Tutorial 8
+(``tutorial_08_byod_fit_model_to_patients.py``), writes one JSON manifest per
 subject, splits the subjects into train / validation / held-out test, trains the
 MeshGraphNet, and evaluates the held-out test subjects with
 :class:`physiotwin4d.WorkflowInferPhysicsNeMoMGN`.  The companion MLP tutorial is
-``tutorial_09d_byod_train_physicsnemo_mlp.py``.
+``tutorial_09_byod_train_physicsnemo_mlp.py``.
 
 Why a GNN?
 ----------
@@ -25,8 +25,8 @@ Output (per vertex):          [dx, dy, dz]  (displacement in mm)
 Bring Your Own Data
 -------------------
 The path constants below point at a local ``D:/PhysioTwin4D/`` layout produced by
-Tutorial 8cd, not at the repository ``data/`` directory.  Edit them to match your
-own data location.  Run Tutorial 8cd first.
+Tutorial 8, not at the repository ``data/`` directory.  Edit them to match your
+own data location.  Run Tutorial 8 first.
 
 Extra Install Required
 ----------------------

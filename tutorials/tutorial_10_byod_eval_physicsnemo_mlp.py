@@ -1,22 +1,22 @@
 """
-Tutorial 10d (MLP): Predict cardiac stage meshes for a subject with a trained
+Tutorial 10 (MLP): Predict cardiac stage meshes for a subject with a trained
 PhysicsNeMo fully connected (MLP) model.
 
-Final stage of the cardiac 4D deep-learning pipeline (Tutorials 08cd -> 09c/09d
--> 10c/10d).  This tutorial is a thin driver over
+Final stage of the cardiac 4D deep-learning pipeline (Tutorials 8 -> 9 -> 10).
+This tutorial is a thin driver over
 :class:`physiotwin4d.WorkflowInferPhysicsNeMoMLP`.  It builds a per-subject
 manifest from the fitted-meshes directory and calls the workflow to predict
-cardiac surfaces for one subject, loading the model trained by Tutorial 9d
-(``tutorial_09d_byod_train_physicsnemo_mlp.py``).
+cardiac surfaces for one subject, loading the model trained by Tutorial 9
+(``tutorial_09_byod_train_physicsnemo_mlp.py``).
 
 This is a bring-your-own-data tutorial: the path constants below point at a local
-``D:/PhysioTwin4D/`` layout and the Tutorial 9d run directory, not at the
+``D:/PhysioTwin4D/`` layout and the Tutorial 9 run directory, not at the
 repository ``data/`` directory.
 
 Usage (command line)
 --------------------
-    py tutorial_10d_byod_eval_physicsnemo_mlp.py pm0028 --out results/pm0028_mlp
-    py tutorial_10d_byod_eval_physicsnemo_mlp.py pm0028 --out results/pm0028_mlp --stages 0.0 0.25 0.5 0.75
+    py tutorial_10_byod_eval_physicsnemo_mlp.py pm0028 --out results/pm0028_mlp
+    py tutorial_10_byod_eval_physicsnemo_mlp.py pm0028 --out results/pm0028_mlp --stages 0.0 0.25 0.5 0.75
 
 Arguments
     subject    Subject ID, e.g. pm0028
@@ -40,11 +40,9 @@ from typing import Any, Optional, cast
 
 from physiotwin4d import WorkflowInferPhysicsNeMoMLP
 
-logger = logging.getLogger("tutorial_10_mlp")
-
 TUTORIALS_DIR = Path(__file__).resolve().parent
 FITTED_MESHES_DIR = Path("D:/PhysioTwin4D/duke_data/fitted_kcl_meshes")
-# Tutorial 9d run directory to evaluate (matches that trainer's OUTPUT_DIR).
+# Tutorial 9 run directory to evaluate (matches that trainer's OUTPUT_DIR).
 MODEL_DIR = TUTORIALS_DIR / "output" / "tutorial_09_byod_mlp"
 
 DEFAULT_SUBJECT = "pm0027"

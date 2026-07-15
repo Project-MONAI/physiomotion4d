@@ -1,5 +1,5 @@
 """
-Tutorial 1a: Heart-Gated CT to Animated USD
+Tutorial 1: Heart-Gated CT to Animated USD
 
 Purpose
 -------
@@ -77,137 +77,143 @@ import itk
 
 from physiotwin4d import (
     RegisterImagesICON,
-    SegmentChestTotalSegmentator,
+    SegmentChestTotalSegmentatorWithContrast,
     TestTools,
     WorkflowConvertImageToUSD,
 )
+
+# %%
+# Only run if this script is not imported as a module
 
 # nnUNetv2 (used by TotalSegmentator inside WorkflowConvertImageToUSD)
 # spawns a multiprocessing.Pool. On Windows the spawn start method re-imports
 # this script in each child; without the __name__ == "__main__" guard around
 # the top-level work, that re-import fires workflow.process() again and
 # Python's spawn-cascade detector raises RuntimeError.
-if __name__ == "__main__":
-    # %%
-    # Data directory specification
-    REPO_ROOT = Path(__file__).resolve().parent.parent
-    TUTORIALS_DIR = Path(__file__).resolve().parent
-    DATA_DIR = REPO_ROOT / "data"
-    FULL_DATA_DIR = DATA_DIR / "Slicer-Heart-CT"
-    TEST_DATA_DIR = DATA_DIR / "test" / "slicer_heart_small"
-    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_01_heart"
-    LOG_LEVEL = logging.INFO
+if __name__ != "__main__":
+    exit(0)
 
-    # %%
-    # Data reading
-    test_mode = TestTools.running_as_test()
+# %%
+# Data directory specification
+repo_root = Path(__file__).resolve().parent.parent
+tutorials_dir = Path(__file__).resolve().parent
 
-    data_dir = TEST_DATA_DIR if test_mode else FULL_DATA_DIR
-    output_dir = OUTPUT_DIR
-    log_level = LOG_LEVEL
+class_name = "tutorial_01_heart_gated_ct_to_usd"
 
-    output_dir.mkdir(parents=True, exist_ok=True)
+output_dir = tutorials_dir / "output" / "tutorial_01_heart"
 
-    if test_mode:
-        number_of_registration_iterations = 1
-    else:
-        number_of_registration_iterations = 10
-
-    # %%
+test_mode = TestTools.running_as_test()
+if test_mode:
+    data_dir = repo_root / "data" / "test" / "slicer_heart_small"
+    number_of_registration_iterations = 1
+    frame_files = sorted(data_dir.glob("slice_???.mha"))[0:2]
+else:
+    data_dir = repo_root / "data" / "Slicer-Heart-CT"
+    number_of_registration_iterations = 10
     frame_files = sorted(data_dir.glob("slice_???.mha"))
-    if test_mode:
-        frame_files = frame_files[:2]
 
-    input_filenames = [str(path) for path in frame_files]
-    if not input_filenames:
-        raise FileNotFoundError(
-            "Slicer-Heart-CT data not found. Checked:\n"
-            + f"  - {data_dir}"
-            + "\n"
-            + "See data/README.md for download instructions."
+log_level = logging.INFO
+
+registration_method = RegisterImagesICON(log_level=log_level)
+registration_method.set_number_of_iterations(number_of_registration_iterations)
+
+segmentation_method = SegmentChestTotalSegmentatorWithContrast(
+    log_level=log_level
+)
+segmentation_method.set_has_academic_license(True)
+
+
+# %%
+# Directory setup and data reading
+
+output_dir.mkdir(parents=True, exist_ok=True)
+
+input_filenames = [str(path) for path in frame_files]
+if not input_filenames:
+    raise FileNotFoundError(
+        "Slicer-Heart-CT data not found. Checked:\n"
+        + f"  - {data_dir}"
+        + "\n"
+        + "See data/README.md for download instructions."
+    )
+
+time_series_images = [itk.imread(str(path)) for path in input_filenames]
+reference_image = time_series_images[int(0.7 * len(time_series_images))]
+
+print("Number of time-series images:", len(time_series_images))
+
+# %%
+# Workflow initialization
+
+workflow = WorkflowConvertImageToUSD(
+    time_series_images=time_series_images,
+    reference_image=reference_image,
+    output_directory=str(output_dir),
+    usd_project_name="cardiac_model",
+    registration_method=registration_method,
+    segmentation_method=segmentation_method,
+    log_level=log_level,
+    save_assets=True,
+)
+
+# %%
+# Workflow execution
+workflow_results = workflow.process()
+
+# if dynamic_labelmap_ids is not None, there are two USD files
+if len(workflow.dynamic_labelmap_ids) > 0:
+    usd_file = output_dir / workflow_results["dynamic"]
+else:
+    usd_file = output_dir / workflow_results["all"]
+
+# %%
+# Result saving
+tt = TestTools(
+    class_name=class_name,
+    results_dir=output_dir,
+    log_level=log_level,
+)
+
+screenshots: list[Path] = []
+
+test_image_num = int(0.7 * len(input_filenames))
+test_image_path = output_dir / f"slice_{test_image_num:03d}_registered.mha"
+if test_image_path.exists():
+    test_image = itk.imread(str(test_image_path))
+    screenshots.append(
+        tt.save_screenshot_image_slice(
+            test_image,
+            f"slice_{test_image_num:03d}_registered_test.png",
+            axis=0,
+            slice_fraction=0.5,
+            colormap="gray",
+            vmin=-200,
+            vmax=600,
         )
-
-    time_series_images = [itk.imread(str(path)) for path in input_filenames]
-    reference_image = time_series_images[int(0.7 * len(time_series_images))]
-
-    print("Number of time-series images:", len(time_series_images))
-
-    # %%
-    # Workflow initialization
-    icon_registration_method = RegisterImagesICON(log_level=log_level)
-    icon_registration_method.set_number_of_iterations(number_of_registration_iterations)
-
-    segment_chest_total_segmentator = SegmentChestTotalSegmentator(log_level=log_level)
-    segment_chest_total_segmentator.set_has_academic_license(True)
-
-    workflow = WorkflowConvertImageToUSD(
-        time_series_images=time_series_images,
-        reference_image=reference_image,
-        output_directory=str(output_dir),
-        usd_project_name="cardiac_model",
-        registration_method=icon_registration_method,
-        segmentation_method=segment_chest_total_segmentator,
-        log_level=log_level,
-        save_assets=True,
     )
 
-    # %%
-    # Workflow execution
-    usd_files = workflow.process()
-    # if dynamic_labelmap_ids is not None, there are two USD files
-    if len(workflow.dynamic_labelmap_ids) > 0:
-        usd_file = output_dir / usd_files["dynamic"]
-    else:
-        usd_file = output_dir / usd_files["all"]
-
-    # %%
-    # Result saving
-    tt = TestTools(
-        class_name="tutorial_01a_heart_gated_ct_to_usd",
-        results_dir=output_dir,
-        log_level=log_level,
-    )
-
-    screenshots: list[Path] = []
-
-    test_image_num = int(0.7 * len(input_filenames))
-    test_image_path = output_dir / f"slice_{test_image_num:03d}_registered.mha"
-    if test_image_path.exists():
-        test_image = itk.imread(str(test_image_path))
+    test_labelmap_path = output_dir / f"slice_{test_image_num:03d}_labelmap.mha"
+    if test_labelmap_path.exists():
+        test_labelmap = itk.imread(str(test_labelmap_path))
         screenshots.append(
             tt.save_screenshot_image_slice(
                 test_image,
-                f"slice_{test_image_num:03d}_registered_test.png",
+                f"slice_{test_image_num:03d}_labelmap_test.png",
                 axis=0,
                 slice_fraction=0.5,
                 colormap="gray",
                 vmin=-200,
                 vmax=600,
+                overlay_mask=test_labelmap,
             )
         )
 
-        test_labelmap_path = output_dir / f"slice_{test_image_num:03d}_labelmap.mha"
-        if test_labelmap_path.exists():
-            test_labelmap = itk.imread(str(test_labelmap_path))
-            screenshots.append(
-                tt.save_screenshot_image_slice(
-                    test_image,
-                    f"slice_{test_image_num:03d}_labelmap_test.png",
-                    axis=0,
-                    slice_fraction=0.5,
-                    colormap="gray",
-                    vmin=-200,
-                    vmax=600,
-                    overlay_mask=test_labelmap,
-                )
-            )
-
-    if usd_file.exists():
-        screenshots.append(
-            tt.save_screenshot_openusd(
-                usd_file,
-                "cardiac_model_test.png",
-            )
+if usd_file.exists():
+    screenshots.append(
+        tt.save_screenshot_openusd(
+            usd_file,
+            "cardiac_model_test.png",
         )
+    )
 
-    tutorial_results = {"usd_file": str(usd_file), "screenshots": screenshots}
+tutorial_results = {"usd_file": str(usd_file), "screenshots": screenshots}

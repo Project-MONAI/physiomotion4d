@@ -1,16 +1,16 @@
 """
-Tutorial 9d (MLP): Train a PhysicsNeMo fully connected model for cardiac mesh stages.
+Tutorial 9 (MLP): Train a PhysicsNeMo fully connected model for cardiac mesh stages.
 
-Second stage of the cardiac 4D deep-learning pipeline (Tutorials 08cd -> 09c/09d
--> 10c/10d).  This tutorial is a thin driver over the reusable
+Second stage of the cardiac 4D deep-learning pipeline (Tutorials 8 -> 9 -> 10).
+This tutorial is a thin driver over the reusable
 :class:`physiotwin4d.WorkflowTrainPhysicsNeMoMLP` workflow: it discovers the
-per-time-point SSM surfaces produced by Tutorial 8cd
-(``tutorial_08cd_byod_fit_model_to_patients.py``), writes one JSON manifest per
+per-time-point SSM surfaces produced by Tutorial 8
+(``tutorial_08_byod_fit_model_to_patients.py``), writes one JSON manifest per
 subject, splits the subjects into train / validation / held-out test, trains a
 FullyConnected (MLP) model, and evaluates the held-out test subjects with
 :class:`physiotwin4d.WorkflowInferPhysicsNeMoMLP`.
 
-The companion Tutorial 9c (``tutorial_09c_byod_train_physicsnemo_mgn.py``)
+The companion Tutorial 9 (``tutorial_09_byod_train_physicsnemo_mgn.py``)
 solves the same task with a MeshGraphNet so the two architectures can be compared
 directly; both map a surface point ``(x, y, z, pca_c1 ... pca_cN, stage)`` to its
 displacement from the subject's SSM reference surface (the Option B convention),
@@ -26,8 +26,8 @@ gradient mixing.
 Bring Your Own Data
 -------------------
 The path constants below point at a local ``D:/PhysioTwin4D/`` layout produced by
-Tutorial 8cd, not at the repository ``data/`` directory.  Edit them to match your
-own data location.  Run Tutorial 8cd first.
+Tutorial 8, not at the repository ``data/`` directory.  Edit them to match your
+own data location.  Run Tutorial 8 first.
 
 Extra Install Required
 ----------------------

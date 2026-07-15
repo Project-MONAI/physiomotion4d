@@ -13,19 +13,20 @@ dataset licensing, and expected directory layout.
 
 | # | Script | Primary API | Dataset |
 |---|--------|-------------|---------|
-| 1a | [tutorial_01a_heart_gated_ct_to_usd.py](tutorial_01a_heart_gated_ct_to_usd.py) | `WorkflowConvertImageToUSD` | Slicer-Heart-CT (prepare first) |
-| 2 | [tutorial_02_ct_to_vtk.py](tutorial_02_ct_to_vtk.py) | `WorkflowConvertImageToVTK` | Slicer-Heart-CT (prepare first) |
-| 3 | [tutorial_03_vtk_to_usd.py](tutorial_03_vtk_to_usd.py) | `WorkflowConvertVTKToUSD` | Output of tutorial 2 |
-| 4a | [tutorial_04a_heart_create_statistical_model.py](tutorial_04a_heart_create_statistical_model.py) | `WorkflowCreateStatisticalModel` | KCL-Heart-Model |
-| 5a | [tutorial_05a_heart_fit_statistical_model_to_patient.py](tutorial_05a_heart_fit_statistical_model_to_patient.py) | `WorkflowFitStatisticalModelToPatient` | KCL-Heart-Model plus Tutorial 4a output |
-| 6 | [tutorial_06_reconstruct_highres_4d_ct.py](tutorial_06_reconstruct_highres_4d_ct.py) | `WorkflowReconstructHighres4DCT` | DirLab-4DCT (manual) |
-| 8cd | [tutorial_08cd_byod_fit_model_to_patients.py](tutorial_08cd_byod_fit_model_to_patients.py) | `WorkflowFitStatisticalModelToPatient`, `WorkflowReconstructHighres4DCT` | Bring your own (cardiac gated CT, `D:/PhysioTwin4D/`) |
-| 9c | [tutorial_09c_byod_train_physicsnemo_mgn.py](tutorial_09c_byod_train_physicsnemo_mgn.py) | `WorkflowTrainPhysicsNeMoMGN` (requires `[physicsnemo]` extra + `torch-geometric`) | Tutorial 8cd output |
-| 9d | [tutorial_09d_byod_train_physicsnemo_mlp.py](tutorial_09d_byod_train_physicsnemo_mlp.py) | `WorkflowTrainPhysicsNeMoMLP` (requires `[physicsnemo]` extra) | Tutorial 8cd output |
-| 10c | [tutorial_10c_byod_eval_physicsnemo_mgn.py](tutorial_10c_byod_eval_physicsnemo_mgn.py) | `WorkflowInferPhysicsNeMoMGN` (requires `[physicsnemo]` extra + `torch-geometric`) | Tutorial 9c checkpoint |
-| 10d | [tutorial_10d_byod_eval_physicsnemo_mlp.py](tutorial_10d_byod_eval_physicsnemo_mlp.py) | `WorkflowInferPhysicsNeMoMLP` (requires `[physicsnemo]` extra) | Tutorial 9d checkpoint |
+| 1 | [tutorial_01_heart_gated_ct_to_usd.py](tutorial_01_heart_gated_ct_to_usd.py) | `WorkflowConvertImageToUSD` | Slicer-Heart-CT (prepare first) |
+| 1 | [tutorial_01_lung_gated_ct_to_usd.py](tutorial_01_lung_gated_ct_to_usd.py) | `WorkflowConvertImageToUSD` | Lung gated 4D CT (prepare first) |
+| 2 | [tutorial_02_heart_ct_to_vtk.py](tutorial_02_heart_ct_to_vtk.py) | `WorkflowConvertImageToVTK` | Slicer-Heart-CT (prepare first) |
+| 3 | [tutorial_03_heart_vtk_to_usd.py](tutorial_03_heart_vtk_to_usd.py) | `WorkflowConvertVTKToUSD` | Output of tutorial 2 |
+| 4 | [tutorial_04_heart_create_statistical_model.py](tutorial_04_heart_create_statistical_model.py) | `WorkflowCreateStatisticalModel` | KCL-Heart-Model |
+| 5 | [tutorial_05_heart_to_lung_fit_statistical_model_to_patient.py](tutorial_05_heart_to_lung_fit_statistical_model_to_patient.py) | `WorkflowFitStatisticalModelToPatient` | KCL-Heart-Model plus Tutorial 4 output |
+| 6 | [tutorial_06_lung_reconstruct_highres_4d_ct.py](tutorial_06_lung_reconstruct_highres_4d_ct.py) | `WorkflowReconstructHighres4DCT` | DirLab-4DCT (manual) |
+| 8 | [tutorial_08_byod_fit_model_to_patients.py](tutorial_08_byod_fit_model_to_patients.py) | `WorkflowFitStatisticalModelToPatient`, `WorkflowReconstructHighres4DCT` | Bring your own (cardiac gated CT, `D:/PhysioTwin4D/`) |
+| 9 | [tutorial_09_byod_train_physicsnemo_mgn.py](tutorial_09_byod_train_physicsnemo_mgn.py) | `WorkflowTrainPhysicsNeMoMGN` (requires `[physicsnemo]` extra + `torch-geometric`) | Tutorial 8 output |
+| 9 | [tutorial_09_byod_train_physicsnemo_mlp.py](tutorial_09_byod_train_physicsnemo_mlp.py) | `WorkflowTrainPhysicsNeMoMLP` (requires `[physicsnemo]` extra) | Tutorial 8 output |
+| 10 | [tutorial_10_byod_eval_physicsnemo_mgn.py](tutorial_10_byod_eval_physicsnemo_mgn.py) | `WorkflowInferPhysicsNeMoMGN` (requires `[physicsnemo]` extra + `torch-geometric`) | Tutorial 9 checkpoint |
+| 10 | [tutorial_10_byod_eval_physicsnemo_mlp.py](tutorial_10_byod_eval_physicsnemo_mlp.py) | `WorkflowInferPhysicsNeMoMLP` (requires `[physicsnemo]` extra) | Tutorial 9 checkpoint |
 
-> **Tutorials 8cd-10cd are bring-your-own-data.** Unlike the earlier data-driven
+> **Tutorials 8-10 are bring-your-own-data.** Unlike the earlier data-driven
 > tutorials, they do not use the repository `data/` directory or a downloadable
 > sample. Their path constants point at a local `D:/PhysioTwin4D/` cardiac layout
 > (gated CT, labelmaps, the KCL volume PCA model, and ICON weights); edit those
@@ -41,7 +42,7 @@ is read from the repository `data/` directory and outputs are written under
 
 ```bash
 # Run the whole tutorial from the command line
-python tutorials/tutorial_01a_heart_gated_ct_to_usd.py
+python tutorials/tutorial_01_heart_gated_ct_to_usd.py
 ```
 
 In VS Code or Cursor, open the tutorial and use **Run Python File** (or run
@@ -68,23 +69,23 @@ pytest tests/test_tutorials.py --run-tutorials -v
 pytest tests/test_tutorials.py --run-tutorials --create-baselines -v
 
 # Run a single tutorial test
-pytest tests/test_tutorials.py::TestTutorial01aHeartGatedCTToUSD --run-tutorials -v
+pytest tests/test_tutorials.py::TestTutorial01HeartGatedCTToUSD --run-tutorials -v
 ```
 
 ## Recommended Order
 
-1. **Tutorial 1a** and **Tutorial 2** use Slicer-Heart-CT - prepare it per `data/README.md`, then start here.
+1. **Tutorial 1** and **Tutorial 2** use Slicer-Heart-CT - prepare it per `data/README.md`, then start here.
 2. **Tutorial 3** uses the VTK surfaces produced by Tutorial 2 - run Tutorial 2 first.
-3. **Tutorial 4a** creates the PCA statistical model from KCL-Heart-Model.
-4. **Tutorial 5a** applies the statistical model, consuming Tutorial 4a output.
+3. **Tutorial 4** creates the PCA statistical model from KCL-Heart-Model.
+4. **Tutorial 5** applies the statistical model, consuming Tutorial 4 output.
 5. **Tutorial 6** requires DirLab-4DCT - download it per `data/README.md`.
 
-The cardiac mesh stage-prediction pipeline (Tutorials 8cd -> 9c/9d -> 10c/10d) is
+The cardiac mesh stage-prediction pipeline (Tutorials 8 -> 9 -> 10) is
 bring-your-own-data and runs in order:
 
-6. **Tutorial 8cd** fits the KCL cardiac PCA model to each patient's reference CT and propagates the fitted SSM mesh through every gated phase (output feeds Tutorial 9c/9d).
-7. **Tutorial 9c / 9d** train a PhysicsNeMo MeshGraphNet (9c) and MLP (9d) to predict a cardiac surface at any cardiac stage. PhysicsNeMo is an optional extra: install with `pip install "physiotwin4d[physicsnemo]"` (requires Python >= 3.11); the MeshGraphNet also needs `torch-geometric`.
-8. **Tutorial 10c / 10d** load a trained MeshGraphNet (10c) or MLP (10d) checkpoint and predict / score cardiac surfaces for one subject. Each can be run from the command line or, with no arguments, via its `run_tutorial` entry point.
+6. **Tutorial 8** fits the KCL cardiac PCA model to each patient's reference CT and propagates the fitted SSM mesh through every gated phase (output feeds Tutorial 9).
+7. **Tutorial 9 (MGN / MLP)** train a PhysicsNeMo MeshGraphNet and MLP to predict a cardiac surface at any cardiac stage. PhysicsNeMo is an optional extra: install with `pip install "physiotwin4d[physicsnemo]"` (requires Python >= 3.11); the MeshGraphNet also needs `torch-geometric`.
+8. **Tutorial 10 (MGN / MLP)** load a trained MeshGraphNet or MLP checkpoint and predict / score cardiac surfaces for one subject. Each can be run from the command line or, with no arguments, via its `run_tutorial` entry point.
 
 ## For Contributors
 

@@ -278,11 +278,11 @@ module = [
     "physiotwin4d.cli.visualize_pca_modes",
     "physiotwin4d.vtk_to_usd.mesh_utils",
     "physiotwin4d.vtk_to_usd.vtk_reader",
-    "tutorial_08cd_byod_fit_model_to_patients",
-    "tutorial_09c_byod_train_physicsnemo_mgn",
-    "tutorial_09d_byod_train_physicsnemo_mlp",
-    "tutorial_10c_byod_eval_physicsnemo_mgn",
-    "tutorial_10d_byod_eval_physicsnemo_mlp",
+    "tutorial_08_byod_fit_model_to_patients",
+    "tutorial_09_byod_train_physicsnemo_mgn",
+    "tutorial_09_byod_train_physicsnemo_mlp",
+    "tutorial_10_byod_eval_physicsnemo_mgn",
+    "tutorial_10_byod_eval_physicsnemo_mlp",
 ]
 disable_error_code = ["import-not-found", "import-untyped"]
 
