@@ -54,7 +54,7 @@ if __name__ == "__main__":
     # data/DirLab-4DCT/fix_downloaded_data.py.
     PATIENT_IMAGE_FILE = DATA_DIR / "Case1Pack_T70.mha"
     SEGMENTATION_METHOD = SegmentChestTotalSegmentator()
-    SEGMENTATION_METHOD.set_has_highres_heart_license(True)
+    SEGMENTATION_METHOD.set_has_academic_license(True)
     # SEGMENTATION_METHOD = SegmentHeartSimplewareTrimmedBranches() # Use when available
     #     and images are contrast-enhanced.
     # SEGMENTATION_METHOD = SegmentChestTotalSegmentatorWithContrast() # Use when contrast-enhanced

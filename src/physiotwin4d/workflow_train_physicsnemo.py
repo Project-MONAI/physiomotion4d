@@ -268,6 +268,13 @@ class WorkflowTrainPhysicsNeMo(PhysioTwin4DBase):
         def _load(paths: list[Path], split: str) -> None:
             for manifest_path in paths:
                 manifest: SubjectManifest = pnt.parse_manifest(manifest_path)
+                if manifest.subject_id in subjects:
+                    raise ValueError(
+                        f"Duplicate subject_id '{manifest.subject_id}': already "
+                        f"loaded in the '{subjects[manifest.subject_id]['split']}' "
+                        f"split, seen again in the '{split}' split. Each subject "
+                        "must appear in exactly one manifest."
+                    )
                 ref_mesh = pv.read(str(manifest.reference_surface))
                 ref_points = np.asarray(ref_mesh.points, dtype=np.float32)
                 if ref_points.shape[0] != n_points:
@@ -440,7 +447,7 @@ class WorkflowTrainPhysicsNeMo(PhysioTwin4DBase):
 
         if sys.platform != "win32":
             try:
-                model = torch.compile(model)
+                model = cast("torch.nn.Module", torch.compile(model))
                 self.log_info("torch.compile enabled.")
             except Exception as exc:  # pragma: no cover - platform dependent
                 self.log_info("torch.compile skipped (%s).", exc)
@@ -708,6 +715,7 @@ class WorkflowTrainPhysicsNeMoMGN(WorkflowTrainPhysicsNeMo):
             hidden_dim_node_decoder=self.hidden_dim,
             num_layers_node_decoder=self.num_layers,
             hidden_dim_edge_encoder=self.hidden_dim,
+            num_layers_edge_encoder=self.num_layers,
             num_layers_edge_processor=self.num_layers,
             num_layers_node_processor=self.num_layers,
             aggregation="mean",

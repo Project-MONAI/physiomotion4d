@@ -170,7 +170,11 @@ def mesh_to_edge_index(poly: pv.PolyData) -> "torch.Tensor":
     import torch
     import torch_geometric.utils as pyg_utils
 
-    faces = poly.faces.reshape(-1, 4)[:, 1:]  # (F, 3) - strip leading count
+    # extract_surface may emit quads/other polygons; triangulate (fan) so every
+    # face is a triangle. vtkTriangleFilter reuses the existing vertices, so the
+    # point ordering (and thus edge-index correspondence) is preserved.
+    tri = poly.triangulate()
+    faces = tri.faces.reshape(-1, 4)[:, 1:]  # (F, 3) - strip leading count
     src = np.concatenate([faces[:, 0], faces[:, 1], faces[:, 2]])
     dst = np.concatenate([faces[:, 1], faces[:, 2], faces[:, 0]])
     edge_index = torch.tensor(np.stack([src, dst]), dtype=torch.long)

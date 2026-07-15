@@ -90,7 +90,7 @@ if __name__ == "__main__":
     TUTORIALS_DIR = Path(__file__).resolve().parent
     FITTED_MESHES_DIR = Path("D:/PhysioTwin4D/duke_data/fitted_kcl_meshes")
     PCA_MEAN_VTU = Path("D:/PhysioTwin4D/kcl-heart-pca/pca-vol-kcl/pca_mean.vtu")
-    OUTPUT_DIR = TUTORIALS_DIR / "output"
+    OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_09d"
     MANIFESTS_DIR = TUTORIALS_DIR / "manifests_mlp"
 
     EPOCHS = 10000

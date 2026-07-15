@@ -528,6 +528,7 @@ class WorkflowInferPhysicsNeMoMGN(WorkflowInferPhysicsNeMo):
             hidden_dim_node_decoder=hidden_dim,
             num_layers_node_decoder=num_layers,
             hidden_dim_edge_encoder=hidden_dim,
+            num_layers_edge_encoder=num_layers,
             num_layers_edge_processor=num_layers,
             num_layers_node_processor=num_layers,
             aggregation="mean",
