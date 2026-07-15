@@ -209,10 +209,11 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
                     90: "brain",
                     15: "esophagus",
                     16: "trachea",
-                    133: "body",
-                    134: "body_trunc",
-                    135: "body_extremities",
-                    136: "body_skin",
+                    133: "body_skin",  # 4 in body task
+                    134: "tissue_subcutaneous_fat",  # tissue_4_types
+                    135: "tissue_torso_fat",
+                    136: "tissue_skeletal_muscle",
+                    137: "tissue_intermuscular_fat",
                 },
             ),
         ):
@@ -222,15 +223,15 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
         self._add_extra_taxonomy_groups()
         self._finalize_other_group()
 
-        self.has_highres_heart_license = False
+        self.has_academic_license = False
 
-    def set_has_highres_heart_license(self, has_highres_heart_license: bool) -> None:
-        """Set whether the highres heart license is available.
+    def set_has_academic_license(self, has_academic_license: bool) -> None:
+        """Set whether the academic license is available.
 
         Args:
-            has_highres_heart_license (bool): Whether the highres heart license is available
+            has_academic_license (bool): Whether the academic license is available
         """
-        self.has_highres_heart_license = has_highres_heart_license
+        self.has_academic_license = has_academic_license
 
     def _add_extra_taxonomy_groups(self) -> None:
         """Hook for subclasses to add taxonomy groups before finalization.
@@ -247,10 +248,12 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
         """
         Run TotalSegmentator on the preprocessed image and return result.
 
-        This implementation runs both the 'total' and 'body' tasks from
-        TotalSegmentator to ensure comprehensive segmentation. The 'total' task
-        segments major organs and structures, while the 'body' task provides
-        body outline segmentation to fill gaps.
+        This implementation always runs the 'total' task (major organs and
+        structures). Outside fast mode it also runs the 'lung_vessels' overlay
+        and the 'body' task; when ``has_academic_license`` is set it additionally
+        runs the 'heartchambers_highres' and 'tissue_4_types' tasks. The 'body'
+        task contributes only its skin outline (the skin label) into remaining
+        background regions; it does not fill gaps with soft tissue.
 
         The method uses temporary files for coordinate system conversion between
         ITK (LPS) and nibabel (RAS) formats, which is required for proper
@@ -262,8 +265,8 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
 
         Returns:
             itk.image: The segmentation labelmap with TotalSegmentator labels.
-                Background regions from the 'total' task are filled with
-                soft tissue labels from the 'body' task
+                The 'body' task's skin label is written into the remaining
+                background regions as the skin outline.
 
         Note:
             Requires GPU acceleration (device="gpu") for reasonable performance.
@@ -303,7 +306,7 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
             final_arr = labelmap_arr_total
 
             if not self.fast_mode:
-                if self.has_highres_heart_license:
+                if self.has_academic_license:
                     self.log_info("Running heart chambers task")
                     output_nib_image_heart = totalsegmentator(
                         nib_image,
@@ -325,6 +328,33 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
                     # final_arr = np.where(labelmap_arr_heart == 6, 145, final_arr)
                     #  Aorta is not included in heart model.
                     #  Should include only a portion of the aorta in the heart model.
+
+                    self.log_info("Running tissue_4_types task")
+                    output_nib_image_tissue_4_types = totalsegmentator(
+                        nib_image,
+                        task="tissue_4_types",
+                        device="gpu",
+                        nr_thr_resamp=resamp_threads,
+                    )
+                    labelmap_arr_tissue_4_types = (
+                        output_nib_image_tissue_4_types.get_fdata().astype(np.uint8)
+                    )
+                    # 134: "subcutaneous_fat", # tissue_4_types
+                    # 135: "torso_fat",
+                    # 136: "skeletal_muscle",
+                    # 137: "intermuscular_fat"
+                    final_arr = np.where(
+                        labelmap_arr_tissue_4_types == 1, 134, final_arr
+                    )
+                    final_arr = np.where(
+                        labelmap_arr_tissue_4_types == 2, 135, final_arr
+                    )
+                    final_arr = np.where(
+                        labelmap_arr_tissue_4_types == 3, 136, final_arr
+                    )
+                    final_arr = np.where(
+                        labelmap_arr_tissue_4_types == 4, 137, final_arr
+                    )
 
                 self.log_info("Running lung vessels task")
                 output_nib_image_lung = totalsegmentator(
@@ -352,10 +382,9 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
                 # Only overwrite the background with body labels
                 mask = final_arr > 0
                 labelmap_arr_body[mask] = 0
-                final_arr = np.where(labelmap_arr_body == 1, 133, final_arr)
-                final_arr = np.where(labelmap_arr_body == 2, 134, final_arr)
-                final_arr = np.where(labelmap_arr_body == 3, 135, final_arr)
-                final_arr = np.where(labelmap_arr_body == 4, 136, final_arr)
+                final_arr = np.where(
+                    labelmap_arr_body == 4, 133, final_arr
+                )  # body_skin
 
             # To create an ITK image, we save the result and read it back with
             # ITK. This correctly handles the coordinate system and data
@@ -368,7 +397,7 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
             labelmap_arr = itk.array_from_image(labelmap_image).astype(np.uint8)
 
             # Add heart around interior regions.
-            if self.has_highres_heart_license:
+            if self.has_academic_license:
                 interior_mask = np.isin(labelmap_arr, [141, 142, 143, 144])
                 # Binarize to foreground value 1 so the dilate/erode calls
                 # below (which use foreground=1) operate on the mask.
@@ -387,7 +416,8 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
                 mask_id = 51  # Heart mask id
                 exterior_arr = exterior_arr * mask_id
                 labelmap_arr = np.where(labelmap_arr == 0, exterior_arr, labelmap_arr)
-                replace_arr = np.where(labelmap_arr == 133, exterior_arr, 0)
+                skin_mask = np.isin(labelmap_arr, [133, 134, 135, 136, 137])
+                replace_arr = np.where(skin_mask, exterior_arr, 0)
                 labelmap_arr = np.where(replace_arr > 0, exterior_arr, labelmap_arr)
 
             labelmap_image = itk.image_from_array(labelmap_arr)
