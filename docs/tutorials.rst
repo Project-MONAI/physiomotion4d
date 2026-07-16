@@ -368,7 +368,8 @@ Inner API usage
           anatomy_type="heart",
           separate_by_connectivity=True,
       )
-      usd_file = workflow.process()
+      result = workflow.process()
+      usd_file = result["usd_file"]
 
    For callers who need more control than the workflow wrapper offers (e.g.
    applying a colormap or per-label anatomical splitting), use

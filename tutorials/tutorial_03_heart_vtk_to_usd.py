@@ -9,7 +9,6 @@ into a USD file with anatomy materials.
 Data Required
 -------------
 Preferred input: ``tutorials/output/tutorial_02_heart/patient_surfaces.vtp``
-Fallback input: any ``*.vtp`` under ``data`` or ``data/test``
 """
 
 # Imports
@@ -17,7 +16,6 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Optional
 
 import pyvista as pv
 
@@ -43,18 +41,12 @@ if __name__ == "__main__":
     output_dir = tutorials_dir / "output" / "tutorial_03_heart"
     baselines_dir = repo_root / "tests" / "baselines"
 
-    # Preferred input: the combined surface saved by Tutorial 2. Leave vtk_file as
-    # None to auto-discover (Tutorial 2 output first, then any *.vtp under data_dir).
-    tutorial_02_surface = (
+    project_name = "tutorial_02_heart"
+
+    # Preferred input: the combined surface saved by Tutorial 2.
+    vtk_file = (
         tutorials_dir / "output" / "tutorial_02_heart" / "patient_surfaces.vtp"
     )
-    vtk_file: Optional[Path] = None
-
-    test_mode = TestTools.running_as_test()
-    if test_mode:
-        data_dir = repo_root / "data" / "test"
-    else:
-        data_dir = repo_root / "data"
 
     log_level = logging.INFO
 
@@ -62,24 +54,13 @@ if __name__ == "__main__":
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    if vtk_file is None and tutorial_02_surface.exists():
-        vtk_file = tutorial_02_surface
-    if vtk_file is None:
-        vtk_candidates = sorted(data_dir.rglob("*.vtp"))
-        if not vtk_candidates:
-            raise FileNotFoundError(
-                "No VTK surface file found. Run Tutorial 2 first or place a "
-                f"*.vtp file under {data_dir}."
-            )
-        vtk_file = vtk_candidates[0]
-
     mesh = pv.read(str(vtk_file))
 
     # Workflow initialization
 
     workflow = WorkflowConvertVTKToUSD(
         input_meshes=[mesh],
-        usd_project_name="surfaces",
+        usd_project_name=project_name,
         output_directory=output_dir,
         appearance="anatomy",
         anatomy_type="heart",
@@ -88,7 +69,7 @@ if __name__ == "__main__":
     )
 
     # Workflow execution
-    usd_file = workflow.process()
+    results = workflow.process()
 
     # Testing
     tt = TestTools(
@@ -98,12 +79,11 @@ if __name__ == "__main__":
         log_level=log_level,
     )
 
-    screenshots: list[Path] = []
-    screenshots.append(
+    screenshots = [
         tt.save_screenshot_openusd(
-            usd_file,
-            "usd_mesh_rendering.png",
+            results["usd_file"],
+            f"{project_name}_usd_mesh_rendering.png",
         )
-    )
+    ]
 
-    tutorial_results = {"usd_file": usd_file, "screenshots": screenshots}
+    tutorial_results = {"usd_file": results["usd_file"], "screenshots": screenshots}

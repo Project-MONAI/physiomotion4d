@@ -90,7 +90,7 @@ if __name__ == "__main__":
     OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_09_byod_mgn"
     MANIFESTS_DIR = OUTPUT_DIR / "manifests_mgn"
 
-    RESUME_FROM = str(OUTPUT_DIR / "mgn_stage_model_epoch_00100.pt")
+    RESUME_FROM = str(TUTORIALS_DIR / "output" / "tutorial_09_byod_mgn_2" / "mgn_stage_model_epoch_00200.pt")
 
     EPOCHS = 1500
     BATCH_SIZE_GRAPHS = 4  # mini-batch measured in (subject, phase) graphs

@@ -45,9 +45,9 @@ if __name__ == "__main__":
     repo_root = Path(__file__).resolve().parent.parent
     tutorials_dir = Path(__file__).resolve().parent
 
-    class_name = "tutorial_05_heart_to_lung_fit_statistical_model_to_patient"
+    project_name = "tutorial_05_heart_to_lung"
 
-    output_dir = tutorials_dir / "output" / "tutorial_05_heart_to_lung"
+    output_dir = tutorials_dir / "output" / project_name
     baselines_dir = repo_root / "tests" / "baselines"
 
     # PCA model + mean surface produced by Tutorial 4.
@@ -55,6 +55,9 @@ if __name__ == "__main__":
     pca_mean_file = (
         tutorials_dir / "output" / "tutorial_04_heart" / "pca_mean_surface.vtp"
     )
+    # BYOD example:
+    # pca_mean_file = Path("D:/PhysioTwin4D/kcl-heart-pca/pca-vol-kcl/pca_mean.vtu")
+    # pca_json = Path("D:/PhysioTwin4D/kcl-heart-pca/pca-vol-kcl/pca_model.json")
 
     test_mode = TestTools.running_as_test()
     if test_mode:
@@ -94,18 +97,25 @@ if __name__ == "__main__":
             "See data/README.md for download instructions."
         )
     patient_image = itk.imread(str(patient_image_file))
-    itk.imwrite(patient_image, output_dir / "patient_image.nii.gz")
 
-    segmentation_result = segmentation_method.segment(patient_image)
-    patient_labelmap = segmentation_result["labelmap"]
-    itk.imwrite(patient_labelmap, output_dir / "patient_labelmap.nii.gz")
+    if not (output_dir / f"{project_name}_patient_image.nii.gz").exists():
+        itk.imwrite(patient_image, output_dir / f"{project_name}_patient_image.nii.gz")
 
-    heart_labelmap = segmentation_result["heart"]
-    itk.imwrite(heart_labelmap, output_dir / "heart_labelmap.nii.gz")
+        segmentation_result = segmentation_method.segment(patient_image)
+        patient_labelmap = segmentation_result["labelmap"]
+        itk.imwrite(patient_labelmap, output_dir / f"{project_name}_patient_labelmap.nii.gz")
 
-    contour_tools = ContourTools()
-    heart_surface = contour_tools.extract_contours(labelmap_image=heart_labelmap)
-    heart_surface.save(output_dir / "heart_surface.vtp")
+        heart_labelmap = segmentation_result["heart"]
+        itk.imwrite(heart_labelmap, output_dir / f"{project_name}_heart_labelmap.nii.gz")
+    
+        contour_tools = ContourTools()
+        heart_surface = contour_tools.extract_contours(labelmap_image=heart_labelmap)
+        heart_surface.save(output_dir / f"{project_name}_heart_surface.vtp")
+
+    else:
+        patient_labelmap = itk.imread(output_dir / f"{project_name}_patient_labelmap.nii.gz")
+        heart_labelmap = itk.imread(output_dir / f"{project_name}_heart_labelmap.nii.gz")
+        heart_surface = pv.read(output_dir / f"{project_name}_heart_surface.vtp")
 
     # Workflow initialization
 
@@ -131,25 +141,25 @@ if __name__ == "__main__":
     # Result saving
     registered_coefficients = workflow.pca_coefficients
     if registered_coefficients is not None:
-        registered_coefficients_path = output_dir / "registered_coefficients.json"
+        registered_coefficients_path = output_dir / f"{project_name}_registered_coefficients.json"
         with registered_coefficients_path.open(mode="w", encoding="utf-8") as f:
             json.dump(registered_coefficients.tolist(), f)
 
     template_mesh = workflow.pca_template_model
-    template_mesh.save(str(output_dir / "template_mesh.vtp"))
+    template_mesh.save(str(output_dir / f"{project_name}_template_mesh.vtu"))
 
     template_surface = workflow.pca_template_model_surface
-    template_surface.save(str(output_dir / "template_surface.vtp"))
+    template_surface.save(str(output_dir / f"{project_name}_template_surface.vtp"))
 
     registered_mesh = workflow_results["registered_template_model"]
-    registered_mesh.save(str(output_dir / "template_mesh_registered.vtp"))
+    registered_mesh.save(str(output_dir / f"{project_name}_template_mesh_registered.vtu"))
 
     registered_surface = workflow_results["registered_template_model_surface"]
-    registered_surface.save(str(output_dir / "template_surface_registered.vtp"))
+    registered_surface.save(str(output_dir / f"{project_name}_template_surface_registered.vtp"))
 
     # Testing
     TestTools(
-        class_name=class_name,
+        class_name=project_name,
         results_dir=output_dir,
         baselines_dir=baselines_dir,
         log_level=log_level,
@@ -162,7 +172,7 @@ if __name__ == "__main__":
 
     screenshots: list[Path] = []
 
-    before_path = output_dir / "model_before_registration.png"
+    before_path = output_dir / f"{project_name}_model_before_registration.png"
     plotter = pv.Plotter(off_screen=True, window_size=[800, 600])
     plotter.add_mesh(pca_mean, color="dodgerblue", opacity=0.6)
     plotter.add_mesh(heart_surface, color="tomato", opacity=0.6)
@@ -171,7 +181,7 @@ if __name__ == "__main__":
     plotter.close()
     screenshots.append(before_path)
 
-    after_path = output_dir / "model_after_registration.png"
+    after_path = output_dir / f"{project_name}_model_after_registration.png"
     plotter = pv.Plotter(off_screen=True, window_size=[800, 600])
     plotter.add_mesh(registered_surface, color="limegreen", opacity=0.7)
     plotter.add_mesh(heart_surface, color="tomato", opacity=0.4)

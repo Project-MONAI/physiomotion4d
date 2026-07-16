@@ -9,7 +9,7 @@ or colormap from a primvar with auto or specified intensity range).
 
 import logging
 from pathlib import Path
-from typing import Literal, Optional, Sequence, Union
+from typing import Any, Literal, Optional, Sequence, Union
 
 import pyvista as pv
 import vtk
@@ -106,12 +106,13 @@ class WorkflowConvertVTKToUSD(PhysioTwin4DBase):
                 "separate_by_connectivity and separate_by_cell_type cannot both be True"
             )
 
-    def process(self) -> str:
+    def process(self) -> dict[str, Any]:
         """
         Run the full workflow: convert meshes to USD, then apply the chosen appearance.
 
         Returns:
-            Path to the created USD file (str).
+            Dict with the results of the workflow:
+                - "usd_file" (str): Path to the created USD file.
         """
         self.log_section("VTK to USD conversion workflow")
 
@@ -168,7 +169,7 @@ class WorkflowConvertVTKToUSD(PhysioTwin4DBase):
             self.log_warning(
                 "No mesh prims found under /World/%s", self.usd_project_name
             )
-            return str(output_usd)
+            return {"usd_file": str(output_usd)}
 
         # Static merge has no time samples; pass None so only default time is used
         appearance_time_codes = None if self.static_merge else time_codes
@@ -223,4 +224,4 @@ class WorkflowConvertVTKToUSD(PhysioTwin4DBase):
                     primvar = None  # next mesh: auto-pick again
 
         self.log_info("Workflow complete: %s", output_usd)
-        return str(output_usd)
+        return {"usd_file": str(output_usd)}

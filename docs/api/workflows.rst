@@ -119,7 +119,8 @@ VTK to USD
        anatomy_type="heart",
    )
 
-   output_path = workflow.process()
+   result = workflow.process()
+   usd_file = result["usd_file"]
 
 Statistical Shape Modeling
 ==========================
