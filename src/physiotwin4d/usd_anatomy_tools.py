@@ -30,7 +30,7 @@ registered entry, so any group present in the segmenter's
 """
 
 import logging
-from typing import Any, Mapping
+from typing import Any, Mapping, Optional
 
 from pxr import Sdf, UsdGeom, UsdShade
 
@@ -38,10 +38,12 @@ from .physiotwin4d_base import PhysioTwin4DBase
 
 # Default OmniSurface render parameters keyed by group name (matching
 # :class:`physiotwin4d.AnatomyTaxonomy.group_names`) and by organ-level
-# overrides (e.g. ``liver``, ``spleen``, ``kidney_left``). ``enhance_meshes``
-# consults an organ-level entry first, then falls back to the containing
-# group's entry, and finally to ``"other"``. Module-level so CLIs and tests
-# can enumerate the supported types without constructing a USD stage.
+# overrides (e.g. ``liver``, ``spleen``, ``kidney``). ``enhance_meshes``
+# consults the organ-level entries first (matching an override key when it is
+# a substring of the organ name, so ``kidney`` covers ``kidney_left`` and
+# ``kidney_right``), then falls back to the containing group's entry, and
+# finally to ``"other"``. Module-level so CLIs and tests can enumerate the
+# supported types without constructing a USD stage.
 DEFAULT_RENDER_PARAMS: dict[str, dict[str, Any]] = {
     "heart": {
         "name": "Heart",
@@ -148,10 +150,14 @@ DEFAULT_RENDER_PARAMS: dict[str, dict[str, Any]] = {
         "subsurface_scale": 0.3,
         "coat_weight": 0.12,
     },
-    # Organ-level overrides. enhance_meshes consults these by organ
-    # name *before* falling back to the containing group's params, so
-    # liver/spleen/kidney get their dedicated look despite being in
-    # the soft_tissue group of the taxonomy.
+    # Organ-level overrides. enhance_meshes consults these before falling
+    # back to the containing group's params, matching an override key when it
+    # is a substring of the organ name, so e.g. liver/spleen/kidney get their
+    # dedicated look despite being in the soft_tissue group of the taxonomy.
+    # The overrides below span abdominal/endocrine organs, vessels (artery vs.
+    # vein), tissue types (skin/fat/muscle/cartilage), and the oxygenation-
+    # coded heart chambers; when several keys are substrings of one name the
+    # longest (most specific) one wins.
     "liver": {
         "name": "Liver",
         "enable_diffuse_transmission": True,
@@ -182,7 +188,7 @@ DEFAULT_RENDER_PARAMS: dict[str, dict[str, Any]] = {
         "subsurface_scale": 0.15,
         "coat_weight": 0.1,
     },
-    "kidney_right": {
+    "kidney": {
         "name": "Kidney",
         "enable_diffuse_transmission": True,
         "diffuse_reflection_weight": 0.1,
@@ -197,11 +203,421 @@ DEFAULT_RENDER_PARAMS: dict[str, dict[str, Any]] = {
         "subsurface_scale": 0.18,
         "coat_weight": 0.1,
     },
+    # Skin: tan/pink dermis. Skin is the canonical strong-subsurface tissue
+    # (Jensen et al., "A Practical Model for Subsurface Light Transport",
+    # SIGGRAPH 2001), so it carries the highest subsurface_weight here plus a
+    # thin oily coat for the epidermal sheen. Matches organs named "*skin*".
+    "skin": {
+        "name": "Skin",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.2,
+        "diffuse_reflection_color": (0.75, 0.52, 0.42),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.4,
+        "specular_reflection_roughness": 0.45,
+        "subsurface_transmission_color": (0.85, 0.5, 0.4),
+        "subsurface_scattering_color": (0.9, 0.55, 0.45),
+        "subsurface_weight": 0.12,
+        "subsurface_scale": 0.4,
+        "coat_weight": 0.15,
+    },
+    # Airway: pale-pink tracheobronchial mucosa. Wet mucus surface -> strong,
+    # low-roughness specular plus a heavy coat for the glossy sheen. Matches
+    # organs named "*airway*" (e.g. lung_airways, lung_airways_wall).
+    "airway": {
+        "name": "Airway",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.18,
+        "diffuse_reflection_color": (0.85, 0.6, 0.58),
+        "diffuse_reflection_roughness": 0.4,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.6,
+        "specular_reflection_roughness": 0.35,
+        "subsurface_transmission_color": (0.9, 0.7, 0.7),
+        "subsurface_scattering_color": (0.9, 0.7, 0.7),
+        "subsurface_weight": 0.08,
+        "subsurface_scale": 0.15,
+        "coat_weight": 0.2,
+    },
+    # Vein: deoxygenated blood -> dark, desaturated purplish-red (blue channel
+    # lifted above green). Deoxy-hemoglobin absorbs green/red more than oxy-Hb,
+    # shifting venous vessels darker and bluer than arteries. Matches organs
+    # named "*vein*" (pulmonary_vein, brachiocephalic_vein, lung_veins).
+    "vein": {
+        "name": "Vein",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.2,
+        "diffuse_reflection_color": (0.3, 0.03, 0.12),
+        "diffuse_reflection_roughness": 0.4,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.4,
+        "subsurface_transmission_color": (0.5, 0.1, 0.2),
+        "subsurface_scattering_color": (0.5, 0.1, 0.2),
+        "subsurface_weight": 0.09,
+        "subsurface_scale": 0.2,
+        "coat_weight": 0.12,
+    },
+    # Artery: oxygenated blood -> brighter, more saturated red than veins. Key
+    # is the substring "arter" so it matches both "artery" and "arteries"
+    # (subclavian/carotid arteries, lung_arteries, pulmonary_artery).
+    "arter": {
+        "name": "Artery",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.25,
+        "diffuse_reflection_color": (0.55, 0.03, 0.03),
+        "diffuse_reflection_roughness": 0.35,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.4,
+        "subsurface_transmission_color": (0.8, 0.2, 0.2),
+        "subsurface_scattering_color": (0.8, 0.2, 0.2),
+        "subsurface_weight": 0.09,
+        "subsurface_scale": 0.22,
+        "coat_weight": 0.12,
+    },
+    # Fat: adipose tissue -> pale yellow, translucent, with a greasy coat.
+    # Matches organs named "*fat*" (subcutaneous, torso, intermuscular).
+    "fat": {
+        "name": "Fat",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.2,
+        "diffuse_reflection_color": (0.9, 0.75, 0.35),
+        "diffuse_reflection_roughness": 0.45,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.4,
+        "subsurface_transmission_color": (0.95, 0.85, 0.5),
+        "subsurface_scattering_color": (0.95, 0.85, 0.5),
+        "subsurface_weight": 0.1,
+        "subsurface_scale": 0.3,
+        "coat_weight": 0.15,
+    },
+    # Muscle: skeletal muscle -> deep red-brown, matte (fibrous striations),
+    # only lightly moist. Matches organs named "*muscle*" (skeletal_muscle);
+    # the substring does not appear in "intermuscular_fat", so fat is
+    # unaffected. Darker and less saturated than arterial blood.
+    "muscle": {
+        "name": "Muscle",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.18,
+        "diffuse_reflection_color": (0.42, 0.08, 0.07),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.4,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.6, 0.15, 0.13),
+        "subsurface_scattering_color": (0.6, 0.15, 0.13),
+        "subsurface_weight": 0.08,
+        "subsurface_scale": 0.18,
+        "coat_weight": 0.05,
+    },
+    # Aorta: largest systemic artery, oxygenated -> bright saturated red, same
+    # optical look as the generic "arter" override but kept as its own entry
+    # because "aorta" contains no "arter" substring. Matches "aorta",
+    # "highres_aorta".
+    "aorta": {
+        "name": "Aorta",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.25,
+        "diffuse_reflection_color": (0.55, 0.03, 0.03),
+        "diffuse_reflection_roughness": 0.35,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.4,
+        "subsurface_transmission_color": (0.8, 0.2, 0.2),
+        "subsurface_scattering_color": (0.8, 0.2, 0.2),
+        "subsurface_weight": 0.09,
+        "subsurface_scale": 0.22,
+        "coat_weight": 0.12,
+    },
+    # Vena cava: large systemic vein, deoxygenated -> dark purplish-red, same
+    # optical look as the generic "vein" override but kept as its own entry
+    # because "vena_cava" contains no "vein" substring. Matches
+    # "superior_vena_cava", "inferior_vena_cava".
+    "cava": {
+        "name": "Vena_Cava",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.2,
+        "diffuse_reflection_color": (0.3, 0.03, 0.12),
+        "diffuse_reflection_roughness": 0.4,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.4,
+        "subsurface_transmission_color": (0.5, 0.1, 0.2),
+        "subsurface_scattering_color": (0.5, 0.1, 0.2),
+        "subsurface_weight": 0.09,
+        "subsurface_scale": 0.2,
+        "coat_weight": 0.12,
+    },
+    # --- Abdominal / endocrine organ overrides (soft_tissue group). These
+    # organs otherwise all collapse onto the generic tan soft_tissue look.
+    # Colors are realistic but nudged apart so neighboring organs stay
+    # distinguishable during cropped visual inspection. ---
+    # Gallbladder: bile-filled -> characteristic olive/green, the single most
+    # recognizable abdominal cue. Matches "gallbladder".
+    "gallbladder": {
+        "name": "Gallbladder",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.17,
+        "diffuse_reflection_color": (0.35, 0.45, 0.15),
+        "diffuse_reflection_roughness": 0.45,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.5, 0.6, 0.25),
+        "subsurface_scattering_color": (0.5, 0.6, 0.25),
+        "subsurface_weight": 0.09,
+        "subsurface_scale": 0.25,
+        "coat_weight": 0.15,
+    },
+    # Pancreas: lobulated -> pale salmon-tan. Matches "pancreas".
+    "pancreas": {
+        "name": "Pancreas",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.17,
+        "diffuse_reflection_color": (0.8, 0.52, 0.44),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.4,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.9, 0.65, 0.55),
+        "subsurface_scattering_color": (0.9, 0.65, 0.55),
+        "subsurface_weight": 0.08,
+        "subsurface_scale": 0.25,
+        "coat_weight": 0.1,
+    },
+    # Stomach: muscular wall -> pink-red, redder than the pale bowel/pancreas.
+    # Matches "stomach".
+    "stomach": {
+        "name": "Stomach",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.17,
+        "diffuse_reflection_color": (0.72, 0.4, 0.38),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.85, 0.5, 0.45),
+        "subsurface_scattering_color": (0.85, 0.5, 0.45),
+        "subsurface_weight": 0.08,
+        "subsurface_scale": 0.3,
+        "coat_weight": 0.12,
+    },
+    # Brain: soft neural tissue -> light pink-grey with a little more
+    # subsurface glow than firm organs. Matches "brain".
+    "brain": {
+        "name": "Brain",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.17,
+        "diffuse_reflection_color": (0.82, 0.72, 0.68),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.4,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.9, 0.82, 0.8),
+        "subsurface_scattering_color": (0.9, 0.82, 0.8),
+        "subsurface_weight": 0.1,
+        "subsurface_scale": 0.3,
+        "coat_weight": 0.1,
+    },
+    # Thyroid: highly vascular gland -> deep red-brown. Matches "thyroid".
+    "thyroid": {
+        "name": "Thyroid",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.15,
+        "diffuse_reflection_color": (0.55, 0.22, 0.2),
+        "diffuse_reflection_roughness": 0.45,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.7, 0.3, 0.25),
+        "subsurface_scattering_color": (0.7, 0.3, 0.25),
+        "subsurface_weight": 0.085,
+        "subsurface_scale": 0.2,
+        "coat_weight": 0.1,
+    },
+    # Adrenal gland: cortex -> yellow-orange. More saturated/orange than the
+    # pale yellow "fat" look so the two stay distinct. Matches "adrenal".
+    "adrenal": {
+        "name": "Adrenal_Gland",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.17,
+        "diffuse_reflection_color": (0.82, 0.62, 0.32),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.4,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.9, 0.75, 0.5),
+        "subsurface_scattering_color": (0.9, 0.75, 0.5),
+        "subsurface_weight": 0.08,
+        "subsurface_scale": 0.25,
+        "coat_weight": 0.1,
+    },
+    # Urinary bladder: thin, fluid-filled wall -> pale pink, lightly wet.
+    # Key "bladder" also occurs in "gallbladder", but override matching is
+    # longest-first, so "gallbladder" (above) wins for the gallbladder and
+    # "bladder" claims only "urinary_bladder".
+    "bladder": {
+        "name": "Urinary_Bladder",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.15,
+        "diffuse_reflection_color": (0.8, 0.62, 0.6),
+        "diffuse_reflection_roughness": 0.45,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.45,
+        "subsurface_transmission_color": (0.9, 0.75, 0.72),
+        "subsurface_scattering_color": (0.9, 0.75, 0.72),
+        "subsurface_weight": 0.09,
+        "subsurface_scale": 0.25,
+        "coat_weight": 0.15,
+    },
+    # Gluteus muscles: skeletal muscle -> deep red-brown. Shares the "muscle"
+    # look but needs its own key because the gluteus label names contain no
+    # "muscle" substring. Matches "gluteus_maximus/medius/minimus_*".
+    "gluteus": {
+        "name": "Gluteus_Muscle",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.18,
+        "diffuse_reflection_color": (0.42, 0.08, 0.07),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.4,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.6, 0.15, 0.13),
+        "subsurface_scattering_color": (0.6, 0.15, 0.13),
+        "subsurface_weight": 0.08,
+        "subsurface_scale": 0.18,
+        "coat_weight": 0.05,
+    },
+    # Costal cartilage: cartilage, not cortical bone -> translucent grey-white
+    # with more subsurface than the opaque "bone" look. Bone-group organ, but
+    # organ overrides win over the group. Matches "costal_cartilages".
+    "cartilage": {
+        "name": "Costal_Cartilage",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.2,
+        "diffuse_reflection_color": (0.82, 0.86, 0.82),
+        "diffuse_reflection_roughness": 0.35,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.85, 0.9, 0.85),
+        "subsurface_scattering_color": (0.85, 0.9, 0.85),
+        "subsurface_weight": 0.1,
+        "subsurface_scale": 0.2,
+        "coat_weight": 0.05,
+    },
+    # --- Heart-chamber overrides (heart group). Oxygenation-coded so cardiac
+    # anatomy reads at a glance: left (systemic, oxygenated) = brighter red;
+    # right (pulmonary, deoxygenated) = darker, bluer red; myocardium = deep
+    # red-brown wall. Keys carry the full "_left"/"_right" suffix because the
+    # two sides are not substrings of one another. ---
+    "myocardium": {
+        "name": "Myocardium",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.25,
+        "diffuse_reflection_color": (0.4, 0.08, 0.07),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.6, 0.25, 0.22),
+        "subsurface_scattering_color": (0.6, 0.25, 0.22),
+        "subsurface_weight": 0.1,
+        "subsurface_scale": 1.5,
+        "coat_weight": 0.0,
+    },
+    "atrium_left": {
+        "name": "Atrium_Left",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.25,
+        "diffuse_reflection_color": (0.5, 0.06, 0.06),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.85, 0.4, 0.4),
+        "subsurface_scattering_color": (0.85, 0.4, 0.4),
+        "subsurface_weight": 0.1,
+        "subsurface_scale": 2.0,
+        "coat_weight": 0.0,
+    },
+    "ventricle_left": {
+        "name": "Ventricle_Left",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.25,
+        "diffuse_reflection_color": (0.45, 0.03, 0.03),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.8, 0.35, 0.35),
+        "subsurface_scattering_color": (0.8, 0.35, 0.35),
+        "subsurface_weight": 0.1,
+        "subsurface_scale": 2.0,
+        "coat_weight": 0.0,
+    },
+    "atrium_right": {
+        "name": "Atrium_Right",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.25,
+        "diffuse_reflection_color": (0.32, 0.05, 0.12),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.6, 0.25, 0.35),
+        "subsurface_scattering_color": (0.6, 0.25, 0.35),
+        "subsurface_weight": 0.1,
+        "subsurface_scale": 2.0,
+        "coat_weight": 0.0,
+    },
+    "ventricle_right": {
+        "name": "Ventricle_Right",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.25,
+        "diffuse_reflection_color": (0.28, 0.03, 0.11),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.55, 0.2, 0.32),
+        "subsurface_scattering_color": (0.55, 0.2, 0.32),
+        "subsurface_weight": 0.1,
+        "subsurface_scale": 2.0,
+        "coat_weight": 0.0,
+    },
+    # Left atrial appendage: part of the left atrium -> oxygenated look. Key
+    # "atrial" is not a substring of "atrium", so it picks up only
+    # "atrial_appendage_left".
+    "atrial": {
+        "name": "Atrial_Appendage",
+        "enable_diffuse_transmission": True,
+        "diffuse_reflection_weight": 0.25,
+        "diffuse_reflection_color": (0.5, 0.06, 0.06),
+        "diffuse_reflection_roughness": 0.5,
+        "metalness": 0.0,
+        "specular_reflection_weight": 0.5,
+        "specular_reflection_roughness": 0.5,
+        "subsurface_transmission_color": (0.85, 0.4, 0.4),
+        "subsurface_scattering_color": (0.85, 0.4, 0.4),
+        "subsurface_weight": 0.1,
+        "subsurface_scale": 2.0,
+        "coat_weight": 0.0,
+    },
 }
-# kidney_left and kidney share the same look as kidney_right ("kidney" is a
-# convenience alias kept for the CLI and other generic callers).
-DEFAULT_RENDER_PARAMS["kidney_left"] = DEFAULT_RENDER_PARAMS["kidney_right"]
-DEFAULT_RENDER_PARAMS["kidney"] = DEFAULT_RENDER_PARAMS["kidney_right"]
+
+# Canonical AnatomyTaxonomy group names that carry a group-level entry in
+# DEFAULT_RENDER_PARAMS. Every other key is an organ-level override. Used by
+# :meth:`USDAnatomyTools._resolve_render_params` to mirror ``enhance_meshes``,
+# where an organ override always beats the containing group on a substring
+# match (e.g. "lung_veins" -> the "vein" override, not the "lung" group).
+GROUP_RENDER_KEYS: frozenset[str] = frozenset(
+    {"heart", "lung", "bone", "major_vessels", "contrast", "soft_tissue", "other"}
+)
 
 
 class USDAnatomyTools(PhysioTwin4DBase):
@@ -234,6 +650,34 @@ class USDAnatomyTools(PhysioTwin4DBase):
         """Return list of registered render-param keys (groups + organ overrides)."""
         return list(self.render_params.keys())
 
+    def _resolve_render_params(self, anatomy_type: str) -> Optional[dict[str, Any]]:
+        """Resolve *anatomy_type* to a render-params entry, or ``None``.
+
+        Matching mirrors :meth:`enhance_meshes`: an exact (case-insensitive)
+        key wins first; otherwise a key that is a substring of *anatomy_type*
+        matches (so ``"kidney_left"`` resolves to the ``"kidney"`` entry).
+        Organ-level overrides are tried before group-level keys (so
+        ``"lung_veins"`` resolves to the ``"vein"`` override, not the ``"lung"``
+        group), and within each set the longest (most specific) key wins.
+
+        Args:
+            anatomy_type: A group/organ name or registered render-params key.
+
+        Returns:
+            The matching render-params dict, or ``None`` if nothing matches.
+        """
+        name = anatomy_type.lower()
+        exact = self.render_params.get(name)
+        if exact is not None:
+            return exact
+        override_keys = [k for k in self.render_params if k not in GROUP_RENDER_KEYS]
+        group_keys = [k for k in self.render_params if k in GROUP_RENDER_KEYS]
+        for keys in (override_keys, group_keys):
+            for key in sorted(keys, key=len, reverse=True):
+                if key in name:
+                    return self.render_params[key]
+        return None
+
     def get_anatomy_diffuse_color(
         self, anatomy_type: str
     ) -> tuple[float, float, float]:
@@ -243,16 +687,18 @@ class USDAnatomyTools(PhysioTwin4DBase):
         created with ``stage=None`` purely for color look-up purposes.
 
         Args:
-            anatomy_type: A registered render-params key (e.g. ``"heart"``,
-                ``"lung"``, ``"liver"``).
+            anatomy_type: A group/organ name or registered render-params key
+                (e.g. ``"heart"``, ``"lung"``, ``"liver"``). Resolved via
+                exact-then-substring matching, so ``"kidney_left"`` maps to the
+                ``"kidney"`` entry (see :meth:`_resolve_render_params`).
 
         Returns:
             RGB tuple of floats in ``[0, 1]``.
 
         Raises:
-            ValueError: If *anatomy_type* is not registered.
+            ValueError: If *anatomy_type* matches no registered entry.
         """
-        params = self.render_params.get(anatomy_type.lower())
+        params = self._resolve_render_params(anatomy_type)
         if params is None:
             raise ValueError(
                 f"Unknown anatomy_type '{anatomy_type}'. "
@@ -266,13 +712,15 @@ class USDAnatomyTools(PhysioTwin4DBase):
 
         Args:
             mesh_path: USD path to the mesh prim (e.g. "/World/Meshes/MyMesh").
-            anatomy_type: A registered render-params key (group or organ
-                override). See :meth:`get_anatomy_types`.
+            anatomy_type: A group/organ name or registered render-params key.
+                Resolved via exact-then-substring matching, so ``"kidney_left"``
+                maps to the ``"kidney"`` entry (see
+                :meth:`_resolve_render_params`). See :meth:`get_anatomy_types`.
 
         Raises:
-            ValueError: If mesh_path is invalid or anatomy_type is not registered.
+            ValueError: If mesh_path is invalid or anatomy_type matches no entry.
         """
-        params = self.render_params.get(anatomy_type.lower())
+        params = self._resolve_render_params(anatomy_type)
         if params is None:
             raise ValueError(
                 f"Unknown anatomy_type '{anatomy_type}'. "
@@ -362,8 +810,11 @@ class USDAnatomyTools(PhysioTwin4DBase):
         Walks the segmenter's :class:`AnatomyTaxonomy` and applies a material
         to each mesh prim whose leaf name matches an organ name in any group.
         An organ-level entry in :attr:`render_params` (e.g. ``"liver"``,
-        ``"spleen"``, ``"kidney_left"``) takes precedence over the entry for
-        the containing group.
+        ``"spleen"``, ``"kidney"``) takes precedence over the entry for the
+        containing group. An organ-level key matches when it is a substring of
+        the organ name, so ``"kidney"`` covers both ``kidney_left`` and
+        ``kidney_right``; when several keys match, the longest (most specific)
+        one wins.
 
         Anatomy grouping is performed upstream by ConvertVTKToUSD, which
         writes labeled prims under ``/World/{basename}/{type}/{label_name}``.
@@ -375,18 +826,33 @@ class USDAnatomyTools(PhysioTwin4DBase):
         """
         taxonomy = segmentator.taxonomy
 
+        # Organ-level override keys are every registered render-params key
+        # that is neither a group name nor the "other" fallback. They match an
+        # organ when the key is a substring of the organ name (e.g. "kidney"
+        # matches "kidney_left"). Sorted longest-first so a more specific key
+        # wins when several are substrings of the same organ name.
+        group_names = set(taxonomy.group_names())
+        override_keys = sorted(
+            (k for k in self.render_params if k not in group_names and k != "other"),
+            key=len,
+            reverse=True,
+        )
+
         # Build organ_name -> render params dict in one pass. Organ-level
-        # overrides win over the containing group's params; if neither is
-        # registered, fall back to the "other" entry (always present in
+        # overrides win over the containing group's params; if neither
+        # applies, fall back to the "other" entry (always present in
         # DEFAULT_RENDER_PARAMS, so the lookup is safe).
         organ_params: dict[str, dict[str, Any]] = {}
         default_params: dict[str, Any] = self.render_params["other"]
         for group_name in taxonomy.group_names():
             group_params = self.render_params.get(group_name, default_params)
             for organ_name in taxonomy.labels_in_group(group_name).values():
-                organ_params[organ_name] = self.render_params.get(
-                    organ_name, group_params
-                )
+                selected = group_params
+                for key in override_keys:
+                    if key in organ_name.lower():
+                        selected = self.render_params[key]
+                        break
+                organ_params[organ_name] = selected
 
         for prim in self.stage.Traverse():
             mesh_prim = UsdGeom.Mesh(prim)

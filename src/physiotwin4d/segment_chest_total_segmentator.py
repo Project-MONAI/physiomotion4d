@@ -179,6 +179,7 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
                     115: "rib_right_12",
                     116: "sternum",
                     117: "costal_cartilages",
+                    25: "sacrum",
                 },
             ),
             (
@@ -199,7 +200,6 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
                     20: "colon",
                     21: "urinary_bladder",
                     22: "prostate",
-                    25: "sacrum",
                     80: "gluteus_maximus_left",
                     81: "gluteus_maximus_right",
                     82: "gluteus_medius_left",
@@ -380,8 +380,8 @@ class SegmentChestTotalSegmentator(SegmentAnatomyBase):
                 # labelmap_arr_body contains: 1=body, 2=body_trunc, 3=body_extremities,
                 #     4=skin
                 # Only overwrite the background with body labels
-                mask = final_arr > 0
-                labelmap_arr_body[mask] = 0
+                # mask = final_arr > 0
+                # labelmap_arr_body[mask] = 0
                 final_arr = np.where(
                     labelmap_arr_body == 4, 133, final_arr
                 )  # body_skin

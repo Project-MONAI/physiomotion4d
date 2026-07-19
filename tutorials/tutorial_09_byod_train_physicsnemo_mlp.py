@@ -99,7 +99,7 @@ if __name__ == "__main__":
 
     # Explicit held-out splits; every other discovered subject is used for training.
     TEST_SUBJECTS = ["pm0027"]
-    VAL_SUBJECTS = []
+    VAL_SUBJECTS: list[str] = []
     LOG_LEVEL = logging.INFO
 
     def run_tutorial() -> dict[str, Any]:
@@ -150,13 +150,16 @@ if __name__ == "__main__":
         trainer.set_num_layers(NUM_LAYERS)
         train_result = trainer.process()
 
+        # Evaluate from the directory training actually used: when resuming,
+        # training writes to a fresh sibling directory rather than OUTPUT_DIR.
+        model_directory = train_result["output_directory"]
         infer = WorkflowInferPhysicsNeMoMLP(
-            model_directory=OUTPUT_DIR, log_level=LOG_LEVEL
+            model_directory=model_directory, log_level=LOG_LEVEL
         )
         eval_outputs: dict[str, Any] = {}
         for sid in TEST_SUBJECTS:
             eval_outputs[sid] = infer.predict(
-                manifests[sid], output_directory=OUTPUT_DIR / "eval_mlp" / sid
+                manifests[sid], output_directory=model_directory / "eval_mlp" / sid
             )
 
         return {"training": train_result, "evaluation": eval_outputs}

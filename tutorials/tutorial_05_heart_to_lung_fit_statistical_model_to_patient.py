@@ -103,19 +103,29 @@ if __name__ == "__main__":
 
         segmentation_result = segmentation_method.segment(patient_image)
         patient_labelmap = segmentation_result["labelmap"]
-        itk.imwrite(patient_labelmap, output_dir / f"{project_name}_patient_labelmap.nii.gz")
+        itk.imwrite(
+            patient_labelmap, output_dir / f"{project_name}_patient_labelmap.nii.gz"
+        )
 
         heart_labelmap = segmentation_result["heart"]
-        itk.imwrite(heart_labelmap, output_dir / f"{project_name}_heart_labelmap.nii.gz")
-    
+        itk.imwrite(
+            heart_labelmap, output_dir / f"{project_name}_heart_labelmap.nii.gz"
+        )
+
         contour_tools = ContourTools()
         heart_surface = contour_tools.extract_contours(labelmap_image=heart_labelmap)
         heart_surface.save(output_dir / f"{project_name}_heart_surface.vtp")
 
     else:
-        patient_labelmap = itk.imread(output_dir / f"{project_name}_patient_labelmap.nii.gz")
-        heart_labelmap = itk.imread(output_dir / f"{project_name}_heart_labelmap.nii.gz")
-        heart_surface = pv.read(output_dir / f"{project_name}_heart_surface.vtp")
+        patient_labelmap = itk.imread(
+            output_dir / f"{project_name}_patient_labelmap.nii.gz"
+        )
+        heart_labelmap = itk.imread(
+            output_dir / f"{project_name}_heart_labelmap.nii.gz"
+        )
+        heart_surface = cast(
+            pv.PolyData, pv.read(output_dir / f"{project_name}_heart_surface.vtp")
+        )
 
     # Workflow initialization
 
@@ -141,21 +151,31 @@ if __name__ == "__main__":
     # Result saving
     registered_coefficients = workflow.pca_coefficients
     if registered_coefficients is not None:
-        registered_coefficients_path = output_dir / f"{project_name}_registered_coefficients.json"
+        registered_coefficients_path = (
+            output_dir / f"{project_name}_registered_coefficients.json"
+        )
         with registered_coefficients_path.open(mode="w", encoding="utf-8") as f:
             json.dump(registered_coefficients.tolist(), f)
 
     template_mesh = workflow.pca_template_model
+    assert template_mesh is not None, "pca_template_model must be set after process()"
     template_mesh.save(str(output_dir / f"{project_name}_template_mesh.vtu"))
 
     template_surface = workflow.pca_template_model_surface
+    assert template_surface is not None, (
+        "pca_template_model_surface must be set after process()"
+    )
     template_surface.save(str(output_dir / f"{project_name}_template_surface.vtp"))
 
     registered_mesh = workflow_results["registered_template_model"]
-    registered_mesh.save(str(output_dir / f"{project_name}_template_mesh_registered.vtu"))
+    registered_mesh.save(
+        str(output_dir / f"{project_name}_template_mesh_registered.vtu")
+    )
 
     registered_surface = workflow_results["registered_template_model_surface"]
-    registered_surface.save(str(output_dir / f"{project_name}_template_surface_registered.vtp"))
+    registered_surface.save(
+        str(output_dir / f"{project_name}_template_surface_registered.vtp")
+    )
 
     # Testing
     TestTools(

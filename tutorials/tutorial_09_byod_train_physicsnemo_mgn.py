@@ -90,7 +90,12 @@ if __name__ == "__main__":
     OUTPUT_DIR = TUTORIALS_DIR / "output" / "tutorial_09_byod_mgn"
     MANIFESTS_DIR = OUTPUT_DIR / "manifests_mgn"
 
-    RESUME_FROM = str(TUTORIALS_DIR / "output" / "tutorial_09_byod_mgn_2" / "mgn_stage_model_epoch_00200.pt")
+    RESUME_FROM = str(
+        TUTORIALS_DIR
+        / "output"
+        / "tutorial_09_byod_mgn_2"
+        / "mgn_stage_model_epoch_00200.pt"
+    )
 
     EPOCHS = 1500
     BATCH_SIZE_GRAPHS = 4  # mini-batch measured in (subject, phase) graphs
@@ -101,7 +106,7 @@ if __name__ == "__main__":
 
     # Explicit held-out splits; every other discovered subject is used for training.
     TEST_SUBJECTS = ["pm0027"]
-    VAL_SUBJECTS = []
+    VAL_SUBJECTS: list[str] = []
     LOG_LEVEL = logging.INFO
 
     """Discover subjects, train a MeshGraphNet, and evaluate the test split."""
@@ -155,10 +160,16 @@ if __name__ == "__main__":
     trainer.set_num_layers(NUM_LAYERS)
     train_result = trainer.process()
 
-    # Evaluate held-out test subjects against their ground-truth phases.
-    infer = WorkflowInferPhysicsNeMoMGN(model_directory=OUTPUT_DIR, log_level=LOG_LEVEL)
+    # Evaluate held-out test subjects against their ground-truth phases. When
+    # resuming, training writes to a fresh sibling directory, so evaluate the
+    # model from the directory training actually used, not the original
+    # OUTPUT_DIR.
+    model_directory = train_result["output_directory"]
+    infer = WorkflowInferPhysicsNeMoMGN(
+        model_directory=model_directory, log_level=LOG_LEVEL
+    )
     eval_outputs: dict[str, Any] = {}
     for sid in TEST_SUBJECTS:
         eval_outputs[sid] = infer.predict(
-            manifests[sid], output_directory=OUTPUT_DIR / "eval_mgn" / sid
+            manifests[sid], output_directory=model_directory / "eval_mgn" / sid
         )

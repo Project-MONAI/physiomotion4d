@@ -44,9 +44,7 @@ if __name__ == "__main__":
     project_name = "tutorial_02_heart"
 
     # Preferred input: the combined surface saved by Tutorial 2.
-    vtk_file = (
-        tutorials_dir / "output" / "tutorial_02_heart" / "patient_surfaces.vtp"
-    )
+    vtk_file = tutorials_dir / "output" / "tutorial_02_heart" / "patient_surfaces.vtp"
 
     log_level = logging.INFO
 
