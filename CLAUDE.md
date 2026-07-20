@@ -2,21 +2,82 @@
 
 Project guidance for Claude Code in this repository.
 
-## Role:
-We are developing open-source code for scientific AI libraries. Leverage GPU-accelerated methods when appropriate.
+## Role
 
-## Priorities (Ordered)
-1) accuracy
-2) clarity/maintainability/simplicity
-3) consistency with the rest of the platform and open source standards
-4) documentation
-5) testing
+We are developing open-source code for scientific AI libraries. Leverage
+GPU-accelerated methods when appropriate.
 
-## Behavior Guidelines
-1) Don't assume.  Don't hide confusion. Surface tradeoffs.
-2) Minimum code that solves the problem.  Nothing speculative.
-3) Touch only what you must.  Clean up only your own mess.
-4) Define success criteria.  Loop until verified.
+## 1. Think Before Coding
+
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
+
+Before implementing:
+
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+
+## 2. Simplicity First
+
+**Minimum code that solves the problem. Nothing speculative.**
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+
+## 3. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
+
+When your changes create orphans:
+
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+## 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let you loop independently. Weak criteria
+("make it work") require constant clarification.
+
+## 5. Project-Specific Rules
+
+- Breaking changes are acceptable. Backward-compatibility shims are not.
+
+---
+
+**These guidelines are working if:** fewer unnecessary changes in diffs,
+fewer rewrites due to overcomplication, and clarifying questions come
+before implementation rather than after mistakes.
 
 ## Commands
 
@@ -24,7 +85,7 @@ We are developing open-source code for scientific AI libraries. Leverage GPU-acc
 
 ```bash
 # Install in editable mode (preferred)
-uv pip install -e .
+uv pip install -e .[dev]
 
 # Lint and format
 ruff check . --fix && ruff format .
@@ -35,36 +96,23 @@ mypy src/ tests/
 # All pre-commit hooks
 pre-commit run --all-files
 
-# Fast tests (recommended for development — slow/GPU/Simpleware/experiment
-# /tutorial tests are auto-skipped unless their opt-in flag is passed)
-py -m pytest tests/ -v
-
-# Single test file or test by name
-py -m pytest tests/test_contour_tools.py -v
-py -m pytest tests/test_contour_tools.py::test_extract_surface -v
-
-# With coverage
-py -m pytest tests/ --cov=src/physiotwin4d --cov-report=html
-
-# Create missing baselines
-py -m pytest tests/ --create-baselines
-```
-
 **Version bumping:** `bumpver update --patch` (or `--minor`, `--major`)
 
 ## Architecture
 
-All classes inherit from `PhysioTwin4DBase` (`physiotwin4d_base.py`), which provides
-a shared logger. Use `self.log_info()`, `self.log_debug()` — never `print()`.
+All classes inherit from `PhysioTwin4DBase` (`physiotwin4d_base.py`),
+which provides a shared logger. Use `self.log_info()`, `self.log_debug()`
+— never `print()`.
 
-Consult `docs/API_MAP.md` for the full index of classes, methods, and signatures.
-Regenerate it after any public API change: `py utils/generate_api_map.py`
+Consult `docs/API_MAP.md` and graphify (see section below) for the full
+index of classes, methods, and signatures. Regenerate API_MAP.md after any public API change: `py utils/generate_api_map.py`
 
 **Key data conventions:**
+
 - Images: `itk.Image`, axes X, Y, Z [, T] in LPS world space (ITK's native
   frame; `itk.imread` normalizes DICOM, NIfTI, MHA, and NRRD inputs to LPS)
   stored using itk.imwrite with compression=True
-- 4D time series: shape `(X, Y, Z, T)` — never silently squeeze or permute axes
+— never silently squeeze or permute axes
 - Surfaces: `pv.PolyData` in LPS (inherited from the source `itk.Image` via
   `itk.vtk_image_from_image`); converted to USD right-handed Y-up only at USD
   export by `vtk_to_usd.lps_points_to_usd` (USD +X=Left, +Y=Superior, +Z=Anterior)
@@ -74,6 +122,9 @@ Regenerate it after any public API change: `py utils/generate_api_map.py`
 
 ## Testing
 
+- Fast tests (recommended for development — slow/GPU/Simpleware/experiment
+  /tutorial tests are auto-skipped unless their opt-in flag is passed)
+  py -m pytest tests/ -v
 - Baselines in `tests/baselines/` via Git LFS — run `git lfs pull` after cloning
 - `tests/conftest.py`: session-scoped fixtures chaining download → convert → segment → register
 - `src/physiotwin4d/test_tools.py`: baseline comparison utilities (`TestTools`, etc.)
@@ -83,21 +134,6 @@ Regenerate it after any public API change: `py utils/generate_api_map.py`
 - Prefer images from `ROOT/data/test/slicer_heart_small` for tests
 - Prefer storing results in subdirs `./results/<test_name>`
 
-## Working Process
-
-Before editing any code:
-1. Read the relevant source file(s) in full.
-2. Summarize current behavior in 2–4 sentences.
-3. Identify success criteria / metrics
-4. Refer to *_tools.py files for commonly used routines
-5. Refer to workspace/reference_code (when available) for third-party libraries
-6. Propose a numbered plan; confirm before implementing non-trivial changes.
-7. Follow the behavior guidelines given above.
-8. Implement in small, reviewable diffs.
-9. Update docstrings and tests for every changed public method.
-10. Do not commit changes or make pull requests unless specifically told to do so.
-
-Breaking changes are acceptable. Backward-compatibility shims are not.
 
 ## Agents and Skills
 
@@ -107,7 +143,8 @@ Claude, Codex, and other AI tooling.
 
 - `/plan` — inspect files, summarize design, produce a numbered plan (no code changes)
 - `/impl` — read → summarize → plan → implement in small diffs
-- `/test-feature` — propose test plan, write real-data-driven pytest tests with baselines
+- `/test-feature` — propose test plan, write real-data-driven pytest tests
+  with baselines
 - `/doc-feature` — update docstrings (and remind you to run `/regen-api-map`)
 - `/regen-api-map` — regenerate `docs/API_MAP.md` and report public-API changes
 - `/check-conventions` — audit changed files against project hard rules
@@ -135,3 +172,14 @@ Document via docstrings and inline comments.
 - Breaking changes are acceptable — backward compatibility is not a priority
 - Max line length: 88 characters
 - Follow behavior guidelines.
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

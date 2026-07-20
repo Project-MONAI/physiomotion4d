@@ -382,6 +382,7 @@ class WorkflowInferPhysicsNeMo(PhysioTwin4DBase):
         stage: float,
         reference_image: itk.Image,
         output_directory: Optional[Path] = None,
+        reference_surface: Optional[Path] = None,
     ) -> dict[str, Any]:
         """Rasterize the inferred deformation onto a reference image grid.
 
@@ -392,6 +393,15 @@ class WorkflowInferPhysicsNeMo(PhysioTwin4DBase):
         (renormalized) reference-surface normal of those vertices. Empty voxels
         are zero.
 
+        By default the reference (undeformed) surface is reconstructed from the
+        PCA coefficients in the model's own frame. When the subject's reference
+        surface lives in a different world frame than the model template (e.g. a
+        patient scan whose statistical-model fit applied a pose transform not
+        captured by the shape coefficients), pass ``reference_surface`` so the
+        displacements are binned at the patient-space positions that actually
+        align with ``reference_image``. The network displacements themselves
+        depend only on the coefficients and stage, not on the binning positions.
+
         Args:
             shape_parameters: JSON file with the subject PCA coefficient vector.
             stage: Target RR-interval fraction for the deformation.
@@ -399,14 +409,34 @@ class WorkflowInferPhysicsNeMo(PhysioTwin4DBase):
                 (size, spacing, origin, direction).
             output_directory: If given, the two images are written there as
                 compressed ``.mha`` files.
+            reference_surface: Optional mesh (volume or surface) whose extracted
+                surface supplies the binning positions and normals, overriding
+                the PCA reconstruction. Must share the mean-shape surface
+                topology (same point count and ordering); its surface is
+                extracted with the same ``dataset_surface`` algorithm used for
+                the model template, so a mesh built from the same PCA template
+                keeps the correspondence.
 
         Returns:
             Dict with ``deformation_field`` and ``normal_image`` (ITK vector
-            images) and, when written, their paths.
+            images), ``deformed_surface`` (the stage surface as ``pv.PolyData``)
+            and, when written, their paths.
         """
         coeffs = pnt.load_pca_coefficients(shape_parameters)
-        mean_mesh, pca_model = self._load_pca_assets()
-        ref_points = pnt.reconstruct_reference_points(mean_mesh, pca_model, coeffs)
+        if reference_surface is not None:
+            patient_surface = cast(
+                pv.DataSet, pv.read(str(reference_surface))
+            ).extract_surface(algorithm="dataset_surface")
+            ref_points = np.asarray(patient_surface.points, dtype=np.float32)
+            n_expected = len(self._mean_shape_coords)
+            if ref_points.shape[0] != n_expected:
+                raise ValueError(
+                    f"reference_surface has {ref_points.shape[0]} surface points, "
+                    f"expected {n_expected} (mean-shape topology)."
+                )
+        else:
+            mean_mesh, pca_model = self._load_pca_assets()
+            ref_points = pnt.reconstruct_reference_points(mean_mesh, pca_model, coeffs)
         disps = self._predict_displacements(coeffs, stage)
 
         # Reference (undeformed) surface normals.
@@ -452,19 +482,28 @@ class WorkflowInferPhysicsNeMo(PhysioTwin4DBase):
             ref_points.shape[0],
         )
 
+        # Deformed (stage) surface: reference positions displaced by the network,
+        # keeping the mean-shape topology.
+        deformed_surface = self._mean_surface.copy(deep=True)
+        deformed_surface.points = (ref_points + disps).astype(np.float32)
+
         result: dict[str, Any] = {
             "deformation_field": deformation_image,
             "normal_image": normal_image,
+            "deformed_surface": deformed_surface,
         }
         if output_directory is not None:
             out_dir = Path(output_directory)
             out_dir.mkdir(parents=True, exist_ok=True)
             field_path = out_dir / "deformation_field.mha"
             normal_path = out_dir / "surface_normal_field.mha"
+            surface_path = out_dir / "deformed_surface.vtp"
             itk.imwrite(deformation_image, str(field_path), compression=True)
             itk.imwrite(normal_image, str(normal_path), compression=True)
+            deformed_surface.save(str(surface_path))
             result["deformation_field_file"] = field_path
             result["normal_image_file"] = normal_path
+            result["deformed_surface_file"] = surface_path
         return result
 
     @staticmethod

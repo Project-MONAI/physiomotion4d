@@ -230,9 +230,9 @@ Examples:
         return 1
 
     try:
-        out_path = workflow.process()
+        result = workflow.process()
         print("\nConversion completed successfully.")
-        print(f"Output: {out_path}")
+        print(f"Output: {result['usd_file']}")
         return 0
     except Exception as e:
         print(f"\nError during conversion: {e}")

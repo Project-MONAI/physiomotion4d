@@ -13,7 +13,6 @@ build
 __pycache__
 _version.py
 htmlcov
-.cursor
 .vscode/*
 !.vscode/settings.json
 

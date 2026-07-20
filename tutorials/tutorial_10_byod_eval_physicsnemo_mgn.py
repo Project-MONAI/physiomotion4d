@@ -36,7 +36,7 @@ import json
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Optional, cast
+from typing import Any, Optional
 
 from physiotwin4d import WorkflowInferPhysicsNeMoMGN
 
@@ -92,10 +92,7 @@ def predict(
     """Predict cardiac surfaces for *subject* using the trained MeshGraphNet."""
     manifest_path = _write_subject_manifest(subject, out_dir)
     infer = WorkflowInferPhysicsNeMoMGN(model_directory=MODEL_DIR, epoch=epoch)
-    return cast(
-        "dict[str, Any]",
-        infer.predict(manifest_path, stages=stages, output_directory=out_dir),
-    )
+    return infer.predict(manifest_path, stages=stages, output_directory=out_dir)
 
 
 def run_tutorial() -> dict[str, Any]:
