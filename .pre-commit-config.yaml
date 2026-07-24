@@ -17,14 +17,14 @@ repos:
     rev: v2.1.0
     hooks:
       - id: mypy
-        # With pass_filenames: false, we must provide an explicit target for mypy.
-        # Otherwise mypy exits with: "Missing target module, package, files, or command."
-        args: [--config-file=pyproject.toml, src, tutorials]
+        # Pass only the staged files pre-commit selects (via the files regex);
+        # do not scan whole src/ and tutorials/ trees, which would include
+        # untracked files.
+        args: [--config-file=pyproject.toml]
         additional_dependencies:
           - types-setuptools
           - scipy-stubs
           - types-requests
-        pass_filenames: false
         files: ^(src/|tutorials/)
 
   # Regenerate docs/API_MAP.md whenever Python source files change
